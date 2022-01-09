@@ -2,7 +2,7 @@
 
 const {sendToMaster} = require("./bot");
 
-module.exports = exports = function error(err)
+global.error = module.exports = exports = function error(err)
 {
 	let msg = "Une erreur est survenue ; lisez la console pour plus de détails.";
 
@@ -19,6 +19,3 @@ module.exports = exports = function error(err)
 	sendToMaster(msg, console.error);
 	console.error(err);
 }
-
-
-global.error = exports;
