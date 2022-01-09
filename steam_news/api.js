@@ -23,6 +23,16 @@ function query(appid, count, maxlength = 1000)
 	return fetch(url).then(res => res.json());
 }
 
+/**
+ * Helper function to know if an appid is valid or not.
+ * @param {int} appaid The is of the Steam app
+ * @returns {Promise<bool>} true or false
+ */
+exports.exists = async appid => {
+	const {appnews} = await query(appid, 1, 1);
+	return !!appnews;
+}
+
 
 /**
  * Returns the given Steam news item as a Discord embed.
