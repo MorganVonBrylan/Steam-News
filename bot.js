@@ -14,7 +14,7 @@ var master;
 exports.sendToMaster = (msg, onError = error) => master.send(msg).catch(onError);
 
 const error = require("./error");
-//const { commands } = require("./commands");
+const { commands, init: initCmds } = require("./commands");
 
 client.login(auth.token);
 
@@ -22,10 +22,11 @@ client.on("ready", async () => {
 	exports.myself = client.user;
 	exports.master = master = await client.users.fetch(auth.master);
 	console.log(`Connecté en tant que ${client.user.tag} !`);
+	initCmds(master, auth.debug)
 });
 
 
-/*
+
 client.on("interactionCreate", interaction => {
 	if(interaction.isMessageComponent())
 		return componentInteraction(interaction);
@@ -39,4 +40,3 @@ client.on("interactionCreate", interaction => {
 	else
 		error(`Commande inconnue reçue : ${interaction.commandName}`);
 });
-*/

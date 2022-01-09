@@ -14,9 +14,11 @@ Ce bot est à utiliser avec Node.JS (≥16) avec le paquet `discord.js` v13.
 ```JSON
 {
 	"token": "le token d'authentification de votre bot",
- 	"master": "votre id d'utilisateurice"
+ 	"master": "votre id d'utilisateurice",
+	"debug": false
 }
 ```
+`debug` should be `true` in development and `false` in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise.
 
 # Licence
 **Invasion** est publié sous Licence Publique Générale GNU *(GNU General Public Licence)* v3 (GPL-3.0). Voir COPYING.txt, ou ce lien : [https://www.gnu.org/licenses/gpl-3.0.fr.html](https://www.gnu.org/licenses/gpl-3.0.fr.html)
