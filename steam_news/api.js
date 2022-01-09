@@ -5,6 +5,8 @@ const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?a
 const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids=";
 const STEAM_CLAN_IMAGE = "https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans";
 
+const headers = { "Accept-Language": "fr,en" };
+
 /**
  * Queries the Steam API to get the latest news of an app.
  * @param {int} appid The id of the Steam app
@@ -21,7 +23,7 @@ function query(appid, count, maxlength = 1000)
 	if(count) url += `&count=${count}`;
 	if(maxlength) url += `&maxlength=${maxlength}`;
 
-	return fetch(url).then(res => res.json());
+	return fetch(url, {headers}).then(res => res.json());
 }
 
 /**
@@ -40,7 +42,7 @@ exports.exists = async appid => {
  * @param {int} appid The app's id.
  * @returns {Promise<object?>} The app's details, or null if it doesn't exist.
  */
-exports.getDetails = appid => fetch(BASE_DETAILS_URL+appid, {headers: {"Accept-Language": "fr,en"}}).then(res => res.json()).then(details => {
+exports.getDetails = appid => fetch(BASE_DETAILS_URL+appid, {headers}).then(res => res.json()).then(details => {
 	details = details[appid];
 	return details.success ? details.data : null;
 });
