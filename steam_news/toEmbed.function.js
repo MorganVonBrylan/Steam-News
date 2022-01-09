@@ -1,5 +1,7 @@
 "use strict";
 
+const { getAppName } = require("./watchers");
+
 /**
  * Returns the given Steam news item as a Discord embed.
  * @param {object} newsitem The news item.
@@ -7,12 +9,13 @@
  */
 module.exports = exports = newsitem => {
 	const image = newsitem.contents.match(/{STEAM_CLAN_IMAGE}[^ ]+/);
+	const name = getAppName(newsitem.appid);
 	return {
 		url: newsitem.url,
 		image: image ? {url: image[0].replace("{STEAM_CLAN_IMAGE}", STEAM_CLAN_IMAGE)} : undefined,
 		title: newsitem.title,
 		description: htmlToMarkdown(newsitem.contents),
-		author: { name: newsitem.author },
+		author: name ? { name } : undefined,
 		footer: { text: newsitem.feedlabel },
 		timestamp: newsitem.date * 1000,
 	};
