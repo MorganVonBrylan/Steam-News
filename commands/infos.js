@@ -1,0 +1,62 @@
+"use strict";
+
+const { getDetails } = require("../steam_news/api");
+
+exports.description = "Affiche les infos sur un jeu";
+exports.options = [{
+	type: "INTEGER", name: "id",
+	description: "L'id du jeu", required: true
+}];
+exports.run = inter => {
+	getDetails(inter.options.getInteger("id")).then(details => {
+		if(!details)
+			return inter.reply({content: "Cet id ne correspond à aucun jeu Steam.", ephemeral: true}).catch(error);
+
+		const {
+			steam_appid, developers, website,
+			name, header_image, release_date: {date = "*à venir*"},
+			genres,
+			controller_support, platforms, categories,
+			dlc, free, price_overview: price,
+			supported_languages, content_descriptors: {notes},
+		} = details;
+
+		if(notes && (notes.includes("Nudity") || notes.includes("Sex")) && !inter.channel.nsfw)
+			return inter.reply({content: "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon NSFW.", ephemeral: true}).catch(error);
+
+		inter.reply({ embeds: [{
+			url: "https://store.steampowered.com/app/"+steam_appid,
+			title: name,
+			author: { name: developers.join(", "), url: website },
+			image: { url: header_image },
+			fields: [
+				{ name: genres.length > 1 ? "Genres" : "Genre", value: genres.length ? genres.map(g => g.description).join(", ") : "*aucun*" },
+				{ name: "Date de publication", value: date, inline: true },
+				{ name: "Prix", value: free ? "Gratuit" : price.final_formatted, inline: true },
+				{ name: "DLCs", value: (dlc?.length || 0)+"", inline: true },
+				{ name: "Plateformes", value: listPlatforms(platforms), inline: true },
+				{ name: "Support manette", value: controller_support === "full" ? "Oui" : "Non", inline: true },
+				{ name: "Multi", value: categories.some(id => id === 1) ? "Oui" : "Non", inline: true },
+				{ name: "Langues", value: parseHTML(supported_languages) },
+			],
+			description: details.short_description,
+		}] }).catch(error);
+	})
+}
+
+function listPlatforms(platforms)
+{
+	return Object.entries(platforms)
+		.filter(([,supported]) => supported)
+		.map(([name]) => name.replace(/(?:^|\s|-)\S/g, a => a.toUpperCase()))
+		.join(", ");
+}
+
+function parseHTML(html)
+{
+	return html.replaceAll(/\*/g, "\\*")
+		.replaceAll(/<br\/?>/g, "\n")
+		.replaceAll(" - ", " - ") // espace insécables
+		.replaceAll(/<\/?(strong|b)>/g, "**")
+		.replaceAll(/<\/?(em|i)>/g, "_");
+}
