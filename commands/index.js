@@ -23,7 +23,6 @@ const commands = exports.commands = {};
 var commandManager;
 exports.load = exports.reload = load;
 
-var guilds;
 // Can't have perms on application commands
 //const masterPerm = { id: require("../auth.json").master, type: "USER", permission: true };
 
