@@ -1,11 +1,12 @@
 "use strict";
 
-const { query, toEmbed } = require("../steam_news/api");
+const { query } = require("../steam_news/api");
+const toEmbed = require("../steam_news/toEmbed.function");
 
 exports.description = "Voir la dernière actu d'un jeu";
 exports.options = [{
 	type: "INTEGER", name: "id",
-	description: "L'id du jeu (le numéro après app/ dans l'URL de la page du magasin)", required: true
+	description: "L'id du jeu", required: true
 }];
 exports.run = inter => {
 	query(inter.options.getInteger("id"), 10).then(({appnews}) => {
