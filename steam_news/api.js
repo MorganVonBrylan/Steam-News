@@ -2,6 +2,7 @@
 
 const fetch = require("node-fetch");
 const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=";
+const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids=";
 const STEAM_CLAN_IMAGE = "https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans";
 
 /**
@@ -25,13 +26,24 @@ function query(appid, count, maxlength = 1000)
 
 /**
  * Helper function to know if an appid is valid or not.
- * @param {int} appaid The is of the Steam app
+ * @param {int} appid The app's id.
  * @returns {Promise<bool>} true or false
  */
 exports.exists = async appid => {
 	const {appnews} = await query(appid, 1, 1);
 	return !!appnews;
 }
+
+
+/**
+ * Returns details about an app.
+ * @param {int} appid The app's id.
+ * @returns {Promise<object?>} The app's details, or null if it doesn't exist.
+ */
+exports.getDetails = appid => fetch(BASE_DETAILS_URL+appid, {headers: {"Accept-Language": "fr,en"}}).then(res => res.json()).then(details => {
+	details = details[appid];
+	return details.success ? details.data : null;
+});
 
 
 /**
