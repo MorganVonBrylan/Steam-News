@@ -24,9 +24,11 @@ var commandManager;
 exports.load = exports.reload = load;
 
 var guilds;
-const masterPerm = { id: require("../auth.json").master, type: "USER", permission: true };
+// Can't have perms on application commands
+//const masterPerm = { id: require("../auth.json").master, type: "USER", permission: true };
 
 const existingCmds = {}; // form: "cmdName": "module"
+var skipDebug = true;
 
 function load(name, cmdModule = "", reload = false)
 {
@@ -67,14 +69,14 @@ function load(name, cmdModule = "", reload = false)
 
 	commands[name] = command;
 
-	const guildCmd = commandManager.cache.find(cmd => cmd.name === name);
-	const promise = guildCmd ? guildCmd.edit(command) : commandManager.create(command);
+	const cmd = commandManager.cache.find(cmd => cmd.name === name);
+	const promise = cmd ? cmd.edit(command) : commandManager.create(command);
 
-	if(!command.defaultPermission)
+	/*if(!command.defaultPermission)
 	{
 		permissions.push(masterPerm);
 		promise.then(cmd => cmd.permissions.set({permissions}).catch(error));
-	}
+	}*/
 
 	promise.catch(error);
 	promise.cmdName = name;
@@ -89,7 +91,7 @@ function loadFolder(path)
 
 	for(const file of readdirSync(path))
 	{
-		if(file === "index.js")
+		if(file === "index.js" || file === "debug" && skipDebug)
 			continue;
 
 		if(file.endsWith(".js"))
@@ -113,6 +115,7 @@ function loadFolder(path)
 
 exports.init = (master, debug) => {
 	const client = require("../bot").client;
+	skipDebug = !debug;
 	commandManager = (debug ? client.guilds.cache.first() : client.application).commands;
 	commandManager.fetch().then(loadFolder.bind(null, __dirname));
 }
