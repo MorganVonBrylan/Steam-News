@@ -43,7 +43,7 @@ exports.run = inter => {
 				{ name: "Plateformes", value: listPlatforms(platforms), inline: true },
 				{ name: "Support manette", value: controller_support === "full" ? "Oui" : "Non", inline: true },
 				{ name: "Multi", value: categories.some(({id}) => id === 1) ? "Oui" : "Non", inline: true },
-				{ name: "Langues", value: parseHTML(supported_languages) },
+				{ name: "Langues", value: parseLanguages(supported_languages) },
 			],
 			description: details.short_description,
 		}] }).catch(error);
@@ -58,11 +58,11 @@ function listPlatforms(platforms)
 		.join(", ");
 }
 
-function parseHTML(html)
+function parseLanguages(html)
 {
 	return html.replaceAll(/\*/g, "\\*")
-		.replaceAll(/<br\/?>/g, "\n")
-		.replaceAll(" - ", " - ") // espace insécables
+		.replaceAll(/<br\/?>(.+)/g, "\n_$1_")
+		.replaceAll(" - ", " – ") // espace insécables
 		.replaceAll(/<\/?(strong|b)>/g, "**")
 		.replaceAll(/<\/?(em|i)>/g, "_");
 }
