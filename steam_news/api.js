@@ -27,6 +27,14 @@ function query(appid, count, maxlength = 1000)
 }
 
 /**
+ * Checks if the provided news item is actually from Steam.
+ * @param {object} newsitem The item.
+ * @returns {bool}
+ */
+exports.isSteamNews = newsitem => newsitem.feedname.includes("steam");
+
+
+/**
  * Helper function to know if an appid is valid or not.
  * @param {int} appid The app's id.
  * @returns {Promise<bool>} true or false

@@ -1,7 +1,7 @@
 "use strict";
 
 const { existsSync, readFile, writeFile } = require("fs");
-const { query, getDetails } = require("./api");
+const { query, getDetails, isSteamNews } = require("./api");
 
 const watchedApps = {servers: {}, apps: {}};
 const watchFile = __dirname + "/watchers.json";
@@ -93,7 +93,7 @@ async function checkForNews(save)
 			{
 				if(newsitem.gid === last)
 					break;
-				if(newsitem.feedname.includes("steam"))
+				if(isSteamNews(newsitem))
 				{
 					news.push(newsitem)
 					if(!last) break;
