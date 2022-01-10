@@ -11,7 +11,7 @@ const WATCH_LIMIT = exports.WATCH_LIMIT = 25; // the maximum number of fields in
 function init()
 {
 	Object.defineProperty(watchedApps.apps, "map", {value: function(callback) { return Object.entries(this).map(callback); }});
-	checkForNews();
+	require("../bot").client.once("ready", checkForNews);
 }
 
 
