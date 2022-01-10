@@ -43,4 +43,4 @@ Exemple :
 # Licence
 **Steam News** est publié sous Licence Publique Générale GNU *(GNU General Public Licence)* v3 (GPL-3.0). Voir COPYING.txt, ou ce lien : [https://www.gnu.org/licenses/gpl-3.0.fr.html](https://www.gnu.org/licenses/gpl-3.0.fr.html)
 
-![GPL](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/GPLv3_Logo.svg/320px-GPLv3_Logo.svg.png)
+![GPL](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/GPLv3_Logo.svg/240px-GPLv3_Logo.svg.png)
