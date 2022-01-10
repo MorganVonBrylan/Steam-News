@@ -1,0 +1,19 @@
+"use strict";
+
+const { getWatchedApps } = require("../steam_news/watchers");
+
+exports.adminOnly = true;
+exports.description = "Affiche les jeux suivis dans ce serveur.";
+exports.options = [];
+exports.run = inter => {
+	const watched = getWatchedApps(inter.guild.id);
+	if(!watched.length)
+		return inter.reply({ content: "Aucun jeu n'est suivi dans ce serveur.", ephemeral: true }).catch(error);
+
+	inter.reply({ embeds: [{
+		title: `Jeux suivis dans ${inter.guild}`,
+		fields: watched.map(({appid, name, channelId}) => ({ name, value: `Id : ${appid}\n<#${channelId}>`, inline: true })),
+	}],
+		ephemeral: true,
+	}).catch(error);
+}
