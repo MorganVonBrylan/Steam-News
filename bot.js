@@ -24,9 +24,12 @@ client.on("ready", async () => {
 	exports.myself = client.user;
 	exports.master = master = await client.users.fetch(auth.master);
 	console.log(`Connecté en tant que ${client.user.tag} !`);
-	initCmds(master, auth.debug)
+	initCmds(master, auth.debug);
 });
 
+
+for(const file of require("fs").readdirSync(__dirname+"/events"))
+	client.on(file.substring(0, file.length - 3), require(`./events/${file}`));
 
 
 client.on("interactionCreate", interaction => {
