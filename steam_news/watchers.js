@@ -1,7 +1,7 @@
 "use strict";
 
 const { existsSync, readFile, writeFile } = require("fs");
-const { query, getDetails, isSteamNews } = require("./api");
+const { query, isSteamNews, getDetails, isNSFW } = require("./api");
 
 const watchedApps = {servers: {}, apps: {}};
 const watchFile = __dirname + "/watchers.json";
@@ -48,12 +48,48 @@ else
 	init();
 
 
+/**
+ * @param {int} appid The app's id
+ * @returns {bool} Whether the app is known by the bot or not.
+ */
+exports.isKnown = appid => appid in watchedApps.apps;
+
+/**
+ * @param {int} appid The app's id
+ * @returns {?object} The app info (name, NSFW status and latest news gid), if known.
+ */
+exports.getAppInfo = appid => {
+	const app = watchedApps.apps[appid];
+	return app ? { name: app.name, nsfw: app.nsfw, latest: app.latest } : null;
+}
+
+/**
+ * Stores or updates the given app info.
+ * @param {int} appid The app's id.
+ * @param {object} details The relevant details
+ 	* @param {string} details.name The app's name
+ 	* @param {bool} details.nsfw Whether the app is NSFW or not.
+	* @param {string} details.latest That app's latest news' gid.
+ */
+exports.saveAppInfo = (appid, {name, nsfw, latest}) => {
+	let app = watchedApps.apps[appid];
+	if(!app) app = watchedApps.apps[appid] = {watchers: {}};
+	if(typeof name === "string") app.name = name;
+	if(typeof nsfw === "boolean") app.nsfw = nsfw;
+	if(typeof latest === "string") app.latest = latest;
+	saveWatchers();
+};
 
 /**
  * @param {int} appid The app's id
  * @returns {?string} The app's name, if known.
  */
 exports.getAppName = appid => watchedApps.apps[appid]?.name;
+/**
+ * @param {int} appid The app's id
+ * @returns {?bool} Whether is app is NSFW, if known.
+ */
+exports.isNSFW = appid => watchedApps.apps[appid]?.nsfw;
 
 /**
  * @param {string} guildId The guild id
@@ -63,7 +99,7 @@ exports.getWatchedApps = guildId => {
 	const guild = watchedApps.servers[guildId] || [];
 	return guild.map(appid => {
 		const app = watchedApps.apps[appid];
-		return { appid, name: app.name, channelId: app.watchers[guildId] };
+		return { appid, name: app.name, nsfw: app.nsfw, channelId: app.watchers[guildId] };
 	});
 }
 
@@ -83,7 +119,7 @@ async function checkForNews(save)
 	var total = 0;
 	const {apps} = watchedApps;
 
-	await Promise.allSettled(apps.map(([appid, {latest, watchers}]) => query(appid, 10).then(({appnews}) => {
+	await Promise.allSettled(apps.map(([appid, {latest, watchers, nsfw}]) => query(appid, 10).then(({appnews}) => {
 		if(!appnews)
 			exports.purgeApp(appid);
 		else
@@ -108,7 +144,10 @@ async function checkForNews(save)
 				{
 					const embed = { embeds: [toEmbed(newsitem)] };
 					for(const channelId of Object.values(watchers))
-						channels.fetch(channelId).then(channel => channel.send(embed).catch(console.error));
+						channels.fetch(channelId).then(channel => {
+							if(!nsfw || channel.nsfw)
+								channel.send(embed).catch(console.error);
+						});
 				}
 			}
 		}
@@ -157,6 +196,7 @@ exports.watch = async (appid, channel) => {
 		const latest = appnews.newsitems.find(({feedname}) => feedname.includes("steam"))?.gid;
 		apps[appid] = {
 			name: details?.name || "undefined",
+			nsfw: isNSFW(details),
 			latest,
 			watchers: { [guildId]: channel.id },
 		 };

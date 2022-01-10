@@ -13,7 +13,7 @@ exports.run = inter => {
 	inter.reply({ embeds: [{
 		title: `Jeux suivis dans ${inter.guild}`,
 		description: watched.length === 1 ? "1 jeu suivi" : `${watched.length} jeux suivis`,
-		fields: watched.map(({appid, name, channelId}) => ({ name, value: `Id : ${appid}\n<#${channelId}>`, inline: true })),
+		fields: watched.map(({appid, nsfw, name, channelId}) => ({ name, value: `Id : ${appid}\nNSFW: ${nsfw ? "Oui" : "Non"}\nSalon : <#${channelId}>`, inline: true })),
 	}],
 		ephemeral: true,
 	}).catch(error);

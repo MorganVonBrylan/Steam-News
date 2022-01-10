@@ -1,7 +1,7 @@
 "use strict";
 
-const { getDetails } = require("../steam_news/api");
-const { watch, WATCH_LIMIT } = require("../steam_news/watchers");
+const { getDetails, isNSFW } = require("../steam_news/api");
+const { WATCH_LIMIT, watch, unwatch } = require("../steam_news/watchers");
 
 exports.adminOnly = true;
 exports.description = `(admins seulement) Suivre les actus d'un jeu (${WATCH_LIMIT} jeux par serveur maximum)`;
@@ -23,6 +23,13 @@ exports.run = inter => {
 	watch(appid, channel).then(async success => {
 		await defer;
 		details = await details;
+
+		if(isNSFW(details) && !channel.nsfw)
+		{
+			unwatch(appid, inter.guild);
+			return inter.editReply("Ce jeu a du contenu adulte. Vous ne pouvez suivre ses actus que dans un salon NSFW.").catch(error);
+		}
+
 		inter.editReply({ content:
 			success ? `Les actus de ${details.name} seront désormais envoyées dans ${channel}.${success === WATCH_LIMIT ? `\nAttention : vous êtes désormais à la limite de ${WATCH_LIMIT} jeux suivis par serveur.` : ""}`
 				: `${details.name} était déjà suivi dans ce salon.`,
