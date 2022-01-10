@@ -33,6 +33,7 @@ exports.run = inter => {
 			url: "https://store.steampowered.com/app/"+steam_appid,
 			title: name,
 			author: { name: developers.join(", "), url: website },
+			provider: { name: "Steam", url: "https://store.steampowered.com/" },
 			image: { url: header_image },
 			fields: [
 				{ name: genres.length > 1 ? "Genres" : "Genre", value: genres.length ? genres.map(g => g.description).join(", ") : "*aucun*", inline: true },
