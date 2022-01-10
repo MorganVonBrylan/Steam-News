@@ -1,6 +1,6 @@
 "use strict";
 
-const { getDetails } = require("../steam_news/api");
+const { getDetails, isNSFW } = require("../steam_news/api");
 
 exports.description = "Affiche les infos sur un jeu";
 exports.options = [{
@@ -18,10 +18,10 @@ exports.run = inter => {
 			genres,
 			controller_support, platforms, categories,
 			dlc, is_free, price_overview: price,
-			supported_languages, content_descriptors: {notes},
+			supported_languages,
 		} = details;
 
-		if(notes && (notes.includes("Nudity") || notes.includes("Sex")) && !inter.channel.nsfw)
+		if(isNSFW(details) && !inter.channel.nsfw)
 			return inter.reply({content: "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon NSFW.", ephemeral: true}).catch(error);
 
 		inter.reply({ embeds: [{

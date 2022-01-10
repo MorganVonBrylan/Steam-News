@@ -54,3 +54,13 @@ exports.getDetails = appid => fetch(BASE_DETAILS_URL+appid, {headers}).then(res 
 	details = details[appid];
 	return details.success ? details.data : null;
 });
+
+/**
+ * Checks if the given app is NSFW.
+ * @param {object} appDetails The app's details.
+ * @returns {bool}
+ */
+exports.isNSFW = appDetails => {
+	const notes = appDetails.content_descriptors.notes?.toLowerCase();
+	return notes && (notes.includes("nudity") || notes.includes("sex"));
+}
