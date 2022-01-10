@@ -3,7 +3,8 @@
 const { getDetails } = require("../steam_news/api");
 const { watch } = require("../steam_news/watchers");
 
-exports.description = "Suivre les actus d'un jeu";
+exports.adminOnly = true;
+exports.description = "(admins seulement) Suivre les actus d'un jeu";
 exports.options = [{
 	type: "INTEGER", name: "id",
 	description: "L'id du jeu", required: true

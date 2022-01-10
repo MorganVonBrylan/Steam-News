@@ -10,6 +10,8 @@ const client = exports.client = new Discord.Client({
 	]),
 });
 
+const {FLAGS: { ADMINISTRATOR }} = Discord.Permissions;
+
 var master;
 exports.sendToMaster = (msg, onError = error) => master.send(msg).catch(onError);
 
@@ -36,7 +38,12 @@ client.on("interactionCreate", interaction => {
 	const command = commands[interaction.commandName];
 
 	if(command)
-		command.run(interaction);
+	{
+		if(command.adminOnly && !interaction.member.permissions.has(ADMINISTRATOR))
+			interaction.reply({content: "Seuls les admins peuvent utiliser cette commande.", ephemeral: true}).catch(error);
+		else
+			command.run(interaction);
+	}
 	else
 		error(`Commande inconnue reçue : ${interaction.commandName}`);
 });
