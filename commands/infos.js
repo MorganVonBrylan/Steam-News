@@ -16,6 +16,7 @@ exports.run = inter => {
 		await defer;
 
 		const {
+			type, fullgame,
 			steam_appid, developers, website,
 			name, header_image, release_date: {date = "*à venir*"},
 			genres, metacritic,
@@ -39,7 +40,9 @@ exports.run = inter => {
 				{ name: "NSFW", value: nsfw ? "🔞 Oui" : "Non", inline: true },
 				{ name: "Date de publication", value: date, inline: true },
 				{ name: "Prix", value: is_free ? "Gratuit" : price.final_formatted, inline: true },
-				{ name: "DLCs", value: (dlc?.length || 0)+"", inline: true },
+				{ name: "DLC", value: type === "dlc"
+					? `Jeu : ${fullgame.name} (${fullgame.appid})`
+					: (dlc?.length || 0)+"", inline: true },
 				{ name: "Plateformes", value: listPlatforms(platforms), inline: true },
 				{ name: "Support manette", value: controller_support === "full" ? "Oui" : "Non", inline: true },
 				{ name: "Multi", value: categories.some(({id}) => id === 1) ? "Oui" : "Non", inline: true },
