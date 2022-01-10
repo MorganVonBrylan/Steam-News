@@ -50,6 +50,7 @@ function load(name, cmdModule = "", reload = false)
 	const command = require(file);
 	command.name = name;
 	command.module = cmdModule;
+	if(!command.options) command.options = []; // Pour pouvoir retirer les options
 	const {description, run, permissions = []} = command;
 
 	if(typeof run !== "function")
