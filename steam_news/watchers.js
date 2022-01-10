@@ -3,9 +3,15 @@
 const { existsSync, readFile, writeFile } = require("fs");
 const { query, getDetails } = require("./api");
 
-const watchedApps = {};
-Object.defineProperty(watchedApps, "map", {value: callback => Object.entries(watchedApps).map(callback)});
+const watchedApps = {servers: {}, apps: {}};
 const watchFile = __dirname + "/watchers.json";
+
+
+function init()
+{
+	Object.defineProperty(watchedApps.apps, "map", {value: function(callback) { return Object.entries(this).map(callback); }});
+	checkForNews();
+}
 
 
 let saving = false;
@@ -33,12 +39,12 @@ if(existsSync(watchFile))
 		else
 		{
 			Object.assign(watchedApps, JSON.parse(data));
-			checkForNews();
+			init();
 		}
 	});
 }
 else
-	checkForNews();
+	init();
 
 
 
@@ -47,6 +53,18 @@ else
  * @returns {?string} The app's name, if known.
  */
 exports.getAppName = appid => watchedApps[appid]?.name;
+
+/**
+ * @param {string} guildId The guild id
+ * @returns {Array} The apps watched in that guild, in the format {appid, name, channelId}
+ */
+exports.getWatchedApps = guildId => {
+	const guild = watchedApps.servers[guildId] || [];
+	return guild.map(appid => {
+		const app = watchedApps.apps[appid];
+		return { appid, name: app.name, channelId: app.watchers[guildId] };
+	});
+}
 
 
 setTimeout(checkForNews, 3600_000);
@@ -62,10 +80,18 @@ async function checkForNews(save)
 	const toEmbed = require("./toEmbed.function");
 	const { channels } = require("../bot").client;
 	var total = 0;
+	const {apps} = watchedApps;
 
-	await Promise.allSettled(watchedApps.map(([appid, {last, watchers}]) => query(appid, 10).then(({appnews}) => {
+	await Promise.allSettled(apps.map(([appid, {last, watchers}]) => query(appid, 10).then(({appnews}) => {
 		if(!appnews)
-			delete watchedApps[appid];
+		{
+			for(let server of watchers)
+			{
+				server = watchedApps.servers[server];
+				server.splice(server.indexOf(appid), 1);
+			}
+			delete apps[appid];
+		}
 		else
 		{
 			const news = [];
@@ -114,22 +140,28 @@ exports.watch = async (appid, channel) => {
 		throw new TypeError("'appid' is not a valid app id");
 
 	const guildId = channel.guild.id;
-	if(appid in watchedApps)
+	const {apps, servers} = watchedApps;
+	if(appid in apps)
 	{
-		if(guildId in watchedApps[appid].watchers)
+		if(guildId in apps[appid].watchers)
 			return false;
-		watchedApps[appid].watchers[guildId] = channel.id;
+		apps[appid].watchers[guildId] = channel.id;
 	}
 	else
 	{
 		const details = await getDetails(appid);
 		const last = appnews.newsitems.find(({feedname}) => feedname.includes("steam"))?.gid;
-		watchedApps[appid] = {
+		apps[appid] = {
 			name: details?.name || "undefined",
 			last,
 			watchers: { [guildId]: channel.id },
 		 };
 	}
+
+	if(guildId in servers)
+		servers[guildId].push(appid);
+	else
+		servers[guildId] = [appid];
 
 	saveWatchers();
 	return true;
@@ -147,11 +179,15 @@ exports.unwatch = (appid, guild) => {
 	if(guild.id)
 		guild = guild.id;
 
-	const watchers = watchedApps[appid]?.watchers;
+	const watchers = watchedApps.apps[appid]?.watchers;
 	if(!watchers || !(guild in watchers))
 		return false;
 
+	const server = watchedApps.servers[guild];
+	server.splice(server.indexOf(appid), 1);
 	delete watchers[guild];
+	if(!Object.keys(watchers).length)
+		watchedApps.apps[appid].last = null;
 	saveWatchers();
 	return true;
 }
