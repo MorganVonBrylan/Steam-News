@@ -1,7 +1,7 @@
 "use strict";
 
 const { getDetails, isNSFW } = require("../steam_news/api");
-const { WATCH_LIMIT, watch, unwatch } = require("../steam_news/watchers");
+const { WATCH_LIMIT, watch, unwatch, purgeApp } = require("../steam_news/watchers");
 
 exports.adminOnly = true;
 exports.description = `(admins seulement) Suivre les actus d'un jeu (${WATCH_LIMIT} jeux par serveur maximum)`;
@@ -23,6 +23,12 @@ exports.run = inter => {
 	watch(appid, channel).then(async success => {
 		await defer;
 		details = await details;
+
+		if(details.type === "dlc")
+		{
+			purgeApp(appid);
+			return inter.editReply({content: "Vous ne pouvez pas suivre les actus d'un DLC.", ephemeral: true}).catch(error);
+		}
 
 		if(isNSFW(details) && !channel.nsfw)
 		{

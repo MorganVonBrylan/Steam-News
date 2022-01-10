@@ -15,6 +15,16 @@ exports.run = inter => {
 	query(appid, 10).then(async ({appnews}) => {
 		if(!appnews)
 			return inter.reply({content: "L'id que vous avez fourni ne correspond à aucune appli Steam.", ephemeral: true}).catch(error);
+
+		if(fetchInfo)
+		{
+			const details = await fetchInfo;
+			if(details.type === "dlc")
+				return inter.reply({content: "Les DLC n'ont pas d'actus.", ephemeral: true}).catch(error);
+
+			saveAppInfo(appid, { name: details.name, nsfw: isNSFW(details) });
+		}
+
 		if(!appnews.newsitems.length)
 			return inter.reply({content: "Cette application n'a aucune actu.", ephemeral: true}).catch(error);
 
@@ -22,12 +32,6 @@ exports.run = inter => {
 		{
 			if(isSteamNews(news))
 			{
-				if(fetchInfo)
-				{
-					const details = await fetchInfo;
-					saveAppInfo(appid, { name: details.name, nsfw: isNSFW(details) });
-				}
-
 				return inter.reply(isAppNSFW(appid) && !inter.channel.nsfw
 					? { content: "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses actus que dans un salon NSFW.", ephemeral: true }
 					: { embeds: [toEmbed(news)] }
