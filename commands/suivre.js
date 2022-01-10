@@ -1,10 +1,10 @@
 "use strict";
 
 const { getDetails } = require("../steam_news/api");
-const { watch } = require("../steam_news/watchers");
+const { watch, WATCH_LIMIT } = require("../steam_news/watchers");
 
 exports.adminOnly = true;
-exports.description = "(admins seulement) Suivre les actus d'un jeu";
+exports.description = `(admins seulement) Suivre les actus d'un jeu (${WATCH_LIMIT} jeux par serveur maximum)`;
 exports.options = [{
 	type: "INTEGER", name: "id",
 	description: "L'id du jeu", required: true
@@ -24,7 +24,7 @@ exports.run = inter => {
 		await defer;
 		details = await details;
 		inter.editReply({ content:
-			success ? `Les actus de ${details.name} seront désormais envoyées dans ${channel}.`
+			success ? `Les actus de ${details.name} seront désormais envoyées dans ${channel}.${success === WATCH_LIMIT ? `\nAttention : vous êtes désormais à la limite de ${WATCH_LIMIT} jeux suivis par serveur.` : ""}`
 				: `${details.name} était déjà suivi dans ce salon.`,
 			ephemeral: true
 		}).catch(error);
@@ -32,6 +32,8 @@ exports.run = inter => {
 		await defer;
 		if(err.message.includes("appid"))
 			inter.editReply({ content: "Cet id ne correspond à aucun jeu Steam.", ephemeral: true }).catch(error);
+		else if(err instanceof RangeError)
+			inter.editReply({ content: `Erreur : Nombre maximum de jeux suivis par serveur atteint (${WATCH_LIMIT}).`, ephemeral: true }).catch(error);
 		else
 		{
 			error(err);

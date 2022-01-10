@@ -5,6 +5,7 @@ const { query, getDetails } = require("./api");
 
 const watchedApps = {servers: {}, apps: {}};
 const watchFile = __dirname + "/watchers.json";
+const WATCH_LIMIT = exports.WATCH_LIMIT = 25; // the maximum number of fields in an embed and a good limit overall
 
 
 function init()
@@ -125,11 +126,12 @@ async function checkForNews(save)
 
 
 /**
- * Adds a watcher for an app.
+ * Adds a watcher for an app. A server can only watch 25 apps at once.
  * @param {int} appid The app's id.
  * @param {GuildChannel} channel The text-based channel to send the news to.
  *
- * @returns {Promise<bool>} true if the watcher was added, false if that app was already watched in that guild.
+ * @returns {Promise<int|false>} false if that app was already watched in that guild, or the new number of watched apps.
+ * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its limit of 25 apps.
  */
 exports.watch = async (appid, channel) => {
 	if(!channel?.isText() || !channel.guild)
@@ -141,12 +143,20 @@ exports.watch = async (appid, channel) => {
 
 	const guildId = channel.guild.id;
 	const {apps, servers} = watchedApps;
-	if(appid in apps)
+
+	if(guildId in servers)
 	{
-		if(guildId in apps[appid].watchers)
+		if(servers[guildId].includes(appid))
 			return false;
-		apps[appid].watchers[guildId] = channel.id;
+		if(servers[guildId].length === WATCH_LIMIT)
+			throw new RangeError(`This server reached its limit of ${WATCH_LIMIT} watched apps.`);
+		servers[guildId].push(appid);
 	}
+	else
+		servers[guildId] = [appid];
+
+	if(appid in apps)
+		apps[appid].watchers[guildId] = channel.id;
 	else
 	{
 		const details = await getDetails(appid);
@@ -158,13 +168,8 @@ exports.watch = async (appid, channel) => {
 		 };
 	}
 
-	if(guildId in servers)
-		servers[guildId].push(appid);
-	else
-		servers[guildId] = [appid];
-
 	saveWatchers();
-	return true;
+	return servers[guildId].length;
 }
 
 
@@ -173,7 +178,7 @@ exports.watch = async (appid, channel) => {
  * @param {int} appid The app's id.
  * @param {Guild} guild The guild.
  *
- * @returns {bool} true if the watcher was removed, false if that channel was not watching that app.
+ * @returns {int|false} false if that guild was not watching that app, or the new number or apps watched by the guild.
  */
 exports.unwatch = (appid, guild) => {
 	if(guild.id)
@@ -189,5 +194,5 @@ exports.unwatch = (appid, guild) => {
 	if(!Object.keys(watchers).length)
 		watchedApps.apps[appid].last = null;
 	saveWatchers();
-	return true;
+	return server.length;
 }
