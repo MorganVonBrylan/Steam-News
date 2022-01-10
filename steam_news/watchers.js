@@ -85,14 +85,7 @@ async function checkForNews(save)
 
 	await Promise.allSettled(apps.map(([appid, {last, watchers}]) => query(appid, 10).then(({appnews}) => {
 		if(!appnews)
-		{
-			for(let server of watchers)
-			{
-				server = watchedApps.servers[server];
-				server.splice(server.indexOf(appid), 1);
-			}
-			delete apps[appid];
-		}
+			exports.purgeApp(appid);
 		else
 		{
 			const news = [];
@@ -120,7 +113,8 @@ async function checkForNews(save)
 			}
 		}
 	})));
-	saveWatchers();
+	if(total)
+		saveWatchers();
 	return total;
 }
 
@@ -195,4 +189,46 @@ exports.unwatch = (appid, guild) => {
 		watchedApps.apps[appid].last = null;
 	saveWatchers();
 	return server.length;
+}
+
+
+/**
+ * Removes all watchers of a guild.
+ * @param {string} guildId The guild or guild id.
+ * @returns {bool} true if the server was purged, false if there was nothing to purge.
+ */
+exports.purgeGuild = guildId => {
+	if(guildId.id)
+		guildId = guildId.id;
+
+	const {servers, apps} = watchedApps;
+	const server = servers[guildId];
+	if(!server)
+		return false;
+
+	for(const appid of server)
+		delete apps[appid].watchers[guildId];
+	delete servers[guildId];
+	saveWatchers();
+	return true;
+}
+
+/**
+ * Removes all watchers of an app.
+ * @param {int} appid The app's id.
+ * @returns {bool} true if the app was purged, false if there was nothing to purge.
+ */
+exports.purgeApp = appid => {
+	const {apps} = watchedApps;
+	if(!apps[appid])
+		return false;
+
+	for(let server of Object.keys(apps[appid].watchers))
+	{
+		server = watchedApps.servers[server];
+		server.splice(server.indexOf(appid), 1);
+	}
+	delete apps[appid];
+	saveWatchers();
+	return true;
 }
