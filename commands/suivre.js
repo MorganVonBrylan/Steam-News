@@ -28,7 +28,8 @@ exports.run = inter => {
 				: `${details.name} était déjà suivi dans ce salon.`,
 			ephemeral: true
 		}).catch(error);
-	}, err => {
+	}, async err => {
+		await defer;
 		if(err.message.includes("appid"))
 			inter.editReply({ content: "Cet id ne correspond à aucun jeu Steam.", ephemeral: true }).catch(error);
 		else
