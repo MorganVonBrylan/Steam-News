@@ -17,7 +17,7 @@ exports.run = inter => {
 			name, header_image, release_date: {date = "*à venir*"},
 			genres,
 			controller_support, platforms, categories,
-			dlc, free, price_overview: price,
+			dlc, is_free, price_overview: price,
 			supported_languages, content_descriptors: {notes},
 		} = details;
 
@@ -32,7 +32,7 @@ exports.run = inter => {
 			fields: [
 				{ name: genres.length > 1 ? "Genres" : "Genre", value: genres.length ? genres.map(g => g.description).join(", ") : "*aucun*" },
 				{ name: "Date de publication", value: date, inline: true },
-				{ name: "Prix", value: free ? "Gratuit" : price.final_formatted, inline: true },
+				{ name: "Prix", value: is_free ? "Gratuit" : price.final_formatted, inline: true },
 				{ name: "DLCs", value: (dlc?.length || 0)+"", inline: true },
 				{ name: "Plateformes", value: listPlatforms(platforms), inline: true },
 				{ name: "Support manette", value: controller_support === "full" ? "Oui" : "Non", inline: true },
