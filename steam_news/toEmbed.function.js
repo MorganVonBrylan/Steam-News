@@ -1,6 +1,7 @@
 "use strict";
 
 const { getAppName } = require("./watchers");
+const STEAM_CLAN_IMAGE = "https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans";
 
 /**
  * Returns the given Steam news item as a Discord embed.

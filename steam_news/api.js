@@ -3,7 +3,6 @@
 const fetch = require("node-fetch");
 const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=";
 const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids=";
-const STEAM_CLAN_IMAGE = "https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans";
 
 const headers = { "Accept-Language": "fr,en" };
 
