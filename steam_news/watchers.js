@@ -53,7 +53,7 @@ else
  * @param {int} appid The app's id
  * @returns {?string} The app's name, if known.
  */
-exports.getAppName = appid => watchedApps[appid]?.name;
+exports.getAppName = appid => watchedApps.apps[appid]?.name;
 
 /**
  * @param {string} guildId The guild id
@@ -103,7 +103,7 @@ async function checkForNews(save)
 			if(news.length)
 			{
 				total += news.length;
-				watchedApps[appid].last = news[0].gid;
+				apps[appid].last = news[0].gid;
 				for(const newsitem of news.reverse())
 				{
 					const embed = { embeds: [toEmbed(newsitem)] };
