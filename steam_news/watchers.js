@@ -104,8 +104,7 @@ exports.getWatchedApps = guildId => {
 }
 
 
-setTimeout(checkForNews, 3600_000);
-exports.checkForNews = checkForNews;
+setInterval(checkForNews, 3600_000);
 
 /**
  * Triggers all watchers.
