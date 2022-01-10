@@ -70,7 +70,9 @@ function load(name, cmdModule = "", reload = false)
 	commands[name] = command;
 
 	const cmd = commandManager.cache.find(cmd => cmd.name === name);
-	const promise = cmd ? cmd.edit(command) : commandManager.create(command);
+	const promise = cmd
+		? (cmd.equals(command, true) ? Promise.resolve({}) : cmd.edit(command))
+		: commandManager.create(command);
 
 	/*if(!command.defaultPermission)
 	{
