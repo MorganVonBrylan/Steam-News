@@ -37,7 +37,8 @@ Exemple :
 		"111": { "name": "jeu 111", "nsfw": false, "latest": "1010", "watchers": { "123": "125", "456": "458" } },
 		"222": { "name": "jeu 222", "nsfw": false, "latest": "2020", "watchers": { "123": "125" } },
 	}
-}```
+}
+```
 
 # Licence
 **Steam News** est publié sous Licence Publique Générale GNU *(GNU General Public Licence)* v3 (GPL-3.0). Voir COPYING.txt, ou ce lien : [https://www.gnu.org/licenses/gpl-3.0.fr.html](https://www.gnu.org/licenses/gpl-3.0.fr.html)
