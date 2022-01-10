@@ -83,7 +83,7 @@ async function checkForNews(save)
 	var total = 0;
 	const {apps} = watchedApps;
 
-	await Promise.allSettled(apps.map(([appid, {last, watchers}]) => query(appid, 10).then(({appnews}) => {
+	await Promise.allSettled(apps.map(([appid, {latest, watchers}]) => query(appid, 10).then(({appnews}) => {
 		if(!appnews)
 			exports.purgeApp(appid);
 		else
@@ -91,19 +91,19 @@ async function checkForNews(save)
 			const news = [];
 			for(const newsitem of appnews.newsitems)
 			{
-				if(newsitem.gid === last)
+				if(newsitem.gid === latest)
 					break;
 				if(isSteamNews(newsitem))
 				{
 					news.push(newsitem)
-					if(!last) break;
+					if(!latest) break;
 				}
 			}
 
 			if(news.length)
 			{
 				total += news.length;
-				apps[appid].last = news[0].gid;
+				apps[appid].latest = news[0].gid;
 				for(const newsitem of news.reverse())
 				{
 					const embed = { embeds: [toEmbed(newsitem)] };
@@ -154,10 +154,10 @@ exports.watch = async (appid, channel) => {
 	else
 	{
 		const details = await getDetails(appid);
-		const last = appnews.newsitems.find(({feedname}) => feedname.includes("steam"))?.gid;
+		const latest = appnews.newsitems.find(({feedname}) => feedname.includes("steam"))?.gid;
 		apps[appid] = {
 			name: details?.name || "undefined",
-			last,
+			latest,
 			watchers: { [guildId]: channel.id },
 		 };
 	}
@@ -186,7 +186,7 @@ exports.unwatch = (appid, guild) => {
 	server.splice(server.indexOf(appid), 1);
 	delete watchers[guild];
 	if(!Object.keys(watchers).length)
-		watchedApps.apps[appid].last = null;
+		watchedApps.apps[appid].latest = null;
 	saveWatchers();
 	return server.length;
 }
