@@ -246,7 +246,11 @@ exports.purgeGuild = guildId => {
 		return false;
 
 	for(const appid of server)
+	{
 		delete apps[appid].watchers[guildId];
+		if(!Object.keys(apps[appid].watchers).length)
+			apps[appid].latest = null;
+	}
 	delete servers[guildId];
 	saveWatchers();
 	return true;
