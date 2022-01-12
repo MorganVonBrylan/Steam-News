@@ -10,13 +10,11 @@ exports.options = [{
 	description: "L'id du jeu", required: true
 }, {
 	type: "CHANNEL", name: "salon",
+	channelTypes: ["GUILD_TEXT", "GUILD_PUBLIC_THREAD", "GUILD_PRIVATE_THREAD", "GUILD_NEWS", "GUILD_NEWS_THREAD"],
 	description: "Le salon où envoyer les actualités", required: true
 }];
 exports.run = inter => {
 	const channel = inter.options.getChannel("salon");
-	if(!channel.isText())
-		return inter.reply({ content: "Vous devez indiquer un salon textuel.", ephemeral: true }).catch(error);
-
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
 	const appid = inter.options.getInteger("id");
 	let details = getDetails(appid);
