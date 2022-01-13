@@ -1,7 +1,7 @@
 "use strict";
 
 const { existsSync, readFile, writeFile } = require("fs");
-const { query, isSteamNews, getDetails, isNSFW } = require("./api");
+const { query, getDetails, isNSFW } = require("./api");
 
 const watchedApps = {servers: {}, apps: {}};
 const watchFile = __dirname + "/watchers.json";
@@ -118,7 +118,7 @@ async function checkForNews(save)
 	var total = 0;
 	const {apps} = watchedApps;
 
-	await Promise.allSettled(apps.map(([appid, {latest, watchers, nsfw}]) => query(appid, 10).then(({appnews}) => {
+	await Promise.allSettled(apps.map(([appid, {latest, watchers, nsfw}]) => query(appid, 5).then(({appnews}) => {
 		if(!appnews)
 			exports.purgeApp(appid);
 		else
@@ -128,11 +128,9 @@ async function checkForNews(save)
 			{
 				if(newsitem.gid === latest)
 					break;
-				if(isSteamNews(newsitem))
-				{
-					news.push(newsitem)
-					if(!latest) break;
-				}
+
+				news.push(newsitem)
+				if(!latest) break;
 			}
 
 			if(news.length)
@@ -191,12 +189,11 @@ exports.watch = async (appid, channel) => {
 		apps[appid].watchers[guildId] = channel.id;
 	else
 	{
-		const details = await getDetails(appid);
-		const latest = appnews.newsitems.find(({feedname}) => feedname.includes("steam"))?.gid;
+		const details = await getDetails(appid, 1);
 		apps[appid] = {
 			name: details?.name || "undefined",
 			nsfw: isNSFW(details),
-			latest,
+			latest: appnews.newsitems[0]?.gid,
 			watchers: { [guildId]: channel.id },
 		 };
 	}

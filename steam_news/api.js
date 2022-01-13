@@ -1,7 +1,7 @@
 "use strict";
 
 const fetch = require("node-fetch");
-const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=";
+const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?feeds=steam_community_announcements&appid=";
 const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids=";
 
 const headers = { "Accept-Language": "fr,en" };
@@ -24,13 +24,6 @@ function query(appid, count, maxlength = 1000)
 
 	return fetch(url, {headers}).then(res => res.json());
 }
-
-/**
- * Checks if the provided news item is actually from Steam.
- * @param {object} newsitem The item.
- * @returns {bool}
- */
-exports.isSteamNews = newsitem => newsitem.feedname.includes("steam");
 
 
 /**
