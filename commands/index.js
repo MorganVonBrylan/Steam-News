@@ -51,21 +51,34 @@ function load(name, cmdModule = "", reload = false)
 	command.name = name;
 	command.module = cmdModule;
 	if(!command.options) command.options = []; // Pour pouvoir retirer les options
-	const {description, run, permissions = []} = command;
+	const {description, run, permissions = [], type = "CHAT_INPUT"} = command;
 
 	if(typeof run !== "function")
 		throw new LoadError(name, "Missing a 'run' function.");
 	if(!Array.isArray(permissions))
 		throw new LoadError(name, "'permissions' should be an array.");
 
-	if(typeof description !== "string")
-		throw new LoadError(name, "The description should be a string.");
-	if(!description)
-		throw new LoadError(name, `Nom de commande invalide : ${name}`);
-	if(description.length < 4)
-		throw `Description de ${name} trop courte`;
-	if(description.length > 100)
-		throw `Description de ${name} trop longue (${description.length})`;
+	if(type === "CHAT_INPUT")
+	{
+		if(!command.options)
+			command.options = []; // Pour pouvoir retirer les options
+
+		if(typeof description !== "string")
+			throw new LoadError(name, "The description should be a string.");
+		if(!description)
+			throw new LoadError(name, `Nom de commande invalide : ${name}`);
+		if(description.length < 4)
+			throw `Description de ${name} trop courte`;
+		if(description.length > 100)
+			throw `Description de ${name} trop longue (${description.length})`;
+	}
+	else
+	{
+		if("description" in command)
+			throw new LoadError(name, "Non-chat input commands cannot have a description.");
+		if("options" in command)
+			throw new LoadError(name, "Non-chat input commands cannot have options.");
+	}
 
 	commands[name] = command;
 
