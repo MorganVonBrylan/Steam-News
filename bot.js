@@ -33,7 +33,7 @@ for(const file of require("fs").readdirSync(__dirname+"/events"))
 
 
 client.on("interactionCreate", interaction => {
-	if(interaction.type !== "APPLICATION_COMMAND")
+	if(interaction.type !== "APPLICATION_COMMAND" || !interaction.inGuild())
 		return;
 
 	const command = commands[interaction.commandName];
