@@ -4,8 +4,8 @@ const { getDetails, isNSFW } = require("../steam_news/api");
 
 exports.description = "See info about a game (genre, price, release date, etc)";
 exports.options = [{
-	type: "INTEGER", name: "id",
-	description: "The game’s id", required: true
+	type: "INTEGER", name: "id", required: true,
+	description: "The game’s id",
 }, {
 	type: "STRING", name: "language",
 	description: "The language to display info in",

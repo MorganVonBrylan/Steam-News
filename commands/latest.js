@@ -6,8 +6,8 @@ const toEmbed = require("../steam_news/toEmbed.function");
 
 exports.description = "See a game’s latest news.";
 exports.options = [{
-	type: "INTEGER", name: "id",
-	description: "The game’s id", required: true
+	type: "INTEGER", name: "id", required: true,
+	description: "The game’s id",
 }];
 exports.run = inter => {
 	const appid = inter.options.getInteger("id");

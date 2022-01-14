@@ -6,8 +6,8 @@ const { WATCH_LIMIT, watch, unwatch, purgeApp } = require("../steam_news/watcher
 exports.adminOnly = true;
 exports.description = `(admins only) Follow a game’s news feed (maximum ${WATCH_LIMIT} games per server)`;
 exports.options = [{
-	type: "INTEGER", name: "id",
-	description: "The game’s id", required: true
+	type: "INTEGER", name: "id", required: true,
+	description: "The game’s id",
 }, {
 	type: "CHANNEL", name: "channel",
 	channelTypes: ["GUILD_TEXT", "GUILD_PUBLIC_THREAD", "GUILD_PRIVATE_THREAD", "GUILD_NEWS", "GUILD_NEWS_THREAD"],

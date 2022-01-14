@@ -5,8 +5,8 @@ const { unwatch, getAppName } = require("../steam_news/watchers");
 exports.adminOnly = true;
 exports.description = "(admins only) Stop watching a game’s news feed.";
 exports.options = [{
-	type: "INTEGER", name: "id",
-	description: "The game’s id", required: true
+	type: "INTEGER", name: "id", required: true,
+	description: "The game’s id",
 }];
 exports.run = inter => {
 	const appid = inter.options.getInteger("id");
