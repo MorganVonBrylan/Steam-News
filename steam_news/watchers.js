@@ -8,13 +8,6 @@ const watchFile = __dirname + "/watchers.json";
 const WATCH_LIMIT = exports.WATCH_LIMIT = 25; // the maximum number of fields in an embed and a good limit overall
 
 
-function init()
-{
-	Object.defineProperty(watchedApps.apps, "map", {value: function(callback) { return Object.entries(this).map(callback); }});
-	require("../bot").client.once("ready", checkForNews);
-}
-
-
 let saving = false;
 function saveWatchers()
 {
@@ -40,12 +33,12 @@ if(existsSync(watchFile))
 		else
 		{
 			Object.assign(watchedApps, JSON.parse(data));
-			init();
+			require("../bot").client.once("ready", checkForNews);
 		}
 	});
 }
 else
-	init();
+	require("../bot").client.once("ready", checkForNews);
 
 
 /**
@@ -116,7 +109,7 @@ async function checkForNews(save)
 	const toEmbed = require("./toEmbed.function");
 	const { channels } = require("../bot").client;
 	var total = 0;
-	const {apps} = watchedApps;
+	const apps = Object.entries(watchedApps.apps).filter(([,{watchers}]) => Object.keys(watchers).length)
 
 	await Promise.allSettled(apps.map(([appid, {latest, watchers, nsfw}]) => query(appid, 5).then(({appnews}) => {
 		if(!appnews)
