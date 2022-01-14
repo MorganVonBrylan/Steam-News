@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?feeds=steam_community_announcements&appid=";
 const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids=";
 
-const headers = { "Accept-Language": "fr,en" };
+// So far ISteamNews has no language arg and ignores the Accept-Language headeer :-(
 
 /**
  * Queries the Steam API to get the latest news of an app.
@@ -22,7 +22,7 @@ function query(appid, count, maxlength = 1000)
 	if(count) url += `&count=${count}`;
 	if(maxlength) url += `&maxlength=${maxlength}`;
 
-	return fetch(url, {headers}).then(res => res.json());
+	return fetch(url).then(res => res.json());
 }
 
 
@@ -40,12 +40,16 @@ exports.exists = async appid => {
 /**
  * Returns details about an app.
  * @param {int} appid The app's id.
+ * @param {string} lang (optional) The language to get the details in. Default: en
  * @returns {Promise<object?>} The app's details, or null if it doesn't exist.
  */
-exports.getDetails = appid => fetch(BASE_DETAILS_URL+appid, {headers}).then(res => res.json()).then(details => {
-	details = details[appid];
-	return details.success ? details.data : null;
-});
+exports.getDetails = (appid, lang = "en") => {
+	return fetch(BASE_DETAILS_URL+appid, {headers: { "Accept-Language": lang === "en" ? "en" : `${lang}, en` }})
+	.then(res => res.json()).then(details => {
+		details = details[appid];
+		return details.success ? details.data : null;
+	});
+}
 
 /**
  * Checks if the given app is NSFW.

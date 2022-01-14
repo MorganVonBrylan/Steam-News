@@ -1,35 +1,33 @@
 
 # Steam News
 
-This bot is french so if you don't speak french... well, too bad!
+Current version: 1.0
 
-Version actuelle : 0.1
-
-Un bot pour suivre les infos des jeux Steam.
+This bot allows you to watch Steam game news.
 
 # Utilisation
-Ce bot est à utiliser avec Node.JS (≥16) avec le paquet `discord.js` v13.
+This bot uses Node.JS (≥16) avec with `discord.js` v13.
 
 `auth.json`
 ```JSON
 {
-	"token": "le token d'authentification de votre bot",
- 	"master": "votre id d'utilisateurice",
+	"token": "your bot's authentication token",
+ 	"master": "you user id",
 	"debug": false
 }
 ```
 `debug` should be `true` in development and `false` in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise.
 
-## Format de `watchers.json`
+## `watchers.json` format
 
-`servers` est un objet ayant pour clés les id des serveurs et pour valeurs un tableau de id des applis suivies dans le serveur.
+`servers` is an object with server ids as keys and an array of the ids of the apps it follows as the values.
 
-`apps` est un objet ayant pour clés les id des applis et pour valeurs un objets avec les clés:
-- name: Nom de l'appli (string)
-- nsfw: Si l'appli est NSFW ou non (bool)
-- latest: L'id de la dernière actu connue (string)
-- watchers: Un objet ayant pour clés les id des serveurs suivant cette appli et pour valeurs l'id du salon dans lequel envoyer les actus
-Exemple :
+`apps` is an object with app ids as keys and objects as values. The objects have the following properties:
+- name: (string) The app's name
+- nsfw: (bool) Whether the app is NSFW or not
+- latest: (string) The id of the app's last known news item
+- watchers: (object) An object with server ids as keys and the ids of the channels in which to send the news as values
+Example:
 ```JSON
 {
 	"servers": { "123": [111, 222], "456": [111] },
@@ -41,6 +39,6 @@ Exemple :
 ```
 
 # Licence
-**Steam News** est publié sous Licence Publique Générale GNU *(GNU General Public Licence)* v3 (GPL-3.0). Voir COPYING.txt, ou ce lien : [https://www.gnu.org/licenses/gpl-3.0.fr.html](https://www.gnu.org/licenses/gpl-3.0.fr.html)
+**Steam News** is published under GNU General Public Licence v3 (GPL-3.0). See COPYING.txt, or this link: [https://www.gnu.org/licenses/gpl-3.0.en.html](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 ![GPL](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/GPLv3_Logo.svg/240px-GPLv3_Logo.svg.png)
