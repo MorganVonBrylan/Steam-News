@@ -2,6 +2,7 @@
 
 const { existsSync, readFile, writeFile } = require("fs");
 const { query, getDetails, isNSFW } = require("./api");
+const { SEND_MESSAGES } = require("discord.js").Permissions.FLAGS;
 
 const watchedApps = {servers: {}, apps: {}};
 const watchFile = __dirname + "/watchers.json";
@@ -135,7 +136,8 @@ async function checkForNews(save)
 					const embed = { embeds: [toEmbed(newsitem)] };
 					for(const channelId of Object.values(watchers))
 						channels.fetch(channelId).then(channel => {
-							if(!nsfw || channel.nsfw)
+							if(channel.permissionsFor(channel.guild.me).has(SEND_MESSAGES)
+								&& (!nsfw || channel.nsfw))
 								channel.send(embed).catch(console.error);
 						});
 				}
