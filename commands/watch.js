@@ -11,10 +11,10 @@ exports.options = [{
 }, {
 	type: "CHANNEL", name: "channel",
 	channelTypes: ["GUILD_TEXT", "GUILD_PUBLIC_THREAD", "GUILD_PRIVATE_THREAD", "GUILD_NEWS", "GUILD_NEWS_THREAD"],
-	description: "The channel where to send the news", required: true
+	description: "The channel where to send the news (defaults to current channel if not provided)"
 }];
 exports.run = inter => {
-	const channel = inter.options.getChannel("channel");
+	const channel = inter.options.getChannel("channel") || inter.channel;
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
 	const appid = inter.options.getInteger("id");
 	let details = getDetails(appid);
