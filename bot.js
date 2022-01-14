@@ -24,7 +24,7 @@ client.on("ready", async () => {
 	exports.myself = client.user;
 	exports.master = master = await client.users.fetch(auth.master);
 	console.log(`Connecté en tant que ${client.user.tag} !`);
-	initCmds(master, auth.debug);
+	initCmds(client, auth.debug);
 });
 
 

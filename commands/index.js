@@ -20,13 +20,8 @@ class LoadError extends Error {
 
 exports.LoadError = LoadError;
 const commands = exports.commands = {};
-var commandManager;
 exports.load = exports.reload = load;
 
-// Can't have perms on application commands
-//const masterPerm = { id: require("../auth.json").master, type: "USER", permission: true };
-
-const existingCmds = {}; // form: "cmdName": "module"
 var skipDebug = true;
 
 function load(name, cmdModule = "", reload = false)
@@ -46,7 +41,7 @@ function load(name, cmdModule = "", reload = false)
 		throw new LoadError(name, `Impossible d'enregistrer la commande ${name} du module "${cmdModule}", elle existe déjà dans le module "${commands[name].module}"`);
 
 	const file = `./${cmdModule}${cmdModule ? "/" : ""}${name}.js`;
-	delete require.cache[file];
+	//delete require.cache[file];
 	const command = require(file);
 	command.name = name;
 	command.module = cmdModule;
@@ -81,28 +76,12 @@ function load(name, cmdModule = "", reload = false)
 	}
 
 	commands[name] = command;
-
-	const cmd = commandManager.cache.find(cmd => cmd.name === name);
-	const promise = cmd
-		? (cmd.equals(command, true) ? Promise.resolve({}) : cmd.edit(command))
-		: commandManager.create(command);
-
-	/*if(!command.defaultPermission)
-	{
-		permissions.push(masterPerm);
-		promise.then(cmd => cmd.permissions.set({permissions}).catch(error));
-	}*/
-
-	promise.catch(error);
-	promise.cmdName = name;
-	return promise;
 }
 
 
-function loadFolder(path)
+function loadFolder(path, commandManager)
 {
 	const cmdModule = path.substring(__dirname.length + 1);
-	const promises = [];
 
 	for(const file of readdirSync(path))
 	{
@@ -110,27 +89,17 @@ function loadFolder(path)
 			continue;
 
 		if(file.endsWith(".js"))
-			promises.push(load(file, cmdModule));
+			load(file, cmdModule);
 		else
-			promises.push(...loadFolder(`${path}/${file}`));
+			loadFolder(`${path}/${file}`);
 	}
 
-	if(cmdModule)
-		return promises;
-	else
-	{
-		const loadedCommands = promises.map(({cmdName}) => cmdName);
-		Promise.allSettled(promises).then(() => commandManager.fetch()).then(commands => {
-			for(const command of commands.values())
-				if(!loadedCommands.includes(command.name))
-					command.delete().catch(error);
-		});
-	}
+	if(commandManager)
+		commandManager.set(Object.values(commands));
 }
 
-exports.init = (master, debug) => {
-	const client = require("../bot").client;
+exports.init = (client, debug) => {
 	skipDebug = !debug;
-	commandManager = (debug ? client.guilds.cache.first() : client.application).commands;
-	commandManager.fetch().then(loadFolder.bind(null, __dirname));
+	const commandManager = (debug ? client.guilds.cache.first() : client.application).commands;
+	loadFolder(__dirname, commandManager);
 }
