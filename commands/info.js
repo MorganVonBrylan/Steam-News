@@ -19,10 +19,10 @@ exports.run = inter => {
 	const tr = languages[lang];
 	const defer = inter.deferReply().catch(error);
 	getDetails(inter.options.getInteger("id"), lang).then(async details => {
-		if(!details)
-			return inter.reply({content: tr.invalidAppid, ephemeral: true}).catch(error);
-
 		await defer;
+		if(!details)
+			return inter.editReply({content: tr.invalidAppid, ephemeral: true}).catch(error);
+
 
 		const {
 			type, fullgame,
