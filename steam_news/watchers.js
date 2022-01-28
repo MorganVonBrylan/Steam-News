@@ -110,7 +110,7 @@ async function checkForNews(save)
 	const toEmbed = require("./toEmbed.function");
 	const { channels } = require("../bot").client;
 	var total = 0;
-	const apps = Object.entries(watchedApps.apps).filter(([,{watchers}]) => Object.keys(watchers).length)
+	const apps = Object.entries(watchedApps.apps).filter(([,{watchers}]) => Object.keys(watchers).length);
 
 	await Promise.allSettled(apps.map(([appid, {latest, watchers, nsfw}]) => query(appid, 5).then(({appnews}) => {
 		if(!appnews)
@@ -130,7 +130,7 @@ async function checkForNews(save)
 			if(news.length)
 			{
 				total += news.length;
-				apps[appid].latest = news[0].gid;
+				watchedApps.apps[appid].latest = news[0].gid;
 				for(const newsitem of news.reverse())
 				{
 					const embed = { embeds: [toEmbed(newsitem)] };
@@ -143,7 +143,8 @@ async function checkForNews(save)
 				}
 			}
 		}
-	})));
+	}, console.error)));
+
 	if(total)
 		saveWatchers();
 	return total;
