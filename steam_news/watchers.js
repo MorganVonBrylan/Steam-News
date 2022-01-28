@@ -2,8 +2,8 @@
 
 const { existsSync, readFile, writeFile } = require("fs");
 const { query, getDetails, isNSFW } = require("./api");
-const { SEND_MESSAGES } = require("discord.js").Permissions.FLAGS;
-
+const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
+const REQUIRED_PERMS = SEND_MESSAGES | EMBED_LINKS;
 const watchedApps = {servers: {}, apps: {}};
 const watchFile = __dirname + "/watchers.json";
 const WATCH_LIMIT = exports.WATCH_LIMIT = 25; // the maximum number of fields in an embed and a good limit overall
@@ -136,7 +136,7 @@ async function checkForNews(save)
 					const embed = { embeds: [toEmbed(newsitem)] };
 					for(const channelId of Object.values(watchers))
 						channels.fetch(channelId).then(channel => {
-							if(channel.permissionsFor(channel.guild.me).has(SEND_MESSAGES)
+							if(channel.permissionsFor(channel.guild.me).has(REQUIRED_PERMS)
 								&& (!nsfw || channel.nsfw))
 								channel.send(embed).catch(console.error);
 						});

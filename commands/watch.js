@@ -2,7 +2,7 @@
 
 const { getDetails, isNSFW } = require("../steam_news/api");
 const { WATCH_LIMIT, watch, unwatch, purgeApp } = require("../steam_news/watchers");
-const { SEND_MESSAGES } = require("discord.js").Permissions.FLAGS;
+const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
 
 exports.adminOnly = true;
 exports.description = `(admins only) Follow a game’s news feed (maximum ${WATCH_LIMIT} games per server)`;
@@ -16,8 +16,11 @@ exports.options = [{
 }];
 exports.run = inter => {
 	const channel = inter.options.getChannel("channel") || inter.channel;
-	if(!channel.permissionsFor(inter.guild.me).has(SEND_MESSAGES))
+	const perms = channel.permissionsFor(inter.guild.me);
+	if(!perms.has(SEND_MESSAGES))
 		return inter.reply({content: `I cannot send messages in ${channel}.`, ephemeral: true}).catch(error);
+	else if(!perms.has(EMBED_LINKS))
+		return inter.reply({content: `I cannot send embeds in ${channel}.`, ephemeral: true}).catch(error);
 
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
 	const appid = inter.options.getInteger("id");
