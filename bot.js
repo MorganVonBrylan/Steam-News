@@ -40,7 +40,7 @@ client.on("interactionCreate", interaction => {
 
 	if(command)
 	{
-		if(command.adminOnly && !interaction.member.permissions.has(ADMINISTRATOR))
+		if(command.adminOnly && !interaction.member.permissions.has(ADMINISTRATOR) && interaction.member.id !== master.id)
 			interaction.reply({content: "Only admins can use this command.", ephemeral: true}).catch(error);
 		else
 			command.run(interaction);
