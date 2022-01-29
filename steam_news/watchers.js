@@ -1,6 +1,6 @@
 "use strict";
 
-const { existsSync, readFile, writeFile } = require("fs");
+const { existsSync, promises: {readFile, writeFile} } = require("fs");
 const { query, getDetails, isNSFW } = require("./api");
 const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
 const REQUIRED_PERMS = SEND_MESSAGES | EMBED_LINKS;
@@ -23,20 +23,15 @@ function saveWatchers()
 	}
 
 	saving = true;
-	writeFile(watchFile, JSON.stringify(watchedApps), err => { if(err) console.error(err); saving = false; });
+	writeFile(watchFile, JSON.stringify(watchedApps)).catch(console.error).finally(() => console.log(saving = false));
 }
 
 if(existsSync(watchFile))
 {
-	readFile(watchFile, "utf-8", (err, data) => {
-		if(err)
-			console.error(err);
-		else
-		{
-			Object.assign(watchedApps, JSON.parse(data));
-			require("../bot").client.once("ready", checkForNews);
-		}
-	});
+	readFile(watchFile, "utf-8").then(data => {
+		Object.assign(watchedApps, JSON.parse(data));
+		require("../bot").client.once("ready", checkForNews);
+	}, console.error);
 }
 else
 	require("../bot").client.once("ready", checkForNews);
