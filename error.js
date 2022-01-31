@@ -9,7 +9,7 @@ global.error = module.exports = exports = function error(err)
 	if(err && err.message)
 	{
 		const {message} = err;
-		const {httpStatus: status} = err;
+		const status = err.httpStatus || err.response?.status;
 		if(message === "read ECONNRESET" || status === 403 || status === 404 || status >= 500)
 			return;
 
