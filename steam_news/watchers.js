@@ -183,7 +183,7 @@ exports.watch = async (appid, channel) => {
 		const details = await getDetails(appid, 1);
 		apps[appid] = {
 			name: details?.name || "undefined",
-			nsfw: isNSFW(details),
+			nsfw: details ? isNSFW(details) : null,
 			latest: appnews.newsitems[0]?.gid,
 			watchers: { [guildId]: channel.id },
 		 };

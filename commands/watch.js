@@ -29,6 +29,12 @@ exports.run = inter => {
 		await defer;
 		details = await details;
 
+		if(!details)
+		{
+			purgeApp(appid);
+			return inter.editReply({content: "The id you provided does not belong to any Steam app.", ephemeral: true}).catch(error);
+		}
+
 		if(details.type === "dlc")
 		{
 			purgeApp(appid);
