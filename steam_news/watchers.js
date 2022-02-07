@@ -180,7 +180,7 @@ exports.watch = async (appid, channel) => {
 		apps[appid].watchers[guildId] = channel.id;
 	else
 	{
-		const details = await getDetails(appid, 1);
+		const details = await getDetails(appid);
 		apps[appid] = {
 			name: details?.name || "undefined",
 			nsfw: details ? isNSFW(details) : null,

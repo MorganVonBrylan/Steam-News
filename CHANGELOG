@@ -4,3 +4,4 @@ The bot works.
 
 	1.0.1 (07/02/2022)
 	Fixes trying to watch an invalid app.
+	/watch : Gets rid of a redundant API call.

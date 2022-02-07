@@ -1,7 +1,7 @@
 "use strict";
 
-const { getDetails, isNSFW } = require("../steam_news/api");
-const { WATCH_LIMIT, watch, unwatch, purgeApp } = require("../steam_news/watchers");
+const { isNSFW } = require("../steam_news/api");
+const { WATCH_LIMIT, watch, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
 const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
 
 exports.adminOnly = true;
@@ -24,10 +24,9 @@ exports.run = inter => {
 
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
 	const appid = inter.options.getInteger("id");
-	let details = getDetails(appid);
 	watch(appid, channel).then(async success => {
 		await defer;
-		details = await details;
+		const details = getAppInfo(appid);
 
 		if(!details)
 		{
@@ -41,7 +40,7 @@ exports.run = inter => {
 			return inter.editReply({content: "DLCs do not have a news feed.", ephemeral: true}).catch(error);
 		}
 
-		if(isNSFW(details) && !channel.nsfw)
+		if(details.nsfw && !channel.nsfw)
 		{
 			unwatch(appid, inter.guild);
 			return inter.editReply("This game has adult content. You can only display its news in a NSFW channel.").catch(error);
