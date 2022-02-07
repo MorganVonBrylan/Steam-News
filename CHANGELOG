@@ -1,3 +1,6 @@
 
 1.0 (11/01/2022)
-Le bot est fonctionnel.
+The bot works.
+
+	1.0.1 (07/02/2022)
+	Fixes trying to watch an invalid app.
