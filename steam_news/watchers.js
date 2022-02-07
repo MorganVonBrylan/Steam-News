@@ -235,9 +235,14 @@ exports.purgeGuild = guildId => {
 
 	for(const appid of server)
 	{
-		delete apps[appid].watchers[guildId];
-		if(!Object.keys(apps[appid].watchers).length)
-			apps[appid].latest = null;
+		try {
+			delete apps[appid].watchers[guildId];
+			if(!Object.keys(apps[appid].watchers).length)
+				apps[appid].latest = null;
+		} catch(e) {
+			e.message += `\nappid: ${appid}`;
+			error(e);
+		}
 	}
 	delete servers[guildId];
 	saveWatchers();
