@@ -23,7 +23,7 @@ function saveWatchers()
 	}
 
 	saving = true;
-	writeFile(watchFile, JSON.stringify(watchedApps)).catch(console.error).finally(() => console.log(saving = false));
+	writeFile(watchFile, JSON.stringify(watchedApps)).catch(console.error).finally(() => saving = false);
 }
 
 if(existsSync(watchFile))
