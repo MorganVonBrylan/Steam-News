@@ -46,8 +46,11 @@ exports.run = inter => {
 			return inter.editReply("This game has adult content. You can only display its news in a NSFW channel.").catch(error);
 		}
 
+		const limitWarning = success === WATCH_LIMIT ? `\nWarning: you reached your ${WATCH_LIMIT} games per server limit.` : "";
+		const detailsError = details.name === "undefined" ? "\nHowever, an error occurred while trying to get the app's details. It may be called “undefined” for a while." : "";
+
 		inter.editReply({ content:
-			success ? `${details.name}’s news will now be sent into ${channel}.${success === WATCH_LIMIT ? `\nWarning: you reached your ${WATCH_LIMIT} games per server limit.` : ""}`
+			success ? `${details.name}’s news will now be sent into ${channel}.${detailsError}${limitWarning}`
 				: `${details.name}’s news feed was already watched in that server.`,
 			ephemeral: true
 		}).catch(error);
