@@ -104,14 +104,15 @@ async function checkForNews(save)
 {
 	const toEmbed = require("./toEmbed.function");
 	const { channels } = require("../bot").client;
-	var total = 0;
+	let total = 0;
 	const apps = Object.entries(watchedApps.apps).filter(([,{watchers}]) => Object.keys(watchers).length);
 
-	await Promise.allSettled(apps.map(([appid, {latest, watchers, nsfw}]) => query(appid, 5).then(({appnews}) => {
+	await Promise.allSettled(apps.map(([appid, app]) => query(appid, 5).then(({appnews}) => {
 		if(!appnews)
 			exports.purgeApp(appid);
 		else
 		{
+			const { latest, nsfw } = app;
 			const news = [];
 			for(const newsitem of appnews.newsitems)
 			{
@@ -125,11 +126,11 @@ async function checkForNews(save)
 			if(news.length)
 			{
 				total += news.length;
-				watchedApps.apps[appid].latest = news[0].gid;
+				app.latest = news[0].gid;
 				for(const newsitem of news.reverse())
 				{
 					const embed = { embeds: [toEmbed(newsitem)] };
-					for(const channelId of Object.values(watchers))
+					for(const channelId of Object.values(app.watchers))
 						channels.fetch(channelId).then(channel => {
 							if(channel.permissionsFor(channel.guild.me).has(REQUIRED_PERMS)
 								&& (!nsfw || channel.nsfw))
