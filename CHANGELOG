@@ -8,3 +8,7 @@ The bot works.
 	1.0.2 (07/02/2022)
 	Fixes trying to watch an invalid app.
 	/watch : Gets rid of a redundant API call.
+
+
+1.1 (14/02/2022)
+Greatly improves news embeds: adds link, formatting, and YouTube links.
