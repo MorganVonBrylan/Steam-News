@@ -12,7 +12,7 @@ exports.options = [{
 exports.run = inter => {
 	const appid = inter.options.getInteger("id");
 	const fetchInfo = isKnown(appid) ? null : getDetails(appid);
-	query(appid, 1).then(async ({appnews}) => {
+	query(appid, 3).then(async ({appnews}) => {
 		if(!appnews)
 			return inter.reply({content: "The id you provided does not belong to any Steam app.", ephemeral: true}).catch(error);
 
@@ -28,10 +28,13 @@ exports.run = inter => {
 		if(!appnews.newsitems.length)
 			return inter.reply({content: "This app has no news.", ephemeral: true}).catch(error);
 
-		const [news] = appnews.newsitems;
-		inter.reply(isAppNSFW(appid) && !inter.channel.nsfw
+		let news;
+		const reply = inter.reply(isAppNSFW(appid) && !inter.channel.nsfw
 			? { content: "This game has adult content. You can only display its news in a NSFW channel.", ephemeral: true }
-			: { embeds: [toEmbed(news)] }
+			: { embeds: [news = toEmbed(appnews.newsitems[0])] }
 		).catch(error);
+
+		if(news?.yt)
+			reply.then(() => inter.channel.send(news.yt).catch(error));
 	})
 }

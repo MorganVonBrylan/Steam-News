@@ -130,12 +130,19 @@ async function checkForNews(save)
 				for(const newsitem of news.reverse())
 				{
 					const embed = { embeds: [toEmbed(newsitem)] };
+					const {yt} = embed.embeds[0];
 					for(const channelId of Object.values(app.watchers))
+					{
 						channels.fetch(channelId).then(channel => {
 							if(channel.permissionsFor(channel.guild.me).has(REQUIRED_PERMS)
 								&& (!nsfw || channel.nsfw))
+							{
 								channel.send(embed).catch(console.error);
+								if(yt)
+									channel.send(yt).catch(Function());
+							}
 						});
+					}
 				}
 			}
 		}

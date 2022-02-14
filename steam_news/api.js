@@ -10,12 +10,12 @@ const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids="
  * Queries the Steam API to get the latest news of an app.
  * @param {int} appid The id of the Steam app
  * @param {int} count (optional) The number of news to fetch
- * @param {int} maxlength (optional) The max length of the 'contents' field. Any additional characters will be replaced with '...'. Set null to prevent truncating.
+ * @param {int} maxlength (optional) The max length of the 'contents' field. Any additional characters will be replaced with '...'. This also removes all PHPBB syntax.
  *
  * @returns {Promise<object>} The news
  */
 exports.query = query;
-function query(appid, count, maxlength = 1000)
+function query(appid, count, maxlength)
 {
 	if(!appid) throw new TypeError("appid cannot be null");
 	let url = BASE_URL + appid;
