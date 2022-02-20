@@ -1,7 +1,9 @@
 "use strict";
 
 const fetch = require("node-fetch");
+// ISteamNews doc: https://partner.steamgames.com/doc/webapi/ISteamNews
 const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?feeds=steam_community_announcements&appid=";
+// Steam Store API unofficial doc: https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI
 const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids=";
 const BASE_SEARCH_URL = "https://store.steampowered.com/api/storesearch/?l=english";
 
@@ -17,7 +19,6 @@ exports.search = function search(terms, cc = "US")
 {
 	return fetch(`${BASE_SEARCH_URL}&term=${terms}&cc=${cc}`).then(async res => (await res.json()).items);
 }
-
 
 
 // So far ISteamNews has no language arg and ignores the Accept-Language headeer :-(
