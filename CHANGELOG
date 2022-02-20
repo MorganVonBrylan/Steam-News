@@ -16,5 +16,5 @@ Greatly improves news embeds: adds link, formatting, and YouTube links.
 
 1.2 (20/02/2022)
 Adds /search
-/info, /watch and /unwatch now accepts game names
+/info, /latest, /watch and /unwatch now accepts game names
 /info now gets the correct currency
