@@ -1,11 +1,11 @@
 "use strict";
 
-const { getDetails, isNSFW } = require("../steam_news/api");
+const { search, getDetails, isNSFW } = require("../steam_news/api");
 
 exports.description = "See info about a game (genre, price, release date, etc)";
 exports.options = [{
-	type: "INTEGER", name: "id", required: true,
-	description: "The game’s id",
+	type: "STRING", name: "name", required: true,
+	description: "The game’s name or id",
 }, {
 	type: "STRING", name: "language",
 	description: "The language to display info in",
@@ -15,11 +15,22 @@ exports.options = [{
 		{ name: "Français", value: "fr" },
 	],
 }];
-exports.run = inter => {
+exports.run = async inter => {
 	const lang = inter.options.getString("language") || "en";
 	const tr = languages[lang];
 	const defer = inter.deferReply().catch(error);
-	getDetails(inter.options.getInteger("id"), lang, cc[lang]).then(async details => {
+	let appid = inter.options.getString("name");
+
+	if(!isFinite(appid))
+	{
+		const [game] = await search(appid);
+		if(game)
+			appid = game.id;
+		else
+			return defer.then(() => inter.editReply({ content: `No game matching "${appid}" found.`, ephemeral: true }).catch(error));
+	}
+
+	getDetails(appid, lang, cc[lang]).then(async details => {
 		await defer;
 		if(!details)
 			return inter.editReply({content: tr.invalidAppid, ephemeral: true}).catch(error);
