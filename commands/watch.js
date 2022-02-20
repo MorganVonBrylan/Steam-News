@@ -1,20 +1,20 @@
 "use strict";
 
-const { isNSFW } = require("../steam_news/api");
+const { search, isNSFW } = require("../steam_news/api");
 const { WATCH_LIMIT, watch, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
 const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
 
 exports.adminOnly = true;
 exports.description = `(admins only) Follow a game’s news feed (maximum ${WATCH_LIMIT} games per server)`;
 exports.options = [{
-	type: "INTEGER", name: "id", required: true,
-	description: "The game’s id",
+	type: "STRING", name: "name", required: true,
+	description: "The game’s name or id",
 }, {
 	type: "CHANNEL", name: "channel",
 	channelTypes: ["GUILD_TEXT", "GUILD_PUBLIC_THREAD", "GUILD_PRIVATE_THREAD", "GUILD_NEWS", "GUILD_NEWS_THREAD"],
 	description: "The channel where to send the news (defaults to current channel if not provided)"
 }];
-exports.run = inter => {
+exports.run = async inter => {
 	const channel = inter.options.getChannel("channel") || inter.channel;
 	const perms = channel.permissionsFor(inter.guild.me);
 	if(!perms.has(SEND_MESSAGES))
@@ -23,8 +23,19 @@ exports.run = inter => {
 		return inter.reply({content: `I cannot send embeds in ${channel}.`, ephemeral: true}).catch(error);
 
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
-	const appid = inter.options.getInteger("id");
-	watch(appid, channel).then(async success => {
+	let appid = inter.options.getString("name");
+
+	if(!isFinite(appid))
+	{
+		const [game] = await search(appid);
+		if(game)
+			appid = game.id;
+		else
+			return defer.then(() => inter.editReply({ content: `No game matching "${appid}" found.`, ephemeral: true }).catch(error));
+	}
+
+
+	watch(+appid, channel).then(async success => {
 		await defer;
 		const details = getAppInfo(appid);
 
