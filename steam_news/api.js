@@ -59,10 +59,8 @@ exports.exists = async appid => {
  * @param {string} lang (optional) The language to get the details in. Default: en
  * @returns {Promise<object?>} The app's details, or null if it doesn't exist.
  */
-exports.getDetails = (appid, lang = "en") => {
-	const cc = `&cc=${lang === "fr" ? "FR"
-		: lang === "en-UK" ? "UK"
-		: "US"}`;
+exports.getDetails = (appid, lang = "en", cc = "US") => {
+	cc = `&cc=${cc}`;
 	return fetch(BASE_DETAILS_URL+appid+cc, {headers: { "Accept-Language": lang === "en" ? "en" : `${lang}, en` }})
 	.then(res => res.json()).then(details => {
 		details = details[appid];

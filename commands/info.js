@@ -10,7 +10,8 @@ exports.options = [{
 	type: "STRING", name: "language",
 	description: "The language to display info in",
 	choices: [
-		{ name: "English (default)", value: "en" },
+		{ name: "English (price in US$)", value: "en" },
+		{ name: "English (price in pounds)", value: "en-UK" },
 		{ name: "Français", value: "fr" },
 	],
 }];
@@ -18,7 +19,7 @@ exports.run = inter => {
 	const lang = inter.options.getString("language") || "en";
 	const tr = languages[lang];
 	const defer = inter.deferReply().catch(error);
-	getDetails(inter.options.getInteger("id"), lang).then(async details => {
+	getDetails(inter.options.getInteger("id"), lang, cc[lang]).then(async details => {
 		await defer;
 		if(!details)
 			return inter.editReply({content: tr.invalidAppid, ephemeral: true}).catch(error);
@@ -81,6 +82,8 @@ function parseLanguages(html)
 }
 
 
+const cc = { fr: "FR", en: "US", "en-UK": "UK" };
+
 const languages = {
 	en: {
 		yes: "Yes", no: "No",
@@ -115,3 +118,4 @@ const languages = {
 		languages: "Langues",
 	},
 };
+languages["en-UK"] = languages.en;
