@@ -3,6 +3,22 @@
 const fetch = require("node-fetch");
 const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?feeds=steam_community_announcements&appid=";
 const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids=";
+const BASE_SEARCH_URL = "https://store.steampowered.com/api/storesearch/?l=english";
+
+
+/**
+ * Searches the Steam store for apps.
+ * @param {string} terms The research terms.
+ * @param {string} cc The country code, for price purposes (e.g. "FR", "UK", etc). Default: "US"
+ *
+ * @returns {Promise<Array>} The results (up to 10)
+ */
+exports.search = function search(terms, cc = "US")
+{
+	return fetch(`${BASE_SEARCH_URL}&term=${terms}&cc=${cc}`).then(async res => (await res.json()).items);
+}
+
+
 
 // So far ISteamNews has no language arg and ignores the Accept-Language headeer :-(
 
