@@ -12,3 +12,8 @@ The bot works.
 
 1.1 (14/02/2022)
 Greatly improves news embeds: adds link, formatting, and YouTube links.
+
+
+1.2 (20/02/2022)
+Adds /search
+/watch and /unwatch now accepts game names
