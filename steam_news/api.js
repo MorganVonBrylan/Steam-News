@@ -60,7 +60,10 @@ exports.exists = async appid => {
  * @returns {Promise<object?>} The app's details, or null if it doesn't exist.
  */
 exports.getDetails = (appid, lang = "en") => {
-	return fetch(BASE_DETAILS_URL+appid, {headers: { "Accept-Language": lang === "en" ? "en" : `${lang}, en` }})
+	const cc = `&cc=${lang === "fr" ? "FR"
+		: lang === "en-UK" ? "UK"
+		: "US"}`;
+	return fetch(BASE_DETAILS_URL+appid+cc, {headers: { "Accept-Language": lang === "en" ? "en" : `${lang}, en` }})
 	.then(res => res.json()).then(details => {
 		details = details[appid];
 		return details.success ? details.data : null;
