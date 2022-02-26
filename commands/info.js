@@ -53,7 +53,7 @@ exports.run = async inter => {
 		inter.editReply({ embeds: [{
 			url: "https://store.steampowered.com/app/"+steam_appid,
 			title: name,
-			author: { name: developers.join(", "), url: website },
+			author: developers ? { name: developers.join(", "), url: website } : null,
 			provider: { name: "Steam", url: "https://store.steampowered.com/" },
 			image: { url: header_image },
 			fields: [
