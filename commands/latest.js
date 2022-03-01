@@ -4,6 +4,7 @@ const { search, query, getDetails, isNSFW } = require("../steam_news/api");
 const { isKnown, saveAppInfo, isNSFW: isAppNSFW } = require("../steam_news/watchers");
 const toEmbed = require("../steam_news/toEmbed.function");
 
+exports.global = true;
 exports.description = "See a game’s latest news.";
 exports.options = [{
 	type: "STRING", name: "name", required: true,

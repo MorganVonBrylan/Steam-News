@@ -2,6 +2,7 @@
 
 const { search, getDetails, isNSFW } = require("../steam_news/api");
 
+exports.global = true;
 exports.description = "See info about a game (genre, price, release date, etc)";
 exports.options = [{
 	type: "STRING", name: "name", required: true,

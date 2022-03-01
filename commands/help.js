@@ -3,6 +3,7 @@
 const { WATCH_LIMIT } = require("../steam_news/watchers");
 const SUPPORT_SERVER = "https://discord.gg/dsYQzACdzr";
 
+exports.global = true;
 exports.description = "Get help about the bot.";
 exports.run = inter => {
 	setAvatars();

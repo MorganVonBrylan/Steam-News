@@ -2,6 +2,7 @@
 
 const { search } = require("../steam_news/api");
 
+exports.global = true;
 exports.description = "Make a search on the Steam store.";
 exports.options = [{
 	type: "STRING", name: "term", required: true,
