@@ -18,3 +18,7 @@ Greatly improves news embeds: adds link, formatting, and YouTube links.
 Adds /search
 /info, /latest, /watch and /unwatch now accepts game names
 /info now gets the correct currency
+
+	1.2.1 (01/03/2022)
+	toEmbed removes empty [url] tags
+	Commands that could work outside of servers now do.
