@@ -73,7 +73,7 @@ exports.run = async inter => {
 			],
 			description: details.short_description,
 		}] }).catch(error);
-	})
+	}).catch(err => console.error(`appid: ${appid}`, err));
 }
 
 function listPlatforms(platforms)
