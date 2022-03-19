@@ -40,7 +40,7 @@ exports.run = async inter => {
 			type, fullgame,
 			steam_appid, developers, website,
 			name, header_image, release_date: {date = tr.comingSoon},
-			genres, metacritic,
+			genres = [], metacritic,
 			controller_support, platforms, categories,
 			dlc, is_free, price_overview: price = {}, // temporary fix
 			supported_languages,
