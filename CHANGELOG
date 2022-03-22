@@ -22,3 +22,6 @@ Adds /search
 	1.2.1 (01/03/2022)
 	toEmbed removes empty [url] tags
 	Commands that could work outside of servers now do.
+
+	1.2.2 (22/03/2022)
+	Various fixes for /info
