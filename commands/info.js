@@ -68,7 +68,7 @@ exports.run = async inter => {
 				{ name: tr.DLC, value: type === "dlc"
 					? `${tr.game} ${fullgame.name} (${fullgame.appid})`
 					: (dlc?.length || 0)+"", inline: true },
-				{ name: tr.platforms, value: listPlatforms(platforms), inline: true },
+				{ name: tr.platforms, value: platforms?.length ? listPlatforms(platforms) : tr.unknown, inline: true },
 				{ name: tr.controllerSupport, value: controller_support === "full" ? tr.yes : tr.no, inline: true },
 				{ name: tr.multi, value: categories.some(({id}) => id === 1) ? tr.yes : tr.no, inline: true },
 				{ name: tr.languages, value: parseLanguages(supported_languages) },
