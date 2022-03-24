@@ -31,5 +31,5 @@ const helpEmbed = {
 		{ name: "I still need help!", value: "That is unfortunate. You can come explain your issue on our support server: "+SUPPORT_SERVER },
 		{ name: "One last thing", value: "Like Steam News? Consider upvoting in on Top.gg: https://top.gg/bot/929757212841226292" },
 	],
-	footer: { text: `Steam News v${version} by ${author}` },
+	footer: { text: `Steam News v${version} by ${author}. Special thanks to Damn3d who gabe me the idea!` },
 };

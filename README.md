@@ -3,7 +3,7 @@
 
 Current version: 1.2
 
-This bot allows you to watch Steam game news.
+This bot allows you to watch Steam game news. My friend Damn3d had the idea.
 
 # Utilisation
 This bot uses Node.JS (≥16) avec with `discord.js` v13.
