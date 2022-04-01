@@ -29,7 +29,7 @@ const helpEmbed = {
 		{ name: "What about NSFW games?", value: "The bot will only send info and news about NSFW games in NSFW channels." },
 		{ name: "Can I copy your bot?", value: `Sure! It’s open sourced under the GNU GPL 3.0 licence.\nHere is the Git repository: [${repository}](${repository})` },
 		{ name: "I still need help!", value: "That is unfortunate. You can come explain your issue on our support server: "+SUPPORT_SERVER },
-		{ name: "One last thing", value: "Like Steam News? Consider upvoting in on Top.gg: https://top.gg/bot/929757212841226292" },
+		{ name: "One last thing", value: "Like Steam News? Consider upvoting it on Top.gg: https://top.gg/bot/929757212841226292" },
 	],
 	footer: { text: `Steam News v${version} by ${author}. Special thanks to Damn3d who gabe me the idea!` },
 };
