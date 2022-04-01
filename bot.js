@@ -13,7 +13,9 @@ const client = exports.client = new Discord.Client({
 const {FLAGS: { ADMINISTRATOR }} = Discord.Permissions;
 
 var master;
-exports.sendToMaster = (msg, onError = error) => master.send(msg).catch(onError);
+exports.sendToMaster = (msg, onError = error) =>
+	master?.send(msg).catch(onError)
+	|| client.once("ready", async () => (await client.users.fetch(auth.master)).send(msg).catch(onError));
 
 const error = require("./error");
 const { commands, init: initCmds } = require("./commands");
