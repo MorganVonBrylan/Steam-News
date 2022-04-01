@@ -16,7 +16,7 @@
     "Steam",
     "news"
   ],
-  "author": "Morgân von Brylân, Damn3d (idea)",
+  "author": "Morgân von Brylân (code), Damn3d (idea)",
   "license": "GPL-3.0",
   "dependencies": {
     "bufferutil": "^4.0.6",
