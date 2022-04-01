@@ -12,12 +12,14 @@ This bot uses Node.JS (≥16) avec with `discord.js` v13.
 ```JSON
 {
 	"token": "your bot's authentication token",
- 	"master": "you user id",
-	"dblToken": "you bot's Top.gg token (can be blank)",
-	"debug": false
+ 	"master": "your user id",
+	"dblToken": "(optional) your bot's Top.gg token",
+	"debug": false,
+
+	"supportServer": "(optional) The invite to your support server"
 }
 ```
-`debug` should be `true` in development and `false` in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise.
+`debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode.
 
 ## `watchers.json` format
 

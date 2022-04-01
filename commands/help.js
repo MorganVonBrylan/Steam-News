@@ -1,7 +1,7 @@
 "use strict";
 
 const { WATCH_LIMIT } = require("../steam_news/watchers");
-const SUPPORT_SERVER = "https://discord.gg/dsYQzACdzr";
+const SUPPORT_SERVER = require("../bot").auth.supportServer || "*(no support server invite set)*";
 
 exports.global = true;
 exports.description = "Get help about the bot.";
