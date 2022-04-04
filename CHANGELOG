@@ -25,3 +25,14 @@ Adds /search
 
 	1.2.2 (22/03/2022)
 	Various fixes for /info
+
+
+
+2.0 (01/04/2022)
+Switched to a SQLite database.
+Fixes sendToMaster not working if called too early.
+Now purges a channel's watchers when that channel is deleted.
+/info now uses the user's locale if the language is not specified
+/help: Added a French translation.
+Added autocomplete options to /watch, /unwatch, /latest and /info
+Removed /search
