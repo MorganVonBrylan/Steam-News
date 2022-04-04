@@ -76,6 +76,7 @@ exports.run = async inter => {
 				{ name: tr.controllerSupport, value: controller_support === "full" ? tr.yes : tr.no, inline: true },
 				{ name: tr.multi, value: categories.some(({id}) => id === 1) ? tr.yes : tr.no, inline: true },
 				{ name: tr.languages, value: parseLanguages(supported_languages) },
+				{ name: tr.openInApp, value: `steam://store/${appid}` },
 			],
 			image: { url: header_image },
 		}] }).catch(error);
@@ -116,6 +117,7 @@ const languages = {
 		controllerSupport: "Controller support",
 		multi: "Multiplayer",
 		languages: "Languages",
+		openInApp: "Open in app",
 	},
 	fr: {
 		yes: "Oui", no: "Non",
@@ -132,6 +134,7 @@ const languages = {
 		controllerSupport: "Support manette",
 		multi: "Multi",
 		languages: "Langues",
+		openInApp: "Ouvrir dans l’application",
 	},
 };
 languages["en-UK"] = languages.en;
