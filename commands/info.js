@@ -2,6 +2,8 @@
 
 const { search, getDetails, isNSFW } = require("../steam_news/api");
 
+const { langToCountry } = require("../locales.json");
+
 exports.global = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = "See info about a game (genre, price, release date, etc)";
@@ -11,7 +13,7 @@ exports.options = [{
 	autocomplete: true,
 }, {
 	type: "STRING", name: "language",
-	description: "The language to display info in",
+	description: "The language to display info in (your own locale is unspecified)",
 	choices: [
 		{ name: "English (price in US$)", value: "en" },
 		{ name: "English (price in pounds)", value: "en-UK" },
@@ -19,8 +21,8 @@ exports.options = [{
 	],
 }];
 exports.run = async inter => {
-	const lang = inter.options.getString("language") || "en";
-	const tr = languages[lang];
+	const lang = inter.options.getString("language") || inter.locale || "en";
+	const tr = languages[lang] || languages.en;
 	const defer = inter.deferReply().catch(error);
 	let appid = inter.options.getString("name");
 
@@ -33,7 +35,7 @@ exports.run = async inter => {
 			return defer.then(() => inter.editReply({ content: `No game matching "${appid}" found.`, ephemeral: true }).catch(error));
 	}
 
-	getDetails(appid, lang, cc[lang]).then(async details => {
+	getDetails(appid, lang, langToCountry[lang]).then(async details => {
 		await defer;
 		if(!details)
 			return inter.editReply({content: tr.invalidAppid, ephemeral: true}).catch(error);
@@ -97,8 +99,6 @@ function parseLanguages(html)
 		.replaceAll(/<\/?(em|i)>/g, "_");
 }
 
-
-const cc = { fr: "FR", en: "US", "en-UK": "UK" };
 
 const languages = {
 	en: {
