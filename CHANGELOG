@@ -36,3 +36,4 @@ Now purges a channel's watchers when that channel is deleted.
 /help: Added a French translation.
 Added autocomplete options to /watch, /unwatch, /latest and /info
 Removed /search
+Added /open
