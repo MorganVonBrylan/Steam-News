@@ -66,6 +66,14 @@ function load(name, cmdModule = "", reload = false)
 			throw new LoadError(name, `Description too short`);
 		if(description.length > 100)
 			throw new LoadError(name, `Description too long (${description.length})`);
+
+		for(const option of command.options)
+			if(option.autocomplete)
+			{
+				if(typeof command.autocomplete !== "function")
+					throw new LoadError(name, `Command has an autocomplete option, but no autocomplete handler.`);
+				break;
+			}
 	}
 	else
 	{

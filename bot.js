@@ -36,6 +36,8 @@ for(const file of require("fs").readdirSync(__dirname+"/events"))
 
 
 client.on("interactionCreate", interaction => {
+	if(interaction.type === "APPLICATION_COMMAND_AUTOCOMPLETE")
+		return commands[interaction.commandName]?.autocomplete(interaction);
 	if(interaction.type !== "APPLICATION_COMMAND")
 		return;
 
