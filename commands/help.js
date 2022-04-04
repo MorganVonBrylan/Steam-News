@@ -7,7 +7,7 @@ exports.global = true;
 exports.description = "Get help about the bot.";
 exports.run = inter => {
 	setAvatars();
-	inter.reply({ content: SUPPORT_SERVER, embeds: [helpEmbed], ephemeral: true }).catch(error);
+	inter.reply({ content: SUPPORT_SERVER, embeds: [tr[inter.locale] || helpEmbed], ephemeral: true }).catch(error);
 }
 
 function setAvatars()
@@ -31,3 +31,21 @@ const helpEmbed = {
 	],
 	footer: { text: `Steam News v${version} by ${author}.` },
 };
+
+
+const tr = {
+	fr: {
+		title: "Aide Steam News",
+		description: "**Steam News** est un bot qui permet de suivre les actus d’un jeu Steam en envoyant les annonces, notes de mises à jour etc directement dans un salon.",
+		fields: [
+			{ name: "Comment suivre les actus d’un jeu ?", value: `Ajoutez un abonnement avec \`/watch\`, retirez-le avec \`/unwatch\`. Chaque serveur peut suivre au maxium les actus de ${WATCH_LIMIT} jeux à la fois.` },
+			{ name: "Le bot n’a pas envoyé une actu à la seconde où elle est sortie !", value: "C’est normal. Il vérifie les actus une fois pas heure, donc il peut y avoir jusqu’à une heure de retard." },
+			{ name: "Qu’en est-il des jeux adultes ?", value: "Le bot n’enverra les infos et actus de jeux adultes que dans les salons soumis à une limite d’âge (NSFW)." },
+			{ name: "Je peux copier ton bot ?", value: `Bien sûr ! Il est open source sous licence GNU GPL 3.0.\nVoici le dépôt Git : [${repository}](${repository})` },
+			{ name: "Les commandes seront traduites un jour ?", value: "C’est prévu. Je le ferai dès que Discord.js le permettra. En attendant, il faudra se contenter de l’anglais, désolé." },
+			{ name: "J’ai encore besoin d’aide !", value: "C’est fâcheux. Vous pouvez venir expliquer votre souci sur notre serveur de support : "+SUPPORT_SERVER },
+			{ name: "Une dernière chose", value: "Vous aimez Steam News? Vous pouvez lui mettre un poce blo sur Top.gg: https://top.gg/bot/929757212841226292" },
+		],
+		footer: { text: `Steam News v${version} par ${author}.` },
+	},
+}
