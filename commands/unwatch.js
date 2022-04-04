@@ -1,13 +1,14 @@
 "use strict";
 
 const { search } = require("../steam_news/api");
-const { unwatch, getAppName } = require("../steam_news/watchers");
+const { unwatch, getAppName, getWatchedApps } = require("../steam_news/watchers");
 
 exports.adminOnly = true;
 exports.description = "(admins only) Stop watching a game’s news feed.";
 exports.options = [{
 	type: "STRING", name: "name", required: true,
 	description: "The game’s name or id",
+	autocomplete: true,
 }];
 exports.run = async inter => {
 	let appid = inter.options.getString("name");
@@ -26,4 +27,8 @@ exports.run = async inter => {
 		content: `${name} ${unwatch(appid, inter.guild) === false ? "was not being" : "is no longer"} watched in this server.`,
 		ephemeral: true,
 	})
+}
+
+exports.autocomplete = inter => {
+	inter.respond(getWatchedApps(inter.guild.id).map(({name, appid}) => ({ name, value: ""+appid })));
 }

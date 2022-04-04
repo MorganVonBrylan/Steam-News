@@ -5,10 +5,12 @@ const { isKnown, saveAppInfo, isNSFW: isAppNSFW } = require("../steam_news/watch
 const toEmbed = require("../steam_news/toEmbed.function");
 
 exports.global = true;
+exports.autocomplete = require("../autocomplete/search");
 exports.description = "See a game’s latest news.";
 exports.options = [{
 	type: "STRING", name: "name", required: true,
 	description: "The game’s name or id",
+	autocomplete: true,
 }];
 exports.run = async inter => {
 	const defer = inter.deferReply().catch(error);

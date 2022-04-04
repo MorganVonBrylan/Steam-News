@@ -5,10 +5,12 @@ const { WATCH_LIMIT, watch, unwatch, getAppInfo, purgeApp } = require("../steam_
 const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
 
 exports.adminOnly = true;
+exports.autocomplete = require("../autocomplete/search");
 exports.description = `(admins only) Follow a game’s news feed (maximum ${WATCH_LIMIT} games per server)`;
 exports.options = [{
 	type: "STRING", name: "name", required: true,
 	description: "The game’s name or id",
+	autocomplete: true,
 }, {
 	type: "CHANNEL", name: "channel",
 	channelTypes: ["GUILD_TEXT", "GUILD_PUBLIC_THREAD", "GUILD_PRIVATE_THREAD", "GUILD_NEWS", "GUILD_NEWS_THREAD"],
@@ -24,7 +26,7 @@ exports.run = async inter => {
 
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
 	let appid = inter.options.getString("name");
-
+console.log("/watch", appid);
 	if(!isFinite(appid))
 	{
 		const [game] = await search(appid);
