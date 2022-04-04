@@ -237,6 +237,14 @@ exports.unwatch = (appid, guild) => {
 exports.purgeGuild = guildId => !!stmt.purgeGuild.run(guildId.id || guildId).changes;
 
 /**
+ * Removes all watchers of a channel.
+ * @param {string} channelId The channel or channel id.
+ * @returns {bool} true if the channel was purged, false if there was nothing to purge.
+ */
+exports.purgeChannel = channelId => !!stmt.purgeChannel.run(channelId.id || channelId).changes;
+
+
+/**
  * Removes all watchers of an app.
  * @param {int} appid The app's id.
  * @returns {bool} true if the app was purged, false if there was nothing to purge.
