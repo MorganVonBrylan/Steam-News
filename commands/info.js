@@ -62,7 +62,7 @@ exports.run = async inter => {
 			title: name,
 			author: developers ? { name: developers.join(", "), url: website } : null,
 			provider: { name: "Steam", url: "https://store.steampowered.com/" },
-			image: { url: header_image },
+			description: details.short_description,
 			fields: [
 				{ name: genres.length > 1 ? tr.genres : tr.genre, value: genres.length ? genres.map(g => g.description).join(", ") : tr.none, inline: true },
 				{ name: tr.metacritic, value: metacritic ? `[${metacritic.score}](${metacritic.url})` : tr.unknown, inline: true },
@@ -77,7 +77,7 @@ exports.run = async inter => {
 				{ name: tr.multi, value: categories.some(({id}) => id === 1) ? tr.yes : tr.no, inline: true },
 				{ name: tr.languages, value: parseLanguages(supported_languages) },
 			],
-			description: details.short_description,
+			image: { url: header_image },
 		}] }).catch(error);
 	}).catch(err => console.error(`appid: ${appid}`, err));
 }
