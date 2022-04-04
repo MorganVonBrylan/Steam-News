@@ -33,12 +33,12 @@ function load(name, cmdModule = "", reload = false)
 		name = name.substring(0, name.length - 3);
 
 	if(name.length > 32)
-		throw new LoadError(name, `Nom de commande trop long (${name.length})`);
-	if(!/^[\w-]{1,32}$/.test(name))
-		throw new LoadError(name, `Nom de commande invalide : ${name}`);
+		throw new LoadError(name, `Command name too long (${name.length})`);
+	if(!/^[\w-]{1,32}$/.test(name) || name !== name.toLowerCase())
+		throw new LoadError(name, `Invalid command name: ${name}`);
 
 	if(commands[name] && commands[name].module !== cmdModule)
-		throw new LoadError(name, `Impossible d'enregistrer la commande ${name} du module "${cmdModule}", elle existe déjà dans le module "${commands[name].module}"`);
+		throw new LoadError(name, `Can't load command ${name} of module "${cmdModule}", it already exists in module "${commands[name].module}"`);
 
 	const file = `./${cmdModule}${cmdModule ? "/" : ""}${name}.js`;
 	//delete require.cache[file];
@@ -61,11 +61,11 @@ function load(name, cmdModule = "", reload = false)
 		if(typeof description !== "string")
 			throw new LoadError(name, "The description should be a string.");
 		if(!description)
-			throw new LoadError(name, `Nom de commande invalide : ${name}`);
+			throw new LoadError(name, `Missing description`);
 		if(description.length < 4)
-			throw `Description de ${name} trop courte`;
+			throw new LoadError(name, `Description too short`);
 		if(description.length > 100)
-			throw `Description de ${name} trop longue (${description.length})`;
+			throw new LoadError(name, `Description too long (${description.length})`);
 	}
 	else
 	{
