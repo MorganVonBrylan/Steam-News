@@ -36,12 +36,17 @@ for(const file of require("fs").readdirSync(__dirname+"/events"))
 
 
 client.on("interactionCreate", interaction => {
+	const command = commands[interaction.commandName];
+
 	if(interaction.type === "APPLICATION_COMMAND_AUTOCOMPLETE")
-		return commands[interaction.commandName]?.autocomplete(interaction);
+	{
+		return interaction.inGuild() || command.global
+		 	? command.autocomplete(interaction)
+			: interaction.respond([{name: "This command only works in servers.", value: "N/A"}]).catch(Function());
+	}
+
 	if(interaction.type !== "APPLICATION_COMMAND")
 		return;
-
-	const command = commands[interaction.commandName];
 
 	if(!interaction.inGuild() && !command.global)
 		return interaction.reply({ content: "This command only works in servers.", ephemeral: true }).catch(error);
