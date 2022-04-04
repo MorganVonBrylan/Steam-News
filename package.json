@@ -19,6 +19,7 @@
   "author": "Morgân von Brylân (code), Damn3d (idea)",
   "license": "GPL-3.0",
   "dependencies": {
+    "better-sqlite3": "^7.5.0",
     "bufferutil": "^4.0.6",
     "discord.js": "^13.5.1",
     "node-fetch": "^2.6.2",
