@@ -13,6 +13,7 @@ This bot uses Node.JS (≥16) avec with `discord.js` v13.
 {
 	"token": "your bot's authentication token",
  	"master": "your user id",
+	"adminServer": "the id of the server where the admin commands will be available, for you",
 	"dblToken": "(optional) your bot's Top.gg token",
 	"debug": false,
 

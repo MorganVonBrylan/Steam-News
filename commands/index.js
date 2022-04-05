@@ -93,7 +93,7 @@ function loadFolder(path, commandManager)
 
 	for(const file of readdirSync(path))
 	{
-		if(file === "index.js" || file === "debug" && skipDebug)
+		if(file === "index.js" || file === "admin" || file === "debug" && skipDebug)
 			continue;
 
 		if(file.endsWith(".js"))
@@ -103,11 +103,43 @@ function loadFolder(path, commandManager)
 	}
 
 	if(commandManager)
-		commandManager.set(Object.values(commands));
+		return commandManager.set(Object.values(commands));
 }
 
 exports.init = (client, debug) => {
 	skipDebug = !debug;
 	const commandManager = (debug ? client.guilds.cache.first() : client.application).commands;
-	loadFolder(__dirname, commandManager);
+	const load = loadFolder(__dirname, commandManager);
+
+	const { adminServer, master } = require("../auth.json");
+	if(adminServer) client.guilds.fetch(adminServer).then(async adminServer => {
+		const adminCmds = {};
+
+		for(const cmd of require("fs").readdirSync(__dirname+"/admin").map(f => f.substring(0, f.length-3)))
+			adminCmds[cmd] = require("./admin/"+cmd);
+
+		const adminCmd = commands.admin = {
+			name: "admin",
+			defaultPermission: false,
+			description: "Execute an admin command",
+			options: [{
+				type: "STRING", name: "command", required: true,
+				description: "The command to execute",
+				choices: Object.keys(adminCmds).map(cmd => ({name: cmd, value: cmd})),
+			}, {
+				type: "STRING", name: "params",
+				description: "The command parameters",
+			}],
+			run: inter => adminCmds[inter.options.getString("command")].run(inter, inter.options.getString("params"))
+		};
+
+		const then = ({id}) => adminServer.commands.permissions.set({fullPermissions:[
+			{ id, permissions: [{ id: master, type: "USER", permission: true }] },
+		]});
+
+		if(commandManager === adminServer.commands)
+			load.then(() => commandManager.create(adminCmd)).then(then);
+		else
+			adminServer.commands.set([adminCmd]).then(([[,cmd]]) => then(cmd), error);
+	}, err => console.error("Could not fetch admin server", err));
 }
