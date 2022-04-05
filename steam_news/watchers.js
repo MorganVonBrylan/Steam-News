@@ -205,7 +205,7 @@ exports.watch = async (appid, channel) => {
 	{
 		const details = await getDetails(appid);
 		if(!details) throw new Error(`Failed to get details of app ${appid}`);
-		stmt.insertApp(appid, details.name, isNSFW(details)+0, appnews.newsitems[0]?.gid);
+		stmt.insertApp.run(appid, details.name, isNSFW(details)+0, appnews.newsitems[0]?.gid);
 	}
 
 	stmt.watch.run(appid, guildId, channel.id);
