@@ -1,5 +1,7 @@
 "use strict";
 
+const DB_VERSION = 1;
+
 module.exports = exports = db => {
 	db.run = function(sql, params) { return this.prepare(sql).run(params); }
 
@@ -19,6 +21,30 @@ module.exports = exports = db => {
 		CONSTRAINT fk_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
 	);
 	`);
+
+	try {
+		db.exec(`-- No "IF NOT EXISTS", we WANT this to crash if it already exists
+			CREATE TABLE DB_Version (version INTEGER PRIMARY KEY);
+			INSERT INTO DB_Version VALUES (${DB_VERSION});`);
+	} catch {}
+
+		/*const currentVersion = db.prepare("SELECT version FROM DB_VERSION").pluck().get();
+		if(currentVersion < DB_VERSION)
+		{
+			// Upgrade database
+
+			switch(currentVersion)
+			{
+			case 1:
+				// upgrades for 1 to 2
+				// no break; !
+			case 2:
+				// upgrades for 2 to 3
+				// etc
+			}
+
+			db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
+		}*/
 
 	return {
 		insertApp: db.prepare("INSERT INTO Apps (appid, name, nsfw, latest) VALUES (?, ?, ?, ?)"),
