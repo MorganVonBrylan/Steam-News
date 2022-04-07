@@ -21,7 +21,7 @@ module.exports = exports = ({appid, url, title, contents, feedlabel, date}) => {
 		description: toMarkdown(contents),
 		yt,
 		author: name ? { name } : undefined,
-		footer: { text: feedlabel },
+		footer: name ? { text: name } : undefined,
 		timestamp: date * 1000,
 	};
 };
