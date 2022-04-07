@@ -68,7 +68,7 @@ exports.run = async inter => {
 				{ name: tr.metacritic, value: metacritic ? `[${metacritic.score}](${metacritic.url})` : tr.unknown, inline: true },
 				{ name: tr.nsfw, value: nsfw ? `🔞 ${tr.yes}` : tr.no, inline: true },
 				{ name: tr.releaseDate, value: date, inline: true },
-				{ name: tr.price, value: is_free ? tr.free : price.final_formatted, inline: true },
+				{ name: tr.price, value: is_free ? tr.free : displayPrice(price), inline: true },
 				{ name: tr.DLC, value: type === "dlc"
 					? `${tr.game} ${fullgame.name} (${fullgame.appid})`
 					: (dlc?.length || 0)+"", inline: true },
@@ -81,6 +81,12 @@ exports.run = async inter => {
 			image: { url: header_image },
 		}] }).catch(error);
 	}).catch(err => console.error(`appid: ${appid}`, err));
+}
+
+
+function displayPrice({discount_percent, initial_formatted, final_formatted})
+{
+	return `${final_formatted}${discount_percent ? ` (-${discount_percent}%)` : ""}`;
 }
 
 function listPlatforms(platforms)
