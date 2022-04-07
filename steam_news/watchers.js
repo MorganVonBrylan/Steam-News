@@ -12,30 +12,7 @@ const db = new require("better-sqlite3")(__dirname+"/watchers.db");
 const stmt = require("./db_init")(db);
 
 
-if(existsSync(watchFile))
-{
-	readFile(watchFile, "utf-8").then(data => {
-		data = Object.entries(JSON.parse(data).apps);
-		const params = [], wParams = [];
-		let totalWatchers = 0;
-
-		for(const [appid, {name, nsfw, latest, watchers}] of data)
-		{
-			params.push(appid, name, nsfw+0, latest); // +0 because providing a boolean will throw
-			totalWatchers += Object.keys(watchers).length;
-			for(const watcher of Object.entries(watchers))
-				wParams.push(appid, ...watcher);
-		}
-
-		db.run(`INSERT INTO Apps VALUES (?,?,?,?)${",(?,?,?,?)".repeat(data.length-1)}`, params);
-		db.run(`INSERT INTO Watchers VALUES (?,?,?)${",(?,?,?)".repeat(totalWatchers-1)}`, wParams);
-		unlink(watchFile).catch(error);
-
-		require("../bot").client.once("ready", checkForNews);
-	}, console.error);
-}
-else
-	require("../bot").client.once("ready", checkForNews);
+require("../bot").client.once("ready", checkForNews);
 
 
 /**
