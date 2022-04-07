@@ -68,7 +68,7 @@ exports.run = async inter => {
 				{ name: tr.metacritic, value: metacritic ? `[${metacritic.score}](${metacritic.url})` : tr.unknown, inline: true },
 				{ name: tr.nsfw, value: nsfw ? `🔞 ${tr.yes}` : tr.no, inline: true },
 				{ name: tr.releaseDate, value: date, inline: true },
-				{ name: tr.price, value: is_free ? tr.free : displayPrice(price), inline: true },
+				{ name: tr.price, value: is_free && !price.discount_percent ? tr.free : displayPrice(price), inline: true },
 				{ name: tr.DLC, value: type === "dlc"
 					? `${tr.game} ${fullgame.name} (${fullgame.appid})`
 					: (dlc?.length || 0)+"", inline: true },
