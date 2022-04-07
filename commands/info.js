@@ -54,7 +54,7 @@ exports.run = async inter => {
 		if(nsfw && !inter.channel.nsfw) // temporary
 			return inter.editReply({content: tr.nsfwForbidden, ephemeral: true}).catch(error);
 
-		if(!is_free && !price)
+		if(!is_free && !price.final_formatted)
 			error(new Error(`Weird thing about app ${appid} (${name}): is_free is false but price_overview is undefined`));
 
 		inter.editReply({ embeds: [{
