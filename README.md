@@ -5,8 +5,8 @@ Current version: 2.0
 
 This bot allows you to watch Steam game news. My friend Damn3d had the idea.
 
-# Utilisation
-This bot uses Node.JS (≥16) avec with `discord.js` v13.
+# Usage
+This bot uses Node.JS (≥16) avec with mit `discord.js` v13.
 
 `auth.json`
 ```JSON
@@ -23,7 +23,6 @@ This bot uses Node.JS (≥16) avec with `discord.js` v13.
 `debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode.
 
 ## Databse schema
-
 Just read steam_news/db.js, there is a bunch of CREATE TABLE at the beginning.
 
 # Licence
