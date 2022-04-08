@@ -22,25 +22,9 @@ This bot uses Node.JS (≥16) avec with `discord.js` v13.
 ```
 `debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode.
 
-## `watchers.json` format
+## Databse schema
 
-`servers` is an object with server ids as keys and an array of the ids of the apps it follows as the values.
-
-`apps` is an object with app ids as keys and objects as values. The objects have the following properties:
-- name: (string) The app's name
-- nsfw: (bool) Whether the app is NSFW or not
-- latest: (string) The id of the app's last known news item
-- watchers: (object) An object with server ids as keys and the ids of the channels in which to send the news as values
-Example:
-```JSON
-{
-	"servers": { "123": [111, 222], "456": [111] },
-	"apps": {
-		"111": { "name": "jeu 111", "nsfw": false, "latest": "1010", "watchers": { "123": "125", "456": "458" } },
-		"222": { "name": "jeu 222", "nsfw": false, "latest": "2020", "watchers": { "123": "125" } },
-	}
-}
-```
+Just read steam_news/db.js, there is a bunch of CREATE TABLE at the beginning.
 
 # Licence
 **Steam News** is published under GNU General Public Licence v3 (GPL-3.0). See COPYING.txt, or this link: [https://www.gnu.org/licenses/gpl-3.0.en.html](https://www.gnu.org/licenses/gpl-3.0.en.html)
