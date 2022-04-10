@@ -33,8 +33,8 @@ function load(name, cmdModule = "", reload = false)
 		name = name.substring(0, name.length - 3);
 
 	if(name.length > 32)
-		throw new LoadError(name, `Command name too long (${name.length})`);
-	if(!/^[\w-]{1,32}$/.test(name) || name !== name.toLowerCase())
+		throw new LoadError(name, `Command name too long (${name.length})/32`);
+	if(!/^[a-z_-]{1,32}$/.test(name))
 		throw new LoadError(name, `Invalid command name: ${name}`);
 
 	if(commands[name] && commands[name].module !== cmdModule)
