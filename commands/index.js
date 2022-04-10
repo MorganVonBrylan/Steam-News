@@ -4,8 +4,10 @@
  * description
  * run
  ** Optional:
+ * global
+ * options
+ * autocomplete
  * defaultPermission
- * permissions
  */
 
 const { readdirSync } = require("fs");
@@ -45,12 +47,10 @@ function load(name, cmdModule = "", reload = false)
 	const command = require(file);
 	command.name = name;
 	command.module = cmdModule;
-	const {description, run, permissions = [], type = "CHAT_INPUT"} = command;
+	const {description, run, type = "CHAT_INPUT"} = command;
 
 	if(typeof run !== "function")
 		throw new LoadError(name, "Missing a 'run' function.");
-	if(!Array.isArray(permissions))
-		throw new LoadError(name, "'permissions' should be an array.");
 
 	if(type === "CHAT_INPUT")
 	{
