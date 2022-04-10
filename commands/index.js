@@ -68,8 +68,10 @@ function load(name, cmdModule = "", reload = false)
 		else for(const option of command.options)
 			if(option.autocomplete)
 			{
-				if(typeof command.autocomplete !== "function")
+				if(!("autocomplete" in command))
 					throw new LoadError(name, `Command has an autocomplete option, but no autocomplete handler.`);
+				if(typeof command.autocomplete !== "function")
+					throw new LoadError(name, `Autocomplete handler should be a function.`);
 				break;
 			}
 	}
