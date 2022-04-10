@@ -45,7 +45,6 @@ function load(name, cmdModule = "", reload = false)
 	const command = require(file);
 	command.name = name;
 	command.module = cmdModule;
-	if(!command.options) command.options = []; // Pour pouvoir retirer les options
 	const {description, run, permissions = [], type = "CHAT_INPUT"} = command;
 
 	if(typeof run !== "function")
@@ -56,7 +55,7 @@ function load(name, cmdModule = "", reload = false)
 	if(type === "CHAT_INPUT")
 	{
 		if(!command.options)
-			command.options = []; // Pour pouvoir retirer les options
+			command.options = []; // So we can remove options
 
 		if(typeof description !== "string")
 			throw new LoadError(name, "The description should be a string.");
