@@ -54,14 +54,14 @@ function load(name, cmdModule = "", reload = false)
 
 	if(type === "CHAT_INPUT")
 	{
+		if(!description)
+			throw new LoadError(name, `Missing description.`);
 		if(typeof description !== "string")
 			throw new LoadError(name, "The description should be a string.");
-		if(!description)
-			throw new LoadError(name, `Missing description`);
 		if(description.length < 4)
-			throw new LoadError(name, `Description too short`);
+			throw new LoadError(name, `Description too short.`);
 		if(description.length > 100)
-			throw new LoadError(name, `Description too long (${description.length})`);
+			throw new LoadError(name, `Description too long (${description.length}/100).`);
 
 		if(!command.options)
 			command.options = []; // So we can remove options
