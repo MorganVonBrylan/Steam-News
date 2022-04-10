@@ -54,9 +54,6 @@ function load(name, cmdModule = "", reload = false)
 
 	if(type === "CHAT_INPUT")
 	{
-		if(!command.options)
-			command.options = []; // So we can remove options
-
 		if(typeof description !== "string")
 			throw new LoadError(name, "The description should be a string.");
 		if(!description)
@@ -66,7 +63,9 @@ function load(name, cmdModule = "", reload = false)
 		if(description.length > 100)
 			throw new LoadError(name, `Description too long (${description.length})`);
 
-		for(const option of command.options)
+		if(!command.options)
+			command.options = []; // So we can remove options
+		else for(const option of command.options)
 			if(option.autocomplete)
 			{
 				if(typeof command.autocomplete !== "function")
