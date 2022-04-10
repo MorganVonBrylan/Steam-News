@@ -29,7 +29,7 @@ var skipDebug = true;
 function load(name, cmdModule = "", reload = false)
 {
 	if(typeof name !== "string")
-		throw new TypeError("'name' should be a string");
+		throw new TypeError("'name' must be a string");
 
 	if(name.endsWith(".js"))
 		name = name.substring(0, name.length - 3);
@@ -57,7 +57,7 @@ function load(name, cmdModule = "", reload = false)
 		if(!description)
 			throw new LoadError(name, `Missing description.`);
 		if(typeof description !== "string")
-			throw new LoadError(name, "The description should be a string.");
+			throw new LoadError(name, "The description must be a string.");
 		if(description.length < 4)
 			throw new LoadError(name, `Description too short.`);
 		if(description.length > 100)
@@ -71,7 +71,7 @@ function load(name, cmdModule = "", reload = false)
 				if(!("autocomplete" in command))
 					throw new LoadError(name, `Command has an autocomplete option, but no autocomplete handler.`);
 				if(typeof command.autocomplete !== "function")
-					throw new LoadError(name, `Autocomplete handler should be a function.`);
+					throw new LoadError(name, `Autocomplete handler must be a function.`);
 				break;
 			}
 	}
