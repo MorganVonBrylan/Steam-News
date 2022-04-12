@@ -24,6 +24,7 @@ exports.LoadError = LoadError;
 const commands = exports.commands = {};
 exports.load = exports.reload = load;
 
+const NAME_REGEX = /^[a-z_-]{1,32}$/;
 var skipDebug = true;
 
 function load(name, cmdModule = "", reload = false)
@@ -36,7 +37,7 @@ function load(name, cmdModule = "", reload = false)
 
 	if(name.length > 32)
 		throw new LoadError(name, `Command name too long (${name.length})/32`);
-	if(!/^[a-z_-]{1,32}$/.test(name))
+	if(!NAME_REGEX.test(name))
 		throw new LoadError(name, `Invalid command name: ${name}`);
 
 	if(commands[name] && commands[name].module !== cmdModule)
@@ -65,7 +66,13 @@ function load(name, cmdModule = "", reload = false)
 
 		if(!command.options)
 			command.options = []; // So we can remove options
+		else if(!Array.iArray(command.options))
+			throw new LoadError(name, "'options' must be an Array.");
 		else for(const option of command.options)
+		{
+			if(!NAME_REGEX.test(option.name))
+				throw new LoadError(name, `Invalid option name: ${option.name}`);
+
 			if(option.autocomplete)
 			{
 				if(!("autocomplete" in command))
@@ -74,6 +81,7 @@ function load(name, cmdModule = "", reload = false)
 					throw new LoadError(name, `Autocomplete handler must be a function.`);
 				break;
 			}
+		}
 	}
 	else
 	{
