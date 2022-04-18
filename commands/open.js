@@ -15,11 +15,17 @@ exports.run = async inter => {
 
 	if(!isFinite(appid))
 	{
-		const [game] = await search(appid);
-		if(game)
-			appid = game.id;
+		const matches = appid.match(/https:\/\/store.steampowered.com\/app\/([0-9]+)(\/?.*)/);
+		if(matches)
+			appid = matches[1];
 		else
-			return inter.reply({ content: `No game matching "${appid}" found.`, ephemeral: true }).catch(error);
+		{
+			const [game] = await search(appid);
+			if(game)
+				appid = game.id;
+			else
+				return inter.reply({ content: `No game matching "${appid}" found.`, ephemeral: true }).catch(error);
+		}
 	}
 
 	inter.reply({embeds: [{title: "steam://store/"+appid}], ephemeral: true}).catch(error);
