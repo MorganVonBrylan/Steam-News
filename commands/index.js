@@ -66,7 +66,7 @@ function load(name, cmdModule = "", reload = false)
 
 		if(!command.options)
 			command.options = []; // So we can remove options
-		else if(!Array.iArray(command.options))
+		else if(!Array.isArray(command.options))
 			throw new LoadError(name, "'options' must be an Array.");
 		else for(const option of command.options)
 		{
