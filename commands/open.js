@@ -19,7 +19,7 @@ exports.run = async inter => {
 		if(game)
 			appid = game.id;
 		else
-			return defer.then(() => inter.reply({ content: `No game matching "${appid}" found.`, ephemeral: true }).catch(error));
+			return inter.reply({ content: `No game matching "${appid}" found.`, ephemeral: true }).catch(error);
 	}
 
 	inter.reply({embeds: [{title: "steam://store/"+appid}], ephemeral: true}).catch(error);
