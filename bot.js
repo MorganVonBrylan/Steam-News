@@ -26,6 +26,9 @@ client.on("ready", async () => {
 	exports.myself = client.user;
 	exports.master = master = await client.users.fetch(auth.master);
 	console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.once("ready", () => {
 	initCmds(client, auth.debug);
 	require("./dbl")(auth.dblToken, client);
 });
