@@ -37,3 +37,6 @@ Now purges a channel's watchers when that channel is deleted.
 Added autocomplete options to /watch, /unwatch, /latest and /info
 Removed /search
 Added /open
+
+2.1 (20/04/2022)
+Adds /locale, that allows a server to set a default locale for /info
