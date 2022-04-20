@@ -21,6 +21,11 @@ CREATE TABLE IF NOT EXISTS Watchers (
 	PRIMARY KEY (appId, guildId),
 	CONSTRAINT fk_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS Guilds (
+	id INTEGER PRIMARY KEY,
+	cc TEXT NOT NULL
+);
 `);
 
 try {
@@ -47,6 +52,9 @@ try {
 		db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
 	}*/
 
+const setCC = db.prepare("INSERT INTO Guilds (id, cc) VALUES ($id, $cc)");
+const updateCC = db.prepare("UPDATE Guilds SET cc = $cc WHERE id = $id");
+
 const stmts = exports.stmts = {
 	insertApp: db.prepare("INSERT INTO Apps (appid, name, nsfw, latest) VALUES (?, ?, ?, ?)"),
 
@@ -63,6 +71,9 @@ const stmts = exports.stmts = {
 		FROM Apps a JOIN Watchers w ON (a.appid = w.appid)
 		WHERE guildId = ?`),
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
+
+	getCC: db.prepare("SELECT cc FROM Guilds WHERE id = ?").pluck(),
+	setCC: {run: (id, cc) => updateCC.run({id, cc}).changes || setCC.run({id, cc}).changes},
 
 	purgeGuild: db.prepare("DELETE FROM Watchers WHERE guildId = ?"),
 	purgeChannel: db.prepare("DELETE FROM Watchers WHERE channelId = ?"),

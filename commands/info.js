@@ -1,7 +1,7 @@
 "use strict";
 
 const { search, getDetails, isNSFW } = require("../steam_news/api");
-
+const { stmts: {getCC} } = require("../steam_news/db");
 const { langToCountry } = require("../locales.json");
 
 exports.global = true;
@@ -13,7 +13,7 @@ exports.options = [{
 	autocomplete: true,
 }, {
 	type: "STRING", name: "language",
-	description: "The language to display info in (your own locale is unspecified)",
+	description: "The language to display info in (if unspecified, the server's default or your own locale)",
 	choices: [
 		{ name: "English (price in US$)", value: "en" },
 		{ name: "English (price in pounds)", value: "en-UK" },
@@ -21,7 +21,7 @@ exports.options = [{
 	],
 }];
 exports.run = async inter => {
-	const lang = inter.options.getString("language") || inter.locale || "en";
+	const lang = inter.options.getString("language") || getCC(inter.guild?.id)?.toLowerCase() || inter.locale || "en";
 	const tr = languages[lang] || languages.en;
 	const defer = inter.deferReply().catch(error);
 	let appid = inter.options.getString("name");
