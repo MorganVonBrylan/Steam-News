@@ -6,12 +6,12 @@ exports.global = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = "Get a link to open a game in the Steam app";
 exports.options = [{
-	type: "STRING", name: "name", required: true,
+	type: "STRING", name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
 }];
 exports.run = async inter => {
-	let appid = inter.options.getString("name");
+	let appid = inter.options.getString("game");
 
 	if(!isFinite(appid))
 	{

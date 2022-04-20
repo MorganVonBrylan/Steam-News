@@ -8,13 +8,13 @@ exports.global = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = "See a game’s latest news.";
 exports.options = [{
-	type: "STRING", name: "name", required: true,
+	type: "STRING", name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
 }];
 exports.run = async inter => {
 	const defer = inter.deferReply().catch(error);
-	let appid = inter.options.getString("name");
+	let appid = inter.options.getString("game");
 	if(!isFinite(appid))
 	{
 		const [game] = await search(appid);

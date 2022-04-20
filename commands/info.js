@@ -8,7 +8,7 @@ exports.global = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = "See info about a game (genre, price, release date, etc)";
 exports.options = [{
-	type: "STRING", name: "name", required: true,
+	type: "STRING", name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
 }, {
@@ -24,7 +24,7 @@ exports.run = async inter => {
 	const lang = inter.options.getString("language") || getCC(inter.guild?.id)?.toLowerCase() || inter.locale || "en";
 	const tr = languages[lang] || languages.en;
 	const defer = inter.deferReply().catch(error);
-	let appid = inter.options.getString("name");
+	let appid = inter.options.getString("game");
 
 	if(!isFinite(appid))
 	{

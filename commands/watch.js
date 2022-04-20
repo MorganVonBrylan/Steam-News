@@ -8,7 +8,7 @@ exports.adminOnly = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = `(admins only) Follow a game’s news feed (maximum ${WATCH_LIMIT} games per server)`;
 exports.options = [{
-	type: "STRING", name: "name", required: true,
+	type: "STRING", name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
 }, {
@@ -25,7 +25,7 @@ exports.run = async inter => {
 		return inter.reply({content: `I cannot send embeds in ${channel}.`, ephemeral: true}).catch(error);
 
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
-	let appid = inter.options.getString("name");
+	let appid = inter.options.getString("game");
 
 	if(!isFinite(appid))
 	{
