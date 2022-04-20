@@ -32,8 +32,13 @@ exports.init = (client, debug) => {
 	skipDebug = !debug;
 	const commandManager = (debug ? client.guilds.cache.first() : client.application).commands;
 	const load = loadFolder(__dirname, commandManager);
+	load.then(() => {
+		const { init, commands: guildCommands } = require("./guild");
+		init(client);
+		Object.assign(commands, guildCommands);
+	});
 
-	const { adminServer, master } = require("../auth.json");
+	const { adminServer } = require("../auth.json");
 	if(adminServer)
 		client.guilds.fetch(adminServer).then(initAdminCmds.bind(load), err => console.error("Could not fetch admin server", err));
 }
@@ -119,7 +124,7 @@ function loadFolder(path, commandManager)
 
 	for(const file of readdirSync(path))
 	{
-		if(file === "index.js" || file === "admin" || file === "debug" && skipDebug)
+		if(file === "index.js" || file === "guild" || file === "admin" || file === "debug" && skipDebug)
 			continue;
 
 		if(file.endsWith(".js"))
