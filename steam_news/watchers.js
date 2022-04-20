@@ -8,8 +8,9 @@ const REQUIRED_PERMS = SEND_MESSAGES | EMBED_LINKS;
 const watchFile = __dirname + "/watchers.json";
 const WATCH_LIMIT = exports.WATCH_LIMIT = 25; // the maximum number of fields in an embed and a good limit overall
 
-const db = new require("better-sqlite3")(__dirname+"/watchers.db");
-const stmts = require("./db_init")(db);
+
+const db = require("./db");
+const { stmts } = db;
 
 
 require("../bot").client.once("ready", checkForNews);
