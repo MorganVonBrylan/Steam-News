@@ -25,7 +25,7 @@ client.login(auth.token);
 client.on("ready", async () => {
 	exports.myself = client.user;
 	exports.master = master = await client.users.fetch(auth.master);
-	console.log(`Connecté en tant que ${client.user.tag} !`);
+	console.log(`Logged in as ${client.user.tag}!`);
 	initCmds(client, auth.debug);
 	require("./dbl")(auth.dblToken, client);
 });
@@ -59,5 +59,5 @@ client.on("interactionCreate", interaction => {
 			command.run(interaction);
 	}
 	else
-		error(`Commande inconnue reçue : ${interaction.commandName}`);
+		error(new Error(`Received unknown command: ${interaction.commandName}`));
 });
