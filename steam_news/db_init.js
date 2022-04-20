@@ -46,12 +46,14 @@ module.exports = exports = db => {
 			db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
 		}*/
 
-	return {
+	const stmts = {
 		insertApp: db.prepare("INSERT INTO Apps (appid, name, nsfw, latest) VALUES (?, ?, ?, ?)"),
+
 		isAppKnown: db.prepare("SELECT 1 FROM Apps WHERE appid = ?"),
 		getAppInfo: db.prepare("SELECT * FROM Apps WHERE appid = ?"),
 		getAppName: db.prepare("SELECT name FROM Apps WHERE appid = ?").pluck(),
 		isAppNSFW: db.prepare("SELECT nsfw FROM Apps WHERE appid = ?").pluck(),
+
 		watch: db.prepare("INSERT INTO Watchers (appid, guildId, channelId) VALUES (?, ?, ?)"),
 		unwatch: db.prepare("DELETE FROM Watchers WHERE appid = ? AND guildid = ?"),
 		findWatchedApps: db.prepare("SELECT DISTINCT appid FROM Watchers").pluck(),
@@ -63,4 +65,11 @@ module.exports = exports = db => {
 		purgeGuild: db.prepare("DELETE FROM Watchers WHERE guildId = ?"),
 		purgeChannel: db.prepare("DELETE FROM Watchers WHERE channelId = ?"),
 	};
+
+	const getAll = ["getWatchers", "getWatchedApps", "findWatchedApps"];
+
+	for(const [name, stmt] of Object.entries(stmts))
+		stmts[name] = stmt[stmt.readonly ? (getAll.includes(name) ? "all" : "get") : "run"].bind(stmt);
+
+	return stmts;
 }

@@ -26,7 +26,7 @@ exports.run = async inter => {
 
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
 	let appid = inter.options.getString("name");
-console.log("/watch", appid);
+
 	if(!isFinite(appid))
 	{
 		const [game] = await search(appid);
