@@ -4,6 +4,8 @@ const { search, isNSFW } = require("../steam_news/api");
 const { WATCH_LIMIT, watch, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
 const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
 
+const updateUnwatch = require("./guild").updateCmd.bind(null, require("./guild/unwatch"));
+
 exports.adminOnly = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = `(admins only) Follow a game’s news feed (maximum ${WATCH_LIMIT} games per server)`;
@@ -61,6 +63,8 @@ exports.run = async inter => {
 
 		const limitWarning = success === WATCH_LIMIT ? `\nWarning: you reached your ${WATCH_LIMIT} games per server limit.` : "";
 		const detailsError = details.name === "undefined" ? "\nHowever, an error occurred while trying to get the app's details. It may be called “undefined” for a while." : "";
+
+		updateUnwatch(inter.guild, true);
 
 		inter.editReply({ content:
 			success ? `${details.name}’s news will now be sent into ${channel}.${detailsError}${limitWarning}`
