@@ -7,7 +7,7 @@ exports.global = true;
 exports.description = "Get help about the bot.";
 exports.run = inter => {
 	setAvatars();
-	inter.reply({ content: SUPPORT_SERVER, embeds: [tr[inter.locale] || helpEmbed], ephemeral: true }).catch(error);
+	inter.reply({ ephemeral: true, content: SUPPORT_SERVER, embeds: [tr[inter.locale] || helpEmbed] }).catch(error);
 }
 
 function setAvatars()

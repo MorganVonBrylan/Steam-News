@@ -1,6 +1,6 @@
 "use strict";
 
-const CC_LIST = "https://www.iban.com/country-codes";
+const CC_LIST = "You can find the list here: https://www.iban.com/country-codes";
 
 const { stmts: {getCC, setCC} } = require("../steam_news/db");
 const { codeToCountry } = require("../locales.json");
@@ -27,9 +27,9 @@ exports.run = inter => {
 	else
 	{
 		if(cc.length !== 2)
-			inter.reply({content: "You need to provide a country's 2-letter code.\nYou can find the list here: "+CC_LIST, ephemeral: true}).catch(error);
+			inter.reply({ephemeral: true, content: "You need to provide a country's 2-letter code.\n"+CC_LIST}).catch(error);
 		else if(!(cc in codeToCountry))
-			inter.reply({content: "This is not a valid Alpha-2 code.\nYou can find the list here: "+CC_LIST, ephemeral: true}).catch(error);
+			inter.reply({ephemeral: true, content: "This is not a valid Alpha-2 code.\n"+CC_LIST}).catch(error);
 		else
 		{
 			setCC(inter.guild.id, cc);

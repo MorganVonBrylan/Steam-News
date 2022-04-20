@@ -52,12 +52,12 @@ client.on("interactionCreate", interaction => {
 		return;
 
 	if(!interaction.inGuild() && !command.global)
-		return interaction.reply({ content: "This command only works in servers.", ephemeral: true }).catch(error);
+		return interaction.reply({ephemeral: true, content: "This command only works in servers."}).catch(error);
 
 	if(command)
 	{
 		if(command.adminOnly && !interaction.member.permissions.has(ADMINISTRATOR) && interaction.member.id !== master.id)
-			interaction.reply({content: "Only admins can use this command.", ephemeral: true}).catch(error);
+			interaction.reply({ephemeral: true,content: "Only admins can use this command."}).catch(error);
 		else
 			command.run(interaction);
 	}

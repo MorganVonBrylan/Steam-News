@@ -22,9 +22,9 @@ exports.run = async inter => {
 	const channel = inter.options.getChannel("channel") || inter.channel;
 	const perms = channel.permissionsFor(inter.guild.me);
 	if(!perms.has(SEND_MESSAGES))
-		return inter.reply({content: `I cannot send messages in ${channel}.`, ephemeral: true}).catch(error);
+		return inter.reply({ephemeral: true, content: `I cannot send messages in ${channel}.`}).catch(error);
 	else if(!perms.has(EMBED_LINKS))
-		return inter.reply({content: `I cannot send embeds in ${channel}.`, ephemeral: true}).catch(error);
+		return inter.reply({ephemeral: true, content: `I cannot send embeds in ${channel}.`}).catch(error);
 
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
 	let appid = inter.options.getString("game");
@@ -35,7 +35,7 @@ exports.run = async inter => {
 		if(game)
 			appid = game.id;
 		else
-			return defer.then(() => inter.editReply({ content: `No game matching "${appid}" found.`, ephemeral: true }).catch(error));
+			return defer.then(() => inter.editReply({ephemeral: true, content: `No game matching "${appid}" found.`}).catch(error));
 	}
 
 
@@ -46,13 +46,13 @@ exports.run = async inter => {
 		if(!details)
 		{
 			purgeApp(appid);
-			return inter.editReply({content: "The id you provided does not belong to any Steam app.", ephemeral: true}).catch(error);
+			return inter.editReply({ephemeral: true, content: "The id you provided does not belong to any Steam app."}).catch(error);
 		}
 
 		if(details.type === "dlc")
 		{
 			purgeApp(appid);
-			return inter.editReply({content: "DLCs do not have a news feed.", ephemeral: true}).catch(error);
+			return inter.editReply({ephemeral: true, content: "DLCs do not have a news feed."}).catch(error);
 		}
 
 		if(details.nsfw && !channel.nsfw)
@@ -66,21 +66,20 @@ exports.run = async inter => {
 
 		updateUnwatch(inter.guild, true);
 
-		inter.editReply({ content:
+		inter.editReply({ephemeral: true, content:
 			success ? `${details.name}’s news will now be sent into ${channel}.${detailsError}${limitWarning}`
 				: `${details.name}’s news feed was already watched in that server.`,
-			ephemeral: true
 		}).catch(error);
 	}, async err => {
 		await defer;
 		if(err.message.includes("appid"))
-			inter.editReply({ content: "The id you provided does not belong to any Steam app.", ephemeral: true }).catch(error);
+			inter.editReply({ephemeral: true, content: "The id you provided does not belong to any Steam app."}).catch(error);
 		else if(err instanceof RangeError)
-			inter.editReply({ content: `Error: Maximum number of games watched per server reached (${WATCH_LIMIT}).`, ephemeral: true }).catch(error);
+			inter.editReply({ephemeral: true, content: `Error: Maximum number of games watched per server reached (${WATCH_LIMIT}).`}).catch(error);
 		else
 		{
 			error(err);
-			inter.editReply({ content: "An error occurred.", ephemeral: true }).catch(error);
+			inter.editReply({ephemeral: true, content: "An error occurred."}).catch(error);
 		}
 	});
 }

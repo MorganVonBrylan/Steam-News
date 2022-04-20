@@ -34,17 +34,17 @@ exports.run = async inter => {
 	{
 		const details = await fetchInfo;
 		if(details.type === "dlc")
-			return inter.editRreply({content: "DLCs do not have a news feed.", ephemeral: true}).catch(error);
+			return inter.editRreply({ephemeral: true, content: "DLCs do not have a news feed."}).catch(error);
 
 		saveAppInfo(appid, { name: details.name, nsfw: isNSFW(details) });
 	}
 
 	if(!appnews.newsitems.length)
-		return inter.editReply({content: "This app has no news.", ephemeral: true}).catch(error);
+		return inter.editReply({ephemeral: true, content: "This app has no news."}).catch(error);
 
 	let news;
 	const reply = inter.editReply(isAppNSFW(appid) && !inter.channel.nsfw
-		? { content: "This game has adult content. You can only display its news in a NSFW channel.", ephemeral: true }
+		? { ephemeral: true, content: "This game has adult content. You can only display its news in a NSFW channel." }
 		: { embeds: [news = toEmbed(appnews.newsitems[0])] }
 	).catch(error);
 

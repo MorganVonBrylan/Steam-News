@@ -13,10 +13,9 @@ exports.options = [{
 }];
 exports.run = inter => {
 	const app = inter.options.getString("quoi") === "app";
-	inter.reply({
+	inter.reply({ephemeral: true,
 		content: (app ? purgeApp : purgeGuild)(inter.options.getString("id"))
 			? (app ? "Appli purgée." : "Serveur purgé.")
 			: "Il n'y avait rien à purger.",
-		ephemeral: true,
 	}).catch(error);
 };

@@ -23,8 +23,8 @@ exports.run = async inter => {
 	const name = getAppName(appid) || "This game";
 	const unwatched = unwatch(appid, inter.guild) !== false;
 	inter.reply({
-		content: `${name} ${unwatched ? "is no longer" : "was not being"} watched in this server.`,
 		ephemeral: true,
+		content: `${name} ${unwatched ? "is no longer" : "was not being"} watched in this server.`,
 	}).catch(error);
 
 	if(unwatched)

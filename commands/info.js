@@ -32,13 +32,13 @@ exports.run = async inter => {
 		if(game)
 			appid = game.id;
 		else
-			return defer.then(() => inter.editReply({ content: `No game matching "${appid}" found.`, ephemeral: true }).catch(error));
+			return defer.then(() => inter.editReply({ephemeral: true, content: `No game matching "${appid}" found.`}).catch(error));
 	}
 
 	getDetails(appid, lang, langToCountry[lang]).then(async details => {
 		await defer;
 		if(!details)
-			return inter.editReply({content: tr.invalidAppid, ephemeral: true}).catch(error);
+			return inter.editReply({ephemeral: true, content: tr.invalidAppid}).catch(error);
 
 		const {
 			type, fullgame,
@@ -52,7 +52,7 @@ exports.run = async inter => {
 		const nsfw = isNSFW(details);
 
 		if(nsfw && !inter.channel.nsfw) // temporary
-			return inter.editReply({content: tr.nsfwForbidden, ephemeral: true}).catch(error);
+			return inter.editReply({ephemeral: true, content: tr.nsfwForbidden}).catch(error);
 
 		if(!is_free && !price.final_formatted)
 			error(new Error(`Weird thing about app ${appid} (${name}): is_free is false but price_overview is undefined`));
