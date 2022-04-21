@@ -46,16 +46,13 @@ exports.run = async inter => {
 			name, header_image, release_date: {date = tr.comingSoon},
 			genres = [], metacritic,
 			controller_support, platforms, categories,
-			dlc, is_free, price_overview: price = {}, // temporary fix
+			dlc, is_free, price_overview: price = {}, // is_free can be false and price_overview undefined if the game is not out yet
 			supported_languages,
 		} = details;
 		const nsfw = isNSFW(details);
 
 		if(nsfw && !inter.channel.nsfw) // temporary
 			return inter.editReply({ephemeral: true, content: tr.nsfwForbidden}).catch(error);
-
-		if(!is_free && !price.final_formatted)
-			error(new Error(`Weird thing about app ${appid} (${name}): is_free is false but price_overview is undefined`));
 
 		inter.editReply({ embeds: [{
 			url: "https://store.steampowered.com/app/"+steam_appid,
