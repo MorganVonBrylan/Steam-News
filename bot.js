@@ -55,12 +55,7 @@ client.on("interactionCreate", interaction => {
 		return interaction.reply({ephemeral: true, content: "This command only works in servers."}).catch(error);
 
 	if(command)
-	{
-		if(command.adminOnly && !interaction.member.permissions.has(ADMINISTRATOR) && interaction.member.id !== master.id)
-			interaction.reply({ephemeral: true,content: "Only admins can use this command."}).catch(error);
-		else
-			command.run(interaction);
-	}
+		command.run(interaction);
 	else
 		error(new Error(`Received unknown command: ${interaction.commandName}`));
 });

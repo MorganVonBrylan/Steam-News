@@ -5,7 +5,7 @@ const CC_LIST = "You can find the list here: https://www.iban.com/country-codes"
 const { stmts: {getCC, setCC} } = require("../steam_news/db");
 const { codeToCountry } = require("../locales.json");
 
-exports.adminOnly = true;
+exports.defaultPermission = false;
 exports.description = "See or set this server's default locale (for price and language with /info and price watchers)";
 exports.autocomplete = searchCountry;
 exports.options = [{

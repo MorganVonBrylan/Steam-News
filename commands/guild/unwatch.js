@@ -7,7 +7,7 @@ const updateCmd = require(".").updateCmd.bind(null, exports);
 
 exports.shouldCreateFor = id => getWatchedApps(id).length || getWatchedPrices(id).length;
 
-exports.adminOnly = true;
+exports.defaultPermission = false;
 exports.description = "(admins only) Stop watching a game’s news feed.";
 const [appidOption] = exports.options = [{
 	type: "STRING", name: "game", required: true,
