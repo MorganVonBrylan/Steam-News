@@ -160,8 +160,8 @@ function initAdminCmds(adminServer)
 		run: inter => adminCmds[inter.options.getString("command")].run(inter, inter.options.getString("params"))
 	};
 
-	const then = ({id}) => adminServer.commands.permissions.set({fullPermissions:[
-		{ id, permissions: [{ id: require("../auth.json").master, type: "USER", permission: true }] },
+	const then = cmd => cmd.permissions.set({permissions:[
+		{ id: require("../auth.json").master, type: "USER", permission: true },
 	]});
 
 	if(skipDebug)
