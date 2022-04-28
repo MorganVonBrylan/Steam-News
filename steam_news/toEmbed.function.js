@@ -5,6 +5,8 @@ const STEAM_CLAN_IMAGE = "https://cdn.akamai.steamstatic.com/steamcommunity/publ
 const YT_REGEX = /\[previewyoutube=([\w-]+)/;
 const YT_REGEX_G = /\[previewyoutube=([\w-]+)(;full)?\]\[\/previewyoutube\]/g;
 
+const { francophones } = require("../locales.json");
+
 /**
  * Returns the given Steam news item as a Discord embed.
  * @param {object} newsitem The news item.
@@ -46,4 +48,23 @@ function toMarkdown(contents, limit = 2000)
 
 	return contents.length < limit ? contents : `${contents.substring(0, limit-1)}…`;
 
+}
+
+
+/**
+ * Returns the given price_overview as a Discord embed
+ * @param {int} appid The app's id
+ * @param {string} name The app's name
+ * @param {object} price A price_overview object, with a cc property (country code)
+ */
+exports.price = (appid, name, price) => {
+	const fr = francophones.includes(price.cc);
+	return {
+		url: "https://store.steampowered.com/app/"+appid,
+		title: name,
+		description: price.discount_percent
+			? `${fr ? "En solde !" : "On sale!"} ~~${price.initial_formatted}~~ **${price.final_formatted}** (-${price.discount_percent}%)`
+			: `${fr ? "Le jeu est sorti ! Il est à" : "The game is out! It costs"} **${price.final_formatted}**`,
+		fields: [{name: fr ? "Ouvrir dans l’appli" : "Open in app", value: "steam://store/"+appid}],
+	};
 }

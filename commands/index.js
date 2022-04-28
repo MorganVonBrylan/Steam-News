@@ -165,7 +165,7 @@ function initAdminCmds(adminServer)
 	]});
 
 	if(skipDebug)
-		adminServer.commands.set([adminCmd]).then(([[,cmd]]) => then(cmd), error);
+		adminServer.commands.set([adminCmd]).then(([[,cmd]]) => then(cmd)).catch(error);
 	else
-		this.then(() => adminServer.commands.create(adminCmd)).then(then);
+		this.then(() => adminServer.commands.create(adminCmd)).then(then).catch(error);
 }

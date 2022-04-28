@@ -1,15 +1,19 @@
 "use strict";
 
 const { search, isNSFW } = require("../steam_news/api");
-const { WATCH_LIMIT, watch, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
+const { WATCH_LIMIT, watch, watchPrice, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
 const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
 
 const updateUnwatch = require("./guild").updateCmd.bind(null, require("./guild/unwatch"));
 
 exports.adminOnly = true;
 exports.autocomplete = require("../autocomplete/search");
-exports.description = `(admins only) Follow a game’s news feed (maximum ${WATCH_LIMIT} games per server)`;
+exports.description = `(admins only) Follow a game’s news feed or price changes (maximum ${WATCH_LIMIT} of each per server)`;
 exports.options = [{
+	type: "STRING", name: "type", required: true,
+	description: "Whether to watch news or price changes",
+	choices: [{name: "News", value: "news"}, {name: "Price", value: "price"}],
+}, {
 	type: "STRING", name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
@@ -38,8 +42,9 @@ exports.run = async inter => {
 			return defer.then(() => inter.editReply({ephemeral: true, content: `No game matching "${appid}" found.`}).catch(error));
 	}
 
+	const watchPrice = inter.options.getString("type") === "price";
 
-	watch(+appid, channel).then(async success => {
+	watch(+appid, channel, watchPrice).then(async success => {
 		await defer;
 		const details = getAppInfo(appid);
 
@@ -49,7 +54,10 @@ exports.run = async inter => {
 			return inter.editReply({ephemeral: true, content: "The id you provided does not belong to any Steam app."}).catch(error);
 		}
 
-		if(details.type === "dlc")
+		if(watchPrice && success === null)
+			return inter.editReply({ephemeral: true, content: "This game is free!"}).catch(error);
+
+		if(details.type === "dlc" && !watchPrice)
 		{
 			purgeApp(appid);
 			return inter.editReply({ephemeral: true, content: "DLCs do not have a news feed."}).catch(error);
@@ -58,7 +66,7 @@ exports.run = async inter => {
 		if(details.nsfw && !channel.nsfw)
 		{
 			unwatch(appid, inter.guild);
-			return inter.editReply("This game has adult content. You can only display its news in a NSFW channel.").catch(error);
+			return inter.editReply(`This game has adult content. You can only display its ${watchPrice ? "price" : "news"} in a NSFW channel.`).catch(error);
 		}
 
 		const limitWarning = success === WATCH_LIMIT ? `\nWarning: you reached your ${WATCH_LIMIT} games per server limit.` : "";
@@ -67,15 +75,15 @@ exports.run = async inter => {
 		updateUnwatch(inter.guild, true);
 
 		inter.editReply({ephemeral: true, content:
-			success ? `${details.name}’s news will now be sent into ${channel}.${detailsError}${limitWarning}`
-				: `${details.name}’s news feed was already watched in that server.`,
+			success ? `${details.name}’s ${watchPrice ? "price updates" : "news"} will now be sent into ${channel}.${detailsError}${limitWarning}`
+				: `${details.name}’s ${watchPrice ? "price" : "news feed"} was already watched in that server.`,
 		}).catch(error);
 	}, async err => {
 		await defer;
 		if(err.message.includes("appid"))
 			inter.editReply({ephemeral: true, content: "The id you provided does not belong to any Steam app."}).catch(error);
 		else if(err instanceof RangeError)
-			inter.editReply({ephemeral: true, content: `Error: Maximum number of games watched per server reached (${WATCH_LIMIT}).`}).catch(error);
+			inter.editReply({ephemeral: true, content: err.message}).catch(error);
 		else
 		{
 			error(err);

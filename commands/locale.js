@@ -6,7 +6,7 @@ const { stmts: {getCC, setCC} } = require("../steam_news/db");
 const { codeToCountry } = require("../locales.json");
 
 exports.adminOnly = true;
-exports.description = "See or set this server's default locale (for price and language with /info)";
+exports.description = "See or set this server's default locale (for price and language with /info and price watchers)";
 exports.autocomplete = searchCountry;
 exports.options = [{
 	type: "STRING", name: "country-code",

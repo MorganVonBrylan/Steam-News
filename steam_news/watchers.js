@@ -1,7 +1,7 @@
 "use strict";
 
 const { existsSync, promises: {readFile, writeFile, unlink} } = require("fs");
-const { query, getDetails, isNSFW } = require("./api");
+const { query, queryPrices, getDetails, isNSFW } = require("./api");
 const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
 const REQUIRED_PERMS = SEND_MESSAGES | EMBED_LINKS;
 
@@ -14,6 +14,7 @@ const { stmts } = db;
 
 
 require("../bot").client.once("ready", checkForNews);
+require("../bot").client.once("ready", checkPrices);
 
 
 /**
@@ -62,12 +63,19 @@ exports.isNSFW = stmts.isAppNSFW;
 
 /**
  * @param {string} guildId The guild id
- * @returns {Array} The apps watched in that guild, in the format {appid, name, channelId}
+ * @returns {Array} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
  */
 exports.getWatchedApps = stmts.getWatchedApps;
 
+/**
+ * @param {string} guildId The guild id
+ * @returns {Array} The app prices watched in that guild, in the format {appid, name, nsfw, lastPrice, channelId}
+ */
+exports.getWatchedPrices = stmts.getWatchedPrices;
+
 
 setInterval(checkForNews, 3600_000);
+setInterval(checkPrices, 3600_000 * 3);
 
 const toEmbed = require("./toEmbed.function");
 
@@ -124,14 +132,77 @@ async function checkForNews()
 
 
 /**
+ * Triggers all price watchers.
+ * @returns {Promise<int>} The number of price updates sent.
+ */
+exports.checkPrices = checkPrices;
+async function checkPrices()
+{
+	const watchedPrices = {};
+	const appsWithUpdatedPrices = [];
+
+	for(const appDetails of stmts.findWatchedPrices())
+		watchedPrices[appDetails.appid] = appDetails;
+
+	for(const [appid, {final, discount_percent}] of Object.entries(await queryPrices(Object.keys(watchedPrices))))
+	{
+		const lastKnownPrice = watchedPrices[appid].lastPrice;
+		if(final === lastKnownPrice)
+			continue;
+
+		stmts.updateLastPrice({appid, lastPrice: final});
+		if(true || lastKnownPrice === null || final < watchedPrices[appid] || discount_percent)
+			appsWithUpdatedPrices.push(appid);
+	}
+
+	const newPricesByCC = new Map();
+	for(const appid of appsWithUpdatedPrices)
+	{
+		for(const {guildId, channelId, cc} of stmts.getPriceWatchers(appid))
+		{
+			if(!newPricesByCC.has(cc))
+				newPricesByCC.set(cc, new Map());
+
+			const appsForThisCC = newPricesByCC.get(cc);
+			if(appsForThisCC.has(appid))
+				appsForThisCC.get(appid).push(channelId);
+			else
+				appsForThisCC.set(appid, [channelId]);
+		}
+	}
+
+	const { channels } = require("../bot").client;
+	for(const [cc, appsForThisCC] of newPricesByCC)
+	{
+		const appids = [...appsForThisCC.keys()];
+		queryPrices([...appsForThisCC.keys()], cc).then(appDetails => {
+			for(const [appid, price] of Object.entries(appDetails))
+			{
+				price.cc = cc;
+				const { name, nsfw } = watchedPrices[appid];
+				const embed = { embeds: [toEmbed.price(appid, name, price)] };
+				for(const channelId of appsForThisCC.get(appid))
+				{
+					channels.fetch(channelId).then(channel => {
+						if(channel.permissionsFor(channel.guild.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
+							channel.send(embed).catch(console.error);
+					}, Function());
+				}
+			}
+		});
+	}
+}
+
+/**
  * Adds a watcher for an app. A server can only watch 25 apps at once.
  * @param {int} appid The app's id.
  * @param {GuildChannel} channel The text-based channel to send the news to.
+ * @param {boolean} price Whether to watch for price changes instead of news. Default: false
  *
- * @returns {Promise<int|false>} false if that app was already watched in that guild, or the new number of watched apps.
+ * @returns {Promise<int|false|null>} false if that app was already watched in that guild, or the new number of watched apps.
  * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its limit of 25 apps.
  */
-exports.watch = async (appid, channel) => {
+exports.watch = async (appid, channel, price = false) => {
 	if(!channel?.isText() || !channel.guild)
 		throw new TypeError("'channel' must be a text-based channel");
 
@@ -140,38 +211,76 @@ exports.watch = async (appid, channel) => {
 		throw new TypeError("'appid' is not a valid app id");
 
 	const guildId = channel.guild.id;
-	const watchedApps = stmts.getWatchedApps(guildId).map(({appid}) => appid);
+	const watchedApps = stmts[price ? "getWatchedPrices" : "getWatchedApps"](guildId).map(({appid}) => appid);
 
 	if(watchedApps.includes(appid))
 		return false;
 	if(watchedApps.length === WATCH_LIMIT)
-		throw new RangeError(`This server reached its limit of ${WATCH_LIMIT} watched apps.`);
+		throw new RangeError(`This server reached its limit of ${WATCH_LIMIT} watched ${price ? "prices" : "apps"}.`);
 
-	if(!stmts.isAppKnown(appid))
+	const wasUnknown = !stmts.isAppKnown(appid);
+	if(price || wasUnknown)
 	{
 		const details = await getDetails(appid);
 		if(!details) throw new Error(`Failed to get details of app ${appid}`);
-		stmts.insertApp(appid, details.name, isNSFW(details)+0, appnews.newsitems[0]?.gid);
+
+		let knownPrice = null;
+		if(wasUnknown)
+		{
+			stmts.insertApp(appid, details.name,
+				isNSFW(details)+0,
+				appnews.newsitems[0]?.gid,
+				knownPrice = details.is_free ? "free" : details.price_overview?.final,
+			);
+		}
+
+		if(price)
+		{
+			const price = details.price_overview;
+			if(!knownPrice)
+				knownPrice = stmts.getPrice(appid);
+			if(knownPrice === "free")
+				return null;
+			else if(knownPrice === null)
+				stmts.updateLastPrice({appid, lastPrice: price?.final});
+
+			if(price?.discount_percent && channel.permissionsFor(channel.guild.me).has(REQUIRED_PERMS))
+			{
+				const cc = price.cc = stmts.getCC(guildId) || "US";
+				if(cc === "US")
+					channel.send({ embeds: [toEmbed.price(appid, details.name, price)] }).catch(console.error);
+				else
+					queryPrices(appid, cc)
+						.then(prices => channel.send({ embeds: [toEmbed.price(appid, details.name, prices[appid])] }))
+						.catch(console.error)
+			}
+		}
 	}
 
-	stmts.watch(appid, guildId, channel.id);
-
+	stmts[price ? "watchPrice" : "watch"](appid, guildId, channel.id);
 	return watchedApps.length + 1;
 }
+
 
 
 /**
  * Stops watching the given app in the given guild.
  * @param {int} appid The app's id.
  * @param {Guild} guild The guild.
+ * @param {boolean} price Whether to unwatch for price changes instead of news. Default: false
  *
  * @returns {int|false} false if that guild was not watching that app, or the new number or apps watched by the guild.
  */
-exports.unwatch = (appid, guild) => {
+exports.unwatch = (appid, guild, price = false) => {
 	const guildId = guild.id || guild;
-	return stmts.unwatch(appid, guildId).changes
-		? stmts.getWatchedApps(guildId).length
-		: false;
+	const success = stmts[price ? "unwatchPrice" : "unwatch"](appid, guildId).changes;
+	if(!success)
+		return false;
+
+	const remaining = stmts[price ? "getWatchedPrices" : "getWatchedApps"](guildId).length;
+	if(price && !remaining)
+		stmts.updateLastPrice({appid, lastPrice: null});
+	return remaining;
 }
 
 

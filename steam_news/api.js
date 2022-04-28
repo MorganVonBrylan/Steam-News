@@ -5,6 +5,7 @@ const fetch = require("node-fetch");
 const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?feeds=steam_community_announcements&appid=";
 // Steam Store API unofficial doc: https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI
 const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids=";
+const BASE_PRICE_URL = "https://store.steampowered.com/api/appdetails?filters=price_overview&appids=";
 const BASE_SEARCH_URL = "https://store.steampowered.com/api/storesearch/?l=english";
 
 
@@ -51,6 +52,24 @@ function query(appid, count, maxlength)
 exports.exists = async appid => {
 	const {appnews} = await query(appid, 1, 1);
 	return !!appnews;
+}
+
+
+/**
+ * Queries prices for one or more apps.
+ * @param {number|Array<number>} appids The app id(s)
+ * @param {string} cc The country code for the price (e.g. "FR", "UK", etc). Default: "US"
+ * @returns {Promise<object>} A promise resolving to a dictionary of appid => price_overview pairs.
+ */
+exports.queryPrices = (appids, cc = "US") => {
+	if(appids instanceof Array)
+		appids = appids.join(",");
+
+	return fetch(BASE_PRICE_URL+appids+`&cc=${cc}`).then(data => data.json()).then(data => {
+		for(const appid in data)
+			data[appid] = data[appid].data?.price_overview;
+		return data;
+	});
 }
 
 
