@@ -54,8 +54,13 @@ exports.run = async inter => {
 			return inter.editReply({ephemeral: true, content: "The id you provided does not belong to any Steam app."}).catch(error);
 		}
 
-		if(watchPrice && success === null)
-			return inter.editReply({ephemeral: true, content: "This game is free!"}).catch(error);
+		if(watchPrice)
+		{
+			if(success === null)
+				return inter.editReply({ephemeral: true, content: "This game is free!"}).catch(error);
+			if(success === false)
+				return inter.editReply({ephemeral: true, content: "Error: could not find price for this game."}).catch(error);
+		}
 
 		if(details.type === "dlc" && !watchPrice)
 		{

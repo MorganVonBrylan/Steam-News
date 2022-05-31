@@ -241,8 +241,11 @@ exports.watch = async (appid, channel, price = false) => {
 				knownPrice = stmts.getPrice(appid);
 			if(knownPrice === "free")
 				return null;
-			else if(knownPrice === null)
+			else if(knownPrice === null || !price)
+			{
 				stmts.updateLastPrice({appid, lastPrice: price?.final});
+				return false;
+			}
 
 			if(price?.discount_percent && channel.permissionsFor(channel.guild.me).has(REQUIRED_PERMS))
 			{
