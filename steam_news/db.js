@@ -51,10 +51,7 @@ try {
 		switch(currentVersion)
 		{
 		case 1:
-			db.exec(`
-				ALTER TABLE Apps ADD lastPrice INTEGER DEFAULT NULL;
-
-`);
+			db.exec("ALTER TABLE Apps ADD lastPrice INTEGER DEFAULT NULL;");
 			// no break; !
 		//case 2:
 			// upgrades for 2 to 3
