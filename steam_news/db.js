@@ -4,7 +4,7 @@ const db = module.exports = exports = new require("better-sqlite3")(__dirname+"/
 
 const DB_VERSION = 2;
 
-db.run = function(sql, params) { return this.prepare(sql).run(params); }
+db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS Apps (
