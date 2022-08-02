@@ -36,7 +36,7 @@ exports.run = async inter => {
 		if(details.type === "dlc")
 			return inter.editRreply({ephemeral: true, content: "DLCs do not have a news feed."}).catch(error);
 
-		saveAppInfo(appid, { name: details.name, nsfw: isNSFW(details) });
+		saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
 	}
 
 	if(!appnews.newsitems.length)

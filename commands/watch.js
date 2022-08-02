@@ -1,6 +1,6 @@
 "use strict";
 
-const { search, isNSFW } = require("../steam_news/api");
+const { search } = require("../steam_news/api");
 const { WATCH_LIMIT, watch, watchPrice, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
 const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
 

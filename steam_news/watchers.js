@@ -228,7 +228,7 @@ exports.watch = async (appid, channel, price = false) => {
 		if(wasUnknown)
 		{
 			stmts.insertApp(appid, details.name,
-				isNSFW(details)+0,
+				+isNSFW(details),
 				appnews.newsitems[0]?.gid,
 				knownPrice = details.is_free ? "free" : details.price_overview?.final,
 			);
