@@ -8,7 +8,7 @@ exports.global = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = "See a game’s latest news.";
 exports.options = [{
-	type: "STRING", name: "game", required: true,
+	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
 }];

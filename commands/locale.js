@@ -9,7 +9,7 @@ exports.defaultPermission = false;
 exports.description = "See or set this server's default locale (for price and language with /info and price watchers)";
 exports.autocomplete = searchCountry;
 exports.options = [{
-	type: "STRING", name: "country-code",
+	type: STRING, name: "country-code",
 	description: "Your 2-letter country code, like GB, FR, RU, etc. You can also make a search.",
 	autocomplete: true,
 }];

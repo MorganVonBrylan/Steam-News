@@ -4,11 +4,11 @@ const { purgeApp, purgeGuild } = require("../../steam_news/watchers");
 
 exports.description = "Purge une appli ou un serveur.";
 exports.options = [{
-	type: "STRING", name: "quoi",
+	type: STRING, name: "quoi",
 	description: "Que faut-il purger ?", required: true,
 	choices: [{ name: "appli", value: "app" }, { name: "serveur", value: "guild" }],
 }, {
-	type: "STRING", name: "id",
+	type: STRING, name: "id",
 	description: "L'id de l'appli ou du serveur à purger", required: true
 }];
 exports.run = inter => {

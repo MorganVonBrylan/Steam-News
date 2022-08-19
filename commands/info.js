@@ -8,11 +8,11 @@ exports.global = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = "See info about a game (genre, price, release date, etc)";
 exports.options = [{
-	type: "STRING", name: "game", required: true,
+	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
 }, {
-	type: "STRING", name: "language",
+	type: STRING, name: "language",
 	description: "The language to display info in (if unspecified, the server's default or your own locale)",
 	choices: [
 		{ name: "English (price in US$)", value: "en" },

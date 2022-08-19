@@ -10,7 +10,7 @@ exports.shouldCreateFor = id => getWatchedApps(id).length || getWatchedPrices(id
 exports.defaultPermission = false;
 exports.description = "(admins only) Stop watching a game’s news feed.";
 const [appidOption] = exports.options = [{
-	type: "STRING", name: "game", required: true,
+	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	choices: [],
 }];
@@ -20,14 +20,14 @@ exports.getOptions = guildId => {
 	const options = [];
 	if(watchedApps.length)
 		options.push({
-			type: "SUB_COMMAND", name: "news",
+			type: SUBCOMMAND, name: "news",
 			description: "(admins only) Stop watching a game’s news feed.",
 			options: [{ ...appidOption, choices: watchedApps }],
 		});
 
 	if(watchedPrices.length)
 		options.push({
-			type: "SUB_COMMAND", name: "price",
+			type: SUBCOMMAND, name: "price",
 			description: "(admins only) Stop watching a game’s price.",
 			options: [{ ...appidOption, choices: watchedPrices }],
 		});

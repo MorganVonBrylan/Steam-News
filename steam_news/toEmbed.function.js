@@ -24,7 +24,7 @@ module.exports = exports = ({appid, url, title, contents, feedlabel, date}) => {
 		yt,
 		author: name ? { name, url: "https://store.steampowered.com/app/"+appid } : undefined,
 		footer: name ? { text: name } : undefined,
-		timestamp: date * 1000,
+		timestamp: new Date(date * 1000).toISOString(),
 	};
 };
 

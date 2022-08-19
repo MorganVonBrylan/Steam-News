@@ -2,8 +2,8 @@
 
 const { existsSync, promises: {readFile, writeFile, unlink} } = require("fs");
 const { query, queryPrices, getDetails, isNSFW } = require("./api");
-const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
-const REQUIRED_PERMS = SEND_MESSAGES | EMBED_LINKS;
+const { SendMessages, EmbedLinks } = require("discord.js").PermissionsBitField.Flags;
+const REQUIRED_PERMS = SendMessages | EmbedLinks;
 
 const watchFile = __dirname + "/watchers.json";
 const WATCH_LIMIT = exports.WATCH_LIMIT = 25; // the maximum number of fields in an embed and a good limit overall
@@ -114,7 +114,7 @@ async function checkForNews()
 				for(const channelId of stmts.getWatchers(appid))
 				{
 					channels.fetch(channelId).then(channel => {
-						if(channel.permissionsFor(channel.guild.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
+						if(channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
 						{
 							channel.send(embed).catch(console.error);
 							if(yt)
@@ -184,7 +184,7 @@ async function checkPrices()
 				for(const channelId of appsForThisCC.get(appid))
 				{
 					channels.fetch(channelId).then(channel => {
-						if(channel.permissionsFor(channel.guild.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
+						if(channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
 							channel.send(embed).catch(console.error);
 					}, Function());
 				}
@@ -247,7 +247,7 @@ exports.watch = async (appid, channel, price = false) => {
 				return false;
 			}
 
-			if(price?.discount_percent && channel.permissionsFor(channel.guild.me).has(REQUIRED_PERMS))
+			if(price?.discount_percent && channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS))
 			{
 				const cc = price.cc = stmts.getCC(guildId) || "US";
 				if(cc === "US")

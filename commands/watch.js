@@ -2,7 +2,10 @@
 
 const { search } = require("../steam_news/api");
 const { WATCH_LIMIT, watch, watchPrice, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
-const { SEND_MESSAGES, EMBED_LINKS } = require("discord.js").Permissions.FLAGS;
+const {
+	ChannelType: {GuildText: GUILD_TEXT, GuildPublicThread: GUILD_PUBLIC_THREAD, GuildPrivateThread: GUILD_PRIVATE_THREAD, GuildNews: GUILD_NEWS, GuildNewsThread: GUILD_NEWS_THREAD},
+	PermissionsBitField: {Flags: {SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS}},
+} = require("discord.js");
 
 const updateUnwatch = require("./guild").updateCmd.bind(null, require("./guild/unwatch"));
 
@@ -10,21 +13,21 @@ exports.defaultPermission = false;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = `(admins only) Follow a game’s news feed or price changes (maximum ${WATCH_LIMIT} of each per server)`;
 exports.options = [{
-	type: "STRING", name: "type", required: true,
+	type: STRING, name: "type", required: true,
 	description: "Whether to watch news or price changes",
 	choices: [{name: "News", value: "news"}, {name: "Price", value: "price"}],
 }, {
-	type: "STRING", name: "game", required: true,
+	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
 }, {
-	type: "CHANNEL", name: "channel",
-	channelTypes: ["GUILD_TEXT", "GUILD_PUBLIC_THREAD", "GUILD_PRIVATE_THREAD", "GUILD_NEWS", "GUILD_NEWS_THREAD"],
+	type: CHANNEL, name: "channel",
+	channelTypes: [GUILD_TEXT, GUILD_PUBLIC_THREAD, GUILD_PRIVATE_THREAD, GUILD_NEWS, GUILD_NEWS_THREAD],
 	description: "The channel where to send the news (defaults to current channel if not provided)"
 }];
 exports.run = async inter => {
 	const channel = inter.options.getChannel("channel") || inter.channel;
-	const perms = channel.permissionsFor(inter.guild.me);
+	const perms = channel.permissionsFor(inter.guild.members.me);
 	if(!perms.has(SEND_MESSAGES))
 		return inter.reply({ephemeral: true, content: `I cannot send messages in ${channel}.`}).catch(error);
 	else if(!perms.has(EMBED_LINKS))

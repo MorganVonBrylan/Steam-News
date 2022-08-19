@@ -1,16 +1,15 @@
 "use strict";
 
 const Discord = require("discord.js");
-const INTENTS = Discord.Intents.FLAGS;
 const auth = exports.auth = require("./auth.json");
 
 const client = exports.client = new Discord.Client({
-	intents: new Discord.Intents([
-		INTENTS.GUILDS,
-	]),
+	intents: [
+		Discord.GatewayIntentBits.Guilds,
+	],
 });
 
-const {FLAGS: { ADMINISTRATOR }} = Discord.Permissions;
+const {InteractionType: { ApplicationCommandAutocomplete: APPLICATION_COMMAND_AUTOCOMPLETE, ApplicationCommand: APPLICATION_COMMAND }} = Discord;
 
 var master;
 exports.sendToMaster = (msg, onError = error) =>
@@ -41,14 +40,14 @@ for(const file of require("fs").readdirSync(__dirname+"/events"))
 client.on("interactionCreate", interaction => {
 	const command = commands[interaction.commandName];
 
-	if(interaction.type === "APPLICATION_COMMAND_AUTOCOMPLETE")
+	if(interaction.type === APPLICATION_COMMAND_AUTOCOMPLETE)
 	{
 		return interaction.inGuild() || command.global
 		 	? command.autocomplete(interaction)
 			: interaction.respond([{name: "This command only works in servers.", value: "N/A"}]).catch(Function());
 	}
 
-	if(interaction.type !== "APPLICATION_COMMAND")
+	if(interaction.type !== APPLICATION_COMMAND)
 		return;
 
 	if(!interaction.inGuild() && !command.global)

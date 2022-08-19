@@ -15,6 +15,15 @@ const NAME_REGEX = /^[a-z_-]{1,32}$/;
 var skipDebug = true;
 
 
+const { ApplicationCommandType: {ChatInput: CHAT_INPUT} } = require("discord.js");
+
+String.prototype.toSnakeCase = function() {
+	return this.replace(/(?!^)[A-Z]/g, letter => `_${letter}`).toUpperCase();
+}
+for(const [key, bitfield] of Object.entries(require("discord.js").ApplicationCommandOptionType))
+	global[key.toSnakeCase()] = bitfield;
+
+
 class LoadError extends Error {
 	constructor(commandName, message) {
 		super(message);
@@ -52,12 +61,12 @@ function checkCommand(command)
 	if(!NAME_REGEX.test(name))
 		throw new LoadError(name, `Invalid command name: ${name}`);
 
-	const {description, run, type = "CHAT_INPUT"} = command;
+	const {description, run, type = CHAT_INPUT} = command;
 
 	if(typeof run !== "function")
 		throw new LoadError(name, "Missing a 'run' function.");
 
-	if(type === "CHAT_INPUT")
+	if(type === CHAT_INPUT)
 	{
 		if(!description)
 			throw new LoadError(name, `Missing description.`);
@@ -150,22 +159,18 @@ function initAdminCmds(adminServer)
 		defaultPermission: false,
 		description: "Execute an admin command",
 		options: [{
-			type: "STRING", name: "command", required: true,
+			type: STRING, name: "command", required: true,
 			description: "The command to execute",
 			choices: Object.keys(adminCmds).map(cmd => ({name: cmd, value: cmd})),
 		}, {
-			type: "STRING", name: "params",
+			type: STRING, name: "params",
 			description: "The command parameters",
 		}],
 		run: inter => adminCmds[inter.options.getString("command")].run(inter, inter.options.getString("params"))
 	};
 
-	const then = cmd => cmd.permissions.set({permissions:[
-		{ id: require("../auth.json").master, type: "USER", permission: true },
-	]});
-
 	if(skipDebug)
-		adminServer.commands.set([adminCmd]).then(([[,cmd]]) => then(cmd)).catch(error);
+		adminServer.commands.set([adminCmd]).catch(error);
 	else
-		this.then(() => adminServer.commands.create(adminCmd)).then(then).catch(error);
+		this.then(() => adminServer.commands.create(adminCmd)).catch(error);
 }
