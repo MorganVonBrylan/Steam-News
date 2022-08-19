@@ -9,15 +9,13 @@ const client = exports.client = new Discord.Client({
 	],
 });
 
-const {InteractionType: { ApplicationCommandAutocomplete: APPLICATION_COMMAND_AUTOCOMPLETE, ApplicationCommand: APPLICATION_COMMAND }} = Discord;
-
 var master;
 exports.sendToMaster = (msg, onError = error) =>
 	master?.send(msg).catch(onError)
 	|| client.once("ready", async () => (await client.users.fetch(auth.master)).send(msg).catch(onError));
 
 const error = require("./error");
-const { commands, init: initCmds } = require("./commands");
+const { init: initCmds } = require("./commands");
 
 client.login(auth.token);
 
@@ -35,26 +33,3 @@ client.once("ready", () => {
 
 for(const file of require("fs").readdirSync(__dirname+"/events"))
 	client.on(file.substring(0, file.length - 3), require(`./events/${file}`));
-
-
-client.on("interactionCreate", interaction => {
-	const command = commands[interaction.commandName];
-
-	if(interaction.type === APPLICATION_COMMAND_AUTOCOMPLETE)
-	{
-		return interaction.inGuild() || command.global
-		 	? command.autocomplete(interaction)
-			: interaction.respond([{name: "This command only works in servers.", value: "N/A"}]).catch(Function());
-	}
-
-	if(interaction.type !== APPLICATION_COMMAND)
-		return;
-
-	if(!interaction.inGuild() && !command.global)
-		return interaction.reply({ephemeral: true, content: "This command only works in servers."}).catch(error);
-
-	if(command)
-		command.run(interaction);
-	else
-		error(new Error(`Received unknown command: ${interaction.commandName}`));
-});
