@@ -14,6 +14,8 @@ const { readdirSync } = require("fs");
 const NAME_REGEX = /^[a-z_-]{1,32}$/;
 var skipDebug = true;
 
+const DEFAULT_DM_PERMISSION = false;
+
 
 const { ApplicationCommandType: {ChatInput: CHAT_INPUT} } = require("discord.js");
 
@@ -103,6 +105,9 @@ function checkCommand(command)
 		if("options" in command)
 			throw new LoadError(name, "Non-chat input commands cannot have options.");
 	}
+
+	if(!("dmPermission" in command))
+		command.dmPermission = DEFAULT_DM_PERMISSION;
 }
 
 function load(name, subfolder = "", reload = false)
@@ -156,7 +161,7 @@ function initAdminCmds(adminServer)
 
 	const adminCmd = commands.admin = {
 		name: "admin",
-		defaultPermission: false,
+		defaultMemberPermissions: "0",
 		description: "Execute an admin command",
 		options: [{
 			type: STRING, name: "command", required: true,

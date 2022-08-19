@@ -9,7 +9,7 @@ const {
 
 const updateUnwatch = require("./guild").updateCmd.bind(null, require("./guild/unwatch"));
 
-exports.defaultPermission = false;
+exports.defaultMemberPermissions = "0";
 exports.autocomplete = require("../autocomplete/search");
 exports.description = `(admins only) Follow a game’s news feed or price changes (maximum ${WATCH_LIMIT} of each per server)`;
 exports.options = [{

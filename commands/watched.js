@@ -2,7 +2,7 @@
 
 const { getWatchedApps, getWatchedPrices } = require("../steam_news/watchers");
 
-exports.defaultPermission = false;
+exports.defaultMemberPermissions = "0";
 exports.description = "See what games are being watched in that server.";
 exports.options = [];
 exports.run = inter => {

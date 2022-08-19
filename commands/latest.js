@@ -4,7 +4,7 @@ const { search, query, getDetails, isNSFW } = require("../steam_news/api");
 const { isKnown, saveAppInfo, isNSFW: isAppNSFW } = require("../steam_news/watchers");
 const toEmbed = require("../steam_news/toEmbed.function");
 
-exports.global = true;
+exports.dmPermission = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = "See a game’s latest news.";
 exports.options = [{

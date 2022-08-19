@@ -2,7 +2,7 @@
 
 const { search } = require("../steam_news/api");
 
-exports.global = true;
+exports.dmPermission = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = "Get a link to open a game in the Steam app";
 exports.options = [{

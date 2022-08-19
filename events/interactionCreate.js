@@ -9,7 +9,7 @@ module.exports = exports = interaction => {
 
 	if(interaction.type === APPLICATION_COMMAND_AUTOCOMPLETE)
 	{
-		return interaction.inGuild() || command.global
+		return interaction.inGuild() || !command.dmPermission
 		 	? command.autocomplete(interaction)
 			: interaction.respond([{name: "This command only works in servers.", value: "N/A"}]).catch(Function());
 	}

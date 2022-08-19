@@ -3,7 +3,7 @@
 const { WATCH_LIMIT } = require("../steam_news/watchers");
 const SUPPORT_SERVER = require("../bot").auth.supportServer || "*(no support server invite set)*";
 
-exports.global = true;
+exports.dmPermission = true;
 exports.description = "Get help about the bot.";
 exports.run = inter => {
 	setAvatars();

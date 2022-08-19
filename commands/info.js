@@ -4,7 +4,7 @@ const { search, getDetails, isNSFW } = require("../steam_news/api");
 const { stmts: {getCC} } = require("../steam_news/db");
 const { langToCountry } = require("../locales.json");
 
-exports.global = true;
+exports.dmPermission = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.description = "See info about a game (genre, price, release date, etc)";
 exports.options = [{
