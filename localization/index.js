@@ -11,7 +11,7 @@ if(!locales[FALLBACK])
 	throw new Error(`Missing fallback localization (${FALLBACK})`);
 
 
-global.tr = {
+global.tr = exports.tr = {
 	set(lang, group) {
 		this.group = group;
 		if(!(lang in locales))
