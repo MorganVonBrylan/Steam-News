@@ -1,0 +1,18 @@
+{
+	"commands": {
+		"open": {
+			"name": "ouvrir",
+			"description": "Obtenir un lien pour ouvrir un jeu dans l’appli Steam",
+			"options": {
+				"game": {
+					"name": "jeu",
+					"description": "L’id ou le nom du jeu"
+				}
+			}
+		}
+	},
+
+	"open": {
+		"no-match": "Aucun jeu trouvé correspondant à \"%s\"."
+	}
+}

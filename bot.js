@@ -9,6 +9,10 @@ const client = exports.client = new Discord.Client({
 	],
 });
 
+
+require("./localization");
+
+
 var master;
 exports.sendToMaster = (msg, onError = error) =>
 	master?.send(msg).catch(onError)

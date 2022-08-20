@@ -148,7 +148,10 @@ function loadFolder(path, commandManager)
 	}
 
 	if(commandManager)
+	{
+		require("../localization").applyTranslations(commands);
 		return commandManager.set(Object.values(commands));
+	}
 }
 
 

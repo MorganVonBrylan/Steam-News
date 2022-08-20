@@ -1,0 +1,18 @@
+{
+	"commands": {
+		"open": {
+			"name": "open",
+			"description": "Get a link to open a game in the Steam app",
+			"options": {
+				"game": {
+					"name": "game",
+					"description": "The game’s name or id"
+				}
+			}
+		}
+	},
+
+	"open": {
+		"no-match": "No game matching \"%s\" found."
+	}
+}
