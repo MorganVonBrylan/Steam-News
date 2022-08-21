@@ -18,10 +18,14 @@ exports.options = [{
 		{ name: "English (price in US$)", value: "en" },
 		{ name: "English (price in pounds)", value: "en-UK" },
 		{ name: "Français", value: "fr" },
+		{ name: "My own locale", value: "own" },
 	],
 }];
 exports.run = async inter => {
-	const lang = inter.options.getString("language") || getCC(inter.guild?.id)?.toLowerCase() || inter.locale || "en";
+	const langOpt = inter.options.getString("language");
+	const lang = langOpt && langOpt !== "own" ? langOpt : (
+		getCC(inter.guild?.id)?.toLowerCase() || inter.locale || "en"
+	);
 	const tr = languages[lang] || languages.en;
 	const defer = inter.deferReply().catch(error);
 	let appid = inter.options.getString("game");
