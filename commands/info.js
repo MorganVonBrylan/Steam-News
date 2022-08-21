@@ -39,6 +39,8 @@ exports.run = async inter => {
 			return defer.then(() => inter.editReply({ephemeral: true, content: `No game matching "${appid}" found.`}).catch(error));
 	}
 
+	const t = tr.set(lang, "info");
+
 	getDetails(appid, lang, langToCountry[lang]).then(async details => {
 		await defer;
 		if(!details)
