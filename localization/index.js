@@ -34,7 +34,7 @@ global.tr = exports.tr = {
 		for(let i = 0 ; i < path.length-1 ; ++i)
 		{
 			if(path[i] in obj)
-				obj = path[i];
+				obj = obj[path[i]];
 			else
 			{
 				error(`Missing ${this.lang} translation for ${key}`);
