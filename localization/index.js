@@ -102,14 +102,26 @@ exports.applyTranslations = function(commandList)
 				const tr = options[opt.name];
 				if(tr)
 				{
-					const {name, description} = tr;
+					const {name, description, choices} = tr;
 					if(opt.nameLocalizations) opt.nameLocalizations[locale] = name;
 					else opt.nameLocalizations = { [locale]: name };
 					if(opt.descriptionLocalizations) opt.descriptionLocalizations[locale] = description;
 					else opt.descriptionLocalizations = { [locale]: description };
+
+					if(opt.choices)
+					{
+						if(opt.choices.length !== choices?.length)
+							console.warn(`Mismatched number of choices in ${locale} translation for option ${opt.name} of command ${cmdName} (expected ${opt.choices.length}, got ${choices?.length})`);
+						else for(let i = 0 ; i < choices.length ; ++i)
+						{
+							const choice = opt.choices[i];
+							if(choice.nameLocalizations) choice.nameLocalizations[locale] = choices[i];
+							else choice.nameLocalizations = { [locale]: choices[i] };
+						}
+					}
 				}
 				else
-					console.warn(`Missing ${locale} translation for option ${option.name} of command ${cmdName}`);
+					console.warn(`Missing ${locale} translation for option ${opt.name} of command ${cmdName}`);
 			}
 		}
 	}
