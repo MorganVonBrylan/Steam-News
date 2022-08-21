@@ -29,6 +29,9 @@ global.tr = exports.tr = {
 	},
 
 	t(key, replaces = []) {
+		if(!(replaces instanceof Array))
+			replaces = [replaces];
+
 		const path = key.split(".");
 		let obj = this.locale;
 		for(let i = 0 ; i < path.length-1 ; ++i)
