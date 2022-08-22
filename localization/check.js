@@ -33,5 +33,12 @@ function checkGroup(group, localeGroup, path = "")
 			console.error(`${keyPath} is a ${typeof localeGroup[key]}, should be a ${typeof value}`);
 		else if(typeof value === "object")
 			checkGroup(value, localeGroup[key], keyPath);
+		else if(typeof value === "string")
+		{
+			const reqPlaceholders = value.match(/%s/g)?.length || 0;
+			const gotPlaceholders = localeGroup[key].match(/%s/g)?.length || 0;
+			if(reqPlaceholders !== gotPlaceholders)
+				console.error(`${keyPath} has ${gotPlaceholders} placeholders, should have ${reqPlaceholders}`);
+		}
 	}
 }
