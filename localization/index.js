@@ -31,6 +31,23 @@ global.tr = module.exports = exports = {
 		return this.t;
 	},
 
+	get(lang, key) {
+		const {lang, group} = tr;
+		const translation = tr.set(lang)(key);
+		tr.set(lang, group);
+		return translation;
+	},
+	getAll(key, skipFallback = false) {
+		const {lang, group} = tr;
+		const translations = {};
+		for(const locale of tr.locales)
+			if(!skipFallback || locale !== FALLBACK)
+				translations[locale] = tr.set(locale)(key);
+
+		tr.set(lang, group);
+		return translations;
+	},
+
 	t(key, replaces = []) {
 		if(!(replaces instanceof Array))
 			replaces = [replaces];
