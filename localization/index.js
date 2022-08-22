@@ -48,10 +48,7 @@ global.tr = module.exports = exports = {
 		return translations;
 	},
 
-	t(key, replaces = []) {
-		if(!(replaces instanceof Array))
-			replaces = [replaces];
-
+	t(key, ...replaces) {
 		const path = key.split(".");
 		let obj = this.locale;
 		for(let i = 0 ; i < path.length-1 ; ++i)
