@@ -11,7 +11,10 @@ if(!locales[FALLBACK])
 	throw new Error(`Missing fallback localization (${FALLBACK})`);
 
 
-global.tr = exports.tr = {
+global.tr = module.exports = exports = {
+	locales: Object.keys(locales),
+	fallbackLocale: FALLBACK,
+
 	set(lang, group) {
 		this.group = group;
 		if(!(lang in locales))
@@ -69,12 +72,12 @@ global.tr = exports.tr = {
 	},
 }
 
-tr.locales = Object.keys(locales);
-tr.fallbackLocale = FALLBACK;
 
-tr.t = tr.t.bind(tr);
+for(const prop of tr)
+	if(typeof tr[prop] === "function")
+		tr[prop] = tr[prop].bind(tr);
+
 tr.set("en");
-
 
 
 exports.applyTranslations = function(commandList)
