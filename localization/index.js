@@ -48,6 +48,14 @@ global.tr = module.exports = exports = {
 		return translations;
 	},
 
+	plural(keyOrPlurals, n, ...replaces) {
+		const plurals = typeof keyOrPlurals === "object" ? keyOrPlurals : tr.t(keyOrPlurals);
+		let str = plurals[n] || plurals.default.replace("%n", n);
+		for(const replace of replaces)
+			str = str.replace("%s", replace);
+		return str;
+	},
+
 	t(key, ...replaces) {
 		const path = key.split(".");
 		let obj = this.locale;
