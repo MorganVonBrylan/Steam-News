@@ -7,11 +7,44 @@ const updateCmd = require(".").updateCmd.bind(null, exports);
 
 exports.shouldCreateFor = id => getWatchedApps(id).length || getWatchedPrices(id).length;
 
+const localizations = Object.entries(tr.getAll("commands.unwatch", true));
+localizations.get = function(property) {
+	return this.reduce((localization, [locale, tr]) => {
+		localization[locale] = tr[property];
+		return localization;
+	}, {});
+}
+localizations.optionLocalizations = function(optionName) {
+	return this.reduce((optLocalization, [locale, tr]) => {
+		const {name, description} = tr.options[optionName];
+		optLocalization.nameLocalizations[locale] = name;
+		optLocalization.descriptionLocalizations[locale] = description;
+		return optLocalization;
+	}, {
+		nameLocalizations: {},
+		descriptionLocalizations: {},
+	});
+}
+
+
 exports.defaultMemberPermissions = "0";
+exports.nameLocalizations = localizations.get("name");
 exports.description = "(admins only) Stop watching a game’s news feed.";
+exports.descriptionLocalizations = localizations.get("description");
+const unwatchNews = {
+	type: SUBCOMMAND, name: "news",
+	description: "(admins only) Stop watching a game’s news feed.",
+	...localizations.optionLocalizations("news"),
+};
+const unwatchPrice = {
+	type: SUBCOMMAND, name: "price",
+	description: "(admins only) Stop watching a game’s price.",
+	...localizations.optionLocalizations("price"),
+}
 const [appidOption] = exports.options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
+	...localizations.optionLocalizations("game"),
 	choices: [],
 }];
 exports.getOptions = guildId => {
@@ -20,15 +53,13 @@ exports.getOptions = guildId => {
 	const options = [];
 	if(watchedApps.length)
 		options.push({
-			type: SUBCOMMAND, name: "news",
-			description: "(admins only) Stop watching a game’s news feed.",
+			...unwatchNews,
 			options: [{ ...appidOption, choices: watchedApps }],
 		});
 
 	if(watchedPrices.length)
 		options.push({
-			type: SUBCOMMAND, name: "price",
-			description: "(admins only) Stop watching a game’s price.",
+			...unwatchPrice,
 			options: [{ ...appidOption, choices: watchedPrices }],
 		});
 
@@ -42,7 +73,7 @@ exports.run = async inter => {
 	const unwatched = unwatch(appid, inter.guild, price) !== false;
 	inter.reply({
 		ephemeral: true,
-		content: `${name}${price ? "’s price" : ""} ${unwatched ? "is no longer" : "was not being"} watched in this server.`,
+		content: tr.get(inter.locale, `unwatch.${price ? "price" : "news"}-${unwatched ? "unwatched" : "unchanged"}`, name),
 	}).catch(error);
 
 	if(unwatched)

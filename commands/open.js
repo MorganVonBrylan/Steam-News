@@ -12,7 +12,6 @@ exports.options = [{
 }];
 exports.run = async inter => {
 	let appid = inter.options.getString("game");
-	const t = tr.set(inter.locale, "open");
 
 	if(!isFinite(appid))
 	{
@@ -25,7 +24,7 @@ exports.run = async inter => {
 			if(game)
 				appid = game.id;
 			else
-				return inter.reply({ephemeral: true, content: t("no-match", [appid])}).catch(error);
+				return inter.reply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error);
 		}
 	}
 

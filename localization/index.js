@@ -3,9 +3,15 @@
 const FALLBACK = "en";
 const locales = {};
 
+const WATCH_LIMIT = 25;
+
 for(const file of require("fs").readdirSync(__dirname))
 	if(file.endsWith(".json"))
-		locales[file.substring(0, file.length-5)] = require("./"+file);
+	{
+		const locale = locales[file.substring(0, file.length-5)] = require("./"+file);
+		const { commands: { watch } } = locale;
+		watch.description = watch.description.replace("%s", WATCH_LIMIT);
+	}
 
 if(!locales[FALLBACK])
 	throw new Error(`Missing fallback localization (${FALLBACK})`);

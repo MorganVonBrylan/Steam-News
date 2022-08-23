@@ -14,26 +14,27 @@ exports.options = [{
 	autocomplete: true,
 }];
 exports.run = inter => {
+	const t = tr.set(inter.locale, "locale");
 	const cc = inter.options.getString("country-code")?.toUpperCase();
 
 	if(!cc)
 	{
 		const currentCC = getCC(inter.guild.id);
 		inter.reply(currentCC
-			? `Your current locale is ${currentCC} (${codeToCountry[currentCC]}).`
-			: "This server does not have a default locale."
+			? t("current", currentCC, codeToCountry[currentCC])
+			: t("no-default")
 		).catch(error);
 	}
 	else
 	{
 		if(cc.length !== 2)
-			inter.reply({ephemeral: true, content: "You need to provide a country's 2-letter code.\n"+CC_LIST}).catch(error);
+			inter.reply({ephemeral: true, content: t("cc-required", CC_LIST)}).catch(error);
 		else if(!(cc in codeToCountry))
-			inter.reply({ephemeral: true, content: "This is not a valid Alpha-2 code.\n"+CC_LIST}).catch(error);
+			inter.reply({ephemeral: true, content: t("cc-invalid", CC_LIST)}).catch(error);
 		else
 		{
 			setCC(inter.guild.id, cc);
-			inter.reply(`This server's default locale is now ${cc} (${codeToCountry[cc]}).`).catch(error);
+			inter.reply(t("new-default", cc, codeToCountry[cc])).catch(error);
 		}
 	}
 }

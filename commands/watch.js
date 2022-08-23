@@ -28,10 +28,12 @@ exports.options = [{
 exports.run = async inter => {
 	const channel = inter.options.getChannel("channel") || inter.channel;
 	const perms = channel.permissionsFor(inter.guild.members.me);
+	const t = tr.set(inter.locale, "watch");
+
 	if(!perms.has(SEND_MESSAGES))
-		return inter.reply({ephemeral: true, content: `I cannot send messages in ${channel}.`}).catch(error);
+		return inter.reply({ephemeral: true, content: t("cannot-send", channel)}).catch(error);
 	else if(!perms.has(EMBED_LINKS))
-		return inter.reply({ephemeral: true, content: `I cannot send embeds in ${channel}.`}).catch(error);
+		return inter.reply({ephemeral: true, content: t("cannot-embed", channel)}).catch(error);
 
 	const defer = inter.deferReply({ephemeral: true}).catch(error);
 	let appid = inter.options.getString("game");
@@ -42,10 +44,11 @@ exports.run = async inter => {
 		if(game)
 			appid = game.id;
 		else
-			return defer.then(() => inter.editReply({ephemeral: true, content: `No game matching "${appid}" found.`}).catch(error));
+			return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
 	}
 
-	const watchPrice = inter.options.getString("type") === "price";
+	const type = inter.options.getString("type");
+	const watchPrice = type === "price";
 
 	watch(+appid, channel, watchPrice).then(async success => {
 		await defer;
@@ -54,48 +57,48 @@ exports.run = async inter => {
 		if(!details)
 		{
 			purgeApp(appid);
-			return inter.editReply({ephemeral: true, content: "The id you provided does not belong to any Steam app."}).catch(error);
+			return inter.editReply({ephemeral: true, content: t.get(inter.locale, "bad-appid")}).catch(error);
 		}
 
 		if(watchPrice)
 		{
 			if(success === null)
-				return inter.editReply({ephemeral: true, content: "This game is free!"}).catch(error);
+				return inter.editReply({ephemeral: true, content: t("price-free")}).catch(error);
 			if(success === false)
-				return inter.editReply({ephemeral: true, content: "Error: could not find price for this game."}).catch(error);
+				return inter.editReply({ephemeral: true, content: t("price-unknown")}).catch(error);
 		}
 
 		if(details.type === "dlc" && !watchPrice)
 		{
 			purgeApp(appid);
-			return inter.editReply({ephemeral: true, content: "DLCs do not have a news feed."}).catch(error);
+			return inter.editReply({ephemeral: true, content: t.get(inter.locale, "no-DLC-news")}).catch(error);
 		}
 
 		if(details.nsfw && !channel.nsfw)
 		{
 			unwatch(appid, inter.guild);
-			return inter.editReply(`This game has adult content. You can only display its ${watchPrice ? "price" : "news"} in a NSFW channel.`).catch(error);
+			return inter.editReply(tr.get(inter.locale), `NSFW-content-${type}`).catch(error);
 		}
 
-		const limitWarning = success === WATCH_LIMIT ? `\nWarning: you reached your ${WATCH_LIMIT} games per server limit.` : "";
-		const detailsError = details.name === "undefined" ? "\nHowever, an error occurred while trying to get the app's details. It may be called “undefined” for a while." : "";
+		const limitWarning = success === WATCH_LIMIT ? `\n${t("server-limit-reached", WATCH_LIMIT)}` : "";
+		const detailsError = details.name === "undefined" ? "\n"+t("error-retrieving-details") : "";
 
 		updateUnwatch(inter.guild, true);
 
 		inter.editReply({ephemeral: true, content:
-			success ? `${details.name}’s ${watchPrice ? "price updates" : "news"} will now be sent into ${channel}.${detailsError}${limitWarning}`
-				: `${details.name}’s ${watchPrice ? "price" : "news feed"} was already watched in that server.`,
+			success ? `${t(`confirm-${type}`, details.name, channel)}${detailsError}${limitWarning}`
+				: t(`already-${type}`, details.name),
 		}).catch(error);
 	}, async err => {
 		await defer;
 		if(err.message.includes("appid"))
-			inter.editReply({ephemeral: true, content: "The id you provided does not belong to any Steam app."}).catch(error);
+			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "bad-appid")}).catch(error);
 		else if(err instanceof RangeError)
 			inter.editReply({ephemeral: true, content: err.message}).catch(error);
 		else
 		{
 			error(err);
-			inter.editReply({ephemeral: true, content: "An error occurred."}).catch(error);
+			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "error")}).catch(error);
 		}
 	});
 }

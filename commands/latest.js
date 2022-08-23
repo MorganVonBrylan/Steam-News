@@ -14,6 +14,7 @@ exports.options = [{
 }];
 exports.run = async inter => {
 	const defer = inter.deferReply().catch(error);
+	let t = tr.set(inter.locale);
 	let appid = inter.options.getString("game");
 	if(!isFinite(appid))
 	{
@@ -21,30 +22,30 @@ exports.run = async inter => {
 		if(game)
 			appid = game.id;
 		else
-			return defer.then(() => inter.editReply(`No game matching "${appid}" found.`).catch(error));
+			return defer.then(() => inter.editReply(t("no-match", appid)).catch(error));
 	}
 
 	const fetchInfo = isKnown(appid) ? null : getDetails(appid);
 	const {appnews} = await query(appid, 3);
 	await defer;
 	if(!appnews)
-		return inter.editReply({content: "The id you provided does not belong to any Steam app."}).catch(error);
+		return inter.editReply({content: t("bad-appid")}).catch(error);
 
 	if(fetchInfo)
 	{
 		const details = await fetchInfo;
 		if(details.type === "dlc")
-			return inter.editRreply({ephemeral: true, content: "DLCs do not have a news feed."}).catch(error);
+			return inter.editRreply({ephemeral: true, content: t("no-DLC-news")}).catch(error);
 
 		saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
 	}
 
 	if(!appnews.newsitems.length)
-		return inter.editReply({ephemeral: true, content: "This app has no news."}).catch(error);
+		return inter.editReply({ephemeral: true, content: t("no-news")}).catch(error);
 
 	let news;
 	const reply = inter.editReply(isAppNSFW(appid) && !inter.channel.nsfw
-		? { ephemeral: true, content: "This game has adult content. You can only display its news in a NSFW channel." }
+		? { ephemeral: true, content: t("NSFW-content-news") }
 		: { embeds: [news = toEmbed(appnews.newsitems[0])] }
 	).catch(error);
 

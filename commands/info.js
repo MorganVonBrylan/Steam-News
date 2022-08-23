@@ -26,7 +26,6 @@ exports.run = async inter => {
 	const lang = langOpt && langOpt !== "own" ? langOpt : (
 		getCC(inter.guild?.id)?.toLowerCase() || inter.locale || "en"
 	);
-	const tr = languages[lang] || languages.en;
 	const defer = inter.deferReply().catch(error);
 	let appid = inter.options.getString("game");
 
@@ -36,7 +35,7 @@ exports.run = async inter => {
 		if(game)
 			appid = game.id;
 		else
-			return defer.then(() => inter.editReply({ephemeral: true, content: `No game matching "${appid}" found.`}).catch(error));
+			return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
 	}
 
 	const t = tr.set(lang, "info");
@@ -44,12 +43,12 @@ exports.run = async inter => {
 	getDetails(appid, lang, langToCountry[lang]).then(async details => {
 		await defer;
 		if(!details)
-			return inter.editReply({ephemeral: true, content: tr.invalidAppid}).catch(error);
+			return inter.editReply({ephemeral: true, content: t("invalidAppid")}).catch(error);
 
 		const {
 			type, fullgame,
 			steam_appid, developers, website,
-			name, header_image, release_date: {date = tr.comingSoon},
+			name, header_image, release_date: {date = t("comingSoon")},
 			genres = [], metacritic,
 			controller_support, platforms, categories,
 			dlc, is_free, price_overview: price = {}, // is_free can be false and price_overview undefined if the game is not out yet
@@ -58,7 +57,7 @@ exports.run = async inter => {
 		const nsfw = isNSFW(details);
 
 		if(nsfw && !inter.channel.nsfw) // temporary
-			return inter.editReply({ephemeral: true, content: tr.nsfwForbidden}).catch(error);
+			return inter.editReply({ephemeral: true, content: t("nsfwForbidden")}).catch(error);
 
 		inter.editReply({ embeds: [{
 			url: "https://store.steampowered.com/app/"+steam_appid,
@@ -67,19 +66,19 @@ exports.run = async inter => {
 			provider: { name: "Steam", url: "https://store.steampowered.com/" },
 			description: details.short_description,
 			fields: [
-				{ name: genres.length > 1 ? tr.genres : tr.genre, value: genres.length ? genres.map(g => g.description).join(", ") : tr.none, inline: true },
-				{ name: tr.metacritic, value: metacritic ? `[${metacritic.score}](${metacritic.url})` : tr.unknown, inline: true },
-				{ name: tr.nsfw, value: nsfw ? `🔞 ${tr.yes}` : tr.no, inline: true },
-				{ name: tr.releaseDate, value: date, inline: true },
-				{ name: tr.price, value: is_free && !price.discount_percent ? tr.free : displayPrice(price), inline: true },
-				{ name: tr.DLC, value: type === "dlc"
-					? `${tr.game} ${fullgame.name} (${fullgame.appid})`
+				{ name: genres.length > 1 ? t("genres") : t("genre"), value: genres.length ? genres.map(g => g.description).join(", ") : t("none"), inline: true },
+				{ name: t("metacritic"), value: metacritic ? `[${metacritic.score}](${metacritic.url})` : t("unknown"), inline: true },
+				{ name: t("nsfw"), value: nsfw ? `🔞 ${t("yes")}` : t("no"), inline: true },
+				{ name: t("releaseDate"), value: date, inline: true },
+				{ name: t("price"), value: is_free && !price.discount_percent ? t("free") : displayPrice(price), inline: true },
+				{ name: t("DLC"), value: type === "dlc"
+					? `${t("game")} ${fullgame.name} (${fullgame.appid})`
 					: (dlc?.length || 0)+"", inline: true },
-				{ name: tr.platforms, value: platforms?.length ? listPlatforms(platforms) : tr.unknown, inline: true },
-				{ name: tr.controllerSupport, value: controller_support === "full" ? tr.yes : tr.no, inline: true },
-				{ name: tr.multi, value: categories.some(({id}) => id === 1) ? tr.yes : tr.no, inline: true },
-				{ name: tr.languages, value: parseLanguages(supported_languages) },
-				{ name: tr.openInApp, value: `steam://store/${appid}` },
+				{ name: t("platforms"), value: platforms?.length ? listPlatforms(platforms) : t("unknown"), inline: true },
+				{ name: t("controllerSupport"), value: controller_support === "full" ? t("yes") : t("no"), inline: true },
+				{ name: t("multi"), value: categories.some(({id}) => id === 1) ? t("yes") : t("no"), inline: true },
+				{ name: t("languages"), value: parseLanguages(supported_languages) },
+				{ name: t("openInApp"), value: `steam://store/${appid}` },
 			],
 			image: { url: header_image },
 		}] }).catch(error);
@@ -108,42 +107,3 @@ function parseLanguages(html)
 		.replaceAll(/<\/?(strong|b)>/g, "**")
 		.replaceAll(/<\/?(em|i)>/g, "_");
 }
-
-
-const languages = {
-	en: {
-		yes: "Yes", no: "No",
-		invalidAppid: "The id you provided does not belong to any Steam app.",
-		nsfwForbidden: "This game has adult content. You can only display its info in a NSFW channel.",
-		comingSoon: "*coming soon*",
-		genre: "Genre", genres: "Genres", none: "*none*",
-		metacritic: "Metacritic score", unknown: "*Unknown*",
-		nsfw: "NSFW",
-		releaseDate: "Release date",
-		price: "Price", free: "Free",
-		DLC: "DLC", game: "Game:",
-		platforms: "Platforms",
-		controllerSupport: "Controller support",
-		multi: "Multiplayer",
-		languages: "Languages",
-		openInApp: "Open in app",
-	},
-	fr: {
-		yes: "Oui", no: "Non",
-		invalidAppid: "Cet id ne correspond à aucune appli Steam.",
-		nsfwForbidden: "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon NSFW.",
-		comingSoon: "*bientôt*",
-		genre: "Genre", genres: "Genres", none: "*aucun*",
-		metacritic: "Score Metacritic", unknown: "*Inconnu*",
-		nsfw: "NSFW",
-		releaseDate: "Date de publication",
-		price: "Prix", free: "Gratuit",
-		DLC: "DLC", game: "Jeu :",
-		platforms: "Plateformes",
-		controllerSupport: "Support manette",
-		multi: "Multi",
-		languages: "Langues",
-		openInApp: "Ouvrir dans l’application",
-	},
-};
-languages["en-UK"] = languages.en;

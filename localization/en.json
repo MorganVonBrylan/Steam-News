@@ -1,5 +1,49 @@
 {
 	"commands": {
+		"help": {
+			"name": "help",
+			"description": "Get help about the bot"
+		},
+		"info": {
+			"name": "info",
+			"description": "See info about a game (genre, price, release date, etc)",
+			"options": {
+				"game": {
+					"name": "game",
+					"description": "The game’s name or id"
+				},
+				"language": {
+					"name": "language",
+					"description": "The language to display info in (if unspecified, the server’s default or your own locale)",
+					"choices": [
+						"English (price in US$)",
+						"English (price in pounds)",
+						"Français",
+						"My own locale"
+					]
+				}
+			}
+		},
+		"latest": {
+			"name": "latest",
+			"description": "See a game’s latest news.",
+			"options": {
+				"game": {
+					"name": "game",
+					"description": "The game’s name or id"
+				}
+			}
+		},
+		"locale": {
+			"name": "locale",
+			"description": "See or set this server’s default locale (for price and language with /info and price watchers)",
+			"options": {
+				"country-code": {
+					"name": "country-code",
+					"description": "Your 2-letter country code, like GB, FR, RU, etc. You can also make a search."
+				}
+			}
+		},
 		"open": {
 			"name": "open",
 			"description": "Get a link to open a game in the Steam app",
@@ -9,10 +53,138 @@
 					"description": "The game’s name or id"
 				}
 			}
+		},
+		"watch": {
+			"name": "watch",
+			"description": "(admins only) Follow a game’s news feed or price changes (maximum %s of each per server)",
+			"options": {
+				"type": {
+					"name": "type",
+					"description": "Whether to watch news or price changes",
+					"choices": ["News", "Price"]
+				},
+				"game": {
+					"name": "game",
+					"description": "The game’s name or id"
+				},
+				"channel": {
+					"name": "channel",
+					"description": "The channel where to send the news (defaults to current channel if not provided)"
+				}
+			}
+		},
+		"watched": {
+			"name": "watched",
+			"description": "See what games are being watched in this server."
+		},
+		"unwatch": {
+			"name": "unwatch",
+			"description": "(admins only) Stop watching a game’s news feed.",
+			"options": {
+				"news": {
+					"name": "news",
+					"description": "(admins only) Stop watching a game’s news feed."
+				},
+				"price": {
+					"name": "price",
+					"description": "(admins only) Stop watching a game’s price."
+				},
+				"game": {
+					"name": "game",
+					"description": "The game’s name or id"
+				}
+			}
 		}
 	},
 
-	"open": {
-		"no-match": "No game matching \"%s\" found."
+
+	"help": {
+		"title": "Steam News help",
+		"description": "**Steam News** is a bot that lets you follow Steam game news by sending community announcements, patch notes etc directly into a channel.",
+		"fields": [
+			{ "name": "How do I follow a game’s news?", "value": "Add a watcher with `/watch`, remove it with `/unwatch`. Each server can follow up to ${WATCH_LIMIT} games at a time." },
+			{ "name": "The bot didn’t send the latest news at the second it came out!", "value": "That is normal. It checks for news once an hour, so there can be up to an hour of delay." },
+			{ "name": "What about NSFW games?", "value": "The bot will only send info and news about NSFW games in NSFW channels." },
+			{ "name": "Can I copy your bot?", "value": "Sure! It’s open sourced under the GNU GPL 3.0 licence.\nHere is the Git repository: [${repository}](${repository})" },
+			{ "name": "I still need help!", "value": "That is unfortunate. You can come explain your issue on our support server: ${SUPPORT_SERVER}" },
+			{ "name": "One last thing", "value": "Like Steam News? Consider upvoting it on Top.gg: https://top.gg/bot/929757212841226292" }
+		],
+		"footer": { "text": "Steam News v${version} by ${author}." }
+	},
+
+	"error": "An error occurred.",
+	"no-match": "No game matching \"%s\" found.",
+	"bad-appid": "The id you provided does not belong to any Steam app.",
+	"no-DLC-news": "DLCs do not have a news feed.",
+	"no-news": "This app has no news.",
+	"NSFW-content-news": "This game has adult content. You can only display its news in a NSFW channel.",
+	"NSFW-content-price": "This game has adult content. You can only display its price in a NSFW channel.",
+
+	"info": {
+		"yes": "Yes", "no": "No",
+		"invalidAppid": "The id you provided does not belong to any Steam app.",
+		"nsfwForbidden": "This game has adult content. You can only display its info in a NSFW channel.",
+		"comingSoon": "*coming soon*",
+		"genre": "Genre", "genres": "Genres", "none": "*none*",
+		"metacritic": "Metacritic score", "unknown": "*Unknown*",
+		"nsfw": "NSFW",
+		"releaseDate": "Release date",
+		"price": "Price", "free": "Free",
+		"DLC": "DLC", "game": "Game:",
+		"platforms": "Platforms",
+		"controllerSupport": "Controller support",
+		"multi": "Multiplayer",
+		"languages": "Languages",
+		"openInApp": "Open in app"
+	},
+
+	"locale": {
+		"current": "Your current locale is %s (%s)",
+		"no-default": "This server does not have a default locale.",
+		"new-default": "This server’s default locale is now %s (%s)",
+
+		"cc-required": "You need to provide a country’s 2-letter code.\nYou can find the list here: %s",
+		"cc-invalid": "This is not a valid Alpha-2 code.\nYou can find the list here: %s"
+	},
+
+	"watch": {
+		"cannot-send": "I cannot send messages in %s.",
+		"cannot-embed": "I cannot send embeds in %s.",
+
+		"price-free": "This game is free!",
+		"price-unknown": "Error: could not find price for this game.",
+
+		"server-limit-reached": "Warning: you reached your %s games per server limit.",
+		"error-retrieving-details": "However, an error occurred while trying to get the app’s details. It may be called “undefined” for a while.",
+
+		"confirm-price": "%s’s price updates will now be sent into %s.",
+		"confirm-news": "%s’s news will now be sent into %s.",
+		"already-price": "%s’s price was already watched in this server.",
+		"already-news": "%s’s news feed was already watched in this server."
+	},
+
+	"watched": {
+		"games-watched": "Games watched in %s",
+		"prices-watched": "Prices watched in %s",
+		"games": {
+			"1": "1 game watched",
+			"default": "%n games watched"
+		},
+		"prices": {
+			"1": "1 price watched",
+			"default": "%n prices watched"
+		},
+		"none": "No game is watched in this server.",
+		"id": "Id: %s",
+		"NSFW-yes": "NSFW: Yes",
+		"NSFW-no": "NSFW: No",
+		"channel": "Channel: %s"
+	},
+
+	"unwatch": {
+		"news-unwatched": "%s is no longer watched in this server.",
+		"news-unchanged": "%s was not being watched in this server.",
+		"price-unwatched": "%s’s price is no longer watched in this server.",
+		"price-unchanged": "%s’s price was not being watched in this server."
 	}
 }
