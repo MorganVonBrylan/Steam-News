@@ -111,6 +111,8 @@ for(const prop in tr)
 tr.set("en");
 
 
+exports.cmdDescription = cmdName => locales[FALLBACK].commands[cmdName].description;
+
 exports.applyTranslations = function(commandList)
 {
 	for(const [locale, {commands}] of Object.entries(locales))
