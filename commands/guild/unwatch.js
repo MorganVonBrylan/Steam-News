@@ -29,7 +29,7 @@ localizations.optionLocalizations = function(optionName) {
 
 exports.defaultMemberPermissions = "0";
 exports.nameLocalizations = localizations.get("name");
-exports.description = "(admins only) Stop watching a game’s news feed.";
+exports.description = tr.cmdDescription("unwatch");
 exports.descriptionLocalizations = localizations.get("description");
 const unwatchNews = {
 	type: SUBCOMMAND, name: "news",

@@ -126,6 +126,8 @@ function load(name, subfolder = "", reload = false)
 	const command = require(file);
 	command.name = name;
 	command.module = subfolder;
+	if(!command.description)
+		command.description = tr.cmdDescription(name);
 
 	checkCommand(command);
 	commands[name] = command;

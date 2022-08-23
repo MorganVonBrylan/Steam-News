@@ -2,7 +2,6 @@
 
 const { getWatchedApps, getWatchedPrices } = require("../steam_news/watchers");
 
-exports.description = "See what games are being watched in this server.";
 exports.options = [];
 exports.run = inter => {
 	const t = tr.set(inter.locale, "watched");

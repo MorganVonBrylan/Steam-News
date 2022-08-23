@@ -11,7 +11,6 @@ const updateUnwatch = require("./guild").updateCmd.bind(null, require("./guild/u
 
 exports.defaultMemberPermissions = "0";
 exports.autocomplete = require("../autocomplete/search");
-exports.description = `(admins only) Follow a game’s news feed or price changes (maximum ${WATCH_LIMIT} of each per server)`;
 exports.options = [{
 	type: STRING, name: "type", required: true,
 	description: "Whether to watch news or price changes",

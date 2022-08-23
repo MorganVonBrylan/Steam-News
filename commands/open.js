@@ -4,7 +4,6 @@ const { search } = require("../steam_news/api");
 
 exports.dmPermission = true;
 exports.autocomplete = require("../autocomplete/search");
-exports.description = "Get a link to open a game in the Steam app";
 exports.options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",

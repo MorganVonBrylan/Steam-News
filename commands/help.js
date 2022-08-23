@@ -5,7 +5,6 @@ const SUPPORT_SERVER = require("../bot").auth.supportServer || "*(no support ser
 const {repository: {url: repository}, version, author} = require("../package.json");
 
 exports.dmPermission = true;
-exports.description = "Get help about the bot.";
 exports.run = inter => {
 	const {myself, master} = require("../bot");
 	const embed = {

@@ -6,7 +6,6 @@ const { langToCountry } = require("../locales.json");
 
 exports.dmPermission = true;
 exports.autocomplete = require("../autocomplete/search");
-exports.description = "See info about a game (genre, price, release date, etc)";
 exports.options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
