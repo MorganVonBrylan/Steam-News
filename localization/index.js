@@ -120,7 +120,7 @@ exports.applyTranslations = function(commandList)
 			if(cmd.descriptionLocalizations) cmd.descriptionLocalizations[locale] = description;
 			else cmd.descriptionLocalizations = { [locale]: description };
 
-			if(!cmd.options)
+			if(!cmd.options?.length)
 				continue;
 			if(!options)
 			{
