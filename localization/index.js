@@ -30,7 +30,7 @@ global.tr = module.exports = exports = {
 	set(lang, group) {
 		this.group = group;
 		if(!(lang in locales))
-			lang = "en";
+			lang = FALLBACK;
 		this.lang = lang;
 		this.locale = locales[lang];
 		if(this.group)
@@ -108,7 +108,7 @@ for(const prop in tr)
 	if(typeof tr[prop] === "function")
 		tr[prop] = tr[prop].bind(tr);
 
-tr.set("en");
+tr.set(FALLBACK);
 
 
 exports.cmdDescription = cmdName => locales[FALLBACK].commands[cmdName].description;
@@ -117,7 +117,7 @@ exports.applyTranslations = function(commandList)
 {
 	for(const [locale, {commands}] of Object.entries(locales))
 	{
-		if(locale === "en" || !commands)
+		if(locale === FALLBACK || !commands)
 			continue;
 
 		for(const [cmdName, {name, description, options}] of Object.entries(commands))
