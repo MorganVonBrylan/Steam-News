@@ -22,10 +22,10 @@ This bot uses Node.JS (≥16) avec with mit `discord.js` v13.
 ```
 `debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode.
 
-## Databse schema
+## Database schema
 Just read steam_news/db.js, there is a bunch of CREATE TABLE at the beginning.
 
-# Licence
+# License
 **Steam News** is published under GNU General Public Licence v3 (GPL-3.0). See COPYING.txt, or this link: [https://www.gnu.org/licenses/gpl-3.0.en.html](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 ![GPL](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/GPLv3_Logo.svg/240px-GPLv3_Logo.svg.png)
