@@ -45,3 +45,6 @@ Adds /locale, that allows a server to set a default locale for /info
 2.2 (28/04/2022)
 Adds the possibility to watch prices.
 Admin-only commands now rely on Discord's new system.
+
+2.3 (23/08/2022)
+Adds localization

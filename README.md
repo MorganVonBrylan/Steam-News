@@ -1,7 +1,7 @@
 
 # Steam News
 
-Current version: 2.2
+Current version: 2.3
 
 This bot allows you to watch Steam game news. My friend Damn3d had the idea.
 
