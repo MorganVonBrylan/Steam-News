@@ -11,6 +11,12 @@ if(!locales[FALLBACK])
 	throw new Error(`Missing fallback localization (${FALLBACK})`);
 
 
+function trReplace(str, replaces)
+{
+	return replaces.reduce((str, r) => str.replace("%s", r), str);
+}
+
+
 global.tr = module.exports = exports = {
 	locales: Object.keys(locales),
 	fallbackLocale: FALLBACK,
@@ -31,18 +37,18 @@ global.tr = module.exports = exports = {
 		return this.t;
 	},
 
-	get(lang, key) {
+	get(lang, key, ...replaces) {
 		const {lang, group} = tr;
-		const translation = tr.set(lang)(key);
+		const translation = trReplace(tr.set(lang)(key), replaces);
 		tr.set(lang, group);
 		return translation;
 	},
-	getAll(key, skipFallback = false) {
+	getAll(key, skipFallback = false, ...replaces) {
 		const {lang, group} = tr;
 		const translations = {};
 		for(const locale of tr.locales)
 			if(!skipFallback || locale !== FALLBACK)
-				translations[locale] = tr.set(locale)(key);
+				translations[locale] = trReplace(tr.set(locale)(key), replaces);
 
 		tr.set(lang, group);
 		return translations;
@@ -87,10 +93,7 @@ global.tr = module.exports = exports = {
 			}
 		}
 
-		let str = obj[path[path.length-1]];
-		for(const replace of replaces)
-			str = str.replace("%s", replace);
-		return str;
+		return trReplace(obj[path[path.length-1]], replaces);
 	},
 }
 
