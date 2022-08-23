@@ -1,5 +1,49 @@
 {
 	"commands": {
+		"help": {
+			"name": "aide",
+			"description": "Obtenir de l'aide avec le bot"
+		},
+		"info": {
+			"name": "infos",
+			"description": "Voir les infos sur un jeu (genre, prix, date de publication, etc)",
+			"options": {
+				"game": {
+					"name": "jeu",
+					"description": "Le nom ou l'id du jeu"
+				},
+				"language": {
+					"name": "langue",
+					"description": "La langue dans laquelle afficher l'info (par défaut la valeur du serveur ou votre propre langue)",
+					"choices": [
+						"Anglais (prix en dollars)",
+						"Anglais (prix en livres)",
+						"Français",
+						"Ma propre langue"
+					]
+				}
+			}
+		},
+		"latest": {
+			"name": "derniere",
+			"description": "Voir la dernière actu d'un jeu.",
+			"options": {
+				"game": {
+					"name": "jeu",
+					"description": "Le nom ou l'id du jeu"
+				}
+			}
+		},
+		"locale": {
+			"name": "pays",
+			"description": "Voir/changer le pays par défaut du serveur (pour prix et langue avec /info et les suivis de prix)",
+			"options": {
+				"country-code": {
+					"name": "code-pays",
+					"description": "Le code à 2 lettres de votre pays, comme GB, FR, RU, etc. Vous pouvez aussi faire une recherche."
+				}
+			}
+		},
 		"open": {
 			"name": "ouvrir",
 			"description": "Obtenir un lien pour ouvrir un jeu dans l’appli Steam",
@@ -9,10 +53,139 @@
 					"description": "L’id ou le nom du jeu"
 				}
 			}
+		},
+		"watch": {
+			"name": "suivre",
+			"description": "(admins seulement) Suivre les actus d'un jeu (maximum %s de chaque par serveur)",
+			"options": {
+				"type": {
+					"name": "type",
+					"description": "S'il faut suivre les actus ou les évolutions du prix",
+					"choices": ["Actus", "Prix"]
+				},
+				"game": {
+					"name": "jeu",
+					"description": "Le nom ou l'id du jeu"
+				},
+				"channel": {
+					"name": "salon",
+					"description": "Le salon où envoyer les actus (par défaut le salon où vous envoyez cette commande)"
+				}
+			}
+		},
+		"watched": {
+			"name": "suivis",
+			"description": "Voir quels jeux sont suivis sur ce serveur."
+		},
+		"unwatch": {
+			"name": "suivre-stop",
+			"description": "(admins seulement) Arrêter de suivre les actus d'un jeu.",
+			"options": {
+				"news": {
+					"name": "actus",
+					"description": "(admins seulement) Arrêter de suivre les actus d'un jeu."
+				},
+				"price": {
+					"name": "prix",
+					"description": "(admins seulement) Arrêter de suivre le prix d'un jeu."
+				},
+				"game": {
+					"name": "jeu",
+					"description": "Le nom ou l'id du jeu"
+				}
+			}
 		}
 	},
 
-	"open": {
-		"no-match": "Aucun jeu trouvé correspondant à \"%s\"."
+
+	"help": {
+		"title": "Aide Steam News",
+		"description": "**Steam News** est un bot qui permet de suivre les actus d’un jeu Steam en envoyant les annonces, notes de mises à jour etc directement dans un salon.",
+		"fields": [
+			{ "name": "Comment suivre les actus d’un jeu ?", "value": "Ajoutez un abonnement avec `/watch`, retirez-le avec `/unwatch`. Chaque serveur peut suivre au maxium les actus de ${WATCH_LIMIT} jeux à la fois." },
+			{ "name": "Le bot n’a pas envoyé une actu à la seconde où elle est sortie !", "value": "C’est normal. Il vérifie les actus une fois pas heure, donc il peut y avoir jusqu’à une heure de retard." },
+			{ "name": "Qu’en est-il des jeux adultes ?", "value": "Le bot n’enverra les infos et actus de jeux adultes que dans les salons soumis à une limite d’âge (NSFW)." },
+			{ "name": "Je peux copier ton bot ?", "value": "Bien sûr ! Il est open source sous licence GNU GPL 3.0.\nVoici le dépôt Git : [${repository}](${repository})" },
+			{ "name": "Les commandes seront traduites un jour ?", "value": "C’est prévu. Je le ferai dès que Discord.js le permettra. En attendant, il faudra se contenter de l’anglais, désolé." },
+			{ "name": "J’ai encore besoin d’aide !", "value": "C’est fâcheux. Vous pouvez venir expliquer votre souci sur notre serveur de support : ${SUPPORT_SERVER}" },
+			{ "name": "Une dernière chose", "value": "Vous aimez Steam News? Vous pouvez lui mettre un poce blo sur Top.gg: https://top.gg/bot/929757212841226292" }
+		],
+		"footer": { "text": "Steam News v${v} par ${author}." }
+	},
+
+	"error": "Une erreur est survenue.",
+	"no-match": "Aucun jeu trouvé correspondant à \"%s\".",
+	"bad-appid": "L'id que vous avez fourni ne correspond à aucune appli Steam.",
+	"no-DLC-news": "Les DLC n'ont pas d'actus.",
+	"no-news": "Cette appli n'a aucune actu.",
+	"NSFW-content-news": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses actus que dans un salon soumis à une limite d'âge (NSFW).",
+	"NSFW-content-price": "Ce jeu a du contenu adulte. Vous ne pouvez afficher son prix que dans un salon soumis à une limite d'âge (NSFW).",
+
+	"info": {
+		"yes": "Oui", "no": "Non",
+		"invalidAppid": "Cet id ne correspond à aucune appli Steam.",
+		"nsfwForbidden": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon NSFW.",
+		"comingSoon": "*bientôt*",
+		"genre": "Genre", "genres": "Genres", "none": "*aucun*",
+		"metacritic": "Score Metacritic", "unknown": "*Inconnu*",
+		"nsfw": "NSFW",
+		"releaseDate": "Date de publication",
+		"price": "Prix", "free": "Gratuit",
+		"DLC": "DLC", "game": "Jeu :",
+		"platforms": "Plateformes",
+		"controllerSupport": "Support manette",
+		"multi": "Multi",
+		"languages": "Langues",
+		"openInApp": "Ouvrir dans l’application"
+	},
+
+	"locale": {
+		"current": "Votre pays actuel est %s (%s)",
+		"no-default": "Ce serveur n'a pas de pays par défaut.",
+		"new-default": "Le pays par défaut de ce serveur est désormais %s (%s)",
+
+		"cc-required": "Vous devez fournir le code à 2 lettres d'un pays.\nVous pouvez en trouver la liste ici : %s",
+		"cc-invalid": "Ceci n'est pas un code Alpha-2 valide.\nVous pouvez en trouver la liste ici : %s"
+	},
+
+	"watch": {
+		"cannot-send": "Je ne peux pas envoyer de messages dans %s.",
+		"cannot-embed": "Je ne peux pas intégrer de liens dans %s.",
+
+		"price-free": "Ce jeu est gratuit !",
+		"price-unknown": "Erreur : impossible de trouver le prix de ce jeu.",
+
+		"server-limit-reached": "Attention : vous avez atteint la limite de %s jeux par serveur.",
+		"error-retrieving-details": "Cependant, une erreur est survenue en tentant de récupérer les détails du jeu. Il est possible qu'il soit appelé “undefined” pendant un temps.",
+
+		"confirm-price": "Les changements de prix de %s seront désormais envoyées dans %s.",
+		"confirm-news": "Les actus de %s seront désormais envoyées dans %s.",
+		"already-price": "Le prix de %s était déjà suivi dans ce serveur.",
+		"already-news": "Les actus de %s étaient déjà suivies dans ce serveur."
+	},
+
+	"watched": {
+		"games-watched": "Jeux suivis dans %s",
+		"prices-watched": "Prix suivis dans %s",
+		"games": {
+			"1": "1 jeu suivi",
+			"default": "%n jeux suivis"
+		},
+		"prices": {
+			"1": "1 prix suivi",
+			"default": "%n prix suivis"
+		},
+		"none": "Aucun jeu n'est suivi dans ce serveur.",
+		"id": "Id : %s",
+		"NSFW-yes": "NSFW : Oui",
+		"NSFW-no": "NSFW : Non",
+		"channel": "Salon : %s"
+	},
+
+	"unwatch": {
+		"news-unwatched": "%s n'est plus suivi dans ce serveur.",
+		"news-unchanged": "%s n'était pas suivi dans ce serveur.",
+		"price-unwatched": "Le prix de %s n'est plus suivi dans ce serveur.",
+		"price-unchanged": "Le prix de %s n'était pas suivi dans ce serveur."
 	}
 }
