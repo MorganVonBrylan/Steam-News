@@ -203,7 +203,7 @@ async function checkPrices()
  * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its limit of 25 apps.
  */
 exports.watch = async (appid, channel, price = false) => {
-	if(!channel?.isText() || !channel.guild)
+	if(!channel?.isTextBased() || !channel.guild)
 		throw new TypeError("'channel' must be a text-based channel");
 
 	const {appnews} = await query(appid);
