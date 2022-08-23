@@ -1,6 +1,6 @@
 "use strict";
 
-const { tr: { fallbackLocale } } = require(".");
+const { fallbackLocale } = require(".");
 
 
 const mainLocale = {};

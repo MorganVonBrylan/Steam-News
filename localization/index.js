@@ -37,9 +37,9 @@ global.tr = module.exports = exports = {
 		return this.t;
 	},
 
-	get(lang, key, ...replaces) {
+	get(lng, key, ...replaces) {
 		const {lang, group} = tr;
-		const translation = trReplace(tr.set(lang)(key), replaces);
+		const translation = trReplace(tr.set(lng)(key), replaces);
 		tr.set(lang, group);
 		return translation;
 	},
@@ -98,7 +98,7 @@ global.tr = module.exports = exports = {
 }
 
 
-for(const prop of tr)
+for(const prop in tr)
 	if(typeof tr[prop] === "function")
 		tr[prop] = tr[prop].bind(tr);
 
