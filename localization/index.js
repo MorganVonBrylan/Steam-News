@@ -115,6 +115,9 @@ exports.applyTranslations = function(commandList)
 		for(const [cmdName, {name, description, options}] of Object.entries(commands))
 		{
 			const cmd = commandList[cmdName];
+			if(!cmd)
+				continue;
+
 			if(cmd.nameLocalizations) cmd.nameLocalizations[locale] = name;
 			else cmd.nameLocalizations = { [locale]: name };
 			if(cmd.descriptionLocalizations) cmd.descriptionLocalizations[locale] = description;
