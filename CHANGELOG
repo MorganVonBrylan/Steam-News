@@ -48,3 +48,6 @@ Admin-only commands now rely on Discord's new system.
 
 2.3 (23/08/2022)
 Adds localization
+
+	2.3.1 (28/08/2022)
+	isNSFW() now takes into account required_age
