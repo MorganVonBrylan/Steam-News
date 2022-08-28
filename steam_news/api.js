@@ -93,7 +93,7 @@ exports.getDetails = (appid, lang = "en", cc = "US") => {
  * @param {object} appDetails The app's details.
  * @returns {bool}
  */
-exports.isNSFW = appDetails => {
-	const notes = appDetails.content_descriptors.notes?.toLowerCase();
-	return notes && (notes.includes("nudity") || notes.includes("sex"));
+exports.isNSFW = ({required_age, content_descriptors}) => {
+	const notes = content_descriptors.notes?.toLowerCase();
+	return required_age >= 18 || notes && (notes.includes("nudity") || notes.includes("sex"));
 }
