@@ -124,7 +124,7 @@
 	"info": {
 		"yes": "Oui", "no": "Non",
 		"invalidAppid": "Cet id ne correspond à aucune appli Steam.",
-		"nsfwForbidden": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon NSFW.",
+		"nsfwForbidden": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon soumis à une limite d'âge (NSFW).",
 		"comingSoon": "*bientôt*",
 		"genre": "Genre", "genres": "Genres", "none": "*aucun*",
 		"metacritic": "Score Metacritic", "unknown": "*Inconnu*",
