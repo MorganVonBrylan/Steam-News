@@ -116,7 +116,7 @@ async function checkForNews()
 					channels.fetch(channelId).then(channel => {
 						if(channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
 						{
-							channel.send(embed).catch(console.error);
+							channel.send(embed).catch(Function());
 							if(yt)
 								channel.send(yt).catch(Function());
 						}
@@ -185,7 +185,7 @@ async function checkPrices()
 				{
 					channels.fetch(channelId).then(channel => {
 						if(channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
-							channel.send(embed).catch(console.error);
+							channel.send(embed).catch(Function());
 					}, Function());
 				}
 			}
@@ -251,11 +251,11 @@ exports.watch = async (appid, channel, price = false) => {
 			{
 				const cc = price.cc = stmts.getCC(guildId) || "US";
 				if(cc === "US")
-					channel.send({ embeds: [toEmbed.price(appid, details.name, price)] }).catch(console.error);
+					channel.send({ embeds: [toEmbed.price(appid, details.name, price)] }).catch(Function());
 				else
 					queryPrices(appid, cc)
 						.then(prices => channel.send({ embeds: [toEmbed.price(appid, details.name, prices[appid])] }))
-						.catch(console.error)
+						.catch(Function())
 			}
 		}
 	}
