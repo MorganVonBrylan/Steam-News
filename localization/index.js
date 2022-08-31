@@ -69,6 +69,9 @@ global.tr = module.exports = exports = {
 	},
 
 	t(key, ...replaces) {
+		if(typeof key !== "string")
+			throw new TypeError("'key' must be a string");
+
 		const path = key.split(".");
 		let obj = this.locale;
 		for(let i = 0 ; i < path.length-1 ; ++i)
