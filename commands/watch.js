@@ -76,7 +76,7 @@ exports.run = async inter => {
 		if(details.nsfw && !channel.nsfw)
 		{
 			unwatch(appid, inter.guild);
-			return inter.editReply(tr.get(inter.locale), `NSFW-content-${type}`).catch(error);
+			return inter.editReply(tr.get(inter.locale, `NSFW-content-${type}`)).catch(error);
 		}
 
 		const limitWarning = success === WATCH_LIMIT ? `\n${t("server-limit-reached", WATCH_LIMIT)}` : "";
