@@ -4,9 +4,9 @@ const {sendToMaster} = require("./bot");
 
 global.error = module.exports = exports = function error(err)
 {
-	let msg = "Une erreur est survenue ; lisez la console pour plus de détails.";
+	let msg = "An error occurred; read the console for details.";
 
-	if(err && err.message)
+	if(err?.message)
 	{
 		const {message} = err;
 		const status = err.httpStatus || err.response?.status;
