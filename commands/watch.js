@@ -26,7 +26,7 @@ exports.options = [{
 }];
 exports.run = async inter => {
 	const channel = inter.options.getChannel("channel") || inter.channel;
-	const perms = channel.permissionsFor(inter.guild.members.me);
+	const perms = channel.permissionsFor(await inter.guild.members.fetchMe());
 	const t = tr.set(inter.locale, "watch");
 
 	if(!perms.has(SEND_MESSAGES))
