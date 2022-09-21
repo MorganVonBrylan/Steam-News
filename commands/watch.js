@@ -29,7 +29,7 @@ exports.run = async inter => {
 	const perms = channel.permissionsFor(await inter.guild.members.fetchMe());
 	const t = tr.set(inter.locale, "watch");
 
-	if(!perms.has(SEND_MESSAGES))
+	if(!perms?.has(SEND_MESSAGES))
 		return inter.reply({ephemeral: true, content: t("cannot-send", channel)}).catch(error);
 	else if(!perms.has(EMBED_LINKS))
 		return inter.reply({ephemeral: true, content: t("cannot-embed", channel)}).catch(error);
