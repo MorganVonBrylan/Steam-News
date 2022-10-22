@@ -7,7 +7,7 @@
  * global
  * options
  * autocomplete
- * defaultPermission
+ * defaultMemberPermissions
  */
 
 const { readdirSync } = require("fs");
