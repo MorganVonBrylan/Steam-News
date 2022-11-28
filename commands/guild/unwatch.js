@@ -48,8 +48,11 @@ const [appidOption] = exports.options = [{
 	choices: [],
 }];
 exports.getOptions = guildId => {
-	const watchedApps = getWatchedApps(guildId).map(({name, appid}) => ({ name, value: ""+appid }));
-	const watchedPrices = getWatchedPrices(guildId).map(({name, appid}) => ({ name, value: ""+appid }));
+	function formatName(name) {
+		return name.length > 32 ? name.substring(0, 31) + "…" : name;
+	}
+	const watchedApps = getWatchedApps(guildId).map(({name, appid}) => ({ name: formatName(name), value: ""+appid }));
+	const watchedPrices = getWatchedPrices(guildId).map(({name, appid}) => ({ name: formatName(name), value: ""+appid }));
 	const options = [];
 	if(watchedApps.length)
 		options.push({
