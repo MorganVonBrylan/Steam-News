@@ -17,6 +17,10 @@ localizations.get = function(property) {
 localizations.optionLocalizations = function(optionName) {
 	return this.reduce((optLocalization, [locale, tr]) => {
 		const {name, description} = tr.options[optionName];
+		if(name.length > 32)
+			throw new Error(`Option name too long (>32) in ${locale}: ${name}`);
+		if(description.length > 100)
+			throw new Error(`Option description too long (>100) in ${locale}: ${name}`);
 		optLocalization.nameLocalizations[locale] = name;
 		optLocalization.descriptionLocalizations[locale] = description;
 		return optLocalization;
