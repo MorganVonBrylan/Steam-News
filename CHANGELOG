@@ -53,4 +53,4 @@ Adds localization
 	isNSFW() now takes into account required_age
 
 	2.3.2 (28/11/2022)
-	/unwatch: fixes too long game names
+	/unwatch and autocomplete: fixes too long game names
