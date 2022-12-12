@@ -79,7 +79,8 @@ const stmts = exports.stmts = {
 	getWatchers: db.prepare("SELECT channelId FROM Watchers WHERE appid = ?").pluck(),
 	getWatchedApps: db.prepare(`SELECT a.appid, name, nsfw, channelId
 		FROM Apps a JOIN Watchers w ON (a.appid = w.appid)
-		WHERE guildId = ?`),
+		WHERE guildId = ?
+		ORDER BY name`),
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
 
 	watchPrice: db.prepare("INSERT INTO PriceWatchers (appid, guildId, channelId) VALUES (?, ?, ?)"),
@@ -89,7 +90,8 @@ const stmts = exports.stmts = {
 		FROM PriceWatchers LEFT JOIN Guilds ON id = guildId WHERE appid = ?`),
 	getWatchedPrices: db.prepare(`SELECT a.appid, name, lastPrice, nsfw, channelId
 		FROM Apps a JOIN PriceWatchers w ON (a.appid = w.appid)
-		WHERE guildId = ?`),
+		WHERE guildId = ?
+		ORDER BY name`),
 	updateLastPrice: db.prepare("UPDATE Apps SET lastPrice = $lastPrice WHERE appid = $appid"),
 
 	getCC: db.prepare("SELECT cc FROM Guilds WHERE id = ?").pluck(),
