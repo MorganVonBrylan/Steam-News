@@ -106,6 +106,7 @@ async function checkForNews()
 
 		if(news.length)
 		{
+			const [{gid: latestGid}] = news;
 			total += news.length;
 			for(const newsitem of news.reverse())
 			{
@@ -123,7 +124,7 @@ async function checkForNews()
 					}, Function());
 				}
 			}
-			stmts.updateLatest({ appid, latest: news[0].gid });
+			stmts.updateLatest({ appid, latest: latestGid });
 		}
 	})));
 
