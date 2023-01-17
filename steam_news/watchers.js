@@ -203,7 +203,7 @@ async function checkPrices()
  * @returns {Promise<int|false|null>} false if that app was already watched in that guild, or the new number of watched apps.
  * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its limit of 25 apps.
  */
-exports.watch = async (appid, channel, price = false) => {
+exports.watch = async (appid, channel, price = false, LIMIT = WATCH_LIMIT) => {
 	if(!channel?.isTextBased() || !channel.guild)
 		throw new TypeError("'channel' must be a text-based channel");
 
@@ -216,8 +216,8 @@ exports.watch = async (appid, channel, price = false) => {
 
 	if(watchedApps.includes(appid))
 		return false;
-	if(watchedApps.length === WATCH_LIMIT)
-		throw new RangeError(`This server reached its limit of ${WATCH_LIMIT} watched ${price ? "prices" : "apps"}.`);
+	if(watchedApps.length === LIMIT)
+		throw new RangeError(`This server reached its limit of ${LIMIT} watched ${price ? "prices" : "apps"}.`);
 
 	const wasUnknown = !stmts.isAppKnown(appid);
 	if(price || wasUnknown)

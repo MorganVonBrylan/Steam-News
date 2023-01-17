@@ -9,8 +9,9 @@ for(const file of require("fs").readdirSync(__dirname))
 	if(file.endsWith(".json"))
 	{
 		const locale = locales[file.substring(0, file.length-5)] = require("./"+file);
-		const { commands: { watch } } = locale;
+		const { commands: { watch }, voting } = locale;
 		watch.description = watch.description.replace("%s", WATCH_LIMIT);
+		voting.thanks = voting.thanks.replace("%S", WATCH_VOTE_BONUS);
 	}
 
 if(!locales[FALLBACK])

@@ -8,20 +8,10 @@ exports.run = inter => {
 	const watched = getWatchedApps(inter.guild.id);
 	const watchedPrices = getWatchedPrices(inter.guild.id);
 
-	const embeds = [];
-	if(watched.length)
-		embeds.push({
-			title: t("games-watched", inter.guild),
-			description: tr.plural("games", watched.length),
-			fields: watched.map(gameToField),
-		});
-
-	if(watchedPrices.length)
-		embeds.push({
-			title: t("prices-watched", inter.guild),
-			description: tr.plural("prices", watchedPrices.length),
-			fields: watchedPrices.map(gameToField),
-		});
+	const embeds = [
+		...split(watched, t("games-watched", inter.guild), tr.plural("games", watched.length)),
+		...split(watchedPrices, t("prices-watched", inter.guild), tr.plural("prices", watchedPrices.length)),
+	];
 
 	inter.reply(embeds.length
 		? { ephemeral: true, embeds }
@@ -29,6 +19,17 @@ exports.run = inter => {
 	).catch(error);
 }
 
+
+function split(watched, title, description, blockSize = 25)
+{
+	if(!watched.length) return [];
+	const embeds = [];
+	for(let i = 0 ; i < watched.length ; i += blockSize)
+		embeds.push({fields: watched.slice(i, i + blockSize).map(gameToField)});
+
+	Object.assign(embeds[0], { title, description });
+	return embeds;
+}
 
 function gameToField({appid, nsfw, name, channelId}) {
 	return { name, value: `${tr.t("id", appid)}\n${tr.t(`NSFW-${nsfw ? "yes" : "no"}`)}\n${tr.t("channel", `<#${channelId}>`)}`, inline: true };

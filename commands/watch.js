@@ -2,7 +2,11 @@
 
 const { search } = require("../steam_news/api");
 
-const { WATCH_LIMIT } = require("../steam_news/limits");
+const { WATCH_LIMIT, WATCH_VOTE_BONUS } = require("../steam_news/limits");
+const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
+const { voted } = require("../steam_news/VIPs");
+const { voteURL } = require("../dbl");
+
 const { watch, watchPrice, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
 const {
 	ChannelType: {GuildText: GUILD_TEXT, GuildPublicThread: GUILD_PUBLIC_THREAD, GuildPrivateThread: GUILD_PRIVATE_THREAD, GuildNews: GUILD_NEWS, GuildNewsThread: GUILD_NEWS_THREAD},
@@ -48,10 +52,11 @@ exports.run = async inter => {
 			return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
 	}
 
+	const LIMIT = voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT;
 	const type = inter.options.getString("type");
 	const watchPrice = type === "price";
 
-	watch(+appid, channel, watchPrice).then(async success => {
+	watch(+appid, channel, watchPrice, LIMIT).then(async success => {
 		await defer;
 		const details = getAppInfo(appid);
 
@@ -81,7 +86,10 @@ exports.run = async inter => {
 			return inter.editReply(tr.get(inter.locale, `NSFW-content-${type}`)).catch(error);
 		}
 
-		const limitWarning = success === WATCH_LIMIT ? `\n${t("server-limit-reached", WATCH_LIMIT)}` : "";
+		const limitWarning = success === LIMIT ?
+			LIMIT === LIMIT_WITH_VOTE ? `\n${t("server-limit-reached-voted", LIMIT)}`
+			: `\n${t("server-limit-reached", LIMIT, WATCH_VOTE_BONUS, voteURL(inter.locale))}`
+			: "";
 		const detailsError = details.name === "undefined" ? "\n"+t("error-retrieving-details") : "";
 
 		updateUnwatch(inter.guild, true);
@@ -95,7 +103,10 @@ exports.run = async inter => {
 		if(err.message.includes("appid"))
 			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "bad-appid")}).catch(error);
 		else if(err instanceof RangeError)
-			inter.editReply({ephemeral: true, content: err.message}).catch(error);
+			inter.editReply({ephemeral: true, content: LIMIT === LIMIT_WITH_VOTE
+				? t("error-limit-reached-voted", LIMIT)
+				: t("error-limit-reached", LIMIT, WATCH_VOTE_BONUS, voteURL(inter.locale))
+			}).catch(error);
 		else
 		{
 			error(err);

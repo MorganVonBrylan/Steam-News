@@ -17,7 +17,7 @@ exports.run = inter => {
 	for(const field of embed.fields)
 	{
 		field.value = field.value
-			.replace("${WATCH_LIMIT}", WATCH_LIMIT)
+			.replaceAll("${WATCH_LIMIT}", WATCH_LIMIT)
 			.replace("${SUPPORT_SERVER}", SUPPORT_SERVER)
 			.replaceAll("${repository}", repository);
 	}

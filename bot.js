@@ -31,7 +31,7 @@ client.on("ready", async () => {
 
 client.once("ready", () => {
 	initCmds(client, auth.debug);
-	require("./dbl")(auth.dblToken, client);
+	require("./dbl")(client, auth.dblToken, auth.dblWebhook);
 });
 
 

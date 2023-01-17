@@ -97,6 +97,9 @@
 		}
 	},
 
+	"voting": {
+		"thanks": "Merci d'avoir voté ! Vous pouvez désormais suivre les actus et changements de prix de %S jeux de plus dans chacun de vos serveurs."
+	},
 
 	"help": {
 		"title": "Aide Steam News",
@@ -155,8 +158,12 @@
 		"price-free": "Ce jeu est gratuit !",
 		"price-unknown": "Erreur : impossible de trouver le prix de ce jeu.",
 
-		"server-limit-reached": "Attention : vous avez atteint la limite de %s jeux par serveur.",
+		"server-limit-reached": "Attention : vous avez atteint la limite de %s jeux par serveur.\nVotez pour moi sur Top.gg pour pouvoir en ajouter %s de plus : %s",
+		"server-limit-reached-voted": "Attention : vous avez atteint la limite de %s jeux par serveur.",
 		"error-retrieving-details": "Cependant, une erreur est survenue en tentant de récupérer les détails du jeu. Il est possible qu'il soit appelé “undefined” pendant un temps.",
+
+		"error-limit-reached": "Vous avez atteint ou dépassé la limite de %s jeux suivis par serveur.\nVotez pour moi sur Top.gg pour pouvoir en ajouter %s de plus : %s",
+		"error-limit-reached-voted": "Désolé, vous avez atteint ou dépassé la limite de %s jeux suivis par serveur.",
 
 		"confirm-price": "Les changements de prix de %s seront désormais envoyées dans %s.",
 		"confirm-news": "Les actus de %s seront désormais envoyées dans %s.",
