@@ -1,7 +1,9 @@
 "use strict";
 
 const { search } = require("../steam_news/api");
-const { WATCH_LIMIT, watch, watchPrice, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
+
+const { WATCH_LIMIT } = require("../steam_news/limits");
+const { watch, watchPrice, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
 const {
 	ChannelType: {GuildText: GUILD_TEXT, GuildPublicThread: GUILD_PUBLIC_THREAD, GuildPrivateThread: GUILD_PRIVATE_THREAD, GuildNews: GUILD_NEWS, GuildNewsThread: GUILD_NEWS_THREAD},
 	PermissionsBitField: {Flags: {SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS}},

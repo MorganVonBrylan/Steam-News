@@ -1,6 +1,6 @@
 "use strict";
 
-const { WATCH_LIMIT } = require("../steam_news/watchers");
+const { WATCH_LIMIT } = require("../steam_news/limits");
 const SUPPORT_SERVER = require("../bot").auth.supportServer || "*(no support server invite set)*";
 const {repository: {url: repository}, version, author} = require("../package.json");
 

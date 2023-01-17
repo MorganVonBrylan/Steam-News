@@ -3,7 +3,7 @@
 const FALLBACK = "en";
 const locales = {};
 
-const WATCH_LIMIT = 25;
+const { WATCH_LIMIT, WATCH_VOTE_BONUS } = require("../steam_news/limits");
 
 for(const file of require("fs").readdirSync(__dirname))
 	if(file.endsWith(".json"))

@@ -6,8 +6,8 @@ const { SendMessages, EmbedLinks } = require("discord.js").PermissionsBitField.F
 const REQUIRED_PERMS = SendMessages | EmbedLinks;
 
 const watchFile = __dirname + "/watchers.json";
-const WATCH_LIMIT = exports.WATCH_LIMIT = 25; // the maximum number of fields in an embed and a good limit overall
-
+const {WATCH_LIMIT} = require("./limits");
+Object.freeze(require("./limits"));
 
 const db = require("./db");
 const { stmts } = db;
