@@ -1,9 +1,18 @@
 "use strict";
 
 const { fallbackLocale } = require(".");
+const embeds = ["help"];
 
 const NAME_REGEX = /^[a-z_-]{1,32}$/;
 const DESC_MAX_LENGTH = 100;
+
+const EMBED_MAX_LENGTH = Object.freeze({
+	TITLE: 256,
+	DESCRIPTION: 2048,
+	FIELD_NUMBER: 25,
+	FIELD_NAME: 256,
+	FIELD_VALUE: 1024,
+});
 
 const mainLocale = {};
 const locales = new Map();
@@ -20,9 +29,11 @@ for(const file of require("fs").readdirSync(__dirname))
 
 for(const [locale, trData] of locales)
 {
-	console.log("\nChecking", locale);
+	console.log("\n => Checking", locale);
 	Object.entries(trData.commands).forEach(checkCommand);
 	checkGroup(mainLocale, trData);
+	for(const embed of embeds)
+		checkEmbed(trData[embed], embed);
 }
 
 
@@ -63,10 +74,41 @@ function checkGroup(group, localeGroup, path = "")
 			checkGroup(value, localeGroup[key], keyPath);
 		else if(typeof value === "string")
 		{
+			if(!value.length)
+				console.warn(`${keyPath} is an empty string`);
+
 			const reqPlaceholders = value.match(/%s/g)?.length || 0;
 			const gotPlaceholders = localeGroup[key].match(/%s/g)?.length || 0;
 			if(reqPlaceholders !== gotPlaceholders)
 				console.error(`${keyPath} has ${gotPlaceholders} placeholders, should have ${reqPlaceholders}`);
 		}
+	}
+}
+
+function checkEmbed({title = "", description = "", fields = []}, embedName)
+{
+	const { TITLE, DESCRIPTION, FIELD_NUMBER, FIELD_NAME, FIELD_VALUE } = EMBED_MAX_LENGTH;
+	if(title.length > TITLE)
+		console.error(`Embed '${embedName}' has a title too long (${title.length}/${TITLE})`);
+
+	if(description.length > DESCRIPTION)
+		console.error(`Embed '${embedName}' has a description too long (${description.length}/${DESCRIPTION})`);
+
+	if(fields.length > FIELD_NUMBER)
+		console.error(`Embed '${embedName}' has over ${FIELD_NUMBER} fields (${fields.length})`);
+
+	let i = 0;
+	for(const {name, value} of fields)
+	{
+		const err = `Field [${i++}] of embed '${embedName}'`;
+		if(typeof name !== "string")
+			console.error(`${err} has a non-string name`);
+		else if(name.length > FIELD_NAME)
+			console.error(`${err} has a name too long (${name.length}/${FIELD_NAME})`);
+
+		if(typeof value !== "string")
+			console.error(`${err} has a non-string value`);
+		else if(value.length > FIELD_VALUE)
+			console.error(`${err} has a value too long (${value.length}/${FIELD_VALUE})`);
 	}
 }
