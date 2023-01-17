@@ -3,6 +3,7 @@
 const { search } = require("../../steam_news/api");
 const { unwatch, getAppName, getWatchedApps, getWatchedPrices } = require("../../steam_news/watchers");
 
+const MAX_OPTIONS = 25;
 
 function toString() {
 	return this.name;
@@ -62,20 +63,29 @@ const [appidOption] = exports.options = [{
 exports.getOptions = guildId => {
 	const watchedApps = getWatchedApps(guildId).map(({name, appid}) => ({ name: formatName(name), value: ""+appid, toString }));
 	const watchedPrices = getWatchedPrices(guildId).map(({name, appid}) => ({ name: formatName(name), value: ""+appid, toString }));
+	const nApps = watchedApps.length; const nPrices = watchedPrices.length;
 	const options = [];
-	if(watchedApps.length)
+	if(nApps)
 		options.push({
 			...unwatchNews,
-			options: [{ ...appidOption, choices: watchedApps.sort() }],
+			options: [{ ...appidOption, ...(nApps > MAX_OPTIONS ? {autocomplete: true} : {choices: watchedApps.sort()}) }],
 		});
 
-	if(watchedPrices.length)
+	if(nPrices)
 		options.push({
 			...unwatchPrice,
-			options: [{ ...appidOption, choices: watchedPrices.sort() }],
+			options: [{ ...appidOption, ...(nPrices > MAX_OPTIONS ? {autocomplete: true} : {choices: watchedPrices.sort()}) }],
 		});
 
 	return options;
+}
+
+exports.autocomplete = inter => {
+	const search = (inter.options.getFocused() || "").toLowerCase();
+	const apps = (inter.options.getSubcommand() === "price" ? getWatchedPrices : getWatchedApps)(inter.guild.id);
+	const results = (search ? apps.filter(({name}) => name.toLowerCase().includes(search)) : apps);
+
+	inter.respond(results.slice(0, 25).map(({name, appid}) => ({ name: formatName(name), value: ""+appid }))).catch(error);
 }
 
 exports.run = async inter => {
