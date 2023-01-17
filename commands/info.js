@@ -73,7 +73,7 @@ exports.run = async inter => {
 				{ name: t("DLC"), value: type === "dlc"
 					? `${t("game")} ${fullgame.name} (${fullgame.appid})`
 					: (dlc?.length || 0)+"", inline: true },
-				{ name: t("platforms"), value: platforms?.length ? listPlatforms(platforms) : t("unknown"), inline: true },
+				{ name: t("platforms"), value: listPlatforms(platforms) || t("unknown"), inline: true },
 				{ name: t("controllerSupport"), value: controller_support === "full" ? t("yes") : t("no"), inline: true },
 				{ name: t("multi"), value: categories.some(({id}) => id === 1) ? t("yes") : t("no"), inline: true },
 				{ name: t("languages"), value: parseLanguages(supported_languages) },
@@ -92,7 +92,7 @@ function displayPrice({discount_percent, initial_formatted, final_formatted})
 
 function listPlatforms(platforms)
 {
-	return Object.entries(platforms)
+	return Object.entries(platforms || {})
 		.filter(([,supported]) => supported)
 		.map(([name]) => name.replace(/(?:^|\s|-)\S/g, a => a.toUpperCase()))
 		.join(", ");

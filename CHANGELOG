@@ -60,3 +60,4 @@ Adds localization
 Fixes updating the latest news when there were several
 /unwatch: options are now sorted alphabetically
 Voting for the bot now grants 25 additional watchers of each type
+/info: fixes the platforms
