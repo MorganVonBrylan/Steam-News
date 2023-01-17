@@ -3,6 +3,14 @@
 const { search } = require("../../steam_news/api");
 const { unwatch, getAppName, getWatchedApps, getWatchedPrices } = require("../../steam_news/watchers");
 
+
+function toString() {
+	return this.name;
+}
+function formatName(name) {
+	return name.length > 32 ? name.substring(0, 31) + "…" : name;
+}
+
 const updateCmd = require(".").updateCmd.bind(null, exports);
 
 exports.shouldCreateFor = id => getWatchedApps(id).length || getWatchedPrices(id).length;
@@ -52,22 +60,19 @@ const [appidOption] = exports.options = [{
 	choices: [],
 }];
 exports.getOptions = guildId => {
-	function formatName(name) {
-		return name.length > 32 ? name.substring(0, 31) + "…" : name;
-	}
-	const watchedApps = getWatchedApps(guildId).map(({name, appid}) => ({ name: formatName(name), value: ""+appid }));
-	const watchedPrices = getWatchedPrices(guildId).map(({name, appid}) => ({ name: formatName(name), value: ""+appid }));
+	const watchedApps = getWatchedApps(guildId).map(({name, appid}) => ({ name: formatName(name), value: ""+appid, toString }));
+	const watchedPrices = getWatchedPrices(guildId).map(({name, appid}) => ({ name: formatName(name), value: ""+appid, toString }));
 	const options = [];
 	if(watchedApps.length)
 		options.push({
 			...unwatchNews,
-			options: [{ ...appidOption, choices: watchedApps }],
+			options: [{ ...appidOption, choices: watchedApps.sort() }],
 		});
 
 	if(watchedPrices.length)
 		options.push({
 			...unwatchPrice,
-			options: [{ ...appidOption, choices: watchedPrices }],
+			options: [{ ...appidOption, choices: watchedPrices.sort() }],
 		});
 
 	return options;
