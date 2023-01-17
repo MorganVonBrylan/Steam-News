@@ -216,7 +216,7 @@ exports.watch = async (appid, channel, price = false, LIMIT = WATCH_LIMIT) => {
 
 	if(watchedApps.includes(appid))
 		return false;
-	if(watchedApps.length === LIMIT)
+	if(watchedApps.length >= LIMIT)
 		throw new RangeError(`This server reached its limit of ${LIMIT} watched ${price ? "prices" : "apps"}.`);
 
 	const wasUnknown = !stmts.isAppKnown(appid);
