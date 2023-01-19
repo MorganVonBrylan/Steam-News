@@ -2,7 +2,7 @@
 
 const db = module.exports = exports = new require("better-sqlite3")(__dirname+"/watchers.db");
 
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS PriceWatchers (
 );
 
 CREATE TABLE IF NOT EXISTS Guilds (
-	id INTEGER PRIMARY KEY,
+	id TEXT PRIMARY KEY,
 	cc TEXT NOT NULL
 );
 `);
@@ -47,15 +47,17 @@ try {
 	if(currentVersion < DB_VERSION)
 	{
 		// Upgrade database
-
 		switch(currentVersion)
 		{
 		case 1:
 			db.exec("ALTER TABLE Apps ADD lastPrice INTEGER DEFAULT NULL;");
 			// no break; !
-		//case 2:
-			// upgrades for 2 to 3
-			// etc
+		case 2:
+			// No ALTER COLUMN in SQLite :(
+			db.exec(`CREATE TABLE sqlb_temp_table_1 (id TEXT PRIMARY KEY, cc TEXT NOT NULL);
+			INSERT INTO sqlb_temp_table_1 (id, cc) SELECT id, cc FROM Guilds;
+			DROP TABLE Guilds;
+			ALTER TABLE sqlb_temp_table_1 RENAME TO Guilds;`);
 		}
 
 		db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
