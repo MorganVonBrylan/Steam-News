@@ -24,9 +24,9 @@ const { init: initCmds } = require("./commands");
 client.login(auth.token);
 
 client.on("ready", async () => {
+	console.log(`Logged in as ${client.user.tag}!`);
 	exports.myself = client.user;
 	exports.master = master = await client.users.fetch(auth.master);
-	console.log(`Logged in as ${client.user.tag}!`);
 });
 
 client.once("ready", () => {
