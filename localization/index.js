@@ -18,6 +18,13 @@ if(!locales[FALLBACK])
 	throw new Error(`Missing fallback localization (${FALLBACK})`);
 
 
+const localesFile = require("../locales.json");
+localesFile.countryToLang = {};
+for(const [lang, country] of Object.entries(localesFile.langToCountry))
+	localesFile.countryToLang[country] = lang;
+localesFile.countryToLang.GB = localesFile.countryToLang.US = "en";
+
+
 function trReplace(str, replaces)
 {
 	return replaces.reduce((str, r) => str.replace("%s", r), str);
