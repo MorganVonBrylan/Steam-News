@@ -12,6 +12,7 @@ Object.freeze(require("./limits"));
 const db = require("./db");
 const { stmts } = db;
 
+const { countryToLang } = require("../locales.json");
 
 require("../bot").client.once("ready", checkForNews);
 require("../bot").client.once("ready", checkPrices);
@@ -78,6 +79,7 @@ setInterval(checkForNews, 3600_000);
 setInterval(checkPrices, 3600_000 * 3);
 
 const toEmbed = require("./toEmbed.function");
+const openInApps = tr.getAll("info.openInApp");
 
 /**
  * Triggers all watchers.
@@ -87,9 +89,12 @@ exports.checkForNews = checkForNews;
 async function checkForNews()
 {
 	const { channels } = require("../bot").client;
+	const serverToLang = {};
+	for(const {id, cc} of stmts.getAllCC(false))
+		serverToLang[id] = countryToLang[cc];
 	let total = 0;
 
-	await Promise.allSettled(stmts.findWatchedApps().map(appid => query(appid, 5).then(({appnews}) => {
+	await Promise.allSettled(stmts.findWatchedApps().map(appid => query(appid, 5).then(async ({appnews}) => {
 		if(!appnews)
 			return console.error(`Failed to get news of app ${id}`);
 
@@ -100,7 +105,7 @@ async function checkForNews()
 			if(newsitem.gid === latest)
 				break;
 
-			news.push(newsitem)
+			news.push(newsitem);
 			if(!latest) break;
 		}
 
@@ -110,14 +115,23 @@ async function checkForNews()
 			total += news.length;
 			for(const newsitem of news.reverse())
 			{
-				const embed = { embeds: [toEmbed(newsitem)] };
-				const {yt} = embed.embeds[0];
+				const baseEmbed = await toEmbed(newsitem);
+				const {yt} = baseEmbed;
+				const embeds = { en: { embeds: [baseEmbed] } };
 				for(const channelId of stmts.getWatchers(appid))
 				{
 					channels.fetch(channelId).then(channel => {
 						if(channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
 						{
-							channel.send(embed).catch(Function());
+							const lang = serverToLang[channel.guild.id] || "en";
+							console.log(serverToLang, channel.guild.id, lang)
+							if(!(lang in embeds))
+							{
+								const trEmbed = {...baseEmbed};
+								trEmbed.fields[0].name = openInApps[lang];
+								embeds[lang] = { embeds: [trEmbed] };
+							}
+							channel.send(embeds[lang]).catch(Function());
 							if(yt)
 								channel.send(yt).catch(Function());
 						}

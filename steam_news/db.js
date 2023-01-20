@@ -63,6 +63,7 @@ try {
 		db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
 	}
 
+const getAllCC = db.prepare("SELECT id, cc FROM Guilds");
 const setCC = db.prepare("INSERT INTO Guilds (id, cc) VALUES ($id, $cc)");
 const updateCC = db.prepare("UPDATE Guilds SET cc = $cc WHERE id = $id");
 
@@ -98,6 +99,13 @@ const stmts = exports.stmts = {
 
 	getCC: db.prepare("SELECT cc FROM Guilds WHERE id = ?").pluck(),
 	setCC: {run: (id, cc) => updateCC.run({id, cc}).changes || setCC.run({id, cc}).changes},
+	getAllCC: {readonly: true, all: (indexById = true) => {
+		if(!indexById) return getAllCC.all();
+		const ccs = {};
+		for(const {id, cc} of getAllCC.all())
+			ccs[id] = cc;
+		return ccs;
+	}},
 
 	purgeGuild: db.prepare("DELETE FROM Watchers WHERE guildId = ?"),
 	purgeChannel: db.prepare("DELETE FROM Watchers WHERE channelId = ?"),
@@ -106,6 +114,7 @@ const stmts = exports.stmts = {
 const getAll = [
 	"getWatchers", "getWatchedApps", "findWatchedApps",
 	"getPriceWatchers", "getWatchedPrices", "findWatchedPrices",
+	"getAllCC",
 ];
 
 for(const [name, stmt] of Object.entries(stmts))

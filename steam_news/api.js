@@ -45,6 +45,18 @@ function query(appid, count, maxlength)
 
 
 /**
+ * Adds the event id corresponding to the given news item.
+ * @param {object} newsItem The news item.
+ * @returns {string} The evend id
+ */
+exports.getEventId = async function(newsItem)
+{
+	const redirect = (await fetch(newsItem.url, {method: "HEAD"})).url;
+	return newsItem.eventId = redirect.substring(redirect.lastIndexOf("/") + 1);;
+}
+
+
+/**
  * Helper function to know if an appid is valid or not.
  * @param {int} appid The app's id.
  * @returns {Promise<bool>} true or false

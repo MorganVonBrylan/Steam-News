@@ -45,7 +45,7 @@ exports.run = async inter => {
 	let news;
 	const reply = inter.editReply(isAppNSFW(appid) && !inter.channel.nsfw
 		? { ephemeral: true, content: t("NSFW-content-news") }
-		: { embeds: [news = toEmbed(appnews.newsitems[0])] }
+		: { embeds: [news = await toEmbed(appnews.newsitems[0], inter.locale)] }
 	).catch(error);
 
 	if(news?.yt)
