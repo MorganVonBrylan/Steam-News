@@ -151,6 +151,12 @@
 		"cc-invalid": "This is not a valid Alpha-2 code.\nYou can find the list here: %s"
 	},
 
+	"price": {
+		"sale": "On sale!",
+		"published": "The game is out! It costs **%s**",
+		"openInApp": "Open in app"
+	},
+
 	"watch": {
 		"cannot-send": "I cannot send messages in %s.",
 		"cannot-embed": "I cannot send embeds in %s.",
