@@ -61,3 +61,6 @@ Fixes updating the latest news when there were several
 /unwatch: options are now sorted alphabetically
 Voting for the bot now grants 25 additional watchers of each type
 /info: fixes the platforms
+
+	2.4.1 (20/01/2023)
+	Adds a "open in app" link to news embeds.
