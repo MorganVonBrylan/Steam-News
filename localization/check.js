@@ -71,7 +71,16 @@ function checkGroup(group, localeGroup, path = "")
 		else if(typeof value !== typeof localeGroup[key])
 			console.error(`${keyPath} is a ${typeof localeGroup[key]}, should be a ${typeof value}`);
 		else if(typeof value === "object")
-			checkGroup(value, localeGroup[key], keyPath);
+		{
+			if(value instanceof Array)
+			{
+				const {length} = localeGroup[key];
+				if(value.length !== length)
+					console.warn(`${keyPath} has a different length (${length} versus ${value.length} in the original locale)`);
+			}
+			else
+				checkGroup(value, localeGroup[key], keyPath);
+		}
 		else if(typeof value === "string")
 		{
 			if(!value.length)
