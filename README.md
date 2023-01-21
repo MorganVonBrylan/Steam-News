@@ -5,6 +5,11 @@ This bot allows you to watch Steam game news. My friend Damn3d had the idea.
 
 Do check [Steam Watch](https://github.com/dukeofsussex/SteamWatch) by DukeOfSussex as well.
 
+### Translation credits
+
+- French: Morgân von Brylân
+- German: jemand2001
+
 # Usage
 This bot uses Node.JS (≥16) with `discord.js` v13.
 

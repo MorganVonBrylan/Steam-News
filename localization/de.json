@@ -1,0 +1,205 @@
+{
+	"commands": {
+		"help": {
+			"name": "hilfe",
+			"description": "Erhalte Hilfe für den Bot"
+		},
+		"info": {
+			"name": "information",
+			"description": "Zeige Informationen über ein Spiel an (Genre, Preis, Erscheinungsdatum etc.)",
+			"options": {
+				"game": {
+					"name": "spiel",
+					"description": "Der Name oder die ID des Spiels"
+				},
+				"language": {
+					"name": "sprache",
+					"description": "Die Lokalisierung für Infos (Falls nicht angegeben, die Sprache des Servers oder deine eigene)",
+					"choices": [
+						"English (preise in US$)",
+						"English (preise in pounds)",
+						"Français",
+						"Deutsch",
+						"Meine Eigene Locale"
+					]
+				}
+			}
+		},
+		"latest": {
+			"name": "nachrichten",
+			"description": "Zeige die letzten Neuigkeiten über ein Spiel an",
+			"options": {
+				"game": {
+					"name": "spiel",
+					"description": "Der Name oder die ID des Spiels"
+				}
+			}
+		},
+		"locale": {
+			"name": "locale",
+			"description": "Zeige/setze die Lokalisierung des Servers (für Preise und Sprachen mit /info und Preisbeobachter)",
+			"options": {
+				"country-code": {
+					"name": "land",
+					"description": "Dein zweibuchstabiger Ländercode, etwa GB, FR, RU, DE etc. Du kannst auch suchen."
+				}
+			}
+		},
+		"open": {
+			"name": "oeffnen",
+			"description": "Bekomme einen Link, um ein Spiel in der Steam-App zu öffnen.",
+			"options": {
+				"game": {
+					"name": "spiel",
+					"description": "Der Name oder die ID des Spiels"
+				}
+			}
+		},
+		"watch": {
+			"name": "beobachten",
+			"description": "(nur für Admins) Folge den Nachrichten und Preise eines Spiels (Maximal %s von jedem pro Server)",
+			"options": {
+				"type": {
+					"name": "typ",
+					"description": "Sollen Nachrichten oder Preise beobachtet werden?",
+					"choices": ["Nachrichten", "Preis"]
+				},
+				"game": {
+					"name": "spiel",
+					"description": "Der Name oder die ID des Spiels"
+				},
+				"channel": {
+					"name": "kanal",
+					"description": "Kanal, in dem die Nachrichten gesendet werden sollen (der momentane Kanal, falls nicht angegeben)"
+				}
+			}
+		},
+		"watched": {
+			"name": "beobachtet",
+			"description": "Zeige an, welche Spiele in diesem Server beobachtet werden."
+		},
+		"unwatch": {
+			"name": "beobachter-entfernen",
+			"description": "(nur für Admins) Höre auf, die Nachrichten oder Preise eines Spiels zu beobachten.",
+			"options": {
+				"news": {
+					"name": "nachrichten",
+					"description": "(nur für Admins) Höre auf, die Nachrichten eines Spiels zu beobachten."
+				},
+				"price": {
+					"name": "preis",
+					"description": "(nur für Admins) Höre auf, die Preise eines Spiels zu beobachten."
+				},
+				"game": {
+					"name": "spiel",
+					"description": "Der Name oder die ID des Spiels"
+				}
+			}
+		}
+	},
+
+	"voting": {
+		"thanks": "Danke fürs Abstimmen! Du kannst jetzt %S mehr Beobachter jedes Typs in jedem deiner Server hinzufügen."
+	},
+
+	"help": {
+		"title": "Steam News Hilfe",
+		"description": "**Steam News** ist ein Bot, der dir die Möglichkeit gibt, Nachrichten eines Stem-Spiels zu folgen, indem es Community-Ankündigungen, Patch Notes etc direkt in einen Kanal sendet.",
+		"fields": [
+			{ "name": "Wie folge ich Nachrichten/Preisen eines Spiels?", "value": "Füge einen Beobachter mit `/watch` hinzu, entferne ihn mit `/unwatch`." },
+			{ "name": "Wie vielen Spielen kann ich folgen?", "value": "Standardmäßig kannst du ${WATCH_LIMIT} Nachrichten und genauso vielen Preisen (Die zu verschiedenen Spielen gehören können) folgen. Du kannst ${WATCH_VOTE_BONUS} zusätzlichen Nachrichten und preisen folgen, wenn du auf Top.gg für uns stimmst (folge dem Link am Ende dieser Nachricht)." },
+			{ "name": "Der Bot hat die letzten Nachrichten nicht in der Sekunde geschickt, in der sie veröffentlicht wurden!", "value": "Das ist normal. Er prüft die Nachrichten einmal pro Stunde, also kann es bis zu einer Stunde Verzögerung geben." },
+			{ "name": "was ist mit NSFW Spielen?", "value": "Der Bot wird Informationen und Nachrichten über NSFW Spiele nur in NSFW Kanälen senden." },
+			{ "name": "Kann ich deinen Bot kopieren?", "value": "Gerne! Er ist open source unter der GNU GPL 3.0 Lizenz.\nHier ist das Git repository: [${repository}](${repository})" },
+			{ "name": "Ich brauche immer noch Hilfe!", "value": "Das ist Schade. Du kannst dein Problem auf unserem Support-Server erklären: ${SUPPORT_SERVER}" },
+			{ "name": "Noch etwas", "value": "Magst du Steam News? Denk dran, auf Top.gg dafür abzustimmen: ${VOTE}" }
+		],
+		"footer": { "text": "Steam News v${v} von ${author}.\nIns Deutsche übersetzt von jemand2001" }
+	},
+
+	"error": "Ein Fehler ist aufgetreten.",
+	"no-match": "Kein Spiel gefunden, das zu \"%s\" passt.",
+	"bad-appid": "Die angegebene ID gehört nicht zu einer Steam-App.",
+	"no-DLC-news": "DLCs haben keine Nachrichten.",
+	"no-news": "Diese App hat keine Nachrichten.",
+	"NSFW-content-news": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seine Nachrichten nur in einem NSFW-Kanal anzeigen.",
+	"NSFW-content-price": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seinen Preis nur in einem NSFW-Kanal anzeigen.",
+
+	"info": {
+		"yes": "Ja", "no": "Nein",
+		"invalidAppid": "Die angegebene ID gehört nicht zu einer Steam-App.",
+		"nsfwForbidden": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seine Informationen nur in einem NSFW-Kanal anzeigen.",
+		"comingSoon": "*kommt bald*",
+		"genre": "Genre", "genres": "Genres", "none": "*nichts*",
+		"metacritic": "Metacritic Punkte", "unknown": "*Unbekannt*",
+		"nsfw": "NSFW",
+		"releaseDate": "Veröffentlichungsdatum",
+		"price": "Preis", "free": "Kostenlos",
+		"DLC": "DLC", "game": "Spiel:",
+		"platforms": "Plattformen",
+		"controllerSupport": "Controller Unterstützung",
+		"multi": "Multiplayer",
+		"languages": "Sprachen",
+		"openInApp": "In der App öffnen"
+	},
+
+	"locale": {
+		"current": "Deine momentane Locale ist %s (%s)",
+		"no-default": "Dieser Server hat keine Standardlokalisierung.",
+		"new-default": "Die Standardlokalisierung dieses Server ist jetzt %s (%s)",
+
+		"cc-required": "Du musst den zweibuchstabigen Ländercode eines Landes angeben.\nDie Liste kannst du hier finden: %s",
+		"cc-invalid": "Das ist kein gültiger Ländercode.\nDie Liste kannst du hier finden: %s"
+	},
+
+	"price": {
+		"sale": "Heruntergesetzt!",
+		"published": "Das Spiel wurde veröffentlicht! Es kostet **%s**",
+		"openInApp": "In der App öffnen"
+	},
+
+	"watch": {
+		"cannot-send": "Ich kann in %s keine Nachrichten senden.",
+		"cannot-embed": "Ich kann in %s keine Embeds senden.",
+
+		"price-free": "Dieses Spiel ist kostenlos!",
+		"price-unknown": "Fehler: Konnte keinen Preis für dieses Spiel finden.",
+
+		"server-limit-reached": "Warnung: Du hast dein Limit von %s Spielen pro Server erreicht.\nStimme auf Top.gg für mich ab, um bis zu %s mehr zu beobachten: %s",
+		"server-limit-reached-voted": "Warnung: Du hast dein Limit von %s Spielen pro Server erreicht.",
+		"error-retrieving-details": "Allerdings ist beim Versuch, die Details der App zu bekommen, ein Fehler aufgetreten. Sie könnte eine Weile lang “undefined” heißen.",
+
+		"error-limit-reached": "Entschuldigung, du hast dein Limit von %s Beobachtern pro Server erreicht.\nStimme auf Top.gg für mich ab, um bis zu %s mehr zu beobachten: %s",
+		"error-limit-reached-voted": "Entschuldigung, du hast dein Limit von %s Beobachtern pro Server erreicht.",
+
+		"confirm-price": "Änderungen im Preis von %s werden nun in %s gesendet.",
+		"confirm-news": "Nachrichten zu %s werden nun in %s gesendet.",
+		"already-price": "Änderungen im Preis von %s werden in diesem Server schon beobachtet.",
+		"already-news": "Nachrichten zu %s werden in diesem Server schon beobachtet."
+	},
+
+	"watched": {
+		"games-watched": "In %s beobachtete Spiele",
+		"prices-watched": "In %s beobachtete Preise",
+		"games": {
+			"1": "1 beobachtetes Spiel",
+			"default": "%n beobachtete Spiele"
+		},
+		"prices": {
+			"1": "1 beobachteter Preis",
+			"default": "%n beobachtete Preise"
+		},
+		"none": "In diesem Server werden keine Spiele beobachtet.",
+		"id": "ID: %s",
+		"NSFW-yes": "NSFW: Ja",
+		"NSFW-no": "NSFW: Nein",
+		"channel": "Kanal: %s"
+	},
+
+	"unwatch": {
+		"news-unwatched": "%s wird in diesem Server nicht mehr beobachtet.",
+		"news-unchanged": "%s wurde in diesem Server noch nicht beobachtet.",
+		"price-unwatched": "Der Preis von %s wird in diesem Server nicht mehr beobachtet.",
+		"price-unchanged": "Der Preis von %s wurde in diesem Server noch nicht beobachtet."
+	}
+}

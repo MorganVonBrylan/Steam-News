@@ -17,6 +17,7 @@ exports.options = [{
 		{ name: "English (price in US$)", value: "en" },
 		{ name: "English (price in pounds)", value: "en-UK" },
 		{ name: "Français", value: "fr" },
+		{ name: "Deutsch", value: "de" },
 		{ name: "My own locale", value: "own" },
 	],
 }];
