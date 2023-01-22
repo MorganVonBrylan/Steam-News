@@ -63,9 +63,7 @@ module.exports = exports = (client, token, webhook) => {
 			if(!vote)
 				return;
 
-			addVoter(vote.user);
-			const lang = vote.query?.lang || "en";
-			client.users.fetch(vote.user).then(user => user.send(tr.get(lang, "voting.thanks"))).catch(error);
+			addVoter(vote.user, vote.query?.lang);
 		});
 
 		server.listen(webhook.port);

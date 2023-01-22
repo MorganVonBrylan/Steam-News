@@ -35,6 +35,11 @@ CREATE TABLE IF NOT EXISTS Guilds (
 	id TEXT PRIMARY KEY,
 	cc TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS Voters (
+	id TEXT PRIMARY KEY,
+	lastVote INTEGER NOT NULL
+);
 `);
 
 try {
@@ -107,6 +112,11 @@ const stmts = exports.stmts = {
 		return ccs;
 	}},
 
+	getLastVote: db.prepare("SELECT lastVote FROM Voters WHERE id = ?").pluck(),
+	insertLastVote: db.prepare("INSERT INTO Voters (id, lastVote) VALUES ($id, $date)"),
+	updateLastVote: db.prepare("UPDATE Voters SET lastVote = $date WHERE id = $id"),
+	getRecentVoters: db.prepare("SELECT * FROM Voters WHERE lastVote > ?"),
+
 	purgeGuild: db.prepare("DELETE FROM Watchers WHERE guildId = ?"),
 	purgeChannel: db.prepare("DELETE FROM Watchers WHERE channelId = ?"),
 };
@@ -114,7 +124,7 @@ const stmts = exports.stmts = {
 const getAll = [
 	"getWatchers", "getWatchedApps", "findWatchedApps",
 	"getPriceWatchers", "getWatchedPrices", "findWatchedPrices",
-	"getAllCC",
+	"getAllCC", "getRecentVoters",
 ];
 
 for(const [name, stmt] of Object.entries(stmts))
