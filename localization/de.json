@@ -26,7 +26,7 @@
 			}
 		},
 		"latest": {
-			"name": "nachrichten",
+			"name": "neuste",
 			"description": "Zeige die letzten Neuigkeiten über ein Spiel an",
 			"options": {
 				"game": {
