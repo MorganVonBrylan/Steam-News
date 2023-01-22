@@ -9,7 +9,7 @@ global.error = module.exports = exports = function error(err)
 	if(err?.message)
 	{
 		const {message} = err;
-		const status = err.httpStatus || err.response?.status;
+		const status = err.httpStatus || err.status || err.response?.status;
 		if(message === "read ECONNRESET" || status === 403 || status === 404 || status === 408 || status >= 500
 			|| message === "Unknown interaction" || message === "Missing Access")
 			return;
