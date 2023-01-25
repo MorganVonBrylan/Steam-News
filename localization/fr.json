@@ -2,7 +2,7 @@
 	"commands": {
 		"help": {
 			"name": "aide",
-			"description": "Obtenir de l'aide avec le bot"
+			"description": "Obtenir de l’aide avec le bot"
 		},
 		"info": {
 			"name": "infos",
@@ -10,11 +10,11 @@
 			"options": {
 				"game": {
 					"name": "jeu",
-					"description": "Le nom ou l'id du jeu"
+					"description": "Le nom ou l’id du jeu"
 				},
 				"language": {
 					"name": "langue",
-					"description": "La langue dans laquelle afficher l'info (par défaut la valeur du serveur ou votre propre langue)",
+					"description": "La langue dans laquelle afficher l’info (par défaut la valeur du serveur ou votre propre langue)",
 					"choices": [
 						"Anglais (prix en dollars)",
 						"Anglais (prix en livres)",
@@ -27,11 +27,11 @@
 		},
 		"latest": {
 			"name": "derniere",
-			"description": "Voir la dernière actu d'un jeu.",
+			"description": "Voir la dernière actu d’un jeu.",
 			"options": {
 				"game": {
 					"name": "jeu",
-					"description": "Le nom ou l'id du jeu"
+					"description": "Le nom ou l’id du jeu"
 				}
 			}
 		},
@@ -57,16 +57,16 @@
 		},
 		"watch": {
 			"name": "suivre",
-			"description": "(admins seulement) Suivre les actus d'un jeu (maximum %s de chaque par serveur)",
+			"description": "(admins seulement) Suivre les actus d’un jeu (maximum %s de chaque par serveur)",
 			"options": {
 				"type": {
 					"name": "type",
-					"description": "S'il faut suivre les actus ou les évolutions du prix",
+					"description": "S’il faut suivre les actus ou les évolutions du prix",
 					"choices": ["Actus", "Prix"]
 				},
 				"game": {
 					"name": "jeu",
-					"description": "Le nom ou l'id du jeu"
+					"description": "Le nom ou l’id du jeu"
 				},
 				"channel": {
 					"name": "salon",
@@ -80,26 +80,26 @@
 		},
 		"unwatch": {
 			"name": "suivre-stop",
-			"description": "(admins seulement) Arrêter de suivre les actus d'un jeu.",
+			"description": "(admins seulement) Arrêter de suivre les actus d’un jeu.",
 			"options": {
 				"news": {
 					"name": "actus",
-					"description": "(admins seulement) Arrêter de suivre les actus d'un jeu."
+					"description": "(admins seulement) Arrêter de suivre les actus d’un jeu."
 				},
 				"price": {
 					"name": "prix",
-					"description": "(admins seulement) Arrêter de suivre le prix d'un jeu."
+					"description": "(admins seulement) Arrêter de suivre le prix d’un jeu."
 				},
 				"game": {
 					"name": "jeu",
-					"description": "Le nom ou l'id du jeu"
+					"description": "Le nom ou l’id du jeu"
 				}
 			}
 		}
 	},
 
 	"voting": {
-		"thanks": "Merci d'avoir voté ! Vous pouvez désormais suivre les actus et changements de prix de %S jeux de plus dans chacun de vos serveurs."
+		"thanks": "Merci d’avoir voté ! Vous pouvez désormais suivre les actus et changements de prix de %S jeux de plus dans chacun de vos serveurs."
 	},
 
 	"help": {
@@ -119,16 +119,16 @@
 
 	"error": "Une erreur est survenue.",
 	"no-match": "Aucun jeu trouvé correspondant à \"%s\".",
-	"bad-appid": "L'id que vous avez fourni ne correspond à aucune appli Steam.",
-	"no-DLC-news": "Les DLC n'ont pas d'actus.",
-	"no-news": "Cette appli n'a aucune actu.",
-	"NSFW-content-news": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses actus que dans un salon soumis à une limite d'âge (NSFW).",
-	"NSFW-content-price": "Ce jeu a du contenu adulte. Vous ne pouvez afficher son prix que dans un salon soumis à une limite d'âge (NSFW).",
+	"bad-appid": "L’id que vous avez fourni ne correspond à aucune appli Steam.",
+	"no-DLC-news": "Les DLC n’ont pas d’actus.",
+	"no-news": "Cette appli n’a aucune actu.",
+	"NSFW-content-news": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses actus que dans un salon soumis à une limite d’âge (NSFW).",
+	"NSFW-content-price": "Ce jeu a du contenu adulte. Vous ne pouvez afficher son prix que dans un salon soumis à une limite d’âge (NSFW).",
 
 	"info": {
 		"yes": "Oui", "no": "Non",
 		"invalidAppid": "Cet id ne correspond à aucune appli Steam.",
-		"nsfwForbidden": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon soumis à une limite d'âge (NSFW).",
+		"nsfwForbidden": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon soumis à une limite d’âge (NSFW).",
 		"comingSoon": "*bientôt*",
 		"genre": "Genre", "genres": "Genres", "none": "*aucun*",
 		"metacritic": "Score Metacritic", "unknown": "*Inconnu*",
@@ -145,11 +145,11 @@
 
 	"locale": {
 		"current": "Votre pays actuel est %s (%s)",
-		"no-default": "Ce serveur n'a pas de pays par défaut.",
+		"no-default": "Ce serveur n’a pas de pays par défaut.",
 		"new-default": "Le pays par défaut de ce serveur est désormais %s (%s)",
 
-		"cc-required": "Vous devez fournir le code à 2 lettres d'un pays.\nVous pouvez en trouver la liste ici : %s",
-		"cc-invalid": "Ceci n'est pas un code Alpha-2 valide.\nVous pouvez en trouver la liste ici : %s"
+		"cc-required": "Vous devez fournir le code à 2 lettres d’un pays.\nVous pouvez en trouver la liste ici : %s",
+		"cc-invalid": "Ceci n’est pas un code Alpha-2 valide.\nVous pouvez en trouver la liste ici : %s"
 	},
 
 	"price": {
@@ -167,7 +167,7 @@
 
 		"server-limit-reached": "Attention : vous avez atteint la limite de %s jeux par serveur.\nVotez pour moi sur Top.gg pour pouvoir en ajouter %s de plus : %s",
 		"server-limit-reached-voted": "Attention : vous avez atteint la limite de %s jeux par serveur.",
-		"error-retrieving-details": "Cependant, une erreur est survenue en tentant de récupérer les détails du jeu. Il est possible qu'il soit appelé “undefined” pendant un temps.",
+		"error-retrieving-details": "Cependant, une erreur est survenue en tentant de récupérer les détails du jeu. Il est possible qu’il soit appelé “undefined” pendant un temps.",
 
 		"error-limit-reached": "Vous avez atteint ou dépassé la limite de %s jeux suivis par serveur.\nVotez pour moi sur Top.gg pour pouvoir en ajouter %s de plus : %s",
 		"error-limit-reached-voted": "Désolé, vous avez atteint ou dépassé la limite de %s jeux suivis par serveur.",
@@ -189,7 +189,7 @@
 			"1": "1 prix suivi",
 			"default": "%n prix suivis"
 		},
-		"none": "Aucun jeu n'est suivi dans ce serveur.",
+		"none": "Aucun jeu n’est suivi dans ce serveur.",
 		"id": "Id : %s",
 		"NSFW-yes": "NSFW : Oui",
 		"NSFW-no": "NSFW : Non",
@@ -197,9 +197,9 @@
 	},
 
 	"unwatch": {
-		"news-unwatched": "%s n'est plus suivi dans ce serveur.",
-		"news-unchanged": "%s n'était pas suivi dans ce serveur.",
-		"price-unwatched": "Le prix de %s n'est plus suivi dans ce serveur.",
-		"price-unchanged": "Le prix de %s n'était pas suivi dans ce serveur."
+		"news-unwatched": "%s n’est plus suivi dans ce serveur.",
+		"news-unchanged": "%s n’était pas suivi dans ce serveur.",
+		"price-unwatched": "Le prix de %s n’est plus suivi dans ce serveur.",
+		"price-unchanged": "Le prix de %s n’était pas suivi dans ce serveur."
 	}
 }
