@@ -67,3 +67,8 @@ Voting for the bot now grants 25 additional watchers of each type
 
 	2.4.2 (22/01/2023)
 	The voting thanks now has a 7-day cooldown, and recent votes are remembered through reboots.
+
+
+2.5 (25/01/2022)
+Fixes handling of localization misses
+Adds /stats
