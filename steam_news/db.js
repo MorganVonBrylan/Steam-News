@@ -73,6 +73,15 @@ const setCC = db.prepare("INSERT INTO Guilds (id, cc) VALUES ($id, $cc)");
 const updateCC = db.prepare("UPDATE Guilds SET cc = $cc WHERE id = $id");
 
 const stmts = exports.stmts = {
+	getStats: db.prepare(`SELECT
+		(SELECT COUNT('*') FROM Watchers) AS "watchers",
+		(SELECT COUNT(DISTINCT appid) FROM Watchers) AS "watchedApps",
+		(SELECT COUNT('*') FROM PriceWatchers) AS "priceWatchers",
+		(SELECT COUNT(DISTINCT appid) FROM PriceWatchers) AS "watchedPrices",
+		name as "maxName", MAX((SELECT COUNT(channelId) FROM Watchers w WHERE a.appid = w.appid)) AS "maxWatchers"
+		FROM Apps a;
+	`),
+
 	insertApp: db.prepare("INSERT INTO Apps (appid, name, nsfw, latest, lastPrice) VALUES (?, ?, ?, ?, ?)"),
 
 	isAppKnown: db.prepare("SELECT 1 FROM Apps WHERE appid = ?"),

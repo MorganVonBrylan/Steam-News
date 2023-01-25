@@ -95,6 +95,10 @@
 					"description": "The game’s name or id"
 				}
 			}
+		},
+		"stats": {
+			"name": "stats",
+			"description": "Display statistics about the bot"
 		}
 	},
 
@@ -201,5 +205,15 @@
 		"news-unchanged": "%s was not being watched in this server.",
 		"price-unwatched": "%s’s price is no longer watched in this server.",
 		"price-unchanged": "%s’s price was not being watched in this server."
+	},
+
+	"stats": {
+		"watchers": "News watchers",
+		"games-watched": "Games watched",
+		"most-watched": "Most watched game",
+		"n-watchers": "%s watchers",
+		"price-watchers": "Price watchers",
+		"prices-watched": "Game prices watched",
+		"active-since": "Active since"
 	}
 }

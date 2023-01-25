@@ -95,6 +95,10 @@
 					"description": "Le nom ou l’id du jeu"
 				}
 			}
+		},
+		"stats": {
+			"name": "stats",
+			"description": "Affiche des stats sur le bot"
 		}
 	},
 
@@ -201,5 +205,15 @@
 		"news-unchanged": "%s n’était pas suivi dans ce serveur.",
 		"price-unwatched": "Le prix de %s n’est plus suivi dans ce serveur.",
 		"price-unchanged": "Le prix de %s n’était pas suivi dans ce serveur."
+	},
+
+	"stats": {
+		"watchers": "Suivis d’actus",
+		"games-watched": "Jeux suivis",
+		"most-watched": "Jeu le plus suivi",
+		"n-watchers": "%s abonnés",
+		"price-watchers": "Suivis de prix",
+		"prices-watched": "Jeux dont le prix est suivi",
+		"active-since": "Actif depuis"
 	}
 }

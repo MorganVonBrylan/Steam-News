@@ -95,6 +95,10 @@
 					"description": "Der Name oder die ID des Spiels"
 				}
 			}
+		},
+		"stats": {
+			"name": "statistiken",
+    		"description": "Zeige Statistiken des Bots an"
 		}
 	},
 
@@ -201,5 +205,15 @@
 		"news-unchanged": "%s wurde in diesem Server noch nicht beobachtet.",
 		"price-unwatched": "Der Preis von %s wird in diesem Server nicht mehr beobachtet.",
 		"price-unchanged": "Der Preis von %s wurde in diesem Server noch nicht beobachtet."
+	},
+
+	"stats": {
+		"watchers": "Nachrichtenbeobachter",
+	    "games-watched": "Anzahl an beobachteten Spielen",
+	    "most-watched": "Am meisten beobachtetes Spiel",
+	    "n-watchers": "%s Beobachter",
+	    "price-watchers": "Preisbeobachter",
+	    "prices-watched": "Beobachtete Preise",
+	    "active-since": "Aktiv seit"
 	}
 }
