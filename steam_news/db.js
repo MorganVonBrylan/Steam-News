@@ -43,30 +43,30 @@ CREATE TABLE IF NOT EXISTS Voters (
 `);
 
 try {
-	db.exec(`-- No "IF NOT EXISTS", we WANT this to crash if it already exists
+	db.exec(`-- No "IF NOT EXISTS", we WANT this to crash if it already exists so the version isn't inserted twice
 		CREATE TABLE DB_Version (version INTEGER PRIMARY KEY);
 		INSERT INTO DB_Version VALUES (${DB_VERSION});`);
 } catch {}
 
-	const currentVersion = db.prepare("SELECT version FROM DB_VERSION").pluck().get();
-	if(currentVersion < DB_VERSION)
+const currentVersion = db.prepare("SELECT version FROM DB_VERSION").pluck().get();
+if(currentVersion < DB_VERSION)
+{
+	// Upgrade database
+	switch(currentVersion)
 	{
-		// Upgrade database
-		switch(currentVersion)
-		{
-		case 1:
-			db.exec("ALTER TABLE Apps ADD lastPrice INTEGER DEFAULT NULL;");
-			// no break; !
-		case 2:
-			// No ALTER COLUMN in SQLite :(
-			db.exec(`CREATE TABLE sqlb_temp_table_1 (id TEXT PRIMARY KEY, cc TEXT NOT NULL);
-			INSERT INTO sqlb_temp_table_1 (id, cc) SELECT id, cc FROM Guilds;
-			DROP TABLE Guilds;
-			ALTER TABLE sqlb_temp_table_1 RENAME TO Guilds;`);
-		}
-
-		db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
+	case 1:
+		db.exec("ALTER TABLE Apps ADD lastPrice INTEGER DEFAULT NULL;");
+		// no break; !
+	case 2:
+		// No ALTER COLUMN in SQLite :(
+		db.exec(`CREATE TABLE sqlb_temp_table_1 (id TEXT PRIMARY KEY, cc TEXT NOT NULL);
+		INSERT INTO sqlb_temp_table_1 (id, cc) SELECT id, cc FROM Guilds;
+		DROP TABLE Guilds;
+		ALTER TABLE sqlb_temp_table_1 RENAME TO Guilds;`);
 	}
+
+	db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
+}
 
 const getAllCC = db.prepare("SELECT id, cc FROM Guilds");
 const setCC = db.prepare("INSERT INTO Guilds (id, cc) VALUES ($id, $cc)");
