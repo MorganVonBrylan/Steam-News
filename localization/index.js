@@ -114,7 +114,7 @@ global.tr = module.exports = exports = {
 			}
 		}
 
-		return trReplace(obj[path[path.length-1]], replaces);
+		return obj ? trReplace(obj[path[path.length-1]], replaces) : key;
 	},
 }
 
