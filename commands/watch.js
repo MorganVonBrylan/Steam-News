@@ -16,7 +16,7 @@ const {
 const updateUnwatch = require("./guild").updateCmd.bind(null, require("./guild/unwatch"));
 
 exports.defaultMemberPermissions = "0";
-exports.autocomplete = require("../autocomplete/search");
+exports.autocomplete = require("../autocomplete/search").appsOnly;
 exports.options = [{
 	type: STRING, name: "type", required: true,
 	description: "Whether to watch news or price changes",

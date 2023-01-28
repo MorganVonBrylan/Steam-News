@@ -9,3 +9,9 @@ module.exports = exports = inter => {
 		inter.respond(results.map(resultToOption)).catch(error);
 	});
 }
+
+exports.appsOnly = inter => {
+	search(inter.options.getFocused()).then(results => {
+		inter.respond(results.filter(({type}) => type === "app").map(resultToOption)).catch(error);
+	});
+}
