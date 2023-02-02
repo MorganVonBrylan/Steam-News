@@ -9,6 +9,7 @@ const defaultShouldCreateFor = () => true;
 
 exports.createCmd = createCmd;
 exports.updateCmd = updateCmd;
+exports.deleteCmd = deleteCmd;
 
 for(const file of require("fs").readdirSync(__dirname))
 {
@@ -61,9 +62,9 @@ exports.init = client => {
 };
 
 
-function createCmd(command, {id, commands})
+function createCmd(command, {id, commands}, skipCheck = false)
 {
-	return command.shouldCreateFor(id)
+	return (skipCheck || command.shouldCreateFor(id))
 		&& commands.create({ ...command, options: command.getOptions(id) })
 			.then(apiCmd => command.apiCommands.set(id, apiCmd), error)
 }
@@ -92,4 +93,11 @@ function updateCmd(command, {id, commands}, createIfNotExists = false)
 		else
 			error(new Error(`Tried to update command ${command.name} for guild ${guild}, but the API command couldn't be found.`));
 	}
+}
+
+function deleteCmd(command, {id, commands})
+{
+	const apiCmd = command.apiCommands.get(id) || commands.cache.find(({name}) => name === command.name);
+	command.apiCommands.delete(id);
+	return apiCmd?.delete().catch(error);
 }
