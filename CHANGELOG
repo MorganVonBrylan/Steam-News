@@ -75,3 +75,6 @@ Adds /stats
 
 	2.5.1 (28/01/2023)
 	/watch autocomplete now only includes results with the "app" type.
+
+	2.5.2 (01/02/2023)
+	Adds a replacement for [hr] markups.
