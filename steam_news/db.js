@@ -71,7 +71,14 @@ if(currentVersion < DB_VERSION)
 		ALTER TABLE sqlb_temp_table_1 RENAME TO Guilds;`);
 
 	case 3:
-		db.exec(`INSERT INTO Apps (appid, name) VALUES (${STEAM_APPID}, 'Steam News Hub');`);
+		try {
+			db.exec(`INSERT INTO Apps (appid, name) VALUES (${STEAM_APPID}, 'Steam News Hub');`);
+		} catch {
+			db.exec(`
+				UPDATE Apps SET name = 'Steam News Hub' WHERE appid = ${STEAM_APPID};
+				INSERT INTO SteamWatchers(guildId, channelId) SELECT guildId, channelId FROM Watchers WHERE appid = ${STEAM_APPID};
+				DELETE FROM Watchers WHERE appid = ${STEAM_APPID};`);
+		}
 	}
 
 	db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
