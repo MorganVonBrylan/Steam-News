@@ -78,3 +78,7 @@ Adds /stats
 
 	2.5.2 (01/02/2023)
 	Adds a replacement for [hr] markups.
+
+
+2.6 (02/02/2023)
+Adds news about Steam, through /steam-* commands.
