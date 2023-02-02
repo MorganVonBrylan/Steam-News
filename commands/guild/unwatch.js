@@ -16,29 +16,8 @@ const updateCmd = require(".").updateCmd.bind(null, exports);
 
 exports.shouldCreateFor = id => getWatchedApps(id).length || getWatchedPrices(id).length;
 
-const localizations = Object.entries(tr.getAll("commands.unwatch", true));
-localizations.get = function(property) {
-	return this.reduce((localization, [locale, tr]) => {
-		localization[locale] = tr[property];
-		return localization;
-	}, {});
-}
-localizations.optionLocalizations = function(optionName) {
-	return this.reduce((optLocalization, [locale, tr]) => {
-		const {name, description} = tr.options[optionName];
-		if(name.length > 32)
-			throw new Error(`Option name too long (>32) in ${locale}: ${name}`);
-		if(description.length > 100)
-			throw new Error(`Option description too long (>100) in ${locale}: ${name}`);
-		optLocalization.nameLocalizations[locale] = name;
-		optLocalization.descriptionLocalizations[locale] = description;
-		return optLocalization;
-	}, {
-		nameLocalizations: {},
-		descriptionLocalizations: {},
-	});
-}
 
+const localizations = require("./_localizationHelper")("unwatch");
 
 exports.defaultMemberPermissions = "0";
 exports.nameLocalizations = localizations.get("name");

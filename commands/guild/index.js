@@ -12,7 +12,7 @@ exports.updateCmd = updateCmd;
 
 for(const file of require("fs").readdirSync(__dirname))
 {
-	if(file === "index.js")
+	if(file === "index.js" || file[0] === "_")
 		continue;
 
 	const cmd = require(`./${file}`);
