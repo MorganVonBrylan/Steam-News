@@ -27,7 +27,7 @@ exports.options = [{
 	autocomplete: true,
 }, {
 	type: CHANNEL, name: "channel",
-	channelTypes: [GUILD_TEXT, GUILD_PUBLIC_THREAD, GUILD_PRIVATE_THREAD, GUILD_NEWS, GUILD_NEWS_THREAD],
+	channelTypes: ALL_TEXT_CHANNEL_TYPES,
 	description: "The channel where to send the news (defaults to current channel if not provided)"
 }];
 exports.run = async inter => {

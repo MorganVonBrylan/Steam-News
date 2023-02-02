@@ -17,13 +17,15 @@ var skipDebug = true;
 const DEFAULT_DM_PERMISSION = false;
 
 
-const { ApplicationCommandType: {ChatInput: CHAT_INPUT} } = require("discord.js");
+const { ApplicationCommandType: {ChatInput: CHAT_INPUT}, ChannelType } = require("discord.js");
 
 String.prototype.toSnakeCase = function() {
 	return this.replace(/(?!^)[A-Z]/g, letter => `_${letter}`).toUpperCase();
 }
 for(const [key, bitfield] of Object.entries(require("discord.js").ApplicationCommandOptionType))
 	global[key.toSnakeCase()] = bitfield;
+
+global.ALL_TEXT_CHANNEL_TYPES = [ChannelType.GuildText, ChannelType.GuildPublicThread, ChannelType.GuildPrivateThread, ChannelType.GuildNews, ChannelType.GuildNewsThread];
 
 
 class LoadError extends Error {
