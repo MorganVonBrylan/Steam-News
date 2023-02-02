@@ -4,6 +4,8 @@ const { search, query, getDetails, isNSFW } = require("../steam_news/api");
 const { isKnown, saveAppInfo, isNSFW: isAppNSFW } = require("../steam_news/watchers");
 const toEmbed = require("../steam_news/toEmbed.function");
 
+const { PermissionsBitField: {Flags: {SendMessages: SEND_MESSAGES}} } = require("discord.js");
+
 exports.dmPermission = true;
 exports.autocomplete = require("../autocomplete/search");
 exports.options = [{
@@ -48,6 +50,6 @@ exports.run = async inter => {
 		: { embeds: [news = await toEmbed(appnews.newsitems[0], inter.locale)] }
 	).catch(error);
 
-	if(news?.yt)
+	if(news?.yt && channel.permissionsFor(await inter.guild.members.fetchMe())?.has(SEND_MESSAGES))
 		reply.then(() => inter.channel.send(news.yt).catch(error));
 }
