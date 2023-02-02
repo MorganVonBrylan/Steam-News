@@ -1,8 +1,9 @@
 "use strict";
 
 const db = module.exports = exports = new require("better-sqlite3")(__dirname+"/watchers.db");
+const { STEAM_APPID } = require("./api");
 
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
@@ -29,6 +30,11 @@ CREATE TABLE IF NOT EXISTS PriceWatchers (
 	channelId TEXT NOT NULL,
 	PRIMARY KEY (appId, guildId),
 	CONSTRAINT fk_price_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS SteamWatchers (
+	guildId TEXT PRIMARY KEY,
+	channelID TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Guilds (
@@ -63,10 +69,16 @@ if(currentVersion < DB_VERSION)
 		INSERT INTO sqlb_temp_table_1 (id, cc) SELECT id, cc FROM Guilds;
 		DROP TABLE Guilds;
 		ALTER TABLE sqlb_temp_table_1 RENAME TO Guilds;`);
+
+	case 3:
+		db.exec(`INSERT INTO Apps (appid, name) VALUES (${STEAM_APPID}, 'Steam News Hub');`);
 	}
 
 	db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
 }
+
+const setSteamWatch = db.prepare("INSERT INTO SteamWatchers (guildId, channelId) VALUES (?, ?)");
+const updateSteamWatch = db.prepare("UPDATE SteamWatchers SET channelId = $channelId WHERE guildId = $guildId");
 
 const getAllCC = db.prepare("SELECT id, cc FROM Guilds");
 const setCC = db.prepare("INSERT INTO Guilds (id, cc) VALUES ($id, $cc)");
@@ -99,6 +111,12 @@ const stmts = exports.stmts = {
 		WHERE guildId = ?
 		ORDER BY name`),
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
+
+	watchSteam: {run: (guildId, channelId) => updateSteamWatch.run({guildId, channelId}).changes
+		|| setSteamWatch.run(guildId, channelId).changes},
+	isWatchingSteam: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
+	unwatchSteam: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
+	getSteamWatchers: db.prepare("SELECT channelId FROM SteamWatchers").pluck(),
 
 	watchPrice: db.prepare("INSERT INTO PriceWatchers (appid, guildId, channelId) VALUES (?, ?, ?)"),
 	unwatchPrice: db.prepare("DELETE FROM PriceWatchers WHERE appid = ? AND guildid = ?"),
@@ -133,8 +151,11 @@ const stmts = exports.stmts = {
 const getAll = [
 	"getWatchers", "getWatchedApps", "findWatchedApps",
 	"getPriceWatchers", "getWatchedPrices", "findWatchedPrices",
+	"getSteamWatchers",
 	"getAllCC", "getRecentVoters",
 ];
 
 for(const [name, stmt] of Object.entries(stmts))
 	stmts[name] = stmt[stmt.readonly ? (getAll.includes(name) ? "all" : "get") : "run"].bind(stmt);
+
+stmts.updateSteamLatest = latest => stmts.updateLatest(latest, STEAM_APPID);

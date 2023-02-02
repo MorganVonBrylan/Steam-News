@@ -96,6 +96,24 @@
 				}
 			}
 		},
+		"steam-latest": {
+			"name": "steam-neuste",
+			"description": "Zeige die letzten Neuigkeiten über Steam an."
+		},
+		"steam-watch": {
+			"name": "steam-beobachten",
+			"description": "(nur für Admins) Nachrichten über Steam beobachten.",
+			"options": {
+				"channel": {
+					"name": "kanal",
+					"description": "The channel where to send the news (defaults to current channel if not provided)"
+				}
+			}
+		},
+		"steam-unwatch": {
+			"name": "steam-beobachten-entfernen",
+			"description": "(nur für Admins) Aufhören, Nachrichten über Steam zu beobachten."
+		},
 		"stats": {
 			"name": "statistiken",
     		"description": "Zeige Statistiken des Bots an"
@@ -185,6 +203,7 @@
 	"watched": {
 		"games-watched": "In %s beobachtete Spiele",
 		"prices-watched": "In %s beobachtete Preise",
+		"steam-watched": "Nachrichten über Steam werden in %s gesendet",
 		"games": {
 			"1": "1 beobachtetes Spiel",
 			"default": "%n beobachtete Spiele"
@@ -205,6 +224,11 @@
 		"news-unchanged": "%s wurde in diesem Server noch nicht beobachtet.",
 		"price-unwatched": "Der Preis von %s wird in diesem Server nicht mehr beobachtet.",
 		"price-unchanged": "Der Preis von %s wurde in diesem Server noch nicht beobachtet."
+	},
+
+	"steam": {
+	    "watched": "Nachrichten über Steam werden nun in %s geschickt.",
+	    "unwatched": "Nachrichten über Steam werden in diesem Server nicht mehr beobachtet."
 	},
 
 	"stats": {

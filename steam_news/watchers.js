@@ -1,7 +1,7 @@
 "use strict";
 
 const { existsSync, promises: {readFile, writeFile, unlink} } = require("fs");
-const { query, queryPrices, getDetails, isNSFW } = require("./api");
+const { query, queryPrices, querySteam, getDetails, isNSFW, STEAM_APPID, STEAM_ICON } = require("./api");
 const { SendMessages, EmbedLinks } = require("discord.js").PermissionsBitField.Flags;
 const REQUIRED_PERMS = SendMessages | EmbedLinks;
 
@@ -94,6 +94,58 @@ async function checkForNews()
 		serverToLang[id] = countryToLang[cc];
 	let total = 0;
 
+	function embedLocalizer(baseEmbed) {
+		const {yt} = baseEmbed;
+		const embeds = { en: { embeds: [baseEmbed] } };
+		return channelId => channels.fetch(channelId).then(channel => {
+			if(!channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS))
+				return;
+
+			const lang = serverToLang[channel.guild.id] || "en";
+			if(!(lang in embeds))
+			{
+				const trEmbed = {...baseEmbed};
+				trEmbed.fields[0].name = openInApps[lang];
+				embeds[lang] = { embeds: [trEmbed] };
+			}
+			channel.send(embeds[lang]).catch(Function());
+			if(yt)
+				channel.send(yt).catch(Function());
+		}, Function());
+	}
+
+	const steamWatchers = stmts.getSteamWatchers();
+	if(steamWatchers.length)
+	{
+		querySteam(5).then(async ({appnews}) => {
+			if(!appnews)
+				return console.error(`Failed to get news for Steam`);
+
+			const { latest } = stmts.getAppInfo(STEAM_APPID);
+			const news = [];
+			for(const newsitem of appnews.newsitems)
+			{
+				if(newsitem.gid === latest)
+					break;
+
+				news.push(newsitem);
+				if(!latest) break;
+			}
+
+			if(!news.length)
+				return;
+
+			const [{gid: latestGid}] = news;
+			for(const newsitem of news.reverse())
+			{
+				const baseEmbed = await toEmbed(newsitem);
+				baseEmbed.footer.iconUrl = STEAM_ICON;
+				steamWatchers.forEach(embedLocalizer(baseEmbed));
+			}
+			stmts.updateLatest({ appid: STEAM_APPID, latest: latestGid });
+		});
+	}
+
 	await Promise.allSettled(stmts.findWatchedApps().map(appid => query(appid, 5).then(async ({appnews}) => {
 		if(!appnews)
 			return console.error(`Failed to get news of app ${id}`);
@@ -109,37 +161,15 @@ async function checkForNews()
 			if(!latest) break;
 		}
 
-		if(news.length)
-		{
-			const [{gid: latestGid}] = news;
-			total += news.length;
-			for(const newsitem of news.reverse())
-			{
-				const baseEmbed = await toEmbed(newsitem);
-				const {yt} = baseEmbed;
-				const embeds = { en: { embeds: [baseEmbed] } };
-				for(const channelId of stmts.getWatchers(appid))
-				{
-					channels.fetch(channelId).then(channel => {
-						if(channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
-						{
-							const lang = serverToLang[channel.guild.id] || "en";
-							console.log(serverToLang, channel.guild.id, lang)
-							if(!(lang in embeds))
-							{
-								const trEmbed = {...baseEmbed};
-								trEmbed.fields[0].name = openInApps[lang];
-								embeds[lang] = { embeds: [trEmbed] };
-							}
-							channel.send(embeds[lang]).catch(Function());
-							if(yt)
-								channel.send(yt).catch(Function());
-						}
-					}, Function());
-				}
-			}
-			stmts.updateLatest({ appid, latest: latestGid });
-		}
+		if(!news.length)
+			return;
+
+		const [{gid: latestGid}] = news;
+		total += news.length;
+		for(const newsitem of news.reverse())
+			stmts.getWatchers(appid).forEach(embedLocalizer(await toEmbed(newsitem)));
+
+		stmts.updateLatest({ appid, latest: latestGid });
 	})));
 
 	return total;

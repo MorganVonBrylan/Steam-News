@@ -8,6 +8,10 @@ const BASE_DETAILS_URL = "https://store.steampowered.com/api/appdetails?appids="
 const BASE_PRICE_URL = "https://store.steampowered.com/api/appdetails?filters=price_overview&appids=";
 const BASE_SEARCH_URL = "https://store.steampowered.com/api/storesearch/?l=english";
 
+const STEAM_APPID = exports.STEAM_APPID = 593110;
+const STEAM_NEWS_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid="+STEAM_APPID;
+const STEAM_ICON = exports.STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/593110/403da5dab6ce5ea2882dc5b7636d7c4dbb73c81a.jpg";
+
 
 /**
  * Searches the Steam store for apps.
@@ -37,6 +41,23 @@ function query(appid, count, maxlength)
 {
 	if(!appid) throw new TypeError("appid cannot be null");
 	let url = BASE_URL + appid;
+	if(count) url += `&count=${count}`;
+	if(maxlength) url += `&maxlength=${maxlength}`;
+
+	return fetch(url).then(res => res.json());
+}
+
+
+/**
+ * Queries the Steam API to get the latest Steam news.
+ * @param {int} count (optional) The number of news to fetch
+ * @param {int} maxlength (optional) The max length of the 'contents' field. Any additional characters will be replaced with '...'. This also removes all PHPBB syntax.
+ *
+ * @returns {Promise<object>} The news
+ */
+exports.querySteam = async function(count, maxlength)
+{
+	let url = STEAM_NEWS_URL;
 	if(count) url += `&count=${count}`;
 	if(maxlength) url += `&maxlength=${maxlength}`;
 

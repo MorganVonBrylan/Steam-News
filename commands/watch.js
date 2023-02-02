@@ -1,6 +1,6 @@
 "use strict";
 
-const { search } = require("../steam_news/api");
+const { search, STEAM_APPID } = require("../steam_news/api");
 
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = require("../steam_news/limits");
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
@@ -51,6 +51,8 @@ exports.run = async inter => {
 		else
 			return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
 	}
+	else if(+appid === STEAM_APPID)
+		return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
 
 	const LIMIT = voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT;
 	const type = inter.options.getString("type");

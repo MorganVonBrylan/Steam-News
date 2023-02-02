@@ -1,17 +1,23 @@
 "use strict";
 
 const { getWatchedApps, getWatchedPrices } = require("../steam_news/watchers");
+const { stmts: {isWatchingSteam} } = require("../steam_news/db");
 
 exports.options = [];
 exports.run = inter => {
 	const t = tr.set(inter.locale, "watched");
-	const watched = getWatchedApps(inter.guild.id);
-	const watchedPrices = getWatchedPrices(inter.guild.id);
+	const { guild } = inter;
+	const watched = getWatchedApps(guild.id);
+	const watchedPrices = getWatchedPrices(guild.id);
 
 	const embeds = [
-		...split(watched, t("games-watched", inter.guild), tr.plural("games", watched.length)),
-		...split(watchedPrices, t("prices-watched", inter.guild), tr.plural("prices", watchedPrices.length)),
+		...split(watched, t("games-watched", guild), tr.plural("games", watched.length)),
+		...split(watchedPrices, t("prices-watched", guild), tr.plural("prices", watchedPrices.length)),
 	];
+
+	const steamWatch = isWatchingSteam(guild.id);
+	if(steamWatch)
+		embeds.push({ description: t("steam-watched", `<#${steamWatch}>`) });
 
 	inter.reply(embeds.length
 		? { ephemeral: true, embeds }
