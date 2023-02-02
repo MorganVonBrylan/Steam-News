@@ -20,10 +20,13 @@ for(const file of require("fs").readdirSync(__dirname))
 	cmd.name = file.slice(0, -3);
 	cmd.apiCommands = new Map();
 
-	if(!cmd.shouldCreateFor)
+	if("shouldCreateFor" in cmd)
+	{
+		if(typeof cmd.shouldCreateFor !== "function")
+			throw new LoadError(cmd.name, `Guild command 'shouldCreateFor' must be a function.`);
+	}
+	else
 		cmd.shouldCreateFor = defaultShouldCreateFor;
-	else if(typeof cmd.shouldCreateFor !== "function")
-		throw new LoadError(cmd.name, `Guild command 'shouldCreateFor' must be a function.`);
 
 	checkCommand(cmd);
 	guildCommands[cmd.name] = cmd;
