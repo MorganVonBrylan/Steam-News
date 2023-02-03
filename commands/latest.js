@@ -50,6 +50,6 @@ exports.run = async inter => {
 		: { embeds: [news = await toEmbed(appnews.newsitems[0], inter.locale)] }
 	).catch(error);
 
-	if(news?.yt && channel.permissionsFor(await inter.guild.members.fetchMe())?.has(SEND_MESSAGES))
+	if(news?.yt && inter.channel.permissionsFor(await inter.guild.members.fetchMe())?.has(SEND_MESSAGES))
 		reply.then(() => inter.channel.send(news.yt).catch(error));
 }
