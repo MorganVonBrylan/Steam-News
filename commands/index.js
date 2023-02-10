@@ -23,7 +23,7 @@ String.prototype.toSnakeCase = function() {
 	return this.replace(/(?!^)[A-Z]/g, letter => `_${letter}`).toUpperCase();
 }
 for(const [key, bitfield] of Object.entries(require("discord.js").ApplicationCommandOptionType))
-	global[key.toSnakeCase()] = bitfield;
+	Object.defineProperty(global, key.toSnakeCase(), { value: bitfield });
 
 global.ALL_TEXT_CHANNEL_TYPES = [ChannelType.GuildText, ChannelType.GuildPublicThread, ChannelType.GuildPrivateThread, ChannelType.GuildNews, ChannelType.GuildNewsThread];
 
