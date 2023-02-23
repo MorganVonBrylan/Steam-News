@@ -36,7 +36,7 @@ exports.run = async inter => {
 	{
 		const details = await fetchInfo;
 		if(details.type === "dlc")
-			return inter.editRreply({ephemeral: true, content: t("no-DLC-news")}).catch(error);
+			return inter.editReply({ephemeral: true, content: t("no-DLC-news")}).catch(error);
 
 		saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
 	}
