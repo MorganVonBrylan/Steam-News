@@ -156,7 +156,7 @@
 		"metacritic": "Metacritic Punkte", "unknown": "*Unbekannt*",
 		"nsfw": "NSFW",
 		"releaseDate": "Veröffentlichungsdatum",
-		"price": "Preis", "free": "Kostenlos",
+		"price": "Preis", "free": "Kostenlos", "undefined": "unbestimmt",
 		"DLC": "DLC", "game": "Spiel:",
 		"platforms": "Plattformen",
 		"controllerSupport": "Controller Unterstützung",

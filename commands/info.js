@@ -70,7 +70,9 @@ exports.run = async inter => {
 				{ name: t("metacritic"), value: metacritic ? `[${metacritic.score}](${metacritic.url})` : t("unknown"), inline: true },
 				{ name: t("nsfw"), value: nsfw ? `🔞 ${t("yes")}` : t("no"), inline: true },
 				{ name: t("releaseDate"), value: date, inline: true },
-				{ name: t("price"), value: is_free && !price.discount_percent ? t("free") : displayPrice(price), inline: true },
+				{ name: t("price"), value: is_free && !price.discount_percent ? t("free")
+					: "final_formatted" in price ? displayPrice(price)
+					: t("undefined"), inline: true },
 				{ name: t("DLC"), value: type === "dlc"
 					? `${t("game")} ${fullgame.name} (${fullgame.appid})`
 					: (dlc?.length || 0)+"", inline: true },
