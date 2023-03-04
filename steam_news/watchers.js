@@ -223,6 +223,8 @@ async function checkPrices()
 		queryPrices([...appsForThisCC.keys()], cc).then(appDetails => {
 			for(const [appid, price] of Object.entries(appDetails))
 			{
+				if(!price) continue; // Sometimes the API call just... fails
+
 				price.cc = cc;
 				const { name, nsfw } = watchedPrices[appid];
 				const embed = { embeds: [toEmbed.price(appid, name, price)] };
