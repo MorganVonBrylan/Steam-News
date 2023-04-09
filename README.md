@@ -1,6 +1,10 @@
 
 # Steam News
 
+[![Discord Bots](https://top.gg/api/widget/status/929757212841226292.svg)](https://top.gg/bot/929757212841226292)
+[![Discord Bots](https://top.gg/api/widget/servers/929757212841226292.svg)](https://top.gg/bot/929757212841226292)
+[![Discord Bots](https://top.gg/api/widget/upvotes/929757212841226292.svg)](https://top.gg/bot/929757212841226292)
+
 This bot allows you to watch Steam game news. My friend Damn3d had the idea.
 
 Do check [Steam Watch](https://github.com/dukeofsussex/SteamWatch) by DukeOfSussex as well.
