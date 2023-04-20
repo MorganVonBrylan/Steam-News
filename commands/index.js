@@ -85,12 +85,19 @@ function checkCommand(command)
 			command.options = []; // So we can remove options
 		else if(!Array.isArray(command.options))
 			throw new LoadError(name, "'options' must be an Array.");
-		else for(const option of command.options)
+		else for(const {name: oName, description: oDesc, autocomplete} of command.options)
 		{
-			if(!NAME_REGEX.test(option.name))
-				throw new LoadError(name, `Invalid option name: ${option.name}`);
+			if(!NAME_REGEX.test(oName))
+				throw new LoadError(name, `Invalid option name: ${oName}`);
 
-			if(option.autocomplete)
+			if(typeof oDesc !== "string")
+				throw new LoadError(name, "Option descriptions must be a string.");
+			if(oDesc.length < 4)
+				throw new LoadError(name, `Option ${oName}'s description is too short`);
+			if(oDesc.length > 100)
+				throw new LoadError(name, `Option ${oName}'s description is too long (${oDesc.length}/100)`);
+
+			if(autocomplete)
 			{
 				if(!("autocomplete" in command))
 					throw new LoadError(name, `Command has an autocomplete option, but no autocomplete handler.`);
