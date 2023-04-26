@@ -54,7 +54,7 @@ exports.init = client => {
 			.map(cmd => ({ ...cmd, options: cmd.getOptions(id) }))
 		).then(apiCommands => {
 			for(const apiCmd of apiCommands)
-				guildCommands[apiCmd.name].apiCommands.set(id, apiCmd);
+				guildCommands[apiCmd.name]?.apiCommands.set(id, apiCmd);
 		}, error);
 	});
 
