@@ -27,6 +27,15 @@ client.on("ready", async () => {
 	console.log(`Logged in as ${client.user.tag}!`);
 	exports.myself = client.user;
 	exports.master = master = await client.users.fetch(auth.master);
+
+	const guildCountCheck = setInterval(() => {
+		const nGuilds = client.guilds.cache.size;
+		if(nGuilds > 1500)
+		{
+			master.send(`Yo I got about ${nGuilds}servers now, get to sharding\nhttps://discordjs.guide/sharding`).catch(error);
+			clearInterval(guildCountCheck);
+		}
+	}, 3600_000);
 });
 
 client.once("ready", () => {
