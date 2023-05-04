@@ -1,6 +1,7 @@
 "use strict";
 
-const { search, query, getDetails, isNSFW } = require("../steam_news/api");
+const { query, getDetails, isNSFW } = require("../steam_news/api");
+const interpretAppidOption = require("../interpretAppidOption.function");
 const { isKnown, saveAppInfo, isNSFW: isAppNSFW } = require("../steam_news/watchers");
 const toEmbed = require("../steam_news/toEmbed.function");
 
@@ -14,18 +15,11 @@ exports.options = [{
 	autocomplete: true,
 }];
 exports.run = async inter => {
-	const defer = inter.deferReply().catch(error);
-	let t = tr.set(inter.locale);
-	let appid = inter.options.getString("game");
-	if(!isFinite(appid))
-	{
-		const [game] = await search(appid);
-		if(game)
-			appid = game.id;
-		else
-			return defer.then(() => inter.editReply(t("no-match", appid)).catch(error));
-	}
+	const { appid, defer } = await interpretAppidOption(inter);
+	if(!appid)
+		return;
 
+	const t = tr.set(inter.locale);
 	const fetchInfo = isKnown(appid) ? null : getDetails(appid);
 	const {appnews} = await query(appid, 1);
 	await defer;

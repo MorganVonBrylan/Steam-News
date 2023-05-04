@@ -1,6 +1,7 @@
 "use strict";
 
-const { search, getDetails, isNSFW } = require("../steam_news/api");
+const { getDetails, isNSFW } = require("../steam_news/api");
+const interpretAppidOption = require("../interpretAppidOption.function");
 const { stmts: {getCC} } = require("../steam_news/db");
 const { langToCountry } = require("../locales.json");
 
@@ -22,22 +23,14 @@ exports.options = [{
 	],
 }];
 exports.run = async inter => {
+	const { appid, defer } = await interpretAppidOption(inter);
+	if(!appid)
+		return;
+
 	const langOpt = inter.options.getString("language");
 	const lang = langOpt && langOpt !== "own" ? langOpt : (
 		getCC(inter.guild?.id)?.toLowerCase() || inter.locale || "en"
 	);
-	const defer = inter.deferReply().catch(error);
-	let appid = inter.options.getString("game");
-
-	if(!isFinite(appid))
-	{
-		const [game] = await search(appid);
-		if(game)
-			appid = game.id;
-		else
-			return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
-	}
-
 	const t = tr.set(lang, "info");
 
 	getDetails(appid, lang, langToCountry[lang]).then(async details => {

@@ -1,6 +1,7 @@
 "use strict";
 
-const { search, STEAM_APPID } = require("../steam_news/api");
+const { STEAM_APPID } = require("../steam_news/api");
+const interpretAppidOption = require("../interpretAppidOption.function");
 
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = require("../steam_news/limits");
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
@@ -40,17 +41,9 @@ exports.run = async inter => {
 	else if(!perms.has(EMBED_LINKS))
 		return inter.reply({ephemeral: true, content: t("cannot-embed", channel)}).catch(error);
 
-	const defer = inter.deferReply({ephemeral: true}).catch(error);
-	let appid = inter.options.getString("game");
-
-	if(!isFinite(appid))
-	{
-		const [game] = await search(appid);
-		if(game)
-			appid = game.id;
-		else
-			return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
-	}
+	const { appid, defer } = await interpretAppidOption(inter, true);
+	if(!appid)
+		return;
 	else if(+appid === STEAM_APPID)
 		return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
 
