@@ -82,3 +82,6 @@ Adds /stats
 
 2.6 (02/02/2023)
 Adds news about Steam, through /steam-* commands.
+
+	2.6.1 (04/05/2023)
+	Adds an error message for failed API calls.
