@@ -7,11 +7,11 @@ const resultToOption = ({id, name}) => ({ name: name.length > 100 ? name.substri
 module.exports = exports = inter => {
 	search(inter.options.getFocused()).then(results => {
 		inter.respond(results.map(resultToOption)).catch(error);
-	});
+	}, error);
 }
 
 exports.appsOnly = inter => {
 	search(inter.options.getFocused()).then(results => {
 		inter.respond(results.filter(({type}) => type === "app").map(resultToOption)).catch(error);
-	});
+	}, error);
 }
