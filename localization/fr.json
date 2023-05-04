@@ -140,6 +140,7 @@
 	},
 
 	"error": "Une erreur est survenue.",
+	"api-failed": "La connexion à l'API Steam a échoué ; veuillez réessayer dans quelques minutes.",
 	"no-match": "Aucun jeu trouvé correspondant à \"%s\".",
 	"bad-appid": "L’id que vous avez fourni ne correspond à aucune appli Steam.",
 	"no-DLC-news": "Les DLC n’ont pas d’actus.",

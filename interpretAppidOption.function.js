@@ -9,11 +9,14 @@ module.exports = exports = async function interpretAppid(inter, ephemeral = fals
 	if(isFinite(appid))
 		return { appid, defer };
 
-	const [game] = await search(appid);
-	if(game)
-		return { appid: game.id, defer };
+	try {
+		const [game] = await search(appid);
+		if(game)
+			return { appid: game.id, defer };
 
-	defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
-
+		defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
+	} catch {
+		defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "api-failed")}).catch(error));
+	}
 	return { defer };
 }
