@@ -189,8 +189,10 @@ async function checkPrices()
 	for(const appDetails of stmts.findWatchedPrices())
 		watchedPrices[appDetails.appid] = appDetails;
 
-	for(const [appid, {final, discount_percent}] of Object.entries(await queryPrices(Object.keys(watchedPrices))))
+	for(const [appid, {final, discount_percent}= {}] of Object.entries(await queryPrices(Object.keys(watchedPrices))))
 	{
+		if(!final) continue; // Sometimes the API call just... fails
+
 		const lastKnownPrice = watchedPrices[appid].lastPrice;
 		if(final === lastKnownPrice)
 			continue;
