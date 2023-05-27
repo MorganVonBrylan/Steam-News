@@ -85,3 +85,7 @@ Adds news about Steam, through /steam-* commands.
 
 	2.6.1 (04/05/2023)
 	Adds an error message for failed API calls.
+
+	2.6.2 (27/05/2023)
+	Apps.latest is now a timestamp and not a gid
+	Fixes the issue of the bot constantly posting the same 2 news items if they have the same timestamp
