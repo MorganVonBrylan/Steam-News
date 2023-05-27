@@ -26,7 +26,7 @@ exports.isKnown = appid => !!stmts.isAppKnown(appid);
 
 /**
  * @param {int} appid The app's id
- * @returns {?object} The app info (name, NSFW status and latest news gid), if known.
+ * @returns {?object} The app info (name, NSFW status and latest news timestamp), if known.
  */
 exports.getAppInfo = stmts.getAppInfo;
 
@@ -36,7 +36,7 @@ exports.getAppInfo = stmts.getAppInfo;
  * @param {object} details The relevant details (all optional except the name)
  	* @param {string} details.name The app's name
  	* @param {bool} details.nsfw Whether the app is NSFW or not.
-	* @param {string} details.latest That app's latest news' gid.
+	* @param {string} details.latest That app's latest news' timestamp.
  */
 exports.saveAppInfo = (appid, details) => {
 	const fields = ["name", "nsfw", "latest"].filter(field => field in details);
@@ -125,7 +125,7 @@ async function checkForNews()
 			const news = [];
 			for(const newsitem of appnews.newsitems)
 			{
-				if(newsitem.gid === latest)
+				if(newsitem.date <= latest)
 					break;
 
 				news.push(newsitem);
