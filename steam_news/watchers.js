@@ -135,14 +135,14 @@ async function checkForNews()
 			if(!news.length)
 				return;
 
-			const [{gid: latestGid}] = news;
+			const [{date: latestDate}] = news;
 			for(const newsitem of news.reverse())
 			{
 				const baseEmbed = await toEmbed(newsitem);
 				baseEmbed.footer.iconUrl = STEAM_ICON;
 				steamWatchers.forEach(embedLocalizer(baseEmbed));
 			}
-			stmts.updateLatest({ appid: STEAM_APPID, latest: latestGid });
+			stmts.updateLatest({ appid: STEAM_APPID, latest: latestDate });
 		});
 	}
 
@@ -164,12 +164,12 @@ async function checkForNews()
 		if(!news.length)
 			return;
 
-		const [{gid: latestGid}] = news;
+		const [{date: latestDate}] = news;
 		total += news.length;
 		for(const newsitem of news.reverse())
 			stmts.getWatchers(appid).forEach(embedLocalizer(await toEmbed(newsitem)));
 
-		stmts.updateLatest({ appid, latest: latestGid });
+		stmts.updateLatest({ appid, latest: latestDate });
 	})));
 
 	return total;
