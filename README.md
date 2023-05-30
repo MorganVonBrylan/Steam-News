@@ -7,7 +7,7 @@
 
 This bot allows you to watch Steam game news. My friend Damn3d had the idea.
 
-Do check [Steam Watch](https://github.com/dukeofsussex/SteamWatch) by DukeOfSussex as well.
+Do check out [Steam Watch](https://github.com/dukeofsussex/SteamWatch) by DukeOfSussex as well.
 
 ### Translation credits
 
@@ -15,9 +15,9 @@ Do check [Steam Watch](https://github.com/dukeofsussex/SteamWatch) by DukeOfSuss
 - German: jemand2001
 
 # Usage
-This bot uses Node.JS (≥16) with `discord.js` v13.
+This bot requires Node.JS 16 or higher.
 
-`auth.json`
+You will need an `auth.json` file in the same folder as `bot.js` widht the following data:
 ```JSON
 {
 	"token": "your bot's authentication token",
@@ -30,6 +30,8 @@ This bot uses Node.JS (≥16) with `discord.js` v13.
 }
 ```
 `debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode.
+
+To start the bot, run `node bot.js`
 
 ## Database schema
 Just read steam_news/db.js, there is a bunch of CREATE TABLE at the beginning.
