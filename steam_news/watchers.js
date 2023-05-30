@@ -18,6 +18,9 @@ require("../bot").client.once("ready", checkForNews);
 require("../bot").client.once("ready", checkPrices);
 
 
+const CHECK_INTERVAL = 3600_000;
+
+
 /**
  * @param {int} appid The app's id
  * @returns {bool} Whether the app is known by the bot or not.
@@ -75,8 +78,8 @@ exports.getWatchedApps = stmts.getWatchedApps;
 exports.getWatchedPrices = stmts.getWatchedPrices;
 
 
-setInterval(checkForNews, 3600_000);
-setInterval(checkPrices, 3600_000 * 3);
+setInterval(checkForNews, CHECK_INTERVAL);
+setInterval(checkPrices, CHECK_INTERVAL * 3);
 
 const toEmbed = require("./toEmbed.function");
 const openInApps = tr.getAll("info.openInApp");
