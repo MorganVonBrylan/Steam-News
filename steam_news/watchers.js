@@ -157,7 +157,7 @@ async function checkForNews()
 		const news = [];
 		for(const newsitem of appnews.newsitems)
 		{
-			if(newsitem.gid === latest)
+			if(newsitem.date === latest)
 				break;
 
 			news.push(newsitem);
@@ -281,7 +281,7 @@ exports.watch = async (appid, channel, price = false, LIMIT = WATCH_LIMIT) => {
 		{
 			stmts.insertApp(appid, details.name,
 				+isNSFW(details),
-				appnews.newsitems[0]?.gid,
+				appnews.newsitems[0]?.date,
 				knownPrice = details.is_free ? "free" : details.price_overview?.final,
 			);
 		}
