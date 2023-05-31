@@ -86,10 +86,10 @@ global.tr = module.exports = exports = {
 
 		const path = key.split(".");
 		let obj = this.locale;
-		for(let i = 0 ; i < path.length-1 ; ++i)
+		for(const part of path)
 		{
-			if(path[i] in obj)
-				obj = obj[path[i]];
+			if(part in obj)
+				obj = obj[part];
 			else
 			{
 				error(`Missing ${this.lang} translation for ${key}`);
@@ -101,10 +101,10 @@ global.tr = module.exports = exports = {
 		if(obj === undefined)
 		{
 			obj = this.fallback;
-			for(let i = 0 ; i < path.length-1 ; ++i)
+			for(const part of path)
 			{
-				if(path[i] in obj)
-					obj = path[i];
+				if(part in obj)
+					obj = obj[part];
 				else
 				{
 					error(`Missing fallback translation for ${key}`);
@@ -114,7 +114,7 @@ global.tr = module.exports = exports = {
 			}
 		}
 
-		return obj ? trReplace(obj[path[path.length-1]], replaces) : key;
+		return obj ? trReplace(obj, replaces) : key;
 	},
 }
 
