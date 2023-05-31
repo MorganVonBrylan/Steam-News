@@ -69,7 +69,7 @@ function createCmd(command, {id, commands}, skipCheck = false)
 {
 	return (skipCheck || command.shouldCreateFor(id))
 		&& commands.create({ ...command, options: command.getOptions(id) })
-			.then(apiCmd => command.apiCommands.set(id, apiCmd), error)
+			.then(apiCmd => command.apiCommands.set(id, apiCmd), createFailed);
 }
 
 function updateCmd(command, {id, commands}, createIfNotExists = false)
@@ -92,7 +92,7 @@ function updateCmd(command, {id, commands}, createIfNotExists = false)
 		if(apiCmd)
 			return apiCmd.edit(cmdData).catch(error);
 		else if(createIfNotExists)
-			return commands.create(cmdData).then(apiCmd => command.apiCommands.set(id, apiCmd), error);
+			return commands.create(cmdData).then(apiCmd => command.apiCommands.set(id, apiCmd), createFailed);
 		else
 			error(new Error(`Tried to update command ${command.name} for guild ${guild}, but the API command couldn't be found.`));
 	}
@@ -103,4 +103,25 @@ function deleteCmd(command, {id, commands})
 	const apiCmd = command.apiCommands.get(id) || commands.cache.find(({name}) => name === command.name);
 	command.apiCommands.delete(id);
 	return apiCmd?.delete().catch(error);
+}
+
+
+
+const failed = new Set();
+
+function createFailed(err)
+{
+	if(!err.message.includes("daily application command creates"))
+		return error(err);
+
+	const guildId = err.url.match(/guilds\/([0-9]+)\/commands/)?.[1];
+	if(!guildId)
+		return error(err);
+	if(failed.has(guildId))
+		return;
+
+	failed.add(guildId);
+	setTimeout(failed.delete.bind(failed, guildId), 86400_000); // 24h
+	error.guildId = guildId;
+	error(err);
 }
