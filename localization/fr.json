@@ -136,7 +136,8 @@
 			{ "name": "J’ai encore besoin d’aide !", "value": "C’est fâcheux. Vous pouvez venir expliquer votre souci sur notre serveur de support : ${SUPPORT_SERVER}" },
 			{ "name": "Une dernière chose", "value": "Vous aimez Steam News? Vous pouvez lui mettre un poce blo sur Top.gg: ${VOTE}" }
 		],
-		"footer": { "text": "Steam News v${v} par ${author}." }
+		"footer": { "text": "Steam News v${v} par ${author}." },
+		"donate": "Vous pouvez aussi nous faire un don :"
 	},
 
 	"error": "Une erreur est survenue.",

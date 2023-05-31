@@ -1,7 +1,7 @@
 "use strict";
 
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = require("../steam_news/limits");
-const SUPPORT_SERVER = require("../bot").auth.supportServer || "*(no support server invite set)*";
+const { donate: DONATE_LINK, supportServer: SUPPORT_SERVER = "*(no support server invite set)*" } = require("../bot").auth;
 const {repository: {url: repository}, version, author} = require("../package.json");
 const { voteURL } = require("../dbl");
 
@@ -28,6 +28,9 @@ exports.run = inter => {
 				.replaceAll("${repository}", repository)
 				.replace("${VOTE}", voteURL(locale));
 		}
+
+		if(DONATE_LINK)
+			embed.fields[embed.fields.length-1].value += `\n${tr.get(locale, "help.donate")} ${DONATE_LINK}`;
 
 		preparedEmbeds.add(locale);
 	}
