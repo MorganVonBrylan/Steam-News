@@ -9,6 +9,7 @@ db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
 /* ***** If there ever is a need to change a column in Apps DO NOT DROP IT ***** */
 /* *****            There are foreigns key here! Back them up!             ***** */
+/* *****        Alternatively, PRAGMA foreign_keys = '0'; is a thing       ***** */
 db.exec(`
 CREATE TABLE IF NOT EXISTS Apps (
 	appid INTEGER PRIMARY KEY,
