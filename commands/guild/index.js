@@ -90,7 +90,12 @@ function updateCmd(command, {id, commands}, createIfNotExists = false)
 	{
 		const cmdData = { ...command, options: command.getOptions(id) };
 		if(apiCmd)
-			return apiCmd.edit(cmdData).catch(error);
+			return apiCmd.edit(cmdData).catch(err => {
+				if(err.status === 404)
+					return createCmd(command, {id, commands}, true);
+				error(err);
+				return err;
+			});
 		else if(createIfNotExists)
 			return commands.create(cmdData).then(apiCmd => command.apiCommands.set(id, apiCmd), createFailed);
 		else
