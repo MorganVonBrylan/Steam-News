@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS Voters (
 try {
 	db.exec(`-- No "IF NOT EXISTS", we WANT this to crash if it already exists so the version isn't inserted twice
 		CREATE TABLE DB_Version (version INTEGER PRIMARY KEY);
-		INSERT INTO DB_Version VALUES (${DB_VERSION});`);
+		INSERT INTO DB_Version VALUES (0);`);
 } catch {}
 
 const currentVersion = db.prepare("SELECT version FROM DB_VERSION").pluck().get();
@@ -63,6 +63,10 @@ if(currentVersion < DB_VERSION)
 	// Upgrade database
 	switch(currentVersion)
 	{
+	case 0: // first time
+		db.exec(`INSERT INTO Apps (appid, name, nsfw) VALUES (${STEAM_APPID}, 'Steam News Hub', FALSE);`);
+		break;
+
 	case 1:
 		db.exec("ALTER TABLE Apps ADD lastPrice INTEGER DEFAULT NULL;");
 		// no break; !
@@ -75,7 +79,7 @@ if(currentVersion < DB_VERSION)
 
 	case 3:
 		try {
-			db.exec(`INSERT INTO Apps (appid, name) VALUES (${STEAM_APPID}, 'Steam News Hub');`);
+			db.exec(`INSERT INTO Apps (appid, name, nsfw) VALUES (${STEAM_APPID}, 'Steam News Hub', FALSE);`);
 		} catch {
 			db.exec(`
 				UPDATE Apps SET name = 'Steam News Hub' WHERE appid = ${STEAM_APPID};
