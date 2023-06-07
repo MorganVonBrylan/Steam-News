@@ -100,6 +100,8 @@ async function checkForNews()
 	function embedLocalizer(baseEmbed) {
 		const {yt} = baseEmbed;
 		const embeds = { en: { embeds: [baseEmbed] } };
+		let loggedError = false;
+		
 		return channelId => channels.fetch(channelId).then(channel => {
 			if(!channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS))
 				return;
@@ -111,7 +113,11 @@ async function checkForNews()
 				trEmbed.fields[0].name = openInApps[lang];
 				embeds[lang] = { embeds: [trEmbed] };
 			}
-			channel.send(embeds[lang]).catch(Function());
+
+			channel.send(embeds[lang]).catch(loggedError ? Function() : (err) => {
+				loggedError = true;
+				error(Object.assign(err, { embeds, targetLang: lang }));
+			});
 			if(yt)
 				channel.send(yt).catch(Function());
 		}, Function());
