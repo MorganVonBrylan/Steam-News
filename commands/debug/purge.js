@@ -2,20 +2,20 @@
 
 const { purgeApp, purgeGuild } = require("../../steam_news/watchers");
 
-exports.description = "Purge une appli ou un serveur.";
+exports.description = "Purge an app or a server.";
 exports.options = [{
-	type: STRING, name: "quoi",
-	description: "Que faut-il purger ?", required: true,
-	choices: [{ name: "appli", value: "app" }, { name: "serveur", value: "guild" }],
+	type: STRING, name: "what",
+	description: "What should be purged?", required: true,
+	choices: [{ name: "app", value: "app" }, { name: "server", value: "guild" }],
 }, {
 	type: STRING, name: "id",
-	description: "L'id de l'appli ou du serveur à purger", required: true
+	description: "The id of the server or app to purge", required: true
 }];
 exports.run = inter => {
-	const app = inter.options.getString("quoi") === "app";
+	const app = inter.options.getString("what") === "app";
 	inter.reply({ephemeral: true,
 		content: (app ? purgeApp : purgeGuild)(inter.options.getString("id"))
-			? (app ? "Appli purgée." : "Serveur purgé.")
-			: "Il n'y avait rien à purger.",
+			? (app ? "App purgée." : "Server purgé.")
+			: "There was nothing to purge.",
 	}).catch(error);
 };
