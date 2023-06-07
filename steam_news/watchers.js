@@ -101,7 +101,7 @@ async function checkForNews()
 		const {yt} = baseEmbed;
 		const embeds = { en: { embeds: [baseEmbed] } };
 		let loggedError = false;
-		
+
 		return channelId => channels.fetch(channelId).then(channel => {
 			if(!channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS))
 				return;
@@ -109,9 +109,15 @@ async function checkForNews()
 			const lang = serverToLang[channel.guild.id] || "en";
 			if(!(lang in embeds))
 			{
-				const trEmbed = {...baseEmbed};
-				trEmbed.fields[0].name = openInApps[lang];
-				embeds[lang] = { embeds: [trEmbed] };
+				const openInApp = openInApps[lang];
+				if(openInApp)
+				{
+					const trEmbed = {...baseEmbed};
+					trEmbed.fields[0].name = openInApps[lang];
+					embeds[lang] = { embeds: [trEmbed] };
+				}
+				else
+					embeds[lang] = embeds.en;
 			}
 
 			channel.send(embeds[lang]).catch(loggedError ? Function() : (err) => {
