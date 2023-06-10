@@ -1,5 +1,7 @@
 "use strict";
 
+global.fetch ??= require("node-fetch");
+
 const Discord = require("discord.js");
 const auth = exports.auth = require("./auth.json");
 

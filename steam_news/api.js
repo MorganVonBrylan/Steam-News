@@ -1,6 +1,5 @@
 "use strict";
 
-const fetch = require("node-fetch");
 // ISteamNews doc: https://partner.steamgames.com/doc/webapi/ISteamNews
 const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?feeds=steam_community_announcements&appid=";
 // Steam Store API unofficial doc: https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI
