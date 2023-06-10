@@ -1,6 +1,6 @@
 "use strict";
 
-const { getDetails, isNSFW } = require("../steam_news/api");
+const { getDetails, isNSFW, steamAppLink } = require("../steam_news/api");
 const interpretAppidOption = require("../interpretAppidOption.function");
 const { stmts: {getCC} } = require("../steam_news/db");
 const { langToCountry } = require("../locales.json");
@@ -73,7 +73,7 @@ exports.run = async inter => {
 				{ name: t("controllerSupport"), value: controller_support === "full" ? t("yes") : t("no"), inline: true },
 				{ name: t("multi"), value: categories.some(({id}) => id === 1) ? t("yes") : t("no"), inline: true },
 				{ name: t("languages"), value: parseLanguages(supported_languages) },
-				{ name: t("openInApp"), value: `steam://store/${appid}` },
+				{ name: t("openInApp"), value: steamAppLink(`steam://store/${appid}`, lang) },
 			],
 			image: { url: header_image },
 		}] }).catch(error);
