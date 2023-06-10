@@ -14,6 +14,18 @@ const STEAM_ICON = exports.STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamco
 
 
 /**
+ * Returns a link to open the Steam app that works in Discord.
+ * @param {string} steamLink The steam:// link
+ * @param {string} lang A 2-letter language code
+ *
+ * @returns {string} a Markdown link
+ */
+exports.steamAppLink = function(steamLink, lang = "en") {
+	return `[${steamLink}](https://brylan.fr/steam?s=${encodeURIComponent(steamLink)}&l=${lang})`;
+}
+
+
+/**
  * Searches the Steam store for apps.
  * @param {string} terms The research terms.
  * @param {string} cc The country code, for price purposes (e.g. "FR", "UK", etc). Default: "US"

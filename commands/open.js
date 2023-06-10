@@ -1,6 +1,6 @@
 "use strict";
 
-const { search } = require("../steam_news/api");
+const { search, steamAppLink } = require("../steam_news/api");
 
 exports.dmPermission = true;
 exports.autocomplete = require("../autocomplete/search");
@@ -27,5 +27,7 @@ exports.run = async inter => {
 		}
 	}
 
-	inter.reply({ephemeral: true, embeds: [{title: "steam://store/"+appid}]}).catch(error);
+	inter.reply({ephemeral: true, embeds: [{
+		description: steamAppLink("steam://store/"+appid, inter.locale).replace("[", "[👉 "),
+	}]}).catch(error);
 }

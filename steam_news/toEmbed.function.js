@@ -1,7 +1,7 @@
 "use strict";
 
 const { getAppName } = require("./watchers");
-const { getEventId } = require("./api");
+const { getEventId, steamAppLink } = require("./api");
 const STEAM_CLAN_IMAGE = "https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans";
 const YT_REGEX = /\[previewyoutube=([\w-]+)/;
 const YT_REGEX_G = /\[previewyoutube=([\w-]+)(;full)?\]\[\/previewyoutube\]/g;
@@ -18,12 +18,13 @@ module.exports = exports = async ({appid, eventId, url, title, contents, feedlab
 	const image = contents.match(/({STEAM_CLAN_IMAGE})[^\[]+/);
 	const yt = contents.match(YT_REGEX_G)?.map(match => `https://youtu.be/${YT_REGEX.exec(match)[1]}`).join("\n");
 	const name = getAppName(appid);
+	const steamLink = `steam://url/EventAnnouncementPage/${appid}/${await eventId}`;
 	return {
 		url,
 		image: image ? {url: image[0].replace("{STEAM_CLAN_IMAGE}", STEAM_CLAN_IMAGE)} : undefined,
 		title,
 		description: toMarkdown(contents),
-		fields: [{name: tr.get(lang, "info.openInApp"), value: `steam://url/EventAnnouncementPage/${appid}/${await eventId}`}],
+		fields: [{name: tr.get(lang, "info.openInApp"), value: steamAppLink(steamLink, lang) }],
 		yt,
 		author: name ? { name, url: "https://store.steampowered.com/app/"+appid } : undefined,
 		footer: name ? { text: name } : undefined,
