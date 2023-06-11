@@ -20,7 +20,8 @@ const STEAM_ICON = exports.STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamco
  * @returns {string} a Markdown link
  */
 exports.steamAppLink = function(steamLink, lang = "en") {
-	return `[${steamLink}](https://brylan.fr/steam?s=${encodeURIComponent(steamLink)}&l=${lang})`;
+	const text = steamLink.startsWith("steam://") ? steamLink : `steam://${steamLink}`;
+	return `[${text}](https://brylan.fr/steam?s=${encodeURI(steamLink)}&l=${lang})`;
 }
 
 

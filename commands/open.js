@@ -27,7 +27,6 @@ exports.run = async inter => {
 		}
 	}
 
-	inter.reply({ephemeral: true, embeds: [{
-		description: steamAppLink("steam://store/"+appid, inter.locale).replace("[", "[👉 "),
-	}]}).catch(error);
+	const description = steamAppLink("store/"+appid, inter.locale).replace("[", "[👉 ");
+	inter.reply({ephemeral: true, embeds: [{ description }]}).catch(error);
 }

@@ -73,7 +73,7 @@ exports.run = async inter => {
 				{ name: t("controllerSupport"), value: controller_support === "full" ? t("yes") : t("no"), inline: true },
 				{ name: t("multi"), value: categories.some(({id}) => id === 1) ? t("yes") : t("no"), inline: true },
 				{ name: t("languages"), value: parseLanguages(supported_languages) },
-				{ name: t("openInApp"), value: steamAppLink(`steam://store/${appid}`, lang) },
+				{ name: t("openInApp"), value: steamAppLink(`store/${appid}`, lang) },
 			],
 			image: { url: header_image },
 		}] }).catch(error);
