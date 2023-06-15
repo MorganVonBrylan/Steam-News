@@ -92,4 +92,6 @@ Adds news about Steam, through /steam-* commands.
 
 	2.6.3 (10/06/2023)
 	"Fixes" Steam app links
-	
+
+	2.6.4 (15/06/2023)
+	Fixes the purge statements.
