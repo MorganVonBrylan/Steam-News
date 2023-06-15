@@ -158,8 +158,22 @@ const stmts = exports.stmts = {
 	updateLastVote: db.prepare("UPDATE Voters SET lastVote = $date WHERE id = $id"),
 	getRecentVoters: db.prepare("SELECT * FROM Voters WHERE lastVote > ?"),
 
-	purgeGuild: db.prepare("DELETE FROM Watchers WHERE guildId = ?"),
-	purgeChannel: db.prepare("DELETE FROM Watchers WHERE channelId = ?"),
+	purgeGuild: {
+		w: db.prepare("DELETE FROM Watchers WHERE guildId = ?"),
+		p: db.prepare("DELETE FROM PriceWatchers WHERE guildId = ?"),
+		s: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
+		run: function(id) {
+			return {changes: this.w.run(id).changes + this.p.run(id).changes + this.s.run(id).changes};
+		},
+	},
+	purgeChannel: {
+		w: db.prepare("DELETE FROM Watchers WHERE channelId = ?"),
+		p: db.prepare("DELETE FROM PriceWatchers WHERE channelId = ?"),
+		s: db.prepare("DELETE FROM SteamWatchers WHERE channelId = ?"),
+		run: function(id) {
+			return {changes: this.w.run(id).changes + this.p.run(id).changes + this.s.run(id).changes};
+		},
+	},
 };
 
 const getAll = [
