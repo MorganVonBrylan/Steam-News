@@ -92,7 +92,7 @@ global.tr = module.exports = exports = {
 				obj = obj[part];
 			else
 			{
-				error(`Missing ${this.lang} translation for ${key}`);
+				error(new Error(`Missing ${this.lang} translation for ${key}`));
 				obj = undefined;
 				break;
 			}
@@ -107,7 +107,7 @@ global.tr = module.exports = exports = {
 					obj = obj[part];
 				else
 				{
-					error(`Missing fallback translation for ${key}`);
+					error(new Error(`Missing fallback translation for ${key}`));
 					obj = undefined;
 					break;
 				}
