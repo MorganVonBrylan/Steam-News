@@ -21,7 +21,6 @@ exports.sendToMaster = (msg, onError = error) =>
 	|| client.once("ready", async () => (await client.users.fetch(auth.master)).send(msg).catch(onError));
 
 const error = require("./error");
-const { init: initCmds } = require("./commands");
 
 client.login(auth.token);
 
@@ -41,7 +40,12 @@ client.on("ready", async () => {
 });
 
 client.once("ready", () => {
-	initCmds(client, auth.debug);
+	require("@brylan/djs-commands")(client, {
+		debug: auth.debug,
+		ownerServer: auth.adminServer,
+		makeEnumsGlobal: true,
+		middleware: require("./localization").applyTranslations,
+	});
 	require("./dbl")(client, auth.dblToken, auth.dblWebhook);
 });
 

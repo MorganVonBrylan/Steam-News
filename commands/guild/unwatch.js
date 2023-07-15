@@ -12,17 +12,14 @@ function formatName(name) {
 	return name.length > 32 ? name.substring(0, 31) + "…" : name;
 }
 
-const updateCmd = require(".").updateCmd.bind(null, exports);
+const updateCmd = require("@brylan/djs-commands/guildCommands").updateCmd.bind(null, exports);
 
 exports.shouldCreateFor = id => getWatchedApps(id).length || getWatchedPrices(id).length;
 
 
-const localizations = require("./_localizationHelper")("unwatch");
+const localizations = require("./#localizationHelper")("unwatch");
 
 exports.defaultMemberPermissions = "0";
-exports.nameLocalizations = localizations.get("name");
-exports.description = tr.cmdDescription("unwatch");
-exports.descriptionLocalizations = localizations.get("description");
 const unwatchNews = {
 	type: SUBCOMMAND, name: "news",
 	description: "(admins only) Stop watching a game’s news feed.",
@@ -36,7 +33,7 @@ const unwatchPrice = {
 const [appidOption] = exports.options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
-	...localizations.optionLocalizations("game"),
+	//...localizations.optionLocalizations("game"),
 	choices: [],
 }];
 exports.getOptions = guildId => {

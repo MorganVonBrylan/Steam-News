@@ -3,7 +3,7 @@
 const { fallbackLocale } = require(".");
 const embeds = ["help"];
 
-const NAME_REGEX = /^[a-z_-]{1,32}$/;
+const { NAME_REGEX } = require("@brylan/djs-commands/checkCommand.function");
 const DESC_MAX_LENGTH = 100;
 
 const EMBED_MAX_LENGTH = Object.freeze({
@@ -43,6 +43,8 @@ function checkCommand([cmd, {name, description, options = {}}])
 		console.error(`Command ${cmd} is missing a name`);
 	else if(!NAME_REGEX.test(name))
 		console.error(`Command ${cmd} has an invalid name (may be too long or have invalid characters)`);
+	else if(name !== name.toLowerCase())
+		console.error(`Command ${cmd} has uppercase characters in its name`);
 	if(!description)
 		console.error(`Command ${cmd} is missing a description`);
 	else if(description.length > DESC_MAX_LENGTH)

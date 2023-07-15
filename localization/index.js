@@ -39,6 +39,8 @@ global.tr = module.exports = exports = {
 	locales: Object.keys(locales),
 	fallbackLocale: FALLBACK,
 
+	applyTranslations: require("./applyTranslations.function").bind({FALLBACK, locales}),
+
 	set(lang, group) {
 		this.group = group;
 		if(!(lang in locales))
@@ -124,62 +126,3 @@ for(const prop in tr)
 		tr[prop] = tr[prop].bind(tr);
 
 tr.set(FALLBACK);
-
-
-exports.cmdDescription = cmdName => locales[FALLBACK].commands[cmdName].description;
-
-exports.applyTranslations = function(commandList)
-{
-	for(const [locale, {commands}] of Object.entries(locales))
-	{
-		if(locale === FALLBACK || !commands)
-			continue;
-
-		for(const [cmdName, {name, description, options}] of Object.entries(commands))
-		{
-			const cmd = commandList[cmdName];
-			if(!cmd)
-				continue;
-
-			if(cmd.nameLocalizations) cmd.nameLocalizations[locale] = name;
-			else cmd.nameLocalizations = { [locale]: name };
-			if(cmd.descriptionLocalizations) cmd.descriptionLocalizations[locale] = description;
-			else cmd.descriptionLocalizations = { [locale]: description };
-
-			if(!cmd.options?.length)
-				continue;
-			if(!options)
-			{
-				console.warn(`Missing ${locale} option translations for command ${cmdName}`);
-				continue;
-			}
-
-			for(const opt of cmd.options)
-			{
-				const tr = options[opt.name];
-				if(tr)
-				{
-					const {name, description, choices} = tr;
-					if(opt.nameLocalizations) opt.nameLocalizations[locale] = name;
-					else opt.nameLocalizations = { [locale]: name };
-					if(opt.descriptionLocalizations) opt.descriptionLocalizations[locale] = description;
-					else opt.descriptionLocalizations = { [locale]: description };
-
-					if(opt.choices)
-					{
-						if(opt.choices.length !== choices?.length)
-							console.warn(`Mismatched number of choices in ${locale} translation for option ${opt.name} of command ${cmdName} (expected ${opt.choices.length}, got ${choices?.length})`);
-						else for(let i = 0 ; i < choices.length ; ++i)
-						{
-							const choice = opt.choices[i];
-							if(choice.nameLocalizations) choice.nameLocalizations[locale] = choices[i];
-							else choice.nameLocalizations = { [locale]: choices[i] };
-						}
-					}
-				}
-				else
-					console.warn(`Missing ${locale} translation for option ${opt.name} of command ${cmdName}`);
-			}
-		}
-	}
-}

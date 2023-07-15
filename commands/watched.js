@@ -3,7 +3,6 @@
 const { getWatchedApps, getWatchedPrices } = require("../steam_news/watchers");
 const { stmts: {isWatchingSteam} } = require("../steam_news/db");
 
-exports.options = [];
 exports.run = inter => {
 	const t = tr.set(inter.locale, "watched");
 	const { guild } = inter;

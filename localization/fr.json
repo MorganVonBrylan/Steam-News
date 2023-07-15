@@ -26,7 +26,7 @@
 			}
 		},
 		"latest": {
-			"name": "derniere",
+			"name": "dernière",
 			"description": "Voir la dernière actu d’un jeu.",
 			"options": {
 				"game": {
@@ -97,7 +97,7 @@
 			}
 		},
 		"steam-latest": {
-			"name": "steam-derniere",
+			"name": "steam-dernière",
 			"description": "Voir les dernières actus à propos de Steam."
 		},
 		"steam-watch": {

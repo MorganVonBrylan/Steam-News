@@ -3,7 +3,7 @@
 const db = require("../steam_news/db");
 const { stmts: { watchSteam } } = db;
 
-const updateUnwatch = require("./guild").updateCmd.bind(null, require("./guild/steam-unwatch"));
+const createCmd = require("@brylan/djs-commands/guildCommands").createCmd.bind(null, require("./guild/steam-unwatch"));
 
 exports.defaultMemberPermissions = "0";
 exports.options = [{
@@ -15,5 +15,5 @@ exports.run = async inter => {
 	const channel = inter.options.getChannel("channel") || inter.channel;
 	watchSteam(inter.guild.id, channel.id);
 	inter.reply(tr.get(inter.locale, "steam.watched", channel)).catch(error);
-	updateUnwatch(inter.guild, true);
+	createCmd(inter.guild, true);
 }

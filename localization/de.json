@@ -46,7 +46,7 @@
 			}
 		},
 		"open": {
-			"name": "oeffnen",
+			"name": "öffnen",
 			"description": "Bekomme einen Link, um ein Spiel in der Steam-App zu öffnen.",
 			"options": {
 				"game": {
@@ -111,7 +111,7 @@
 			}
 		},
 		"steam-unwatch": {
-			"name": "steam-beobachten-entfernen",
+			"name": "steam-beobachter-entfernen",
 			"description": "(nur für Admins) Aufhören, Nachrichten über Steam zu beobachten."
 		},
 		"stats": {
