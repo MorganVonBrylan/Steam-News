@@ -72,7 +72,7 @@ exports.run = async inter => {
 				{ name: t("platforms"), value: listPlatforms(platforms) || t("unknown"), inline: true },
 				{ name: t("controllerSupport"), value: controller_support === "full" ? t("yes") : t("no"), inline: true },
 				{ name: t("multi"), value: categories.some(({id}) => id === 1) ? t("yes") : t("no"), inline: true },
-				{ name: t("languages"), value: parseLanguages(supported_languages) },
+				{ name: t("languages"), value: parseLanguages(supported_languages, 500) },
 				{ name: t("openInApp"), value: steamAppLink(`store/${appid}`, lang) },
 			],
 			image: { url: header_image },
@@ -94,11 +94,13 @@ function listPlatforms(platforms)
 		.join(", ");
 }
 
-function parseLanguages(html)
+function parseLanguages(html, maxLength = 1024)
 {
-	return html.replaceAll(/\*/g, "\\*")
+	html = html.replaceAll(/\*/g, "\\*")
 		.replaceAll(/<br\/?>(.+)/g, "\n_$1_")
-		.replaceAll(" - ", " – ") // espace insécables
+		.replaceAll(" - ", " – ") // non-breaking spaces
 		.replaceAll(/<\/?(strong|b)>/g, "**")
 		.replaceAll(/<\/?(em|i)>/g, "_");
+
+	return html.length < maxLength ? html : `${html.substring(0, maxLength-1)}…`;
 }
