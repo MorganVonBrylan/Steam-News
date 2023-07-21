@@ -95,3 +95,6 @@ Adds news about Steam, through /steam-* commands.
 
 	2.6.4 (15/06/2023)
 	Fixes the purge statements.
+
+	2.6.5 (21/07/2023)
+	/info: Prevents language list from being too long
