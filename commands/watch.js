@@ -14,7 +14,7 @@ const {
 	PermissionsBitField: {Flags: {SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS}},
 } = require("discord.js");
 
-const updateUnwatch = require("@brylan/djs-commands/guildCommands").updateCmd.bind(null, require("./guild/unwatch"));
+const updateUnwatch = require("@brylan/djs-commands").guildCommands.updateCmd.bind(null, require("./guild/unwatch"));
 
 exports.defaultMemberPermissions = "0";
 exports.autocomplete = require("../autocomplete/search").appsOnly;

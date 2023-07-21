@@ -3,7 +3,7 @@
 const { stmts: {isWatchingSteam, unwatchSteam} } = require("../../steam_news/db");
 
 exports.shouldCreateFor = isWatchingSteam;
-const deleteCmd = require("@brylan/djs-commands/guildCommands").deleteCmd.bind(null, exports);
+const deleteCmd = require("@brylan/djs-commands").guildCommands.deleteCmd.bind(null, exports);
 
 const localizations = require("./#localizationHelper")("steam-unwatch");
 

@@ -12,7 +12,7 @@ function formatName(name) {
 	return name.length > 32 ? name.substring(0, 31) + "…" : name;
 }
 
-const updateCmd = require("@brylan/djs-commands/guildCommands").updateCmd.bind(null, exports);
+const updateCmd = require("@brylan/djs-commands").guildCommands.updateCmd.bind(null, exports);
 
 exports.shouldCreateFor = id => getWatchedApps(id).length || getWatchedPrices(id).length;
 
