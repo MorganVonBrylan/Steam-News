@@ -2,7 +2,7 @@
 
 const { getAppName } = require("./watchers");
 const { getEventId, steamAppLink } = require("./api");
-const STEAM_CLAN_IMAGE = "https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans";
+const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
 const YT_REGEX = /\[previewyoutube=([\w-]+)/;
 const YT_REGEX_G = /\[previewyoutube=([\w-]+)(;full)?\]\[\/previewyoutube\]/g;
 
