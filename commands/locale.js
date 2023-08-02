@@ -48,6 +48,8 @@ function searchCountry(inter)
 {
 	const search = inter.options.getFocused().toUpperCase();
 	const results = countryNames.filter(name => name.includes(search));
+	if(search in codeToCountry)
+		results.unshift(codeToCountry[search].toUpperCase());
 	if(results.length > 25)
 		results.length = 25;
 
