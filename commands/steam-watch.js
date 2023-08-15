@@ -3,7 +3,7 @@
 const db = require("../steam_news/db");
 const { stmts: { watchSteam } } = db;
 
-const createCmd = require("@brylan/djs-commands").guildCommands.createCmd.bind(null, require("./guild/steam-unwatch"));
+const createCmd = require("@brylan/djs-commands").guildCommands.createCmd.bind(null, require("./#guild/steam-unwatch"));
 
 exports.defaultMemberPermissions = "0";
 exports.options = [{
