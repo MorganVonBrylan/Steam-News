@@ -25,7 +25,7 @@ const error = require("./error");
 client.login(auth.token);
 
 client.on("ready", async () => {
-	console.log(`Logged in as ${client.user.tag}!`);
+	console.log(`Running as ${client.user.tag}!`);
 	exports.myself = client.user;
 	exports.master = master = await client.users.fetch(auth.master);
 
