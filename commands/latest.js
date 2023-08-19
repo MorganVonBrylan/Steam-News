@@ -5,7 +5,7 @@ const interpretAppidOption = require("../interpretAppidOption.function");
 const { isKnown, saveAppInfo, isNSFW: isAppNSFW } = require("../steam_news/watchers");
 const toEmbed = require("../steam_news/toEmbed.function");
 
-const { PermissionsBitField: {Flags: {SendMessages: SEND_MESSAGES}} } = require("discord.js");
+const { PermissionFlagsBits: { SendMessages: SEND_MESSAGES } } = require("discord.js");
 
 exports.dmPermission = true;
 exports.autocomplete = require("../autocomplete/search");

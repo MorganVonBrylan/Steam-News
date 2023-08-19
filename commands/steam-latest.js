@@ -3,7 +3,7 @@
 const { querySteam, STEAM_ICON } = require("../steam_news/api");
 const toEmbed = require("../steam_news/toEmbed.function");
 
-const { PermissionsBitField: {Flags: {SendMessages: SEND_MESSAGES}} } = require("discord.js");
+const { PermissionFlagsBits: { SendMessages: SEND_MESSAGES } } = require("discord.js");
 
 exports.dmPermission = true;
 exports.run = async inter => {

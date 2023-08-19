@@ -11,7 +11,7 @@ const { voteURL } = require("../dbl");
 const { watch, watchPrice, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
 const {
 	ChannelType: {GuildText: GUILD_TEXT, GuildPublicThread: GUILD_PUBLIC_THREAD, GuildPrivateThread: GUILD_PRIVATE_THREAD, GuildNews: GUILD_NEWS, GuildNewsThread: GUILD_NEWS_THREAD},
-	PermissionsBitField: {Flags: {SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS}},
+	PermissionFlagsBits: { SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS },
 } = require("discord.js");
 
 const updateUnwatch = require("@brylan/djs-commands").guildCommands.updateCmd.bind(null, require("./#guild/unwatch"));
