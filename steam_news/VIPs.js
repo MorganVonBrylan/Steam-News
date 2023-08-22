@@ -22,7 +22,7 @@ exports.addVoter = (id, lang) => {
 	const date = Date.now();
 	const lastVote = getLastVote(id);
 	if(!lastVote || date - lastVote > VOTE_NOTIFICATION_COOLDOWN)
-		users.fetch(id).then(user => user.send(tr.get(lang || "en", "voting.thanks"))).catch(error);
+		users.fetch(id).then(user => user.send(tr.get(lang || "en", "voting.thanks"))).catch(Function());
 
 	if(lastVote)
 		updateLastVote({id, date});
