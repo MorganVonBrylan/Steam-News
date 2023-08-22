@@ -1,11 +1,9 @@
 "use strict";
 
-const { existsSync, promises: {readFile, writeFile, unlink} } = require("fs");
 const { query, queryPrices, querySteam, getDetails, isNSFW, STEAM_APPID, STEAM_ICON } = require("./api");
 const { SendMessages, EmbedLinks } = require("discord.js").PermissionFlagsBits;
 const REQUIRED_PERMS = SendMessages | EmbedLinks;
 
-const watchFile = __dirname + "/watchers.json";
 const {WATCH_LIMIT} = require("./limits");
 Object.freeze(require("./limits"));
 
