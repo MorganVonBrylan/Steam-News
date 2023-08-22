@@ -9,6 +9,7 @@ const client = exports.client = new Discord.Client({
 	intents: [
 		Discord.GatewayIntentBits.Guilds,
 	],
+	shards: "auto",
 });
 
 
@@ -43,3 +44,19 @@ client.once("ready", () => {
 
 for(const file of require("fs").readdirSync(__dirname+"/events"))
 	client.on(file.substring(0, file.length - 3), require(`./events/${file}`));
+
+
+client.on("shardReady", id => {
+	console.log(`Shard ${id} online!`);
+});
+client.on("shardError", (error, id) => {
+	error.shardId = id;
+	error(error);
+});
+client.on("shardResume", id => {
+	console.log(`Shard ${id} is back, baby!`);
+})
+client.on("shardDisconnect", (_, id) => {
+	console.warn(`Shard ${id} dead.`);
+});
+		
