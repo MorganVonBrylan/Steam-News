@@ -1,7 +1,9 @@
 "use strict";
 
-const db = module.exports = exports = new require("better-sqlite3")(__dirname+"/watchers.db");
 const { STEAM_APPID } = require("./api");
+
+const db = module.exports = exports = new require("better-sqlite3")(__dirname+"/watchers.db");
+db.pragma("journal_mode = WAL");
 
 const DB_VERSION = 4;
 
