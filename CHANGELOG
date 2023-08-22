@@ -98,3 +98,8 @@ Adds news about Steam, through /steam-* commands.
 
 	2.6.5 (21/07/2023)
 	/info: Prevents language list from being too long
+
+
+2.7.0 (22/08/2023)
+Adds basic sharding.
+Sends warnings when checkForNews() takes a lot of time (over a minute).
