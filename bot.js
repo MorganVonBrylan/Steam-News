@@ -59,4 +59,3 @@ client.on("shardResume", id => {
 client.on("shardDisconnect", (_, id) => {
 	console.warn(`Shard ${id} dead.`);
 });
-		

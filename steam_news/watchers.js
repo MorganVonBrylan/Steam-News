@@ -12,8 +12,9 @@ const { stmts } = db;
 
 const { countryToLang } = require("../locales.json");
 
-require("../bot").client.once("ready", checkForNews);
-require("../bot").client.once("ready", checkPrices);
+const { client, sendToMaster } = require("../bot");
+client.once("ready", checkForNews);
+client.once("ready", checkPrices);
 
 
 const CHECK_INTERVAL = 3600_000;
@@ -82,6 +83,8 @@ setInterval(checkPrices, CHECK_INTERVAL * 3);
 const toEmbed = require("./toEmbed.function");
 const openInApps = tr.getAll("info.openInApp");
 
+let longestTime = 0;
+
 /**
  * Triggers all watchers.
  * @returns {Promise<int>} The number of news sent.
@@ -89,6 +92,7 @@ const openInApps = tr.getAll("info.openInApp");
 exports.checkForNews = checkForNews;
 async function checkForNews()
 {
+	const start = Date.now();
 	const { channels } = require("../bot").client;
 	const serverToLang = {};
 	for(const {id, cc} of stmts.getAllCC(false))
@@ -184,6 +188,16 @@ async function checkForNews()
 
 		stmts.updateLatest({ appid, latest: latestDate });
 	})));
+
+
+	const time = ~~((Date.now() - start) / 1000);
+	if(time - longestTime > 60)
+	{
+		const mn = ~~(time / 60);
+		const s = time % 60;
+		sendToMaster(`checkNews took ${mn}:${s < 10 ? `0${s}` : s}`);
+		longestTime = time;
+	}
 
 	return total;
 }
