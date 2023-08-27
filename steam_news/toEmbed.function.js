@@ -70,6 +70,6 @@ exports.price = (appid, name, price) => {
 		description: price.discount_percent
 			? `${t.sale} ~~${price.initial_formatted}~~ **${price.final_formatted}** (-${price.discount_percent}%)`
 			: t.published.replace("%s", price.final_formatted),
-		fields: [{name: t.openInApp, value: "steam://store/"+appid}],
+		fields: [{name: t.openInApp, value: steamAppLink("steam://store/"+appid)}],
 	};
 }
