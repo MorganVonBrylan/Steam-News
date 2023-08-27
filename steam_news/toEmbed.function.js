@@ -46,14 +46,12 @@ function toMarkdown(contents, limit = 2000)
 		.replaceAll(/\[\/?i\]/g, "*")
 		.replaceAll(/\[\/?u\]/g, "__")
 		.replaceAll(/\[\/?s\]/g, "~~")
-		.replaceAll(/\[\/?i\]/g, "*")
 		.replaceAll(/\[\/?(img|list)\]/g, "")
 		.replaceAll(/\[\*\]/g, "–")
 		.replaceAll(/\n{2,}/g, "\n")
 		.replaceAll("\n**", "\n\n**");
 
 	return contents.length < limit ? contents : `${contents.substring(0, limit-1)}…`;
-
 }
 
 
