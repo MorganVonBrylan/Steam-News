@@ -62,9 +62,6 @@ client.on("shardError", (error, id) => {
 	error.shardId = id;
 	error(error);
 });
-client.on("shardResume", id => {
-	console.log(`Shard ${id} is back, baby!`);
-})
 client.on("shardDisconnect", (_, id) => {
 	console.warn(`Shard ${id} dead.`);
 });
