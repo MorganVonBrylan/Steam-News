@@ -99,7 +99,7 @@ async function checkForNews()
 		serverToLang[id] = countryToLang[cc];
 	let total = 0;
 
-	function embedLocalizer(baseEmbed) {
+	function getEmbedSender(baseEmbed) {
 		const {yt} = baseEmbed;
 		const embeds = { en: { embeds: [baseEmbed] } };
 		let loggedError = false;
@@ -157,7 +157,7 @@ async function checkForNews()
 			{
 				const baseEmbed = await toEmbed(newsitem);
 				baseEmbed.footer.iconUrl = STEAM_ICON;
-				steamWatchers.forEach(embedLocalizer(baseEmbed));
+				steamWatchers.forEach(getEmbedSender(baseEmbed));
 			}
 			stmts.updateLatest({ appid: STEAM_APPID, latest: latestDate });
 		});
@@ -184,7 +184,7 @@ async function checkForNews()
 		const [{date: latestDate}] = news;
 		total += news.length;
 		for(const newsitem of news.reverse())
-			stmts.getWatchers(appid).forEach(embedLocalizer(await toEmbed(newsitem)));
+			stmts.getWatchers(appid).forEach(getEmbedSender(await toEmbed(newsitem)));
 
 		stmts.updateLatest({ appid, latest: latestDate });
 	})));
