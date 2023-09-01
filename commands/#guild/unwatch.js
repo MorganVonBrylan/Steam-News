@@ -1,6 +1,5 @@
 "use strict";
 
-const { search } = require("../../steam_news/api");
 const { unwatch, getAppName, getWatchedApps, getWatchedPrices } = require("../../steam_news/watchers");
 
 const MAX_OPTIONS = 25;

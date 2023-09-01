@@ -8,9 +8,8 @@ const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
 const { voted } = require("../steam_news/VIPs");
 const { voteURL } = require("../dbl");
 
-const { watch, watchPrice, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
+const { watch, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
 const {
-	ChannelType: {GuildText: GUILD_TEXT, GuildPublicThread: GUILD_PUBLIC_THREAD, GuildPrivateThread: GUILD_PRIVATE_THREAD, GuildNews: GUILD_NEWS, GuildNewsThread: GUILD_NEWS_THREAD},
 	PermissionFlagsBits: { SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS },
 } = require("discord.js");
 
