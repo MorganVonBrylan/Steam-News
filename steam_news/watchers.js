@@ -279,7 +279,7 @@ async function checkPrices()
  * @param {string} roleId The id of the role to ping when posting news/price changes.
  * @param {boolean} price Whether to watch for price changes instead of news. Default: false
  *
- * @returns {Promise<int|false|null>} false if that app was already watched in that guild, or the new number of watched apps.
+ * @returns {Promise<int|boolean|null>} false if that app was already watched in that guild, or the new number of watched apps.
  * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its LIMIT of apps.
  */
 exports.watch = async (appid, channel, roleId = null, price = false, LIMIT = WATCH_LIMIT) => {
@@ -291,10 +291,15 @@ exports.watch = async (appid, channel, roleId = null, price = false, LIMIT = WAT
 		throw new TypeError("'appid' is not a valid app id");
 
 	const guildId = channel.guild.id;
-	const watchedApps = stmts[price ? "getWatchedPrices" : "getWatchedApps"](guildId).map(({appid}) => appid);
+	const watchedApps = stmts[price ? "getWatchedPrices" : "getWatchedApps"](guildId)
+		.map(({ appid }) => appid);
 
 	if(watchedApps.includes(appid))
-		return false;
+	{
+		stmts[price ? "updatePriceWatcher" : "updateWatcher"]({ appid, guildId, roleId, channelId: channel.id });
+		return true;
+	}
+	
 	if(watchedApps.length >= LIMIT)
 		throw new RangeError(`This server reached its limit of ${LIMIT} watched ${price ? "prices" : "apps"}.`);
 
