@@ -32,7 +32,7 @@ const unwatchPrice = {
 const [appidOption] = exports.options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
-	//...localizations.optionLocalizations("game"),
+	// middleware takes care of translating this
 	choices: [],
 }];
 exports.getOptions = guildId => {
