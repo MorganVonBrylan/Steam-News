@@ -26,6 +26,9 @@ exports.options = [{
 	description: "The game’s name or id",
 	autocomplete: true,
 }, {
+	type: ROLE, name: "role",
+	description: "A role to ping when news are posted",
+}, {
 	type: CHANNEL, name: "channel",
 	channelTypes: ALL_TEXT_CHANNEL_TYPES,
 	description: "The channel where to send the news (defaults to current channel if not provided)"
@@ -47,10 +50,11 @@ exports.run = async inter => {
 		return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
 
 	const LIMIT = voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT;
+	const role = inter.options.getRole("role")?.id;
 	const type = inter.options.getString("type");
 	const watchPrice = type === "price";
 
-	watch(+appid, channel, watchPrice, LIMIT).then(async success => {
+	watch(+appid, channel, role, watchPrice, LIMIT).then(async success => {
 		await defer;
 		const details = getAppInfo(appid);
 

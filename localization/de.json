@@ -68,6 +68,10 @@
 					"name": "spiel",
 					"description": "Der Name oder die ID des Spiels"
 				},
+				"role": {
+					"name": "rolle",
+					"description": "Eine Rolle, die anpingt, wenn Neuigkeiten veröffentlicht werden"
+				},
 				"channel": {
 					"name": "kanal",
 					"description": "Kanal, in dem die Nachrichten gesendet werden sollen (der momentane Kanal, falls nicht angegeben)"
@@ -107,6 +111,10 @@
 				"channel": {
 					"name": "kanal",
 					"description": "The channel where to send the news (defaults to current channel if not provided)"
+				},
+				"role": {
+					"name": "rolle",
+					"description": "Eine Rolle, die anpingt, wenn Neuigkeiten veröffentlicht werden"
 				}
 			}
 		},

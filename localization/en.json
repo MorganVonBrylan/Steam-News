@@ -68,6 +68,10 @@
 					"name": "game",
 					"description": "The game’s name or id"
 				},
+				"role": {
+					"name": "role",
+					"description": "A role to ping when news are posted"
+				},
 				"channel": {
 					"name": "channel",
 					"description": "The channel where to send the news (defaults to current channel if not provided)"
@@ -107,6 +111,10 @@
 				"channel": {
 					"name": "channel",
 					"description": "The channel where to send the news (defaults to current channel if not provided)"
+				},
+				"role": {
+					"name": "role",
+					"description": "A role to ping when news are posted"
 				}
 			}
 		},

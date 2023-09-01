@@ -68,6 +68,10 @@
 					"name": "jeu",
 					"description": "Le nom ou l’id du jeu"
 				},
+				"role": {
+					"name": "rôle",
+					"description": "Un rôle à mentionner quand des actus sont publiées"
+				},
 				"channel": {
 					"name": "salon",
 					"description": "Le salon où envoyer les actus (par défaut le salon où vous envoyez cette commande)"
@@ -107,6 +111,10 @@
 				"channel": {
 					"name": "salon",
 					"description": "Le salon où envoyer les actus (par défaut le salon où vous envoyez cette commande)"
+				},
+				"role": {
+					"name": "rôle",
+					"description": "Un rôle à mentionner quand des actus sont publiées"
 				}
 			}
 		},

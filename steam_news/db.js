@@ -5,7 +5,7 @@ const { STEAM_APPID } = require("./api");
 const db = module.exports = exports = new require("better-sqlite3")(__dirname+"/watchers.db");
 db.pragma("journal_mode = WAL");
 
-const DB_VERSION = 4;
+const DB_VERSION = 5;
 
 db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS Watchers (
 	appid INTEGER,
 	guildId TEXT,
 	channelId TEXT NOT NULL,
+	roleId TEXT DEFAULT NULL,
 	PRIMARY KEY (appId, guildId),
 	CONSTRAINT fk_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
 );
@@ -33,13 +34,15 @@ CREATE TABLE IF NOT EXISTS PriceWatchers (
 	appid INTEGER,
 	guildId TEXT,
 	channelId TEXT NOT NULL,
+	roleId TEXT DEFAULT NULL,
 	PRIMARY KEY (appId, guildId),
 	CONSTRAINT fk_price_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS SteamWatchers (
 	guildId TEXT PRIMARY KEY,
-	channelID TEXT NOT NULL
+	channelId TEXT NOT NULL,
+	roleId TEXT DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Guilds (
@@ -88,13 +91,21 @@ if(currentVersion < DB_VERSION)
 				INSERT INTO SteamWatchers(guildId, channelId) SELECT guildId, channelId FROM Watchers WHERE appid = ${STEAM_APPID};
 				DELETE FROM Watchers WHERE appid = ${STEAM_APPID};`);
 		}
+			
+	case 4:
+		db.exec(`
+			ALTER TABLE Watchers ADD roleId TEXT DEFAULT NULL;
+			ALTER TABLE PriceWatchers ADD roleId TEXT DEFAULT NULL;
+			ALTER TABLE SteamWatchers ADD roleId TEXT DEFAULT NULL;
+			ALTER TABLE SteamWatchers RENAME channelID TO channelId;
+		`);
 	}
 
 	db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
 }
 
-const setSteamWatch = db.prepare("INSERT INTO SteamWatchers (guildId, channelId) VALUES (?, ?)");
-const updateSteamWatch = db.prepare("UPDATE SteamWatchers SET channelId = $channelId WHERE guildId = $guildId");
+const setSteamWatch = db.prepare("INSERT INTO SteamWatchers (guildId, channelId, roleId) VALUES ($guildId, $channelId, $roleId)");
+const updateSteamWatch = db.prepare("UPDATE SteamWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId");
 
 const getAllCC = db.prepare("SELECT id, cc FROM Guilds");
 const setCC = db.prepare("INSERT INTO Guilds (id, cc) VALUES ($id, $cc)");
@@ -118,26 +129,27 @@ const stmts = exports.stmts = {
 	isAppNSFW: db.prepare("SELECT nsfw FROM Apps WHERE appid = ?").pluck(),
 	getPrice: db.prepare("SELECT lastPrice FROM Apps WHERE appid = ?").pluck(),
 
-	watch: db.prepare("INSERT INTO Watchers (appid, guildId, channelId) VALUES (?, ?, ?)"),
+	watch: db.prepare("INSERT INTO Watchers (appid, guildId, channelId, roleId) VALUES ($appid, $guildId, $channelId, $roleId)"),
 	unwatch: db.prepare("DELETE FROM Watchers WHERE appid = ? AND guildid = ?"),
 	findWatchedApps: db.prepare("SELECT DISTINCT appid FROM Watchers").pluck(),
-	getWatchers: db.prepare("SELECT channelId FROM Watchers WHERE appid = ?").pluck(),
+	getWatchers: db.prepare("SELECT channelId, roleId FROM Watchers WHERE appid = ?"),
 	getWatchedApps: db.prepare(`SELECT a.appid, name, nsfw, channelId
 		FROM Apps a JOIN Watchers w ON (a.appid = w.appid)
 		WHERE guildId = ?
 		ORDER BY name`),
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
 
-	watchSteam: {run: (guildId, channelId) => updateSteamWatch.run({guildId, channelId}).changes
-		|| setSteamWatch.run(guildId, channelId).changes},
+	watchSteam: { run: (params) =>
+		updateSteamWatch.run(params).changes
+		|| setSteamWatch.run(params).changes },
 	isWatchingSteam: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
 	unwatchSteam: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
-	getSteamWatchers: db.prepare("SELECT channelId FROM SteamWatchers").pluck(),
+	getSteamWatchers: db.prepare("SELECT channelId, roleId FROM SteamWatchers"),
 
-	watchPrice: db.prepare("INSERT INTO PriceWatchers (appid, guildId, channelId) VALUES (?, ?, ?)"),
+	watchPrice: db.prepare("INSERT INTO PriceWatchers (appid, guildId, channelId, roleId) VALUES ($appid, $guildId, $channelId, $roleId)"),
 	unwatchPrice: db.prepare("DELETE FROM PriceWatchers WHERE appid = ? AND guildid = ?"),
 	findWatchedPrices: db.prepare("SELECT appid, name, nsfw, lastPrice FROM Apps a WHERE EXISTS (SELECT '*' FROM PriceWatchers WHERE appid = a.appid)"),
-	getPriceWatchers: db.prepare(`SELECT guildId, channelId, COALESCE(cc, 'US') "cc"
+	getPriceWatchers: db.prepare(`SELECT guildId, channelId, roleId, COALESCE(cc, 'US') "cc"
 		FROM PriceWatchers LEFT JOIN Guilds ON id = guildId WHERE appid = ?`),
 	getWatchedPrices: db.prepare(`SELECT a.appid, name, lastPrice, nsfw, channelId
 		FROM Apps a JOIN PriceWatchers w ON (a.appid = w.appid)

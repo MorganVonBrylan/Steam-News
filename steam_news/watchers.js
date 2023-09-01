@@ -104,7 +104,7 @@ async function checkForNews()
 		const embeds = { en: { embeds: [baseEmbed] } };
 		let loggedError = false;
 
-		return channelId => channels.fetch(channelId).then(channel => {
+		return ({channelId, roleId}) => channels.fetch(channelId).then(channel => {
 			if(!channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS))
 				return;
 
@@ -122,7 +122,10 @@ async function checkForNews()
 					embeds[lang] = embeds.en;
 			}
 
-			channel.send(embeds[lang]).catch(loggedError ? Function() : (err) => {
+			const message = roleId
+				? { ...embeds[lang], content: `<@&${roleId}>` }
+				: embeds[lang];
+			channel.send(message).catch(loggedError ? Function() : (err) => {
 				loggedError = true;
 				error(Object.assign(err, { embeds, targetLang: lang }));
 			});
@@ -167,7 +170,7 @@ async function checkForNews()
 		if(!appnews)
 			return console.error(`Failed to get news of app ${id}`);
 
-		const { latest, nsfw } = stmts.getAppInfo(appid);
+		const { latest } = stmts.getAppInfo(appid);
 		const news = [];
 		for(const newsitem of appnews.newsitems)
 		{
@@ -274,13 +277,13 @@ async function checkPrices()
  * A server can only watch 25 apps at once (or 50 if the owner vote on Top.gg).
  * @param {int} appid The app's id.
  * @param {GuildChannel} channel The text-based channel to send the news to.
- * @param {string} role The id of the role to ping when posting news/price changes.
+ * @param {string} roleId The id of the role to ping when posting news/price changes.
  * @param {boolean} price Whether to watch for price changes instead of news. Default: false
  *
  * @returns {Promise<int|false|null>} false if that app was already watched in that guild, or the new number of watched apps.
  * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its LIMIT of apps.
  */
-exports.watch = async (appid, channel, price = false, LIMIT = WATCH_LIMIT) => {
+exports.watch = async (appid, channel, roleId = null, price = false, LIMIT = WATCH_LIMIT) => {
 	if(!channel?.isTextBased() || !channel.guild)
 		throw new TypeError("'channel' must be a text-based channel");
 
@@ -338,7 +341,7 @@ exports.watch = async (appid, channel, price = false, LIMIT = WATCH_LIMIT) => {
 		}
 	}
 
-	stmts[price ? "watchPrice" : "watch"](appid, guildId, channel.id);
+	stmts[price ? "watchPrice" : "watch"]({appid, guildId, channelId: channel.id, roleId});
 	return watchedApps.length + 1;
 }
 
