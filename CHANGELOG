@@ -100,6 +100,10 @@ Adds news about Steam, through /steam-* commands.
 	/info: Prevents language list from being too long
 
 
-2.7.0 (22/08/2023)
+2.7 (22/08/2023)
 Adds basic sharding.
 Sends warnings when checkForNews() takes a lot of time (over a minute).
+
+2.8 (01/09/2023)
+Can now set a role to be pinged by watchers.
+Trying to watch an already-watched app now updates the watcher instead of failing.
