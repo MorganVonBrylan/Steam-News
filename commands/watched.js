@@ -36,6 +36,13 @@ function split(watched, title, description, blockSize = 25)
 	return embeds;
 }
 
-function gameToField({appid, nsfw, name, channelId}) {
-	return { name, value: `${tr.t("id", appid)}\n${tr.t(`NSFW-${nsfw ? "yes" : "no"}`)}\n${tr.t("channel", `<#${channelId}>`)}`, inline: true };
+function gameToField({appid, nsfw, name, channelId, roleId}) {
+	return {
+		name,
+		value: `${tr.t("id", appid)}
+			${tr.t(`NSFW-${nsfw ? "yes" : "no"}`)}
+			${tr.t("channel", `<#${channelId}>`)}
+			${tr.t("ping")} ${roleId ? `<@&${roleId}>` : `*${tr.t("no-ping")}*`}`,
+		inline: true,
+	};
 }

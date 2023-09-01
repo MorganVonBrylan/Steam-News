@@ -222,6 +222,8 @@
 			"1": "1 beobachteter Preis",
 			"default": "%n beobachtete Preise"
 		},
+		"ping": "Ping:",
+		"no-ping": "kein",
 		"none": "In diesem Server werden keine Spiele beobachtet.",
 		"id": "ID: %s",
 		"NSFW-yes": "NSFW: Ja",

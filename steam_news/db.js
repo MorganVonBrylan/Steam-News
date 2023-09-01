@@ -133,7 +133,7 @@ const stmts = exports.stmts = {
 	unwatch: db.prepare("DELETE FROM Watchers WHERE appid = ? AND guildid = ?"),
 	findWatchedApps: db.prepare("SELECT DISTINCT appid FROM Watchers").pluck(),
 	getWatchers: db.prepare("SELECT channelId, roleId FROM Watchers WHERE appid = ?"),
-	getWatchedApps: db.prepare(`SELECT a.appid, name, nsfw, channelId
+	getWatchedApps: db.prepare(`SELECT a.appid, name, nsfw, channelId, roleId
 		FROM Apps a JOIN Watchers w ON (a.appid = w.appid)
 		WHERE guildId = ?
 		ORDER BY name`),
@@ -151,7 +151,7 @@ const stmts = exports.stmts = {
 	findWatchedPrices: db.prepare("SELECT appid, name, nsfw, lastPrice FROM Apps a WHERE EXISTS (SELECT '*' FROM PriceWatchers WHERE appid = a.appid)"),
 	getPriceWatchers: db.prepare(`SELECT guildId, channelId, roleId, COALESCE(cc, 'US') "cc"
 		FROM PriceWatchers LEFT JOIN Guilds ON id = guildId WHERE appid = ?`),
-	getWatchedPrices: db.prepare(`SELECT a.appid, name, lastPrice, nsfw, channelId
+	getWatchedPrices: db.prepare(`SELECT a.appid, name, lastPrice, nsfw, channelId, roleId
 		FROM Apps a JOIN PriceWatchers w ON (a.appid = w.appid)
 		WHERE guildId = ?
 		ORDER BY name`),

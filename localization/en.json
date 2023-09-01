@@ -222,6 +222,8 @@
 			"1": "1 price watched",
 			"default": "%n prices watched"
 		},
+		"ping": "Ping:",
+		"no-ping": "no",
 		"none": "No game is watched in this server.",
 		"id": "Id: %s",
 		"NSFW-yes": "NSFW: Yes",

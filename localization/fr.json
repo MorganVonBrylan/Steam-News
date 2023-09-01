@@ -222,6 +222,8 @@
 			"1": "1 prix suivi",
 			"default": "%n prix suivis"
 		},
+		"ping": "Mention :",
+		"no-ping": "non",
 		"none": "Aucun jeu n’est suivi dans ce serveur.",
 		"id": "Id : %s",
 		"NSFW-yes": "NSFW : Oui",
