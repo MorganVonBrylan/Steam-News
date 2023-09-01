@@ -235,7 +235,7 @@ async function checkPrices()
 	const newPricesByCC = new Map();
 	for(const appid of appsWithUpdatedPrices)
 	{
-		for(const {guildId, channelId, cc} of stmts.getPriceWatchers(appid))
+		for(const {channelId, cc} of stmts.getPriceWatchers(appid))
 		{
 			if(!newPricesByCC.has(cc))
 				newPricesByCC.set(cc, new Map());
@@ -251,7 +251,6 @@ async function checkPrices()
 	const { channels } = require("../bot").client;
 	for(const [cc, appsForThisCC] of newPricesByCC)
 	{
-		const appids = [...appsForThisCC.keys()];
 		queryPrices([...appsForThisCC.keys()], cc).then(appDetails => {
 			for(const [appid, price] of Object.entries(appDetails))
 			{
