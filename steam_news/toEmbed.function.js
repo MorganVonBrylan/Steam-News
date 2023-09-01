@@ -13,8 +13,7 @@ const { countryToLang } = require("../locales.json");
  * @param {object} newsitem The news item.
  * @returns {object} A Discord embed.
  */
-export async function toEmbed({ appid, eventId, url, title, contents, date }, lang = "en")
-{
+module.exports = exports = async ({ appid, eventId, url, title, contents, date }, lang = "en") => {
 	if(!eventId) eventId = getEventId({url});
 	const image = contents.match(/({STEAM_CLAN_IMAGE})[^\[]+/);
 	const yt = contents.match(YT_REGEX_G)?.map(match => `https://youtu.be/${YT_REGEX.exec(match)[1]}`).join("\n");
