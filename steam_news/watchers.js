@@ -270,13 +270,15 @@ async function checkPrices()
 }
 
 /**
- * Adds a watcher for an app. A server can only watch 25 apps at once.
+ * Adds a watcher for an app.
+ * A server can only watch 25 apps at once (or 50 if the owner vote on Top.gg).
  * @param {int} appid The app's id.
  * @param {GuildChannel} channel The text-based channel to send the news to.
+ * @param {string} role The id of the role to ping when posting news/price changes.
  * @param {boolean} price Whether to watch for price changes instead of news. Default: false
  *
  * @returns {Promise<int|false|null>} false if that app was already watched in that guild, or the new number of watched apps.
- * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its limit of 25 apps.
+ * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its LIMIT of apps.
  */
 exports.watch = async (appid, channel, price = false, LIMIT = WATCH_LIMIT) => {
 	if(!channel?.isTextBased() || !channel.guild)
