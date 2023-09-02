@@ -28,7 +28,8 @@ client.login(auth.token);
 client.on("ready", async () => {
 	console.log(`Running as ${client.user.tag}!`);
 	exports.myself = client.user;
-	exports.master = master = await client.users.fetch(auth.master);
+	const { members } = await client.guilds.fetch(auth.adminServer);
+	exports.master = master = (await members.fetch(auth.master)).user;
 });
 
 client.once("ready", () => {
