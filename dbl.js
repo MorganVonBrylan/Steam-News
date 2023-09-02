@@ -24,7 +24,7 @@ module.exports = exports = (client, token, webhook) => {
 	{
 		const {exec} = require("node:child_process");
 		// In case a previous listener was left dangling...
-		exec(`lsof -i TCP:${webhook.port} | grep LISTEN`, (err, stdout, stderr) => {
+		exec(`lsof -i TCP:${webhook.port} | grep LISTEN`, (_, stdout) => {
 			if(stdout)
 				exec("kill -9 " + stdout.match(/[0-9]+/), launchWebhook);
 			else

@@ -1,7 +1,6 @@
 "use strict";
 
 const db = require("../../steam_news/db");
-const { stmts } = db;
 
 exports.description = "Execute a SQL statement";
 exports.options = [{
