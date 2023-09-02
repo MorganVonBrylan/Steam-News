@@ -5,7 +5,7 @@ const locales = {};
 
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = require("../steam_news/limits");
 
-for(const file of require("fs").readdirSync(__dirname))
+for(const file of require("node:fs").readdirSync(__dirname))
 	if(file.endsWith(".json"))
 	{
 		const locale = locales[file.substring(0, file.length-5)] = require("./"+file);

@@ -51,7 +51,7 @@ client.once("ready", () => {
 });
 
 
-for(const file of require("fs").readdirSync(__dirname+"/events"))
+for(const file of require("node:fs").readdirSync(__dirname+"/events"))
 	client.on(file.substring(0, file.length - 3), require(`./events/${file}`));
 
 

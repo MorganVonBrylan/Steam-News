@@ -22,7 +22,7 @@ module.exports = exports = (client, token, webhook) => {
 
 	if(webhook)
 	{
-		const {exec} = require("child_process");
+		const {exec} = require("node:child_process");
 		// In case a previous listener was left dangling...
 		exec(`lsof -i TCP:${webhook.port} | grep LISTEN`, (err, stdout, stderr) => {
 			if(stdout)
@@ -41,7 +41,8 @@ module.exports = exports = (client, token, webhook) => {
 		exports.webhook = new (require("@top-gg/sdk").Webhook)(webhook.password);
 		const handleRequest = exports.webhook.middleware();
 
-		const server = exports.webhookServer = require("http").createServer(async (req, res) => {
+		const { createServer } = require("node:http");
+		const server = exports.webhookServer = createServer(async (req, res) => {
 			if(req.method !== "POST")
 			{
 				res.setHeader("Allow", "POST");

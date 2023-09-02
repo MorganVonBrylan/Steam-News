@@ -17,7 +17,7 @@ const EMBED_MAX_LENGTH = Object.freeze({
 const mainLocale = {};
 const locales = new Map();
 
-for(const file of require("fs").readdirSync(__dirname))
+for(const file of require("node:fs").readdirSync(__dirname))
 	if(file.endsWith(".json"))
 	{
 		if(file === `${fallbackLocale}.json`)
