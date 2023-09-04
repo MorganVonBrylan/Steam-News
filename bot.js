@@ -9,6 +9,7 @@ const client = exports.client = new Discord.Client({
 	intents: [
 		Discord.GatewayIntentBits.Guilds,
 	],
+	partials: [Discord.Partials.Channel], // for DMs
 	shards: "auto",
 });
 
