@@ -4,7 +4,8 @@ const { search } = require("./steam_news/api");
 
 module.exports = exports = async function interpretAppid(inter, ephemeral = false, optionName = "game")
 {
-	const defer = inter.deferReply({ephemeral}).catch(error);
+	const defer = inter.deferReply({ ephemeral });
+	defer.catch(error);
 	const appid = inter.options.getString(optionName);
 	if(isFinite(appid))
 		return { appid, defer };
