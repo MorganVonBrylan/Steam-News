@@ -71,7 +71,7 @@ exports.run = async inter => {
 					: (dlc?.length || 0)+"", inline: true },
 				{ name: t("platforms"), value: listPlatforms(platforms) || t("unknown"), inline: true },
 				{ name: t("controllerSupport"), value: controller_support === "full" ? t("yes") : t("no"), inline: true },
-				{ name: t("multi"), value: categories.some(({id}) => id === 1) ? t("yes") : t("no"), inline: true },
+				{ name: t("multi"), value: categories?.some(({id}) => id === 1) ? t("yes") : t("no"), inline: true },
 				{ name: t("languages"), value: parseLanguages(supported_languages, 500) },
 				{ name: t("openInApp"), value: steamAppLink(`store/${appid}`, lang) },
 			],
