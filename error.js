@@ -3,6 +3,8 @@
 const { sendToMaster } = require("./bot");
 const { DiscordAPIError } = require("discord.js");
 
+const recent = new Set();
+
 global.error = module.exports = exports = function error(err)
 {
 	let msg = "An error occurred; read the console for details.";
@@ -22,6 +24,11 @@ global.error = module.exports = exports = function error(err)
 			: `\nMessage : ${message}`;
 	}
 
-	sendToMaster(msg, console.error);
+	if(!recent.has(msg))
+	{
+		sendToMaster(msg, console.error);
+		recent.set(msg);
+		setTimeout(recent.delete.bind(recent, msg), 3600_000);
+	}
 	console.error(err);
 }
