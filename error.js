@@ -1,6 +1,7 @@
 "use strict";
 
-const {sendToMaster} = require("./bot");
+const { sendToMaster } = require("./bot");
+const { DiscordAPIError } = require("discord.js");
 
 global.error = module.exports = exports = function error(err)
 {
@@ -16,7 +17,9 @@ global.error = module.exports = exports = function error(err)
 			|| err.code === "UND_ERR_CONNECT_TIMEOUT")
 			return;
 
-		msg += err.name === "DiscordAPIError" ? `\nMessage : ${message}\nChemin : ${err.path}` : `\nMessage : ${message}`;
+		msg += err instanceof DiscordAPIError
+			? `\nMessage : ${message}\nPath : ${err.path}`
+			: `\nMessage : ${message}`;
 	}
 
 	sendToMaster(msg, console.error);
