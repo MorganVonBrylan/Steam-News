@@ -15,7 +15,7 @@ const { countryToLang } = require("../locales.json");
  */
 module.exports = exports = async ({ appid, eventId, url, title, contents, date }, lang = "en") => {
 	if(!eventId) eventId = getEventId({url});
-	const image = contents.match(/({STEAM_CLAN_IMAGE})[^\[]+/);
+	const image = contents.match(/({STEAM_CLAN_IMAGE})[^\[ ]+/);
 	const yt = contents.match(YT_REGEX_G)?.map(match => `https://youtu.be/${YT_REGEX.exec(match)[1]}`).join("\n");
 	const name = getAppName(appid);
 	const steamLink = `url/EventAnnouncementPage/${appid}/${await eventId}`;
