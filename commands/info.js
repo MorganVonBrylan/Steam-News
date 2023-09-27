@@ -45,7 +45,7 @@ exports.run = async inter => {
 			genres = [], metacritic,
 			controller_support, platforms, categories,
 			dlc, is_free, price_overview: price = {}, // is_free can be false and price_overview undefined if the game is not out yet
-			supported_languages,
+			supported_languages = "—",
 		} = details;
 		const nsfw = isNSFW(details);
 
