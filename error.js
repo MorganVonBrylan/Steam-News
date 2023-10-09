@@ -27,7 +27,7 @@ global.error = module.exports = exports = function error(err)
 	if(!recent.has(msg))
 	{
 		sendToMaster(msg, console.error);
-		recent.set(msg);
+		recent.add(msg);
 		setTimeout(recent.delete.bind(recent, msg), 3600_000);
 	}
 	console.error(err);
