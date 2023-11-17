@@ -107,3 +107,6 @@ Sends warnings when checkForNews() takes a lot of time (over a minute).
 2.8 (01/09/2023)
 Can now set a role to be pinged by watchers.
 Trying to watch an already-watched app now updates the watcher instead of failing.
+
+	2.8.1 (17/11/2023)
+	Properly translates &nbsp;
