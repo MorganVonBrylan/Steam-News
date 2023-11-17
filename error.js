@@ -13,7 +13,8 @@ global.error = module.exports = exports = function error(err)
 	{
 		const {message} = err;
 		const status = err.httpStatus || err.response?.status || err.response?.statusCode;
-		if(message === "read ECONNRESET" || status === 403 || status === 404 || status === 408 || status >= 500
+		if(message === "read ECONNRESET"
+			|| status === 403 || status === 404 || status === 408 || status >= 500
 			|| message === "Unknown interaction" || message === "Missing Access"
 			|| message.startsWith("invalid json response body")
 			|| err.code === "UND_ERR_CONNECT_TIMEOUT")
@@ -31,4 +32,8 @@ global.error = module.exports = exports = function error(err)
 		setTimeout(recent.delete.bind(recent, msg), 3600_000);
 	}
 	console.error(err);
+
+	// temporary test
+	console.error("cause:", err.cause); 
+	console.error("cause.code:", err.cause?.code);
 }
