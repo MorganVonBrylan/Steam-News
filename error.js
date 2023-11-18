@@ -17,7 +17,7 @@ global.error = module.exports = exports = function error(err)
 			|| status === 403 || status === 404 || status === 408 || status >= 500
 			|| message === "Unknown interaction" || message === "Missing Access"
 			|| message.startsWith("invalid json response body")
-			|| err.code === "UND_ERR_CONNECT_TIMEOUT")
+			|| err.cause?.code === "UND_ERR_CONNECT_TIMEOUT")
 			return;
 
 		msg += err instanceof DiscordAPIError
@@ -32,8 +32,4 @@ global.error = module.exports = exports = function error(err)
 		setTimeout(recent.delete.bind(recent, msg), 3600_000);
 	}
 	console.error(err);
-
-	// temporary test
-	console.error("cause:", err.cause); 
-	console.error("cause.code:", err.cause?.code);
 }
