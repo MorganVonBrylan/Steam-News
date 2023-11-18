@@ -17,7 +17,7 @@ global.error = module.exports = exports = function error(err)
 			|| status === 403 || status === 404 || status === 408 || status >= 500
 			|| message === "Unknown interaction" || message === "Missing Access"
 			|| message.startsWith("invalid json response body")
-			|| err.cause?.code === "UND_ERR_CONNECT_TIMEOUT")
+			|| (err.code || err.cause?.code) === "UND_ERR_CONNECT_TIMEOUT")
 			return;
 
 		msg += err instanceof DiscordAPIError
