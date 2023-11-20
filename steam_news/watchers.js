@@ -83,7 +83,7 @@ setInterval(checkPrices, CHECK_INTERVAL * 3);
 const toEmbed = require("./toEmbed.function");
 const openInApps = tr.getAll("info.openInApp");
 
-let longestTime = 0;
+let longestTime = 300;
 
 /**
  * Triggers all watchers.
