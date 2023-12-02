@@ -110,3 +110,6 @@ Trying to watch an already-watched app now updates the watcher instead of failin
 
 	2.8.1 (17/11/2023)
 	Properly translates &nbsp;
+
+	2.8.2 (02/12/2023)
+	/info: fixes the display for partial controller support
