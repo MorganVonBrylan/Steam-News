@@ -81,7 +81,7 @@ exports.run = async inter => {
 }
 
 
-function displayPrice({discount_percent, initial_formatted, final_formatted})
+function displayPrice({discount_percent, final_formatted})
 {
 	return `${final_formatted}${discount_percent ? ` (-${discount_percent}%)` : ""}`;
 }
