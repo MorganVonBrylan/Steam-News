@@ -170,6 +170,9 @@
 		"DLC": "DLC", "game": "Game:",
 		"platforms": "Platforms",
 		"controllerSupport": "Controller support",
+		"controller_no": "No",
+		"controller_partial": "Partial",
+		"controller_full": "Full",
 		"multi": "Multiplayer",
 		"languages": "Languages",
 		"openInApp": "Open in app"

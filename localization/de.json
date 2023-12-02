@@ -169,7 +169,10 @@
 		"price": "Preis", "free": "Kostenlos", "undefined": "unbestimmt",
 		"DLC": "DLC", "game": "Spiel:",
 		"platforms": "Plattformen",
-		"controllerSupport": "Controller Unterstützung",
+		"controllerSupport": "Controllerunterstützung",
+		"controller_no": "Keine",
+		"controller_partial": "Teilweise",
+		"controller_full": "Volle",
 		"multi": "Multiplayer",
 		"languages": "Sprachen",
 		"openInApp": "In der App öffnen"

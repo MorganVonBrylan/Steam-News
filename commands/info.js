@@ -43,7 +43,7 @@ exports.run = async inter => {
 			steam_appid, developers, website,
 			name, header_image, release_date: {date = t("comingSoon")},
 			genres = [], metacritic,
-			controller_support, platforms, categories,
+			platforms, categories,
 			dlc, is_free, price_overview: price = {}, // is_free can be false and price_overview undefined if the game is not out yet
 			supported_languages = "—",
 		} = details;
@@ -70,7 +70,7 @@ exports.run = async inter => {
 					? `${t("game")} ${fullgame.name} (${fullgame.appid})`
 					: (dlc?.length || 0)+"", inline: true },
 				{ name: t("platforms"), value: listPlatforms(platforms) || t("unknown"), inline: true },
-				{ name: t("controllerSupport"), value: controller_support === "full" ? t("yes") : t("no"), inline: true },
+				{ name: t("controllerSupport"), value: t(`controller_${controllerSupport(details)}`), inline: true },
 				{ name: t("multi"), value: categories?.some(({id}) => id === 1) ? t("yes") : t("no"), inline: true },
 				{ name: t("languages"), value: parseLanguages(supported_languages, 500) },
 				{ name: t("openInApp"), value: steamAppLink(`store/${appid}`, lang) },
@@ -78,6 +78,17 @@ exports.run = async inter => {
 			image: { url: header_image },
 		}] }).catch(error);
 	}).catch(err => console.error(`appid: ${appid}`, err));
+}
+
+
+// Thanks Akane!
+function controllerSupport({ controller_support, categories })
+{
+	if(controller_support === "full" || categories.some(({ id }) => id === 28))
+		return "full";
+	if(categories.some(({ id }) => id === 18))
+		return "partial";
+	return "no";
 }
 
 

@@ -169,7 +169,10 @@
 		"price": "Prix", "free": "Gratuit", "undefined": "non défini",
 		"DLC": "DLC", "game": "Jeu :",
 		"platforms": "Plateformes",
-		"controllerSupport": "Support manette",
+		"controllerSupport": "Compat. manettes",
+		"controller_no": "Aucune",
+		"controller_partial": "Partielle",
+		"controller_full": "Complète",
 		"multi": "Multi",
 		"languages": "Langues",
 		"openInApp": "Ouvrir dans l’application"
