@@ -18,14 +18,15 @@ function handleQuery(res, retry = true)
 	if(res.ok && res.headers.get("Content-Type").startsWith("application/json"))
 		return res.json();
 	
-	res.text().then(body => {
-		const err = new Error(`Got ${res.status} ${res.statusText} while querying`);
-		err.responseBody = body;
-		error(err);
-	});
-	
 	if(retry)
+	{
+		res.text().then(body => {
+			const err = new Error(`Got ${res.status} ${res.statusText} while querying ${res.url}`);
+			err.responseBody = body;
+			error(err);
+		});
 		return fetch(res.url).then(res => handleQuery(res, false));
+	}
 	else
 		throw new Error(
 			res.ok ? "Query did not return JSON"
