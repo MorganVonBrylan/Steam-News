@@ -12,6 +12,27 @@ const STEAM_NEWS_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2
 const STEAM_ICON = exports.STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/593110/403da5dab6ce5ea2882dc5b7636d7c4dbb73c81a.jpg";
 
 
+
+function handleQuery(res, retry = true)
+{
+	if(res.ok && res.headers.get("Content-Type").startsWith("application/json"))
+		return res.json();
+	
+	res.text().then(body => {
+		const err = new Error(`Got ${this.status} ${this.statusText} while querying`);
+		err.responseBody = body;
+		error(err);
+	});
+	
+	if(retry)
+		return fetch(res.url).then(res => handleQuery(res, false));
+	else
+		throw new Error(
+			res.ok ? "Query did not return JSON"
+			: `Query ended with code ${res.status}`);
+}
+
+
 /**
  * Returns a link to open the Steam app that works in Discord.
  * @param {string} steamLink The steam:// link
@@ -56,7 +77,7 @@ function query(appid, count, maxlength)
 	if(count) url += `&count=${count}`;
 	if(maxlength) url += `&maxlength=${maxlength}`;
 
-	return fetch(url).then(res => res.json());
+	return fetch(url).then(handleQuery);
 }
 
 
@@ -73,7 +94,7 @@ exports.querySteam = async function(count, maxlength)
 	if(count) url += `&count=${count}`;
 	if(maxlength) url += `&maxlength=${maxlength}`;
 
-	return fetch(url).then(res => res.json());
+	return fetch(url).then(handleQuery);
 }
 
 
