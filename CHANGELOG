@@ -113,3 +113,6 @@ Trying to watch an already-watched app now updates the watcher instead of failin
 
 	2.8.2 (02/12/2023)
 	/info: fixes the display for partial controller support
+
+	2.8.3 (13/12/2023)
+	Handles the occasional API failure with a retry, and proper logging if the retry fails too.
