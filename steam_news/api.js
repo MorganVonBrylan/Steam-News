@@ -19,7 +19,7 @@ function handleQuery(res, retry = true)
 		return res.json();
 	
 	res.text().then(body => {
-		const err = new Error(`Got ${this.status} ${this.statusText} while querying`);
+		const err = new Error(`Got ${res.status} ${res.statusText} while querying`);
 		err.responseBody = body;
 		error(err);
 	});
