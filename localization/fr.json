@@ -140,7 +140,7 @@
 			{ "name": "Combien de jeux puis-je suivre ?", "value": "De base, vous pouvez suivre ${WATCH_LIMIT} fils d’actu, et autant de prix (qui peuvent être de jeux différents). Vous pouvez avoir ${WATCH_VOTE_BONUS} suivis d’actus et de prix de plus si vous votez pour nous sur Top.gg (lien en bas de ce message)." },
 			{ "name": "Le bot n’a pas envoyé une actu à la seconde où elle est sortie !", "value": "C’est normal. Il vérifie les actus une fois pas heure, donc il peut y avoir jusqu’à une heure de retard." },
 			{ "name": "Qu’en est-il des jeux adultes ?", "value": "Le bot n’enverra les infos et actus de jeux adultes que dans les salons soumis à une limite d’âge (NSFW)." },
-			{ "name": "Je peux copier ton bot ?", "value": "Bien sûr ! Il est open source sous licence GNU GPL 3.0.\nVoici le dépôt Git : [${repository}](${repository})" },
+			{ "name": "Je peux copier ton bot ?", "value": "Bien sûr ! Il est open source sous licence GNU GPL 3.0.\nVoici le dépôt Git : ${repository}" },
 			{ "name": "J’ai encore besoin d’aide !", "value": "C’est fâcheux. Vous pouvez venir expliquer votre souci sur notre serveur de support : ${SUPPORT_SERVER}" },
 			{ "name": "Une dernière chose", "value": "Vous aimez Steam News? Vous pouvez lui mettre un poce blo sur Top.gg: ${VOTE}" }
 		],

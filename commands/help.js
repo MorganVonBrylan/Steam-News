@@ -25,7 +25,7 @@ exports.run = inter => {
 				.replace("${WATCH_LIMIT}", WATCH_LIMIT)
 				.replace("${WATCH_VOTE_BONUS}", WATCH_VOTE_BONUS)
 				.replace("${SUPPORT_SERVER}", SUPPORT_SERVER)
-				.replaceAll("${repository}", repository)
+				.replace("${repository}", repository)
 				.replace("${VOTE}", voteURL(locale));
 		}
 

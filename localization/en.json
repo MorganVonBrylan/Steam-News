@@ -140,7 +140,7 @@
 			{ "name": "How many games can I follow?", "value": "By default, you can follow ${WATCH_LIMIT} news feeds and as many prices (which can be of different games). You can have an additional ${WATCH_VOTE_BONUS} news feeds and prices if you vote for us on Top.gg (link at the end of this message)." },
 			{ "name": "The bot didn’t send the latest news at the second it came out!", "value": "That is normal. It checks for news once an hour, so there can be up to an hour of delay." },
 			{ "name": "What about NSFW games?", "value": "The bot will only send info and news about NSFW games in NSFW channels." },
-			{ "name": "Can I copy your bot?", "value": "Sure! It’s open sourced under the GNU GPL 3.0 licence.\nHere is the Git repository: [${repository}](${repository})" },
+			{ "name": "Can I copy your bot?", "value": "Sure! It’s open sourced under the GNU GPL 3.0 licence.\nHere is the Git repository: ${repository}" },
 			{ "name": "I still need help!", "value": "That is unfortunate. You can come explain your issue on our support server: ${SUPPORT_SERVER}" },
 			{ "name": "One last thing", "value": "Like Steam News? Consider upvoting it on Top.gg: ${VOTE}" }
 		],

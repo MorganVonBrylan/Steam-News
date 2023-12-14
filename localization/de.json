@@ -140,7 +140,7 @@
 			{ "name": "Wie vielen Spielen kann ich folgen?", "value": "Standardmäßig kannst du ${WATCH_LIMIT} Nachrichten und genauso vielen Preisen (Die zu verschiedenen Spielen gehören können) folgen. Du kannst ${WATCH_VOTE_BONUS} zusätzlichen Nachrichten und preisen folgen, wenn du auf Top.gg für uns stimmst (folge dem Link am Ende dieser Nachricht)." },
 			{ "name": "Der Bot hat die letzten Nachrichten nicht in der Sekunde geschickt, in der sie veröffentlicht wurden!", "value": "Das ist normal. Er prüft die Nachrichten einmal pro Stunde, also kann es bis zu einer Stunde Verzögerung geben." },
 			{ "name": "was ist mit NSFW Spielen?", "value": "Der Bot wird Informationen und Nachrichten über NSFW Spiele nur in NSFW Kanälen senden." },
-			{ "name": "Kann ich deinen Bot kopieren?", "value": "Gerne! Er ist open source unter der GNU GPL 3.0 Lizenz.\nHier ist das Git repository: [${repository}](${repository})" },
+			{ "name": "Kann ich deinen Bot kopieren?", "value": "Gerne! Er ist open source unter der GNU GPL 3.0 Lizenz.\nHier ist das Git repository: ${repository}" },
 			{ "name": "Ich brauche immer noch Hilfe!", "value": "Das ist Schade. Du kannst dein Problem auf unserem Support-Server erklären: ${SUPPORT_SERVER}" },
 			{ "name": "Noch etwas", "value": "Magst du Steam News? Denk dran, auf Top.gg dafür abzustimmen: ${VOTE}" }
 		],
