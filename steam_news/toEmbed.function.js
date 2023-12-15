@@ -23,7 +23,7 @@ module.exports = exports = async ({ appid, eventId, url, title, contents, date }
 		url,
 		image: image ? {url: image[0].replace("{STEAM_CLAN_IMAGE}", STEAM_CLAN_IMAGE)} : undefined,
 		title,
-		description: toMarkdown(contents),
+		description: toMarkdown(contents).replaceAll("##table##", `\`[${tr.get(lang, "table")}]\``),
 		fields: [{name: tr.get(lang, "info.openInApp"), value: steamAppLink(steamLink, lang) }],
 		yt,
 		author: name ? { name, url: "https://store.steampowered.com/app/"+appid } : undefined,
@@ -37,6 +37,7 @@ function toMarkdown(contents, limit = 2000)
 	contents = contents
 		.replaceAll(/{STEAM_CLAN_IMAGE}[^\[]+/g, "")
 		.replaceAll(YT_REGEX_G, "")
+		.replaceAll(/\[table\].*?\[\/table\]/gs, "##table##")
 		.replaceAll(/\[url=(http[^\]]+)\]([^\[]+)\[\/url\]/g, "[$2]($1)")
 		.replaceAll(/\[url=(http[^\]]+)\]\[\/url\]/g, "")
 		.replaceAll("[hr][/hr]", "——————————")
@@ -49,6 +50,7 @@ function toMarkdown(contents, limit = 2000)
 		.replaceAll(/\[\/?(img|list)\]/g, "")
 		.replaceAll(/\[\*\]/g, "– ")
 		.replaceAll(/\n{2,}/g, "\n")
+		.replaceAll(/\[\/?[a-z]+\]/g, "")
 		.replaceAll("\n**", "\n\n**");
 
 	return contents.length < limit ? contents : `${contents.substring(0, limit-1)}…`;

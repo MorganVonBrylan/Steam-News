@@ -157,6 +157,8 @@
 	"NSFW-content-news": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seine Nachrichten nur in einem NSFW-Kanal anzeigen.",
 	"NSFW-content-price": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seinen Preis nur in einem NSFW-Kanal anzeigen.",
 
+	"table": "Tabelle",
+
 	"info": {
 		"yes": "Ja", "no": "Nein",
 		"invalidAppid": "Die angegebene ID gehört nicht zu einer Steam-App.",

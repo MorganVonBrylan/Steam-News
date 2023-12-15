@@ -157,6 +157,8 @@
 	"NSFW-content-news": "This game has adult content. You can only display its news in a NSFW channel.",
 	"NSFW-content-price": "This game has adult content. You can only display its price in a NSFW channel.",
 
+	"table": "table",
+
 	"info": {
 		"yes": "Yes", "no": "No",
 		"invalidAppid": "The id you provided does not belong to any Steam app.",

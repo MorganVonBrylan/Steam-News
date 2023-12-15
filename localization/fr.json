@@ -157,6 +157,8 @@
 	"NSFW-content-news": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses actus que dans un salon soumis à une limite d’âge (NSFW).",
 	"NSFW-content-price": "Ce jeu a du contenu adulte. Vous ne pouvez afficher son prix que dans un salon soumis à une limite d’âge (NSFW).",
 
+	"table": "tableau",
+
 	"info": {
 		"yes": "Oui", "no": "Non",
 		"invalidAppid": "Cet id ne correspond à aucune appli Steam.",
