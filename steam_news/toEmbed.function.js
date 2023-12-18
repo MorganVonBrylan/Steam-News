@@ -48,7 +48,7 @@ function toMarkdown(contents, limit = 2000)
 		.replaceAll(/\[\/?u\]/g, "__")
 		.replaceAll(/\[\/?s\]/g, "~~")
 		.replaceAll(/\[\/?(img|list)\]/g, "")
-		.replaceAll(/\[\*\]/g, "– ")
+		.replaceAll(/\[\*\]/g, "- ")
 		.replaceAll(/\n{2,}/g, "\n")
 		.replaceAll(/\[\/?[a-z]+\]/g, "")
 		.replaceAll("\n**", "\n\n**");
