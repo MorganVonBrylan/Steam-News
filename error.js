@@ -13,11 +13,13 @@ global.error = module.exports = exports = function error(err)
 	{
 		const {message} = err;
 		const status = err.httpStatus || err.response?.status || err.response?.statusCode;
+		const code = err.code || err.cause?.code;
 		if(message === "read ECONNRESET"
 			|| status === 403 || status === 404 || status === 408 || status >= 500
 			|| message === "Unknown interaction" || message === "Missing Access"
 			|| message.startsWith("invalid json response body")
-			|| (err.code || err.cause?.code) === "UND_ERR_CONNECT_TIMEOUT")
+			|| code === "UND_ERR_CONNECT_TIMEOUT"
+			|| code === "UND_ERR_ABORTED")
 			return;
 
 		msg += err instanceof DiscordAPIError
