@@ -33,7 +33,7 @@ exports.run = async inter => {
 	}
 	const { appnews } = info;
 	await defer;
-	if(!info?.appnews)
+	if(!appnews)
 		return inter.editReply({content: t("bad-appid")}).catch(error);
 
 	if(fetchInfo)
