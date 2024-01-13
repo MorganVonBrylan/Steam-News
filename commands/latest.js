@@ -21,9 +21,19 @@ exports.run = async inter => {
 
 	const t = tr.set(inter.locale);
 	const fetchInfo = isKnown(appid) ? null : getDetails(appid);
-	const {appnews} = await query(appid, 1);
+	let info;
+	try	{
+		info = await query(appid, 1);
+	}
+	catch(e) {
+		await defer;
+		return inter.reply(e.message.includes("403")
+			? "This app does not exist or is private."
+			: "Error while fetching data from the Steam API. Please retry later.").catch(error);;
+	}
+	const { appnews } = info;
 	await defer;
-	if(!appnews)
+	if(!info?.appnews)
 		return inter.editReply({content: t("bad-appid")}).catch(error);
 
 	if(fetchInfo)
