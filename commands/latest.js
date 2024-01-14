@@ -27,7 +27,7 @@ exports.run = async inter => {
 	}
 	catch(e) {
 		await defer;
-		return inter.reply(e.message.includes("403")
+		return inter.editReply(e.message.includes("403")
 			? "This app does not exist or is private."
 			: "Error while fetching data from the Steam API. Please retry later.").catch(error);;
 	}
