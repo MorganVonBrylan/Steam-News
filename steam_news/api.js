@@ -18,10 +18,11 @@ function handleQuery(res, retry = true)
 	if(res.ok && res.headers.get("Content-Type").startsWith("application/json"))
 		return res.json();
 	
-	if(retry)
+	const { status } = res;
+	if(retry && status !== 403 && status !== 404)
 	{
 		res.text().then(body => {
-			const err = new Error(`Got ${res.status} ${res.statusText} while querying ${res.url}`);
+			const err = new Error(`Got ${status} ${res.statusText} while querying ${res.url}`);
 			err.responseBody = body;
 			error(err);
 		});
@@ -30,7 +31,7 @@ function handleQuery(res, retry = true)
 	else
 		throw new Error(
 			res.ok ? "Query did not return JSON"
-			: `Query ended with code ${res.status}`);
+			: `Query ended with code ${status}`);
 }
 
 
