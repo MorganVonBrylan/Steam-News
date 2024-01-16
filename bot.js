@@ -60,9 +60,9 @@ for(const file of require("node:fs").readdirSync(__dirname+"/events"))
 client.on("shardReady", id => {
 	console.log(`Shard ${id} online!`);
 });
-client.on("shardError", (error, id) => {
-	error.shardId = id;
-	error(error);
+client.on("shardError", (err, id) => {
+	err.shardId = id;
+	error(err);
 });
 client.on("shardDisconnect", (_, id) => {
 	console.warn(`Shard ${id} dead.`);
