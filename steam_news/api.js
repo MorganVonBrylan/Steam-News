@@ -21,11 +21,12 @@ function handleQuery(res, retry = true)
 	const { status } = res;
 	if(retry && status !== 403 && status !== 404)
 	{
-		res.text().then(body => {
-			const err = new Error(`Got ${status} ${res.statusText} while querying ${res.url}`);
-			err.responseBody = body;
-			error(err);
-		});
+		if(status < 500)
+			res.text().then(body => {
+				const err = new Error(`Got ${status} ${res.statusText} while querying ${res.url}`);
+				err.responseBody = body;
+				error(err);
+			});
 		return fetch(res.url).then(res => handleQuery(res, false));
 	}
 	else
