@@ -21,23 +21,23 @@ const CHECK_INTERVAL = 3600_000;
 
 
 /**
- * @param {int} appid The app's id
- * @returns {bool} Whether the app is known by the bot or not.
+ * @param {number} appid The app's id
+ * @returns {boolean} Whether the app is known by the bot or not.
  */
 exports.isKnown = appid => !!stmts.isAppKnown(appid);
 
 /**
- * @param {int} appid The app's id
+ * @param {number} appid The app's id
  * @returns {?object} The app info (name, NSFW status and latest news timestamp), if known.
  */
 exports.getAppInfo = stmts.getAppInfo;
 
 /**
  * Stores or updates the given app info.
- * @param {int} appid The app's id.
+ * @param {number} appid The app's id.
  * @param {object} details The relevant details (all optional except the name)
  	* @param {string} details.name The app's name
- 	* @param {bool} details.nsfw Whether the app is NSFW or not.
+ 	* @param {boolean} details.nsfw Whether the app is NSFW or not.
 	* @param {string} details.latest That app's latest news' timestamp.
  */
 exports.saveAppInfo = (appid, details) => {
@@ -54,12 +54,12 @@ exports.saveAppInfo = (appid, details) => {
 };
 
 /**
- * @param {int} appid The app's id
+ * @param {number} appid The app's id
  * @returns {?string} The app's name, if known.
  */
 exports.getAppName = stmts.getAppName;
 /**
- * @param {int} appid The app's id
+ * @param {number} appid The app's id
  * @returns {?bool} Whether is app is NSFW, if known.
  */
 exports.isNSFW = stmts.isAppNSFW;
@@ -87,7 +87,7 @@ let longestTime = 300;
 
 /**
  * Triggers all watchers.
- * @returns {Promise<int>} The number of news sent.
+ * @returns {Promise<number>} The number of news sent.
  */
 exports.checkForNews = checkForNews;
 async function checkForNews()
@@ -208,7 +208,7 @@ async function checkForNews()
 
 /**
  * Triggers all price watchers.
- * @returns {Promise<int>} The number of price updates sent.
+ * @returns {Promise<number>} The number of price updates sent.
  */
 exports.checkPrices = checkPrices;
 async function checkPrices()
@@ -274,7 +274,7 @@ async function checkPrices()
 /**
  * Adds a watcher for an app.
  * A server can only watch 25 apps at once (or 50 if the owner vote on Top.gg).
- * @param {int} appid The app's id.
+ * @param {number} appid The app's id.
  * @param {GuildChannel} channel The text-based channel to send the news to.
  * @param {string} roleId The id of the role to ping when posting news/price changes.
  * @param {boolean} price Whether to watch for price changes instead of news. Default: false
@@ -353,7 +353,7 @@ exports.watch = async (appid, channel, roleId = null, price = false, LIMIT = WAT
 
 /**
  * Stops watching the given app in the given guild.
- * @param {int} appid The app's id.
+ * @param {number} appid The app's id.
  * @param {Guild} guild The guild.
  * @param {boolean} price Whether to unwatch for price changes instead of news. Default: false
  *
@@ -375,22 +375,22 @@ exports.unwatch = (appid, guild, price = false) => {
 /**
  * Removes all watchers of a guild.
  * @param {string} guildId The guild or guild id.
- * @returns {bool} true if the server was purged, false if there was nothing to purge.
+ * @returns {boolean} true if the server was purged, false if there was nothing to purge.
  */
 exports.purgeGuild = guildId => !!stmts.purgeGuild(guildId.id || guildId).changes;
 
 /**
  * Removes all watchers of a channel.
  * @param {string} channelId The channel or channel id.
- * @returns {bool} true if the channel was purged, false if there was nothing to purge.
+ * @returns {boolean} true if the channel was purged, false if there was nothing to purge.
  */
 exports.purgeChannel = channelId => !!stmts.purgeChannel(channelId.id || channelId).changes;
 
 
 /**
  * Removes all watchers of an app.
- * @param {int} appid The app's id.
- * @returns {bool} true if the app was purged, false if there was nothing to purge.
+ * @param {number} appid The app's id.
+ * @returns {boolean} true if the app was purged, false if there was nothing to purge.
  */
 exports.purgeApp = appid => !!db.run("DELETE FROM Watchers WHERE appid = ?", appid).changes;
 // Not prepared because it is only used in debug mode

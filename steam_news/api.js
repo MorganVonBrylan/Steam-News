@@ -66,9 +66,9 @@ exports.search = function search(terms, cc = "US")
 
 /**
  * Queries the Steam API to get the latest news of an app.
- * @param {int} appid The id of the Steam app
- * @param {int} count (optional) The number of news to fetch
- * @param {int} maxlength (optional) The max length of the 'contents' field. Any additional characters will be replaced with '...'. This also removes all PHPBB syntax.
+ * @param {number} appid The id of the Steam app
+ * @param {number} count (optional) The number of news to fetch
+ * @param {number} maxlength (optional) The max length of the 'contents' field. Any additional characters will be replaced with '...'. This also removes all PHPBB syntax.
  *
  * @returns {Promise<object>} The news
  */
@@ -86,8 +86,8 @@ function query(appid, count, maxlength)
 
 /**
  * Queries the Steam API to get the latest Steam news.
- * @param {int} count (optional) The number of news to fetch
- * @param {int} maxlength (optional) The max length of the 'contents' field. Any additional characters will be replaced with '...'. This also removes all PHPBB syntax.
+ * @param {number} count (optional) The number of news to fetch
+ * @param {number} maxlength (optional) The max length of the 'contents' field. Any additional characters will be replaced with '...'. This also removes all PHPBB syntax.
  *
  * @returns {Promise<object>} The news
  */
@@ -115,8 +115,8 @@ exports.getEventId = async function(newsItem)
 
 /**
  * Helper function to know if an appid is valid or not.
- * @param {int} appid The app's id.
- * @returns {Promise<bool>} true or false
+ * @param {number} appid The app's id.
+ * @returns {Promise<boolean>} true or false
  */
 exports.exists = async appid => {
 	const {appnews} = await query(appid, 1, 1);
@@ -144,7 +144,7 @@ exports.queryPrices = (appids, cc = "US") => {
 
 /**
  * Returns details about an app.
- * @param {int} appid The app's id.
+ * @param {number} appid The app's id.
  * @param {string} lang (optional) The language to get the details in. Default: en
  * @returns {Promise<object?>} The app's details, or null if it doesn't exist.
  */
@@ -160,7 +160,7 @@ exports.getDetails = (appid, lang = "en", cc = "US") => {
 /**
  * Checks if the given app is NSFW.
  * @param {object} appDetails The app's details.
- * @returns {bool}
+ * @returns {boolean}
  */
 exports.isNSFW = ({required_age, content_descriptors}) => {
 	const notes = content_descriptors.notes?.toLowerCase();

@@ -11,6 +11,7 @@ const { countryToLang } = require("../locales.json");
 /**
  * Returns the given Steam news item as a Discord embed.
  * @param {object} newsitem The news item.
+ * @param {string} lang The language (default: en)
  * @returns {object} A Discord embed.
  */
 module.exports = exports = async ({ appid, eventId, url, title, contents, date }, lang = "en") => {
@@ -59,9 +60,11 @@ function toMarkdown(contents, limit = 2000)
 
 /**
  * Returns the given price_overview as a Discord embed
- * @param {int} appid The app's id
+ * @param {number} appid The app's id
  * @param {string} name The app's name
  * @param {object} price A price_overview object, with a cc property (country code)
+ * 
+ * @returns {object} A Discord embed.
  */
 exports.price = (appid, name, price) => {
 	const t = tr.get(countryToLang[price.cc], "price");
