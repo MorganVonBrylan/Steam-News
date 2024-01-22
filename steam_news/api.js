@@ -24,6 +24,7 @@ function handleQuery(res, retry = true)
 		if(status < 500)
 			res.text().then(body => {
 				const err = new Error(`Got ${status} ${res.statusText} while querying ${res.url}`);
+				err.httpStatus = status;
 				err.responseBody = body;
 				error(err);
 			});
