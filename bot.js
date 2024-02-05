@@ -17,6 +17,14 @@ const client = exports.client = new Discord.Client({
 require("./localization");
 
 
+if(!Object.hasOwn(Discord.ThreadChannel.prototype, "nsfw"))
+{
+	Object.defineProperty(Discord.ThreadChannel.prototype, "nsfw", {
+		get: function() { return this.parent?.nsfw; },
+	});
+}
+
+
 var master;
 exports.sendToMaster = (msg, onError = error) =>
 	master?.send(msg).catch(onError)
