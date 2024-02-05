@@ -117,5 +117,8 @@ Trying to watch an already-watched app now updates the watcher instead of failin
 	2.8.3 (13/12/2023)
 	Handles the occasional API failure with a retry, and proper logging if the retry fails too.
 
-	2.8.4 (01/13/2023)
+	2.8.4 (01/13/2024)
 	fix: crash with /latest when querying a non-existing or private app
+
+	2.8.5 (05/02/2023)
+	fix: allowing NSFW in threads of NSFW channels
