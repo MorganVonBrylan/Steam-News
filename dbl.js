@@ -20,11 +20,13 @@ module.exports = exports = (client, token, webhook) => {
 			voteURLs[lang] = `https://top.gg/${topggLanguages.includes(lang) ? `${lang}/` : ""}bot/${id}/vote?lang=${lang}`;
 	}
 
+	const port = webhook?.port || process.env.SERVER_PORT;
+
 	if(webhook)
 	{
 		const {exec} = require("node:child_process");
 		// In case a previous listener was left dangling...
-		exec(`lsof -i TCP:${webhook.port} | grep LISTEN`, (_, stdout) => {
+		exec(`lsof -i TCP:${port} | grep LISTEN`, (_, stdout) => {
 			if(stdout)
 				exec("kill -9 " + stdout.match(/[0-9]+/), launchWebhook);
 			else
@@ -67,7 +69,7 @@ module.exports = exports = (client, token, webhook) => {
 			addVoter(vote.user, vote.query?.lang);
 		});
 
-		server.listen(webhook.port || process.env.SERVER_PORT);
+		server.listen(port);
 	}
 }
 
