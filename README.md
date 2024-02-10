@@ -24,9 +24,14 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
  	"master": "your user id",
 	"adminServer": "the id of the server where the admin commands will be available, for you",
 	"dblToken": "(optional) your bot's Top.gg token",
+	"dblWebhook": {
+		"port": 5050,
+		"password": "your password here"
+	},
 	"debug": false,
 
-	"supportServer": "(optional) The invite to your support server"
+	"supportServer": "(optional) The invite to your support server",
+	"donate": "(optional) The URL for donations"
 }
 ```
 `debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode.
