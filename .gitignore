@@ -1,5 +1,6 @@
 node_modules
 
+.env
 auth.json
 
 TODO.txt
