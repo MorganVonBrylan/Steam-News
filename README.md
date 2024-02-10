@@ -36,6 +36,8 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 ```
 `debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode.
 
+If the webhook port is not specified, the `SERVER_PORT` environment variable will be used instead.
+
 To start the bot, run `node bot.js`
 
 ## Database schema

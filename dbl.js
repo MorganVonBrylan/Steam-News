@@ -67,7 +67,7 @@ module.exports = exports = (client, token, webhook) => {
 			addVoter(vote.user, vote.query?.lang);
 		});
 
-		server.listen(webhook.port);
+		server.listen(webhook.port || process.env.SERVER_PORT);
 	}
 }
 
