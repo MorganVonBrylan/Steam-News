@@ -15,13 +15,13 @@ exports.voted = voters.has.bind(voters);
 
 exports.getVoters = () => [...voters.keys()];
 
-exports.addVoter = (id, lang) => {
+exports.addVoter = (id, lang, forceNotif = false) => {
 	clearTimeout(voters.get(id));
 	voters.set(id, setTimeout(voters.delete.bind(voters, id), VOTE_BONUS_DURATION));
 
 	const date = Date.now();
 	const lastVote = getLastVote(id);
-	if(!lastVote || date - lastVote > VOTE_NOTIFICATION_COOLDOWN)
+	if(forceNotif || !lastVote || date - lastVote > VOTE_NOTIFICATION_COOLDOWN)
 		users.fetch(id).then(user => user.send(tr.get(lang || "en", "voting.thanks"))).catch(Function());
 
 	if(lastVote)

@@ -63,10 +63,8 @@ module.exports = exports = (client, token, webhook) => {
 			await handleRequest(req, res, Function());
 
 			const {vote} = req;
-			if(!vote)
-				return;
-
-			addVoter(vote.user, vote.query?.lang);
+			if(vote)
+				addVoter(vote.user, vote.query?.lang, vote.type === "test");
 		});
 
 		server.listen(port);
