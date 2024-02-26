@@ -22,9 +22,13 @@ global.error = module.exports = exports = function error(err)
 			|| code === "UND_ERR_ABORTED")
 			return;
 
-		msg += err instanceof DiscordAPIError
-			? `\nMessage : ${message}\nPath : ${err.path || err.url}`
-			: `\nMessage : ${message}`;
+		if(err instanceof DiscordAPIError)
+		{
+			msg += `\nMessage : ${message}\nPath : ${err.path || err.url}`;
+			console.log("data:", err.requestBody?.json?.data);
+		}
+		else
+			msg += `\nMessage : ${message}`;
 	}
 
 	if(!recent.has(msg))
