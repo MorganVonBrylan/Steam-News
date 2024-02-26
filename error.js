@@ -23,7 +23,7 @@ global.error = module.exports = exports = function error(err)
 			return;
 
 		msg += err instanceof DiscordAPIError
-			? `\nMessage : ${message}\nPath : ${err.path}`
+			? `\nMessage : ${message}\nPath : ${err.path || err.url}`
 			: `\nMessage : ${message}`;
 	}
 
