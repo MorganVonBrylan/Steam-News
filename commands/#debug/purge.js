@@ -17,5 +17,5 @@ exports.run = inter => {
 		content: (app ? purgeApp : purgeGuild)(inter.options.getString("id"))
 			? (app ? "App purgée." : "Server purgé.")
 			: "There was nothing to purge.",
-	}).catch(error);
+	});
 };

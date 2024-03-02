@@ -8,4 +8,4 @@ const fields = require("node:fs").readdirSync(__dirname).map(f => f.substring(0,
 		return {name: cmd, value: description};
 	});
 
-exports.run = inter => inter.reply({ephemeral: true, embeds: [{ fields }]}).catch(error);
+exports.run = inter => inter.reply({ephemeral: true, embeds: [{ fields }]});

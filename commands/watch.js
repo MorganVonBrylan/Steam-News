@@ -39,15 +39,15 @@ exports.run = async inter => {
 	const t = tr.set(inter.locale, "watch");
 
 	if(!perms?.has(SEND_MESSAGES))
-		return inter.reply({ephemeral: true, content: t("cannot-send", channel)}).catch(error);
+		return inter.reply({ephemeral: true, content: t("cannot-send", channel)});
 	else if(!perms.has(EMBED_LINKS))
-		return inter.reply({ephemeral: true, content: t("cannot-embed", channel)}).catch(error);
+		return inter.reply({ephemeral: true, content: t("cannot-embed", channel)});
 
 	const { appid, defer } = await interpretAppidOption(inter, true);
 	if(!appid)
 		return;
 	else if(+appid === STEAM_APPID)
-		return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
+		return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}));
 
 	const LIMIT = voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT;
 	const role = inter.options.getRole("role")?.id;
@@ -61,27 +61,27 @@ exports.run = async inter => {
 		if(!details)
 		{
 			purgeApp(appid);
-			return inter.editReply({ephemeral: true, content: t.get(inter.locale, "bad-appid")}).catch(error);
+			return inter.editReply({ephemeral: true, content: t.get(inter.locale, "bad-appid")});
 		}
 
 		if(watchPrice)
 		{
 			if(success === null)
-				return inter.editReply({ephemeral: true, content: t("price-free")}).catch(error);
+				return inter.editReply({ephemeral: true, content: t("price-free")});
 			if(success === false)
-				return inter.editReply({ephemeral: true, content: t("price-unknown")}).catch(error);
+				return inter.editReply({ephemeral: true, content: t("price-unknown")});
 		}
 
 		if(details.type === "dlc" && !watchPrice)
 		{
 			purgeApp(appid);
-			return inter.editReply({ephemeral: true, content: t.get(inter.locale, "no-DLC-news")}).catch(error);
+			return inter.editReply({ephemeral: true, content: t.get(inter.locale, "no-DLC-news")});
 		}
 
 		if(details.nsfw && !channel.nsfw)
 		{
 			unwatch(appid, inter.guild);
-			return inter.editReply(tr.get(inter.locale, `NSFW-content-${type}`)).catch(error);
+			return inter.editReply(tr.get(inter.locale, `NSFW-content-${type}`));
 		}
 
 		let reply = success
@@ -97,20 +97,20 @@ exports.run = async inter => {
 				: `\n${t("server-limit-reached", LIMIT, WATCH_VOTE_BONUS, voteURL(inter.locale))}`;
 
 		updateUnwatch(inter.guild);
-		inter.editReply(reply).catch(error);
+		inter.editReply(reply);
 	}, async err => {
 		await defer;
 		if(err.message.includes("appid"))
-			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "bad-appid")}).catch(error);
+			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "bad-appid")});
 		else if(err instanceof RangeError)
 			inter.editReply({ephemeral: true, content: LIMIT === LIMIT_WITH_VOTE
 				? t("error-limit-reached-voted", LIMIT)
 				: t("error-limit-reached", LIMIT, WATCH_VOTE_BONUS, voteURL(inter.locale))
-			}).catch(error);
+			});
 		else
 		{
 			error(err);
-			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "error")}).catch(error);
+			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "error")});
 		}
 	});
 }

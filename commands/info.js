@@ -36,7 +36,7 @@ exports.run = async inter => {
 	getDetails(appid, lang, langToCountry[lang]).then(async details => {
 		await defer;
 		if(!details)
-			return inter.editReply({ephemeral: true, content: t("invalidAppid")}).catch(error);
+			return inter.editReply({ephemeral: true, content: t("invalidAppid")});
 
 		const {
 			type, fullgame,
@@ -50,7 +50,7 @@ exports.run = async inter => {
 		const nsfw = isNSFW(details);
 
 		if(nsfw && !inter.channel.nsfw) // temporary
-			return inter.editReply({ephemeral: true, content: t("nsfwForbidden")}).catch(error);
+			return inter.editReply({ephemeral: true, content: t("nsfwForbidden")});
 
 		inter.editReply({ embeds: [{
 			url: "https://store.steampowered.com/app/"+steam_appid,
@@ -76,7 +76,7 @@ exports.run = async inter => {
 				{ name: t("openInApp"), value: steamAppLink(`store/${appid}`, lang) },
 			],
 			image: { url: header_image },
-		}] }).catch(error);
+		}] });
 	}).catch(err => console.error(`appid: ${appid}`, err));
 }
 

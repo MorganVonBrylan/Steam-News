@@ -21,6 +21,6 @@ exports.run = async inter => {
 		channelId: channel.id,
 		roleId: inter.options.getRole("role")?.id,
 	});
-	inter.reply(tr.get(inter.locale, "steam.watched", channel)).catch(error);
+	inter.reply(tr.get(inter.locale, "steam.watched", channel));
 	createCmd(inter.guild, true);
 }

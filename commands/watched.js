@@ -21,7 +21,7 @@ exports.run = inter => {
 	inter.reply(embeds.length
 		? { ephemeral: true, embeds }
 		: { ephemeral: true, content: t("none") }
-	).catch(error);
+	);
 }
 
 

@@ -23,10 +23,10 @@ exports.run = async inter => {
 			if(game)
 				appid = game.id;
 			else
-				return inter.reply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error);
+				return inter.reply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)});
 		}
 	}
 
 	const description = steamAppLink("store/"+appid, inter.locale).replace("[", "[👉 ");
-	inter.reply({ephemeral: true, embeds: [{ description }]}).catch(error);
+	inter.reply({ephemeral: true, embeds: [{ description }]});
 }

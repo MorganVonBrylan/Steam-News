@@ -15,9 +15,9 @@ module.exports = exports = async function interpretAppid(inter, ephemeral = fals
 		if(game)
 			return { appid: game.id, defer };
 
-		defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}).catch(error));
+		defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}));
 	} catch {
-		defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "api-failed")}).catch(error));
+		defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "api-failed")}));
 	}
 	return { defer };
 }

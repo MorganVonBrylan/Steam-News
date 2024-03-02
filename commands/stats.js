@@ -18,5 +18,5 @@ exports.run = async inter => {
 		],
 		footer:{ text: t("active-since") },
 		timestamp: inter.client.application.createdAt.toISOString(),
-	}]}).catch(error);
+	}]});
 }

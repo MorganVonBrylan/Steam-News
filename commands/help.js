@@ -35,5 +35,5 @@ exports.run = inter => {
 		preparedEmbeds.add(locale);
 	}
 
-	inter.reply({ ephemeral: true, content: SUPPORT_SERVER, embeds: [embed] }).catch(error);
+	inter.reply({ ephemeral: true, content: SUPPORT_SERVER, embeds: [embed] });
 }

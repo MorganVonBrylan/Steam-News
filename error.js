@@ -1,11 +1,14 @@
 "use strict";
 
+global.error = module.exports = exports = error;
+process.on("unhandledRejection", error);
+
 const { sendToMaster } = require("./bot");
 const { DiscordAPIError } = require("discord.js");
 
 const recent = new Set();
 
-global.error = module.exports = exports = function error(err)
+function error(err)
 {
 	let msg = "An error occurred; read the console for details.";
 

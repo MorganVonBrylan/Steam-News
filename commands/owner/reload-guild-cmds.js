@@ -10,7 +10,7 @@ exports.options = [{
 exports.run = async inter => {
 	const guild = inter.client.guilds.cache.get(inter.options.getString("guild")) || inter.guild;
 	if(!guild)
-		return inter.reply({ephemeral: true, content: "Guild not found"}).catch(error);
+		return inter.reply({ephemeral: true, content: "Guild not found"});
 
 	const results = await Promise.allSettled([
 		inter.deferReply({ephemeral: true}).catch(Function()),
@@ -21,9 +21,9 @@ exports.run = async inter => {
 		if(status === "rejected")
 		{
 			console.error(reason);
-			inter.editReply({ephemeral: true, content: `An error occurred:\n${reason.message?.substring(0, 1900)}`}).catch(error);
+			inter.editReply({ephemeral: true, content: `An error occurred:\n${reason.message?.substring(0, 1900)}`});
 			return;
 		}
 
-	inter.editReply({ephemeral: true, content: "Commands reloaded."}).catch(error);
+	inter.editReply({ephemeral: true, content: "Commands reloaded."});
 };

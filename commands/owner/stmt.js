@@ -12,6 +12,6 @@ exports.run = inter => {
 		const {changes} = db.run(inter.options.getString("sql"));
 		inter.reply({ephemeral: true, content: `${changes} rows affected`}).catch(console.error);
 	} catch(e) {
-		inter.reply({ephemeral: true, content: `Error: ${e}`}).catch(error);
+		inter.reply({ephemeral: true, content: `Error: ${e}`});
 	}
 };

@@ -54,7 +54,7 @@ client.once("ready", () => {
 		const nGuilds = client.guilds.cache.size;
 		if(nGuilds > 12000)
 		{
-			master.send(`Yo I got about ${nGuilds}servers now, get to hybrid sharding\nhttps://www.npmjs.com/package/discord-hybrid-sharding`).catch(error);
+			master.send(`Yo I got about ${nGuilds}servers now, get to hybrid sharding\nhttps://www.npmjs.com/package/discord-hybrid-sharding`);
 			clearInterval(guildCountCheck);
 		}
 	}, 3600_000);

@@ -60,7 +60,7 @@ exports.autocomplete = inter => {
 	const apps = (inter.options.getSubcommand() === "price" ? getWatchedPrices : getWatchedApps)(inter.guild.id);
 	const results = (search ? apps.filter(({name}) => name.toLowerCase().includes(search)) : apps);
 
-	inter.respond(results.slice(0, 25).map(({name, appid}) => ({ name: formatName(name), value: ""+appid }))).catch(error);
+	inter.respond(results.slice(0, 25).map(({name, appid}) => ({ name: formatName(name), value: ""+appid })));
 }
 
 exports.run = async inter => {
@@ -71,7 +71,7 @@ exports.run = async inter => {
 	inter.reply({
 		ephemeral: true,
 		content: tr.get(inter.locale, `unwatch.${price ? "price" : "news"}-${unwatched ? "unwatched" : "unchanged"}`, name),
-	}).catch(error);
+	});
 
 	if(unwatched)
 		updateCmd(inter.guild);

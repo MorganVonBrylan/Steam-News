@@ -13,9 +13,9 @@ exports.run = async inter => {
 
 	const news = await toEmbed(appnews.newsitems[0], inter.locale);
 	news.footer.iconUrl = STEAM_ICON;
-	const reply = inter.editReply({ embeds: [news] }).catch(error);
+	const reply = inter.editReply({ embeds: [news] });
 
 	if(news.yt &&
 		(!inter.guild || inter.channel?.permissionsFor(await inter.guild.members.fetchMe())?.has(SEND_MESSAGES)))
-		reply.then(() => inter.channel.send(news.yt).catch(error));
+		reply.then(() => inter.channel.send(news.yt));
 }

@@ -22,18 +22,18 @@ exports.run = inter => {
 		inter.reply(currentCC
 			? t("current", currentCC, codeToCountry[currentCC])
 			: t("no-default")
-		).catch(error);
+		);
 	}
 	else
 	{
 		if(cc.length !== 2)
-			inter.reply({ephemeral: true, content: t("cc-required", CC_LIST)}).catch(error);
+			inter.reply({ephemeral: true, content: t("cc-required", CC_LIST)});
 		else if(!(cc in codeToCountry))
-			inter.reply({ephemeral: true, content: t("cc-invalid", CC_LIST)}).catch(error);
+			inter.reply({ephemeral: true, content: t("cc-invalid", CC_LIST)});
 		else
 		{
 			setCC(inter.guild.id, cc);
-			inter.reply(t("new-default", cc, codeToCountry[cc])).catch(error);
+			inter.reply(t("new-default", cc, codeToCountry[cc]));
 		}
 	}
 }
@@ -56,5 +56,5 @@ function searchCountry(inter)
 	inter.respond(results.map(upperName => {
 		const cc = countryToCode[upperName];
 		return { name: codeToCountry[cc], value: cc };
-	})).catch(error);
+	}));
 }
