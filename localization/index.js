@@ -86,6 +86,11 @@ global.tr = module.exports = exports = {
 		if(typeof key !== "string")
 			throw new TypeError("'key' must be a string");
 
+		function logError(message) {
+			error(Object.assign(new Error(message)), {
+				locale: this.locale, key, replaces
+			});
+		}
 		const path = key.split(".");
 		let obj = this.locale;
 		for(const part of path)
@@ -94,7 +99,7 @@ global.tr = module.exports = exports = {
 				obj = obj[part];
 			else
 			{
-				error(new Error(`Missing ${this.lang} translation for ${key}`));
+				logError(`Missing ${this.lang} translation for ${key}`);
 				obj = undefined;
 				break;
 			}
@@ -109,7 +114,7 @@ global.tr = module.exports = exports = {
 					obj = obj[part];
 				else
 				{
-					error(new Error(`Missing fallback translation for ${key}`));
+					logError(`Missing fallback translation for ${key}`);
 					obj = undefined;
 					break;
 				}
