@@ -84,18 +84,20 @@ exports.run = async inter => {
 			return inter.editReply(tr.get(inter.locale, `NSFW-content-${type}`)).catch(error);
 		}
 
-		const limitWarning = success === LIMIT ?
-			LIMIT === LIMIT_WITH_VOTE ? `\n${t("server-limit-reached-voted", LIMIT)}`
-			: `\n${t("server-limit-reached", LIMIT, WATCH_VOTE_BONUS, voteURL(inter.locale))}`
-			: "";
-		const detailsError = details.name === "undefined" ? "\n"+t("error-retrieving-details") : "";
+		let reply = success
+			? t(`confirm-${type}`, details.name, channel)
+			: t(`already-${type}`, details.name);
+		
+		if(detailsError.name === "undefined")
+			reply += `\n${t("error-retrieving-details")}`;
+
+		if(success === LIMIT)
+			reply += LIMIT === LIMIT_WITH_VOTE
+				? `\n${t("server-limit-reached-voted", LIMIT)}`
+				: `\n${t("server-limit-reached", LIMIT, WATCH_VOTE_BONUS, voteURL(inter.locale))}`;
 
 		updateUnwatch(inter.guild);
-
-		inter.editReply({ephemeral: true, content:
-			success ? `${t(`confirm-${type}`, details.name, channel)}${detailsError}${limitWarning}`
-				: t(`already-${type}`, details.name),
-		}).catch(error);
+		inter.editReply(reply).catch(error);
 	}, async err => {
 		await defer;
 		if(err.message.includes("appid"))
