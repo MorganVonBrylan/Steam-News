@@ -87,8 +87,8 @@ exports.run = async inter => {
 		let reply = success
 			? t(`confirm-${type}`, details.name, channel)
 			: t(`already-${type}`, details.name);
-		
-		if(detailsError.name === "undefined")
+
+		if(details.name === "undefined")
 			reply += `\n${t("error-retrieving-details")}`;
 
 		if(success === LIMIT)
