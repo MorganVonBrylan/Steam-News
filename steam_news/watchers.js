@@ -8,6 +8,10 @@ import {
 import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
 const REQUIRED_PERMS = PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
 
+async function canWriteIn(channel) {
+	return channel?.permissionsFor(await channel.guild.members.fetchMe()).has(REQUIRED_PERMS);
+}
+
 import db, { stmts } from "./db.js";
 
 import importJSON from "../importJSON.function.js";
@@ -108,8 +112,8 @@ export async function checkForNews()
 		const embeds = { en: { embeds: [baseEmbed] } };
 		let loggedError = false;
 
-		return ({channelId, roleId}) => channels.fetch(channelId).then(channel => {
-			if(!channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS))
+		return ({channelId, roleId}) => channels.fetch(channelId).then(async channel => {
+			if(!await canWriteIn(channel))
 				return;
 
 			const lang = serverToLang[channel.guild.id] || "en";
@@ -253,23 +257,21 @@ export async function checkPrices()
 
 	for(const [cc, appsForThisCC] of newPricesByCC)
 	{
-		queryPrices([...appsForThisCC.keys()], cc).then(appDetails => {
-			for(const [appid, price] of Object.entries(appDetails))
-			{
-				if(!price) continue; // Sometimes the API call just... fails
+		const appDetails = await queryPrices([...appsForThisCC.keys()], cc);
+		for(const [appid, price] of Object.entries(appDetails))
+		{
+			if(!price) continue; // Sometimes the API call just... fails
 
-				price.cc = cc;
-				const { name, nsfw } = watchedPrices[appid];
-				const embed = { embeds: [toPriceEmbed(appid, name, price)] };
-				for(const channelId of appsForThisCC.get(appid))
-				{
-					channels.fetch(channelId).then(channel => {
-						if(channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS) && (!nsfw || channel.nsfw))
-							channel.send(embed).catch(Function());
-					}, Function());
-				}
+			price.cc = cc;
+			const { name, nsfw } = watchedPrices[appid];
+			const embed = { embeds: [toPriceEmbed(appid, name, price)] };
+			for(const channelId of appsForThisCC.get(appid))
+			{
+				const channel = await channels.fetch(channelId).catch(Function());
+				if(await canWriteIn(channel) && (!nsfw || channel.nsfw))
+					channel.send(embed).catch(Function());
 			}
-		});
+		}
 	}
 }
 
@@ -335,7 +337,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 				return false;
 			}
 
-			if(price?.discount_percent && channel.permissionsFor(channel.guild.members.me).has(REQUIRED_PERMS))
+			if(price?.discount_percent && await canWriteIn(channel))
 			{
 				const cc = price.cc = stmts.getCC(guildId) || "US";
 				if(cc === "US")
