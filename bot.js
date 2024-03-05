@@ -48,7 +48,9 @@ client.once("ready", () => {
 		makeEnumsGlobal: true,
 		middleware: require("./localization").applyTranslations,
 	});
-	require("./dbl")(client, auth.dblToken, auth.dblWebhook);
+
+	if(auth.dblToken)
+		require("./dbl")(client, auth.dblToken, auth.dblWebhook);
 
 	const guildCountCheck = setInterval(() => {
 		const nGuilds = client.guilds.cache.size;
