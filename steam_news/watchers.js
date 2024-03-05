@@ -86,7 +86,7 @@ export const getWatchedPrices = stmts.getWatchedPrices;
 setInterval(checkForNews, CHECK_INTERVAL);
 setInterval(checkPrices, CHECK_INTERVAL * 3);
 
-import toEmbed from "./toEmbed.function.js";
+import toEmbed, { price as toPriceEmbed } from "./toEmbed.function.js";
 const openInApps = tr.getAll("info.openInApp");
 
 let longestTime = 300;
@@ -260,7 +260,7 @@ export async function checkPrices()
 
 				price.cc = cc;
 				const { name, nsfw } = watchedPrices[appid];
-				const embed = { embeds: [toEmbed.price(appid, name, price)] };
+				const embed = { embeds: [toPriceEmbed(appid, name, price)] };
 				for(const channelId of appsForThisCC.get(appid))
 				{
 					channels.fetch(channelId).then(channel => {
@@ -339,10 +339,10 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 			{
 				const cc = price.cc = stmts.getCC(guildId) || "US";
 				if(cc === "US")
-					channel.send({ embeds: [toEmbed.price(appid, details.name, price)] }).catch(Function());
+					channel.send({ embeds: [toPriceEmbed(appid, details.name, price)] }).catch(Function());
 				else
 					queryPrices(appid, cc)
-						.then(prices => channel.send({ embeds: [toEmbed.price(appid, details.name, prices[appid])] }))
+						.then(prices => channel.send({ embeds: [toPriceEmbed(appid, details.name, prices[appid])] }))
 						.catch(Function())
 			}
 		}
