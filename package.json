@@ -25,7 +25,7 @@
 	],
   "license": "GPL-3.0",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@brylan/djs-commands": "^2.1.1",
@@ -33,7 +33,6 @@
     "better-sqlite3": "^8.4.0",
     "bufferutil": "^4.0.6",
     "discord.js": "^14.8.0",
-    "node-fetch": "^2.6.2",
     "topgg-autoposter": "^2.0.1",
     "utf-8-validate": "^5.0.8"
   }
