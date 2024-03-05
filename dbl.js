@@ -44,8 +44,12 @@ export default function setupTopgg(client, token, webhook)
 	function launchWebhook()
 	{
 		webhookServer?.close();
-		const webhook = new Webhook(webhook.password);
-		const handleRequest = webhook.middleware();
+		const { listener } = new Webhook(webhook.password);
+
+		const handleRequest = listener(vote => {
+			if(vote)
+				addVoter(vote.user, vote.query?.lang, vote.type === "test");
+		})
 
 		webhookServer = createServer(async (req, res) => {
 			if(req.method !== "POST")
@@ -68,10 +72,6 @@ export default function setupTopgg(client, token, webhook)
 			});
 			
 			await handleRequest(req, res, Function());
-
-			const {vote} = req;
-			if(vote)
-				addVoter(vote.user, vote.query?.lang, vote.type === "test");
 		});
 
 		webhookServer.listen(port);
