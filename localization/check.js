@@ -1,9 +1,13 @@
-"use strict";
 
-const { fallbackLocale } = require(".");
+import dirname from "../__dirname.js";
+const __dirname = dirname(import.meta.url);
+
+import { readdirSync } from "node:fs";
+import { fallbackLocale } from "./index.js";
+import importJSON from "../importJSON.function.js";
 const embeds = ["help"];
 
-const { NAME_REGEX } = require("@brylan/djs-commands/checkCommand.function");
+import { NAME_REGEX } from "@brylan/djs-commands/lib/commands/check.function.js";
 const DESC_MAX_LENGTH = 100;
 
 const EMBED_MAX_LENGTH = Object.freeze({
@@ -17,14 +21,15 @@ const EMBED_MAX_LENGTH = Object.freeze({
 const mainLocale = {};
 const locales = new Map();
 
-for(const file of require("node:fs").readdirSync(__dirname))
-	if(file.endsWith(".json"))
-	{
-		if(file === `${fallbackLocale}.json`)
-			Object.assign(mainLocale, require("./"+file));
-		else
-			locales.set(file.substring(0, file.length-5), require("./"+file));
-	}
+for(const file of readdirSync(__dirname).filter(f => f.endsWith(".json")))
+{
+	const localizationData = importJSON(`${__dirname}/${file}`);
+	const locale = file.slice(0, -5);
+	if(locale === fallbackLocale)
+		Object.assign(mainLocale, localizationData);
+	else
+		locales.set(locale, localizationData);
+}
 
 
 for(const [locale, trData] of locales)

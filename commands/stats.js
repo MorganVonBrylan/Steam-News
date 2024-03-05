@@ -1,9 +1,10 @@
-"use strict";
 
-const { stmts: {getStats} } = require("../steam_news/db");
+import { stmts } from "../steam_news/db.js";
+const { getStats } = stmts;
 
-exports.dmPermission = true;
-exports.run = async inter => {
+export const dmPermission = true;
+export async function run(inter)
+{
 	const t = tr.set(inter.locale, "stats");
 	const stats = getStats();
 

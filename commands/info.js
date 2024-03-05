@@ -1,13 +1,13 @@
-"use strict";
 
-const { getDetails, isNSFW, steamAppLink } = require("../steam_news/api");
-const interpretAppidOption = require("../interpretAppidOption.function");
-const { stmts: {getCC} } = require("../steam_news/db");
-const { langToCountry } = require("../locales.json");
+import { getDetails, isNSFW, steamAppLink } from "../steam_news/api.js";
+import interpretAppidOption from "../interpretAppidOption.function.js";
+import { stmts } from "../steam_news/db.js";
+const { getCC } = stmts;
+import importJSON from "../importJSON.function.js";
+const { langToCountry } = importJSON("locales.json");
 
-exports.dmPermission = true;
-exports.autocomplete = require("../autocomplete/search");
-exports.options = [{
+export const dmPermission = true;
+export const options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
@@ -22,7 +22,9 @@ exports.options = [{
 		{ name: "My own locale", value: "own" },
 	],
 }];
-exports.run = async inter => {
+export { default as autocomplete } from "../autocomplete/search.js";
+export async function run(inter)
+{
 	const { appid, defer } = await interpretAppidOption(inter);
 	if(!appid)
 		return;

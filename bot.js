@@ -1,54 +1,60 @@
-"use strict";
 
-const Discord = require("discord.js");
-const auth = exports.auth = require("./auth.json");
+import { Client, GatewayIntentBits, Partials, ThreadChannel } from "discord.js";
+import { readdirSync } from "node:fs";
+import setupTopgg from "./dbl.js";
+import tr from "./localization/index.js";
 
-const client = exports.client = new Discord.Client({
+import importJSON from "./importJSON.function.js";
+export const auth = importJSON("auth.json");
+
+import initCommands from "@brylan/djs-commands";
+
+export const client = new Client({
 	intents: [
-		Discord.GatewayIntentBits.Guilds,
+		GatewayIntentBits.Guilds,
 	],
-	partials: [Discord.Partials.Channel], // for DMs
+	partials: [Partials.Channel], // for DMs
 	shards: "auto",
 });
 
-
-require("./localization");
-
-
-if(!Object.hasOwn(Discord.ThreadChannel.prototype, "nsfw"))
+if(!Object.hasOwn(ThreadChannel.prototype, "nsfw"))
 {
-	Object.defineProperty(Discord.ThreadChannel.prototype, "nsfw", {
+	Object.defineProperty(ThreadChannel.prototype, "nsfw", {
 		get: function() { return this.parent?.nsfw; },
 	});
 }
 
 
-var master;
-exports.sendToMaster = (msg, onError = error) =>
-	master?.send(msg).catch(onError)
-	|| client.once("ready", async () => (await client.users.fetch(auth.master)).send(msg).catch(onError));
+export var master;
+export var myself;
 
-const error = require("./error");
+import error from "./error.js";
+export function sendToMaster(msg, onError = error)
+{
+	return master?.send(msg).catch(onError)
+		|| client.once("ready", async () => (await client.users.fetch(auth.master)).send(msg).catch(onError));
+}
+
 
 client.login(auth.token);
 
 client.on("ready", async () => {
 	console.log(`Running as ${client.user.tag}!`);
-	exports.myself = client.user;
+	myself = client.user;
 	const { members } = await client.guilds.fetch(auth.adminServer);
-	exports.master = master = (await members.fetch(auth.master)).user;
+	master = (await members.fetch(auth.master)).user;
 });
 
 client.once("ready", () => {
-	require("@brylan/djs-commands")(client, {
+	initCommands(client, {
 		debug: auth.debug,
 		ownerServer: auth.adminServer,
 		makeEnumsGlobal: true,
-		middleware: require("./localization").applyTranslations,
-	});
+		middleware: tr.applyTranslations,
+	}).then((cmds) => console.log(cmds.size, "commands loaded"));
 
 	if(auth.dblToken)
-		require("./dbl")(client, auth.dblToken, auth.dblWebhook);
+		setupTopgg(client, auth.dblToken, auth.dblWebhook);
 
 	const guildCountCheck = setInterval(() => {
 		const nGuilds = client.guilds.cache.size;
@@ -60,9 +66,13 @@ client.once("ready", () => {
 	}, 3600_000);
 });
 
-
-for(const file of require("node:fs").readdirSync(__dirname+"/events"))
-	client.on(file.substring(0, file.length - 3), require(`./events/${file}`));
+import __dirname from "./__dirname.js";
+for(const file of readdirSync(__dirname(import.meta.url) + "/events"))
+{
+	// synchronous import causes a dependency loop
+	import(`./events/${file}`)
+	.then(({default: handler}) => client.on(file.slice(0, -3), handler));
+}
 
 
 client.on("shardReady", id => {

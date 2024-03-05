@@ -1,25 +1,32 @@
-"use strict";
+
+import dirname from "../__dirname.js";
+const __dirname = dirname(import.meta.url);
 
 const FALLBACK = "en";
 const locales = {};
 
-const { WATCH_LIMIT, WATCH_VOTE_BONUS } = require("../steam_news/limits");
+export { FALLBACK as fallbackLocale };
 
-for(const file of require("node:fs").readdirSync(__dirname))
-	if(file.endsWith(".json"))
-	{
-		const locale = locales[file.substring(0, file.length-5)] = require("./"+file);
-		const { commands: { watch }, voting } = locale;
-		watch.description = watch.description.replace("%s", WATCH_LIMIT);
-		voting.thanks = voting.thanks.replace("%S", WATCH_VOTE_BONUS);
-	}
+import importJSON from "../importJSON.function.js";
+const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
+import applyTranslations from "./applyTranslations.function.js";
+
+import { readdirSync } from "node:fs";
+
+for(const file of readdirSync(__dirname).filter(f => f.endsWith(".json")))
+{
+	const locale = importJSON(`${__dirname}/${file}`);
+	locales[file.substring(0, file.length - 5)] = locale;
+	const { commands: { watch }, voting } = locale;
+	watch.description = watch.description.replace("%s", WATCH_LIMIT);
+	voting.thanks = voting.thanks.replace("%S", WATCH_VOTE_BONUS);
+}
 
 if(!locales[FALLBACK])
 	throw new Error(`Missing fallback localization (${FALLBACK})`);
 
-
 {
-	const localesFile = require("../locales.json");
+	const localesFile = importJSON("locales.json");
 	const countryToLang = localesFile.countryToLang = {};
 	for(const [lang, country] of Object.entries(localesFile.langToCountry))
 		countryToLang[country] = lang;
@@ -35,11 +42,11 @@ function trReplace(str, replaces)
 }
 
 
-global.tr = module.exports = exports = {
+export const tr = {
 	locales: Object.keys(locales),
 	fallbackLocale: FALLBACK,
 
-	applyTranslations: require("./applyTranslations.function").bind({FALLBACK, locales}),
+	applyTranslations: applyTranslations.bind({FALLBACK, locales}),
 
 	set(lang, group) {
 		this.group = group;
@@ -124,6 +131,9 @@ global.tr = module.exports = exports = {
 		return obj ? trReplace(obj, replaces) : key;
 	},
 }
+
+export default tr;
+global.tr = tr;
 
 
 for(const prop in tr)

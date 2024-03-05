@@ -1,19 +1,21 @@
-"use strict";
 
-const { search } = require("../steam_news/api");
+import { search } from "../steam_news/api.js";
 
 const resultToOption = ({ id, name }) => ({
 	name: name.length > 100 ? name.substring(0, 99) + "…" : name,
 	value: "" + id,
 });
 
-module.exports = exports = inter => {
+export default all;
+export function all(inter)
+{
 	search(inter.options.getFocused()).then(results => {
 		inter.respond(results.map(resultToOption));
 	});
 }
 
-exports.appsOnly = inter => {
+export function appsOnly(inter)
+{
 	search(inter.options.getFocused()).then(results => {
 		inter.respond(results.filter(({type}) => type === "app").map(resultToOption));
 	});

@@ -1,12 +1,12 @@
-"use strict";
 
-const { getAppName } = require("./watchers");
-const { getEventId, steamAppLink } = require("./api");
+import { getAppName } from "./watchers.js";
+import { getEventId, steamAppLink } from "./api.js";
+import importJSON from "../importJSON.function.js";
 const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
 const YT_REGEX = /\[previewyoutube=([\w-]+)/;
 const YT_REGEX_G = /\[previewyoutube=([\w-]+)(;full)?\]\[\/previewyoutube\]/g;
 
-const { countryToLang } = require("../locales.json");
+const { countryToLang } = importJSON("locales.json");
 
 /**
  * Returns the given Steam news item as a Discord embed.
@@ -14,7 +14,8 @@ const { countryToLang } = require("../locales.json");
  * @param {string} lang The language (default: en)
  * @returns {object} A Discord embed.
  */
-module.exports = exports = async ({ appid, eventId, url, title, contents, date }, lang = "en") => {
+export default async function toEmbed({ appid, eventId, url, title, contents, date }, lang = "en")
+{
 	if(!eventId) eventId = getEventId({url});
 	const image = contents.match(/({STEAM_CLAN_IMAGE})[^\[ ]+/);
 	const yt = contents.match(YT_REGEX_G)?.map(match => `https://youtu.be/${YT_REGEX.exec(match)[1]}`).join("\n");
@@ -66,7 +67,8 @@ function toMarkdown(contents, limit = 2000)
  * 
  * @returns {object} A Discord embed.
  */
-exports.price = (appid, name, price) => {
+export function price(appid, name, price)
+{
 	const t = tr.get(countryToLang[price.cc], "price");
 	return {
 		url: "https://store.steampowered.com/app/"+appid,

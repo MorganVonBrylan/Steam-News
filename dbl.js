@@ -1,17 +1,25 @@
-"use strict";
-
 // vote test:
 // fetch("http://localhost:5050/dblwebhook", {method: "post", headers: {Authorization: "giveme25morewatchersNOW"}, body: JSON.stringify({user: "263709367633838081",bot: "929757212841226292", type: "test", isWeekend: false})}).then(console.log)
+
+import { addVoter } from "./steam_news/VIPs.js";
+import { DJSPoster } from "topgg-autoposter";
+import { Webhook } from "@top-gg/sdk";
+import { exec } from "node:child_process";
+import { createServer } from "node:http";
 
 const voteURLs = { default: "*oops, it seems I am actually not on Top.gg*" };
 const topggLanguages = ["fr", "de", "hi", "tr"];
 
-module.exports = exports = (client, token, webhook) => {
-	process.on("uncaughtException", error); // Node process
+export const voteURL = locale => voteURLs[locale] || voteURLs.default;
+
+export default function setupTopgg(client, token, webhook)
+{
+	process.on("uncaughtException", error);
+	let webhookServer;
 
 	if(token)
 	{
-		const autoPoster = exports.autoPoster = new (require("topgg-autoposter").DJSPoster)(token, client);
+		const autoPoster = new DJSPoster(token, client);
 		autoPoster.on("error", error);
 
 		const {id} = client.user;
@@ -24,11 +32,10 @@ module.exports = exports = (client, token, webhook) => {
 
 	if(webhook)
 	{
-		const {exec} = require("node:child_process");
 		// In case a previous listener was left dangling...
 		exec(`lsof -i TCP:${port} | grep LISTEN`, (_, stdout) => {
 			if(stdout)
-				exec("kill -9 " + stdout.match(/[0-9]+/), launchWebhook);
+				exec(`kill -9 ${stdout.match(/[0-9]+/)}`, launchWebhook);
 			else
 				launchWebhook();
 		});
@@ -36,15 +43,11 @@ module.exports = exports = (client, token, webhook) => {
 
 	function launchWebhook()
 	{
-		exports.webhookServer?.close();
+		webhookServer?.close();
+		const webhook = new Webhook(webhook.password);
+		const handleRequest = webhook.middleware();
 
-		const {addVoter} = require("./steam_news/VIPs");
-
-		exports.webhook = new (require("@top-gg/sdk").Webhook)(webhook.password);
-		const handleRequest = exports.webhook.middleware();
-
-		const { createServer } = require("node:http");
-		const server = exports.webhookServer = createServer(async (req, res) => {
+		webhookServer = createServer(async (req, res) => {
 			if(req.method !== "POST")
 			{
 				res.setHeader("Allow", "POST");
@@ -52,14 +55,18 @@ module.exports = exports = (client, token, webhook) => {
 				return res.end();
 			}
 
-			res.sendStatus = code => { // to mimic express.js
-				res.statusCode = code;
-				res.end();
-			}
-			res.status = code => {
-				res.statusCode = code;
-				return { json: json => res.end(JSON.stringify(json)) };
-			}
+			// to mimic express.js
+			Object.assign(res, {
+				sendStatus: code => {
+					res.statusCode = code;
+					res.end();
+				},
+				status: code => {
+					res.statusCode = code;
+					return { json: json => res.end(JSON.stringify(json)) };
+				},
+			});
+			
 			await handleRequest(req, res, Function());
 
 			const {vote} = req;
@@ -67,9 +74,6 @@ module.exports = exports = (client, token, webhook) => {
 				addVoter(vote.user, vote.query?.lang, vote.type === "test");
 		});
 
-		server.listen(port);
+		webhookServer.listen(port);
 	}
 }
-
-
-exports.voteURL = locale => voteURLs[locale] || voteURLs.default;

@@ -1,20 +1,21 @@
-"use strict";
 
-const { query, getDetails, isNSFW } = require("../steam_news/api");
-const interpretAppidOption = require("../interpretAppidOption.function");
-const { isKnown, saveAppInfo, isNSFW: isAppNSFW } = require("../steam_news/watchers");
-const toEmbed = require("../steam_news/toEmbed.function");
+import { query, getDetails, isNSFW } from "../steam_news/api.js";
+import interpretAppidOption from "../interpretAppidOption.function.js";
+import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
+import toEmbed from "../steam_news/toEmbed.function.js";
 
-const { PermissionFlagsBits: { SendMessages: SEND_MESSAGES } } = require("discord.js");
+import { PermissionFlagsBits } from "discord.js";
+const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
 
-exports.dmPermission = true;
-exports.autocomplete = require("../autocomplete/search");
-exports.options = [{
+export const dmPermission = true;
+export const options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
 }];
-exports.run = async inter => {
+export { default as autocomplete } from "../autocomplete/search.js";
+export async function run(inter)
+{
 	const { appid, defer } = await interpretAppidOption(inter);
 	if(!appid)
 		return;
@@ -54,7 +55,12 @@ exports.run = async inter => {
 		: { embeds: [news = await toEmbed(appnews.newsitems[0], inter.locale)] }
 	);
 
-	if(news?.yt &&
-		(!inter.guild || inter.channel?.permissionsFor(await inter.guild.members.fetchMe())?.has(SEND_MESSAGES)))
+	if(news?.yt && await canSendMessage(inter))
 		reply.then(() => inter.channel.send(news.yt));
+}
+
+async function canSendMessage({guild, channel})
+{
+	return !guild
+		|| channel?.permissionsFor(await guild.members.fetchMe())?.has(SEND_MESSAGES);
 }

@@ -1,12 +1,12 @@
-"use strict";
 
-const db = require("../steam_news/db");
-const { stmts: { watchSteam } } = db;
+import { stmts } from "../steam_news/db.js";
+const { watchSteam } = stmts;
 
-const createCmd = require("@brylan/djs-commands").guildCommands.createCmd.bind(null, require("./#guild/steam-unwatch"));
+import { guildCommands } from "@brylan/djs-commands";
+const createCmd = guildCommands.createCmd.bind(null, "steam-unwatch");
 
-exports.defaultMemberPermissions = "0";
-exports.options = [{
+export const defaultMemberPermissions = "0";
+export const options = [{
 	type: ROLE, name: "role",
 	description: "A role to ping when news are posted",
 }, {
@@ -14,7 +14,8 @@ exports.options = [{
 	channelTypes: ALL_TEXT_CHANNEL_TYPES,
 	description: "The channel where to send the news (defaults to current channel if not provided)"
 }];
-exports.run = async inter => {
+export async function run(inter)
+{
 	const channel = inter.options.getChannel("channel") || inter.channel;
 	watchSteam({
 		guildId: inter.guild.id,

@@ -1,18 +1,22 @@
-"use strict";
 
-const { query, queryPrices, querySteam, getDetails, isNSFW, STEAM_APPID, STEAM_ICON } = require("./api");
-const { SendMessages, EmbedLinks } = require("discord.js").PermissionFlagsBits;
-const REQUIRED_PERMS = SendMessages | EmbedLinks;
+import {
+	query, queryPrices, querySteam,
+	getDetails,
+	isNSFW,
+	STEAM_APPID, STEAM_ICON
+} from "./api.js";
+import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
+const REQUIRED_PERMS = PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
 
-const {WATCH_LIMIT} = require("./limits");
-Object.freeze(require("./limits"));
+import db, { stmts } from "./db.js";
 
-const db = require("./db");
-const { stmts } = db;
+import importJSON from "../importJSON.function.js";
+import __dirname from "../__dirname.js";
+const { WATCH_LIMIT } = importJSON(__dirname(import.meta.url)+"/limits.json");
+const { countryToLang } = importJSON("locales.json");
 
-const { countryToLang } = require("../locales.json");
-
-const { client, sendToMaster } = require("../bot");
+import { client, sendToMaster } from "../bot.js";
+const { channels } = client;
 client.once("ready", checkForNews);
 client.once("ready", checkPrices);
 
@@ -24,13 +28,13 @@ const CHECK_INTERVAL = 3600_000;
  * @param {number} appid The app's id
  * @returns {boolean} Whether the app is known by the bot or not.
  */
-exports.isKnown = appid => !!stmts.isAppKnown(appid);
+export const isKnown = appid => !!stmts.isAppKnown(appid);
 
 /**
  * @param {number} appid The app's id
  * @returns {?object} The app info (name, NSFW status and latest news timestamp), if known.
  */
-exports.getAppInfo = stmts.getAppInfo;
+export const getAppInfo = stmts.getAppInfo;
 
 /**
  * Stores or updates the given app info.
@@ -40,7 +44,8 @@ exports.getAppInfo = stmts.getAppInfo;
  	* @param {boolean} details.nsfw Whether the app is NSFW or not.
 	* @param {string} details.latest That app's latest news' timestamp.
  */
-exports.saveAppInfo = (appid, details) => {
+export function saveAppInfo(appid, details)
+{
 	const fields = ["name", "nsfw", "latest"].filter(field => field in details);
 	details.appid = appid;
 
@@ -57,30 +62,31 @@ exports.saveAppInfo = (appid, details) => {
  * @param {number} appid The app's id
  * @returns {?string} The app's name, if known.
  */
-exports.getAppName = stmts.getAppName;
+export const getAppName = stmts.getAppName;
 /**
  * @param {number} appid The app's id
  * @returns {?bool} Whether is app is NSFW, if known.
  */
-exports.isNSFW = stmts.isAppNSFW;
+const { isAppNSFW } = stmts;
+export { isAppNSFW as isNSFW };
 
 /**
  * @param {string} guildId The guild id
  * @returns {Array} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
  */
-exports.getWatchedApps = stmts.getWatchedApps;
+export const getWatchedApps = stmts.getWatchedApps;
 
 /**
  * @param {string} guildId The guild id
  * @returns {Array} The app prices watched in that guild, in the format {appid, name, nsfw, lastPrice, channelId}
  */
-exports.getWatchedPrices = stmts.getWatchedPrices;
+export const getWatchedPrices = stmts.getWatchedPrices;
 
 
 setInterval(checkForNews, CHECK_INTERVAL);
 setInterval(checkPrices, CHECK_INTERVAL * 3);
 
-const toEmbed = require("./toEmbed.function");
+import toEmbed from "./toEmbed.function.js";
 const openInApps = tr.getAll("info.openInApp");
 
 let longestTime = 300;
@@ -89,11 +95,9 @@ let longestTime = 300;
  * Triggers all watchers.
  * @returns {Promise<number>} The number of news sent.
  */
-exports.checkForNews = checkForNews;
-async function checkForNews()
+export async function checkForNews()
 {
 	const start = Date.now();
-	const { channels } = require("../bot").client;
 	const serverToLang = {};
 	for(const {id, cc} of stmts.getAllCC(false))
 		serverToLang[id] = countryToLang[cc];
@@ -210,8 +214,7 @@ async function checkForNews()
  * Triggers all price watchers.
  * @returns {Promise<number>} The number of price updates sent.
  */
-exports.checkPrices = checkPrices;
-async function checkPrices()
+export async function checkPrices()
 {
 	const watchedPrices = {};
 	const appsWithUpdatedPrices = [];
@@ -248,7 +251,6 @@ async function checkPrices()
 		}
 	}
 
-	const { channels } = require("../bot").client;
 	for(const [cc, appsForThisCC] of newPricesByCC)
 	{
 		queryPrices([...appsForThisCC.keys()], cc).then(appDetails => {
@@ -282,7 +284,8 @@ async function checkPrices()
  * @returns {Promise<int|boolean|null>} false if that app was already watched in that guild, or the new number of watched apps.
  * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its LIMIT of apps.
  */
-exports.watch = async (appid, channel, roleId = null, price = false, LIMIT = WATCH_LIMIT) => {
+export async function watch(appid, channel, roleId = null, price = false, LIMIT = WATCH_LIMIT)
+{
 	if(!channel?.isTextBased() || !channel.guild)
 		throw new TypeError("'channel' must be a text-based channel");
 
@@ -359,7 +362,8 @@ exports.watch = async (appid, channel, roleId = null, price = false, LIMIT = WAT
  *
  * @returns {int|false} false if that guild was not watching that app, or the new number or apps watched by the guild.
  */
-exports.unwatch = (appid, guild, price = false) => {
+export function unwatch(appid, guild, price = false)
+{
 	const guildId = guild.id || guild;
 	const success = stmts[price ? "unwatchPrice" : "unwatch"](appid, guildId).changes;
 	if(!success)
@@ -377,14 +381,14 @@ exports.unwatch = (appid, guild, price = false) => {
  * @param {string} guildId The guild or guild id.
  * @returns {boolean} true if the server was purged, false if there was nothing to purge.
  */
-exports.purgeGuild = guildId => !!stmts.purgeGuild(guildId.id || guildId).changes;
+export const purgeGuild = guildId => !!stmts.purgeGuild(guildId.id || guildId).changes;
 
 /**
  * Removes all watchers of a channel.
  * @param {string} channelId The channel or channel id.
  * @returns {boolean} true if the channel was purged, false if there was nothing to purge.
  */
-exports.purgeChannel = channelId => !!stmts.purgeChannel(channelId.id || channelId).changes;
+export const purgeChannel = channelId => !!stmts.purgeChannel(channelId.id || channelId).changes;
 
 
 /**
@@ -392,5 +396,5 @@ exports.purgeChannel = channelId => !!stmts.purgeChannel(channelId.id || channel
  * @param {number} appid The app's id.
  * @returns {boolean} true if the app was purged, false if there was nothing to purge.
  */
-exports.purgeApp = appid => !!db.run("DELETE FROM Watchers WHERE appid = ?", appid).changes;
+export const purgeApp = appid => !!db.run("DELETE FROM Watchers WHERE appid = ?", appid).changes;
 // Not prepared because it is only used in debug mode

@@ -1,9 +1,9 @@
-"use strict";
 
-const { getWatchedApps, getWatchedPrices } = require("../steam_news/watchers");
-const { stmts: {isWatchingSteam} } = require("../steam_news/db");
+import { getWatchedApps, getWatchedPrices } from "../steam_news/watchers.js";
+import { stmts } from "../steam_news/db.js";
+const { getSteamWatcher } = stmts;
 
-exports.run = inter => {
+export function run(inter) {
 	const t = tr.set(inter.locale, "watched");
 	const { guild } = inter;
 	const watched = getWatchedApps(guild.id);
@@ -14,7 +14,7 @@ exports.run = inter => {
 		...split(watchedPrices, t("prices-watched", guild), tr.plural("prices", watchedPrices.length)),
 	];
 
-	const steamWatch = isWatchingSteam(guild.id);
+	const steamWatch = getSteamWatcher(guild.id);
 	if(steamWatch)
 		embeds.push({ description: t("steam-watched", `<#${steamWatch}>`) });
 

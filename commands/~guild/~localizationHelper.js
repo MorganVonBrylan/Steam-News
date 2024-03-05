@@ -1,18 +1,36 @@
-"use strict";
-
-
-module.exports = exports = cmdName => Object.assign(Object.entries(tr.getAll("commands."+cmdName, true)), LocalizationHelper);
+/**
+ * Get a localization helper.
+ * @param {string} cmdName The command name
+ * @returns {{get: function, optionLocalizations: function}} 
+ */
+export default function(cmdName)
+{
+	return Object.assign(
+		Object.entries(tr.getAll(`commands.${cmdName}`, true)),
+		LocalizationHelper
+	);
+}
 
 
 const LocalizationHelper = {
-	get: function(property) {
+	/**
+	 * Get the localizations of a command's property
+	 * @param {string} property 
+	 * @returns {object} The localizations mapped by language code
+	 */
+	get(property) {
 		return this.reduce((localization, [locale, tr]) => {
 			localization[locale] = tr[property];
 			return localization;
 		}, {});
 	},
 
-	optionLocalizations: function(optionName) {
+	/**
+	 * Get the localizations of an option
+	 * @param {string} optionName The option name
+	 * @returns {object} The option's localized properties
+	 */
+	optionLocalizations(optionName) {
 		return this.reduce((optLocalization, [locale, tr]) => {
 			const {name, description} = tr.options[optionName];
 			if(name.length > 32)

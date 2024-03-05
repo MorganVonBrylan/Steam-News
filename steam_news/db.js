@@ -1,8 +1,10 @@
-"use strict";
 
-const { STEAM_APPID } = require("./api");
+import { STEAM_APPID } from "./api.js";
+import SQLite3 from "better-sqlite3";
+import dirname from "../__dirname.js";
 
-const db = module.exports = exports = new require("better-sqlite3")(__dirname+"/watchers.db");
+const db = new SQLite3(dirname(import.meta.url) + "/watchers.db");
+export default db;
 db.pragma("journal_mode = WAL");
 
 const DB_VERSION = 5;
@@ -111,7 +113,7 @@ const getAllCC = db.prepare("SELECT id, cc FROM Guilds");
 const setCC = db.prepare("INSERT INTO Guilds (id, cc) VALUES ($id, $cc)");
 const updateCC = db.prepare("UPDATE Guilds SET cc = $cc WHERE id = $id");
 
-const stmts = exports.stmts = {
+export const stmts = {
 	getStats: db.prepare(`SELECT
 		(SELECT COUNT('*') FROM Watchers) AS "watchers",
 		(SELECT COUNT(DISTINCT appid) FROM Watchers) AS "watchedApps",
@@ -143,7 +145,7 @@ const stmts = exports.stmts = {
 	watchSteam: { run: (params) =>
 		updateSteamWatch.run(params).changes
 		|| setSteamWatch.run(params).changes },
-	isWatchingSteam: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
+	getSteamWatcher: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
 	unwatchSteam: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
 	getSteamWatchers: db.prepare("SELECT channelId, roleId FROM SteamWatchers"),
 

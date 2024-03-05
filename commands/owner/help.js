@@ -1,11 +1,20 @@
-"use strict";
 
-exports.description = "Explains every admin command";
+import { readdirSync } from "node:fs";
+import __dirname from "../../__dirname.js";
 
-const fields = require("node:fs").readdirSync(__dirname).map(f => f.substring(0, f.length-3))
-	.map(cmd => {
-		const {description} = require("./"+cmd);
-		return {name: cmd, value: description};
-	});
+export const description = "Explains every admin command";
 
-exports.run = inter => inter.reply({ephemeral: true, embeds: [{ fields }]});
+const fields = await Promise.all(readdirSync(__dirname(import.meta.url))
+	.filter(f => f[0] !== "~" && f.endsWith(".js"))
+	.map(async file => {
+		if(file === "help.js")
+			return { name: "help", value: description };
+		else
+		{
+			const { description } = await import(`./${file}`);
+			return { name: file.slice(0, -3), value: description };
+		}
+	})
+);
+
+export const run = inter => inter.reply({ephemeral: true, embeds: [{ fields }]});

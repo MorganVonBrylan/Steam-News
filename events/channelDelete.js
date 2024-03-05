@@ -1,3 +1,2 @@
-"use strict";
 
-module.exports = exports = require("../steam_news/watchers").purgeChannel;
+export { purgeChannel as default } from "../steam_news/watchers.js";

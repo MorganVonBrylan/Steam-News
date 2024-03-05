@@ -1,23 +1,22 @@
-"use strict";
 
-const { STEAM_APPID } = require("../steam_news/api");
-const interpretAppidOption = require("../interpretAppidOption.function");
+import { STEAM_APPID } from "../steam_news/api.js";
+import interpretAppidOption from "../interpretAppidOption.function.js";
 
-const { WATCH_LIMIT, WATCH_VOTE_BONUS } = require("../steam_news/limits");
+import importJSON from "../importJSON.function.js";
+const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
-const { voted } = require("../steam_news/VIPs");
-const { voteURL } = require("../dbl");
+import { voted } from "../steam_news/VIPs.js";
+import { voteURL } from "../dbl.js";
+import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js";
 
-const { watch, unwatch, getAppInfo, purgeApp } = require("../steam_news/watchers");
-const {
-	PermissionFlagsBits: { SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS },
-} = require("discord.js");
+import { PermissionFlagsBits } from "discord.js";
+const { SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS } = PermissionFlagsBits;
 
-const updateUnwatch = require("@brylan/djs-commands").guildCommands.updateCmd.bind(null, require("./#guild/unwatch"));
+import { guildCommands } from "@brylan/djs-commands";
+const updateUnwatch = guildCommands.updateCmd.bind(null, "unwatch");
 
-exports.defaultMemberPermissions = "0";
-exports.autocomplete = require("../autocomplete/search").appsOnly;
-exports.options = [{
+export const defaultMemberPermissions = "0";
+export const options = [{
 	type: STRING, name: "type", required: true,
 	description: "Whether to watch news or price changes",
 	choices: [{name: "News", value: "news"}, {name: "Price", value: "price"}],
@@ -33,7 +32,9 @@ exports.options = [{
 	channelTypes: ALL_TEXT_CHANNEL_TYPES,
 	description: "The channel where to send the news (defaults to current channel if not provided)"
 }];
-exports.run = async inter => {
+export { appsOnly as autocomplete } from "../autocomplete/search.js";
+export async function run(inter)
+{
 	const channel = inter.options.getChannel("channel") || inter.channel;
 	const perms = channel.permissionsFor(await inter.guild.members.fetchMe());
 	const t = tr.set(inter.locale, "watch");

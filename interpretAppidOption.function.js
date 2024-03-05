@@ -1,8 +1,8 @@
-"use strict";
 
-const { search } = require("./steam_news/api");
+import { search } from "./steam_news/api.js";
 
-module.exports = exports = async function interpretAppid(inter, ephemeral = false, optionName = "game")
+export default interpretAppid;
+export async function interpretAppid(inter, ephemeral = false, optionName = "game")
 {
 	const defer = inter.deferReply({ ephemeral });
 	defer.catch(error);

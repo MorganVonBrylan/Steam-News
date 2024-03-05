@@ -1,6 +1,5 @@
-"use strict";
 
-module.exports = exports = function applyTranslations(cmdName, cmd)
+export default function applyTranslations(cmdName, cmd)
 {
 	const {FALLBACK, locales} = this;
 	for(const [locale, {commands}] of Object.entries(locales))

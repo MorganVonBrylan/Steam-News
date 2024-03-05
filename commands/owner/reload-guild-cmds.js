@@ -1,13 +1,14 @@
-"use strict";
 
-const { commands, updateCmd } = require("@brylan/djs-commands").guildCommands;
+import { guildCommands } from "@brylan/djs-commands";
+const { commands, updateCmd } = guildCommands;
 
-exports.description = "Reload guild commands of a guild";
-exports.options = [{
+export const description = "Reload guild commands of a guild";
+export const options = [{
 	type: STRING, name: "guild",
 	description: "The guild id. If not provided the current guild will be reloaded.",
 }];
-exports.run = async inter => {
+export async function run(inter)
+{
 	const guild = inter.client.guilds.cache.get(inter.options.getString("guild")) || inter.guild;
 	if(!guild)
 		return inter.reply({ephemeral: true, content: "Guild not found"});

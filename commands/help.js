@@ -1,17 +1,20 @@
-"use strict";
 
-const { WATCH_LIMIT, WATCH_VOTE_BONUS } = require("../steam_news/limits");
-const { donate: DONATE_LINK, supportServer: SUPPORT_SERVER = "*(no support server invite set)*" } = require("../bot").auth;
-const {repository: {url: repository}, version, author} = require("../package.json");
-const { voteURL } = require("../dbl");
+import importJSON from "../importJSON.function.js";
+const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
+import { auth, myself, master } from "../bot.js";
+const {
+	donate: DONATE_LINK,
+	supportServer: SUPPORT_SERVER = "*(no support server invite set)*",
+} = auth;
+const { repository: { url: repository }, version, author } = importJSON("package.json");
+import { voteURL } from "../dbl.js";
 
 const preparedEmbeds = new Set();
 
-exports.dmPermission = true;
-exports.run = inter => {
-	const {myself, master} = require("../bot");
+export const dmPermission = true;
+export function run(inter)
+{
 	const {locale} = inter;
-
 	const embed = tr.get(locale, "help");
 	embed.thumbnail = { url: myself.avatarURL() };
 	embed.footer.icon_url = master.avatarURL({dynamic: true});

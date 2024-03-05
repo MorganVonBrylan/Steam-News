@@ -1,6 +1,7 @@
-"use strict";
 
-console.log(count(require("./en.json")), "strings");
+import importJSON from "../importJSON.function.js";
+import __dirname from "../__dirname.js";
+console.log(count(importJSON(__dirname(import.meta.url)+"/en.json")), "strings");
 
 function count(group)
 {

@@ -1,3 +1,2 @@
-"use strict";
 
-module.exports = exports = require("../steam_news/watchers").purgeGuild;
+export { purgeGuild as default } from "../steam_news/watchers.js";

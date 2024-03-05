@@ -1,15 +1,15 @@
-"use strict";
 
-const { search, steamAppLink } = require("../steam_news/api");
+import { search, steamAppLink } from "../steam_news/api.js";
 
-exports.dmPermission = true;
-exports.autocomplete = require("../autocomplete/search");
-exports.options = [{
+export const dmPermission = true;
+export const options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
 }];
-exports.run = async inter => {
+export { default as autocomplete } from "../autocomplete/search.js";
+export async function run(inter)
+{
 	let appid = inter.options.getString("game");
 
 	if(!isFinite(appid))

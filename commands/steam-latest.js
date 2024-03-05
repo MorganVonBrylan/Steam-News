@@ -1,12 +1,12 @@
-"use strict";
 
-const { querySteam, STEAM_ICON } = require("../steam_news/api");
-const toEmbed = require("../steam_news/toEmbed.function");
+import { querySteam, STEAM_ICON } from "../steam_news/api.js";
+import toEmbed from "../steam_news/toEmbed.function.js";
 
-const { PermissionFlagsBits: { SendMessages: SEND_MESSAGES } } = require("discord.js");
+import { PermissionFlagsBits } from "discord.js";
+const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
 
-exports.dmPermission = true;
-exports.run = async inter => {
+export const dmPermission = true;
+export async function run(inter) {
 	const defer = inter.deferReply().catch(error);
 	const {appnews} = await querySteam(1);
 	await defer;
@@ -15,7 +15,12 @@ exports.run = async inter => {
 	news.footer.iconUrl = STEAM_ICON;
 	const reply = inter.editReply({ embeds: [news] });
 
-	if(news.yt &&
-		(!inter.guild || inter.channel?.permissionsFor(await inter.guild.members.fetchMe())?.has(SEND_MESSAGES)))
+	if(news.yt && await canSendMessage(inter))
 		reply.then(() => inter.channel.send(news.yt));
+}
+
+async function canSendMessage({guild, channel})
+{
+	return !guild
+		|| channel?.permissionsFor(await guild.members.fetchMe())?.has(SEND_MESSAGES);
 }
