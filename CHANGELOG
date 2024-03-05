@@ -122,3 +122,8 @@ Trying to watch an already-watched app now updates the watcher instead of failin
 
 	2.8.5 (05/02/2023)
 	fix: allowing NSFW in threads of NSFW channels
+
+
+2.9 (05/03/2023)
+Dropped node-fetch in favor of a NodeJS ≥18 requirement
+Switched to ES6 modules
