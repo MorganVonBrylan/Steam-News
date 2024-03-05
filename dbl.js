@@ -44,9 +44,8 @@ export default function setupTopgg(client, token, webhook)
 	function launchWebhook()
 	{
 		webhookServer?.close();
-		const { listener } = new Webhook(webhook.password);
-
-		const handleRequest = listener(vote => {
+		const topggWebhook = new Webhook(webhook.password);
+		const handleRequest = topggWebhook.listener(vote => {
 			if(vote)
 				addVoter(vote.user, vote.query?.lang, vote.type === "test");
 		})
