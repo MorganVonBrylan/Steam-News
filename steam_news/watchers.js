@@ -235,7 +235,7 @@ export async function checkPrices()
 			continue;
 
 		stmts.updateLastPrice({appid, lastPrice: final});
-		if(true || lastKnownPrice === null || final < watchedPrices[appid] || discount_percent)
+		if(lastKnownPrice === null || final < watchedPrices[appid] || discount_percent)
 			appsWithUpdatedPrices.push(appid);
 	}
 
