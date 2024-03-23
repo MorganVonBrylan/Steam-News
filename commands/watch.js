@@ -35,7 +35,8 @@ export const options = [{
 export { appsOnly as autocomplete } from "../autocomplete/search.js";
 export async function run(inter)
 {
-	const channel = inter.options.getChannel("channel") || inter.channel;
+	const channel = inter.options.getChannel("channel")
+		|| await inter.guild.channels.fetch(inter.channelId);
 	const perms = channel.permissionsFor(await inter.guild.members.fetchMe());
 	const t = tr.set(inter.locale, "watch");
 
