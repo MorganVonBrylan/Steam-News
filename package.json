@@ -29,7 +29,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@brylan/djs-commands": "^3.0.8",
+    "@brylan/djs-commands": "^3.0.9",
     "@top-gg/sdk": "^3.1.3",
     "better-sqlite3": "^8.4.0",
     "bufferutil": "^4.0.6",
