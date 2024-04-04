@@ -139,8 +139,7 @@ export async function queryPrices(appids, cc = "US")
 	if(appids instanceof Array)
 		appids = appids.join(",");
 
-	const res = await fetch(`${BASE_PRICE_URL}${appids}&cc=${cc}`);
-	const data = await res.json();
+	const data = await fetch(`${BASE_PRICE_URL}${appids}&cc=${cc}`).then(handleQuery);
 	for(const appid in data)
 		data[appid] = data[appid].data?.price_overview;
 	return data;
@@ -159,8 +158,8 @@ export async function getDetails(appid, lang = "en", cc = "US")
 		headers: {
 			"Accept-Language": lang === "en" ? "en" : `${lang}, en`,
 		},
-	});
-	const { [appid]: details } = await res.json();
+	}).then(handleQuery);
+	const { [appid]: details } = res;
 	return details.success ? details.data : null;
 }
 
