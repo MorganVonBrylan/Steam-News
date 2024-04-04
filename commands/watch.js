@@ -8,6 +8,7 @@ const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
 import { voted } from "../steam_news/VIPs.js";
 import { voteURL } from "../dbl.js";
 import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js";
+import { HTTPError } from "../steam_news/api.js";
 
 import { PermissionFlagsBits } from "discord.js";
 const { SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS } = PermissionFlagsBits;
@@ -102,13 +103,21 @@ export async function run(inter)
 		inter.editReply(reply);
 	}, async err => {
 		await defer;
-		if(err.message.includes("appid"))
+		if(err instanceof TypeError && err.message.includes("appid"))
 			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "bad-appid")});
 		else if(err instanceof RangeError)
 			inter.editReply({ephemeral: true, content: LIMIT === LIMIT_WITH_VOTE
 				? t("error-limit-reached-voted", LIMIT)
 				: t("error-limit-reached", LIMIT, WATCH_VOTE_BONUS, voteURL(inter.locale))
 			});
+		else if(err instanceof HTTPError)
+		{
+			const { code } = err;
+			inter.editReply({
+				ephemeral: true,
+				content: tr.get(inter.locale, code === 403 ? "api-403" : "api-err", code),
+			});
+		}
 		else
 		{
 			error(err);

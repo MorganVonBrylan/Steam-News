@@ -1,5 +1,5 @@
 
-import { getDetails, isNSFW, steamAppLink } from "../steam_news/api.js";
+import { getDetails, isNSFW, steamAppLink, HTTPError } from "../steam_news/api.js";
 import interpretAppidOption from "../interpretAppidOption.function.js";
 import { stmts } from "../steam_news/db.js";
 const { getCC } = stmts;
@@ -79,7 +79,24 @@ export async function run(inter)
 			],
 			image: { url: header_image },
 		}] });
-	}).catch(err => console.error(`appid: ${appid}`, err));
+	}, async err => {
+		await defer;
+		if(err instanceof TypeError && err.message.includes("appid"))
+			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "bad-appid")});
+		else if(err instanceof HTTPError)
+		{
+			const { code } = err;
+			inter.editReply({
+				ephemeral: true,
+				content: tr.get(inter.locale, code === 403 ? "api-403" : "api-err", code),
+			});
+		}
+		else
+		{
+			error(err);
+			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "error")});
+		}
+	});
 }
 
 

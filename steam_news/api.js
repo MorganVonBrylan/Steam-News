@@ -13,6 +13,12 @@ const STEAM_NEWS_URL = `${BASE_URL}?appid=${STEAM_APPID}`;
 export const STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/593110/403da5dab6ce5ea2882dc5b7636d7c4dbb73c81a.jpg";
 
 
+export class HTTPError extends Error {
+	constructor(code) {
+		super(`Query ended with code ${code}`);
+		this.code = code;
+	}
+}
 
 function handleQuery(res, retry = true)
 {
@@ -30,10 +36,13 @@ function handleQuery(res, retry = true)
 					responseBody: body,
 				}));
 			});
+		
 		return fetch(url).then(res => handleQuery(res, false));
 	}
+	else if(res.ok)
+		throw new Error("Query did not return JSON");
 	else
-		throw new Error(res.ok ? "Query did not return JSON" : `Query ended with code ${status}`);
+		throw new HTTPError(status);
 }
 
 

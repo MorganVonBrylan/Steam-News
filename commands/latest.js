@@ -1,5 +1,5 @@
 
-import { query, getDetails, isNSFW } from "../steam_news/api.js";
+import { query, getDetails, isNSFW, HTTPError } from "../steam_news/api.js";
 import interpretAppidOption from "../interpretAppidOption.function.js";
 import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
@@ -26,12 +26,14 @@ export async function run(inter)
 	try	{
 		info = await query(appid, 1);
 	}
-	catch(e) {
+	catch(err) {
 		await defer;
-		return inter.editReply(e.message.includes("403")
-			? "This app does not exist or is private."
+		inter.editReply(err instanceof HTTPError
+			? (err.code === 403 ? t("api-403") : t("api-err", err.code))
 			: "Error while fetching data from the Steam API. Please retry later.");
+		return;
 	}
+
 	const { appnews } = info;
 	await defer;
 	if(!appnews)

@@ -150,6 +150,8 @@
 
 	"error": "An error occurred.",
 	"api-failed": "Connection to the Steam API failed; please try again in a few minutes.",
+	"api-403": "Access to this game was denied (error 403).",
+	"api-err": "Fetching data failed (error %s).",
 	"no-match": "No game matching \"%s\" found.",
 	"bad-appid": "The id you provided does not belong to any Steam app.",
 	"no-DLC-news": "DLCs do not have a news feed.",

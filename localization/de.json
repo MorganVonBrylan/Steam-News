@@ -150,6 +150,8 @@
 
 	"error": "Ein Fehler ist aufgetreten.",
 	"api-failed": "Die Verbindung zur Steam API ist fehlgeschlagen. Bitte versuchen Sie es in einigen Minuten erneut.",
+	"api-403": "Zugriff auf dieses Spiel wurde verweigert (Fehler 403).",
+	"api-err": "Datenabruf ist fehlgeschlagen (Fehler %s).",
 	"no-match": "Kein Spiel gefunden, das zu \"%s\" passt.",
 	"bad-appid": "Die angegebene ID gehört nicht zu einer Steam-App.",
 	"no-DLC-news": "DLCs haben keine Nachrichten.",
