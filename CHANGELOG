@@ -127,3 +127,6 @@ Trying to watch an already-watched app now updates the watcher instead of failin
 2.9 (05/03/2023)
 Dropped node-fetch in favor of a NodeJS ≥18 requirement
 Switched to ES6 modules
+
+	2.9.1 (04/04/2023)
+	Better API error feedback
