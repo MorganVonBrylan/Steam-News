@@ -112,7 +112,7 @@ export async function querySteam(count, maxlength)
 export async function getEventId(newsItem)
 {
 	const redirect = (await fetch(newsItem.url, {method: "HEAD"})).url;
-	return newsItem.eventId = redirect.substring(redirect.lastIndexOf("/") + 1);;
+	return newsItem.eventId = redirect.substring(redirect.lastIndexOf("/") + 1);
 }
 
 

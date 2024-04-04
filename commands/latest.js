@@ -30,7 +30,7 @@ export async function run(inter)
 		await defer;
 		return inter.editReply(e.message.includes("403")
 			? "This app does not exist or is private."
-			: "Error while fetching data from the Steam API. Please retry later.");;
+			: "Error while fetching data from the Steam API. Please retry later.");
 	}
 	const { appnews } = info;
 	await defer;
