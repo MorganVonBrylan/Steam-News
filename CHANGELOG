@@ -120,15 +120,15 @@ Trying to watch an already-watched app now updates the watcher instead of failin
 	2.8.4 (01/13/2024)
 	fix: crash with /latest when querying a non-existing or private app
 
-	2.8.5 (05/02/2023)
+	2.8.5 (05/02/2024)
 	fix: allowing NSFW in threads of NSFW channels
 
 
-2.9 (05/03/2023)
+2.9 (05/03/2024)
 Dropped node-fetch in favor of a NodeJS ≥18 requirement
 Switched to ES6 modules
 
-	2.9.1 (04/04/2023)
+	2.9.1 (04/04/2024)
 	Better API error feedback
 
 	2.9.2 (23/04/2024)
