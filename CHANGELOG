@@ -130,3 +130,6 @@ Switched to ES6 modules
 
 	2.9.1 (04/04/2023)
 	Better API error feedback
+
+	2.9.2 (23/04/2024)
+	Fixes a few master-related issues.
