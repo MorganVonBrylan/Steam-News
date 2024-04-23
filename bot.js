@@ -29,10 +29,18 @@ export var master;
 export var myself;
 
 import error from "./error.js";
-export function sendToMaster(msg, onError = error)
+export async function sendToMaster(msg, onError = error)
 {
-	return master?.send(msg).catch(onError)
-		|| client.once("ready", async () => (await client.users.fetch(auth.master)).send(msg).catch(onError));
+	if(!client.readyAt)
+		client.once("ready", () => client.users.fetch(auth.master)
+		.then(master => master.send(msg))
+		.catch(onError));
+	else
+	{
+		if(!master)
+			master = await client.users.fetch(auth.master);
+		master.send(msg).catch(onError);
+	}
 }
 
 
