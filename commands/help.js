@@ -17,7 +17,7 @@ export function run(inter)
 	const {locale} = inter;
 	const embed = tr.get(locale, "help");
 	embed.thumbnail = { url: myself.avatarURL() };
-	embed.footer.icon_url = master.avatarURL({dynamic: true});
+	embed.footer.icon_url = master?.avatarURL({dynamic: true});
 
 	if(!preparedEmbeds.has(locale))
 	{
