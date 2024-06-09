@@ -23,10 +23,12 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 	"token": "your bot's authentication token",
  	"master": "your user id",
 	"adminServer": "the id of the server where the admin commands will be available, for you",
-	"dblToken": "(optional) your bot's Top.gg token",
-	"dblWebhook": {
-		"port": 5050,
-		"password": "your password here"
+	"topGG": {
+		"token": "(optional) your bot's Top.gg token",
+		"webhook": {
+			"port": 5050,
+			"password": "your password here"
+		}
 	},
 	"debug": false,
 

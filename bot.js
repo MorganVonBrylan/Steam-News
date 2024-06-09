@@ -61,8 +61,8 @@ client.once("ready", () => {
 		middleware: tr.applyTranslations,
 	}).then((cmds) => console.log(cmds.size, "commands loaded"));
 
-	if(auth.dblToken)
-		import("./dbl.js").then(({setupTopgg}) => setupTopgg(client, auth.dblToken, auth.dblWebhook));
+	if(auth.topGG)
+		import("./topGG.js").then(({setup}) => setup(client, auth.topGG));
 
 	const guildCountCheck = setInterval(() => {
 		const nGuilds = client.guilds.cache.size;

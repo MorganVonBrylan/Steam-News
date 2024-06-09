@@ -7,7 +7,7 @@ const {
 	supportServer: SUPPORT_SERVER = "*(no support server invite set)*",
 } = auth;
 const { repository: { url: repository }, version, author } = importJSON("package.json");
-import { voteURL } from "../dbl.js";
+import { voteURL } from "../topGG.js";
 
 const preparedEmbeds = new Set();
 

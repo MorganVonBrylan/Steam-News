@@ -12,21 +12,18 @@ const topggLanguages = ["fr", "de", "hi", "tr"];
 
 export const voteURL = locale => voteURLs[locale] || voteURLs.default;
 
-export default function setupTopgg(client, token, webhook)
+export function setup(client, {token, webhook})
 {
 	process.on("uncaughtException", error);
 	let webhookServer;
 
-	if(token)
-	{
-		const autoPoster = new DJSPoster(token, client);
-		autoPoster.on("error", error);
+	const autoPoster = new DJSPoster(token, client);
+	autoPoster.on("error", error);
 
-		const {id} = client.user;
-		voteURLs.default = `https://top.gg/bot/${id}/vote`;
-		for(const lang of topggLanguages.concat(tr.locales))
-			voteURLs[lang] = `https://top.gg/${topggLanguages.includes(lang) ? `${lang}/` : ""}bot/${id}/vote?lang=${lang}`;
-	}
+	const {id} = client.user;
+	voteURLs.default = `https://top.gg/bot/${id}/vote`;
+	for(const lang of topggLanguages.concat(tr.locales))
+		voteURLs[lang] = `https://top.gg/${topggLanguages.includes(lang) ? `${lang}/` : ""}bot/${id}/vote?lang=${lang}`;
 
 	const port = webhook?.port || process.env.SERVER_PORT;
 
