@@ -1,11 +1,11 @@
 
 import { Client, GatewayIntentBits, Partials, ThreadChannel } from "discord.js";
 import { readdirSync } from "node:fs";
-import setupTopgg from "./dbl.js";
 import tr from "./localization/index.js";
 
 import importJSON from "./importJSON.function.js";
 export const auth = importJSON("auth.json");
+
 
 import initCommands from "@brylan/djs-commands";
 
@@ -62,7 +62,7 @@ client.once("ready", () => {
 	}).then((cmds) => console.log(cmds.size, "commands loaded"));
 
 	if(auth.dblToken)
-		setupTopgg(client, auth.dblToken, auth.dblWebhook);
+		import("./dbl.js").then(({setupTopgg}) => setupTopgg(client, auth.dblToken, auth.dblWebhook));
 
 	const guildCountCheck = setInterval(() => {
 		const nGuilds = client.guilds.cache.size;
