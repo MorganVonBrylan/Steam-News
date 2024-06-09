@@ -18,10 +18,15 @@ export function run(inter) {
 	if(steamWatch)
 		embeds.push({ description: t("steam-watched", `<#${steamWatch}>`) });
 
-	inter.reply(embeds.length
-		? { ephemeral: true, embeds }
-		: { ephemeral: true, content: t("none") }
-	);
+	if(!embeds.length)
+		inter.reply({ ephemeral: true, content: t("none") });
+	else
+	{
+		inter.reply({ ephemeral: true, embeds: embeds.slice(0, 10) }).then(() => {
+			for(let i = 10 ; i < embeds.length ; i += 10)
+				inter.followUp({ ephemeral: true, embeds: embeds.slice(i, i+10) });
+		});
+	}
 }
 
 

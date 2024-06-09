@@ -1,5 +1,5 @@
 
-import { client } from "../bot.js";
+import { client, auth, sendToMaster } from "../bot.js";
 
 import { stmts } from "./db.js";
 const { getLastVote, insertLastVote, updateLastVote, getRecentVoters } = stmts;
@@ -38,4 +38,66 @@ export function addVoter(id, lang, forceNotif = false)
 		updateLastVote({id, date});
 	else
 		insertLastVote({id, date});
+}
+
+
+const { premium } = auth;
+
+export const premiumSKU = premium?.sku;
+export const bonus = premium?.bonus || 0;
+
+if(premiumSKU)
+{
+	/* Doing subscriber role properly requires GUILD_MEMBERS, and I'm not even sure I can get the user id properly
+	let supportServer, subRole;
+	client.once("ready", async () => {
+		supportServer = await client.guilds.fetch(premium.supportServer);
+		subRole = supportServer.roles.fetch(premium.premiumRole);
+	});
+	*/
+
+	client.on("entitlementCreate", async ent => {
+		if(ent.skuId === premiumSKU)
+		{
+			const guild = await client.guilds.fetch(ent.guildId);
+			sendToMaster(`New sub! Guild: ${guild} (${ent.guildId}), owner: ${guild.ownerId}, user: ${ent.userId}`);
+		}
+		else
+		{
+			const {userId: id} = ent;
+			sendToMaster(`New supporter! <@${id}> (${ent.userId})`);
+		}
+	});
+
+	client.on("entitlementUpdate", async (_, ent) => {
+		if(ent.isActive())
+			return;
+
+		if(ent.skuId === premiumSKU)
+		{
+			const guild = await client.guilds.fetch(ent.guildId);
+			sendToMaster(`Sub ended. Guild: ${guild} (${ent.guildId}), user: ${ent.userId}`);
+		}
+		else
+		{
+			const {userId: id} = ent;
+			sendToMaster(`Supporter lost: <@${id}> (${ent.userId})`);
+		}
+	});
+	
+
+	client.on("entitlementDelete", async ent => {
+		if(ent.skuId === premiumSKU)
+		{
+			const guild = await client.guilds.fetch(ent.guildId);
+			sendToMaster(`Sub cancelled. Guild: ${guild} (${ent.guildId}), user: ${ent.userId}`);
+		}
+		else
+		{
+			const {userId: id} = ent;
+			sendToMaster(`Supporter cancelled: <@${id}> (${ent.userId})`);
+		}
+	});
+
+	//client.on("guildMemberAdd", member => {});
 }

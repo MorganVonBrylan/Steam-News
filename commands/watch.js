@@ -5,8 +5,8 @@ import interpretAppidOption from "../interpretAppidOption.function.js";
 import importJSON from "../importJSON.function.js";
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
-import { voted } from "../steam_news/VIPs.js";
-import { voteURL } from "../dbl.js";
+import { voted, premiumSKU, bonus as PREMIUM_BONUS } from "../steam_news/VIPs.js";
+import { voteURL } from "../topGG.js";
 import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js";
 import { HTTPError } from "../steam_news/api.js";
 
@@ -52,7 +52,8 @@ export async function run(inter)
 	else if(+appid === STEAM_APPID)
 		return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}));
 
-	const LIMIT = voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT;
+	const LIMIT = (voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT)
+		+ (inter.entitlements.find(({skuId}) => skuId === premiumSKU) ? PREMIUM_BONUS : 0);
 	const role = inter.options.getRole("role")?.id;
 	const type = inter.options.getString("type");
 	const watchPrice = type === "price";
