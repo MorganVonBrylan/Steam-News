@@ -88,7 +88,7 @@ export const getWatchedPrices = stmts.getWatchedPrices;
 
 
 setInterval(checkForNews, CHECK_INTERVAL);
-setInterval(checkPrices, CHECK_INTERVAL * 3);
+setTimeout(() => setInterval(checkPrices, CHECK_INTERVAL), CHECK_INTERVAL / 2);
 
 import toEmbed, { price as toPriceEmbed } from "./toEmbed.function.js";
 const openInApps = tr.getAll("info.openInApp");
