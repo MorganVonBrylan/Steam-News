@@ -18,7 +18,8 @@ export function error(err)
 	if(err?.message)
 	{
 		const {message} = err;
-		const status = err.httpStatus || err.response?.status || err.response?.statusCode;
+		const status = err.httpStatus || err.response?.status
+					 || err.response?.statusCode || err.code;
 		const code = err.code || err.cause?.code;
 		if(message === "read ECONNRESET"
 			|| status === 403 || status === 404 || status === 408 || status >= 500
