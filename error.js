@@ -12,6 +12,8 @@ export function error(err)
 {
 	if(err instanceof SyntaxError) // from an import probably
 		throw err;
+	if(err instanceof DOMException) // Discord.js failing some random call
+		return;
 	
 	let msg = "An error occurred; read the console for details.";
 
