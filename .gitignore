@@ -7,4 +7,4 @@ TODO.txt
 
 steam_news/watchers.json
 steam_news/watchers.db*
-steam_news/backups
+steam_news/*backup*
