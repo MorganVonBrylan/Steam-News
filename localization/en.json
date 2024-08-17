@@ -204,12 +204,15 @@
 		"price-free": "This game is free!",
 		"price-unknown": "Error: could not find price for this game.",
 
-		"server-limit-reached": "Warning: you reached your %s games per server limit.\nVote for me on Top.gg to watch up to %s more: %s",
-		"server-limit-reached-voted": "Warning: you reached your %s games per server limit.",
 		"error-retrieving-details": "However, an error occurred while trying to get the app’s details. It may be called “undefined” for a while.",
 
-		"error-limit-reached": "You reached or exceeded the base limit of %s watchers per server.\nVote for me on Top.gg to watch up to %s more: %s",
-		"error-limit-reached-voted": "Sorry, you reached the limit of %s watchers per server.",
+		"server-limit-reached": "Warning: you reached your ${LIMIT} games per server limit.\nVote for me on [Top.gg](${vote}) or buy **premium** to watch up to ${MAX_BONUS} more.",
+		"server-limit-reached-voted": "Warning: you reached your %s games per server limit. Buy **premium** to increase it.",
+		"server-max-reached": "Warning: you reached the limit of %s games per server.",
+
+		"error-limit-reached": "You reached or exceeded the base limit of ${LIMIT} watchers per server.\nVote for me on [Top.gg](${vote}) or buy **premium** to watch up to ${MAX_BONUS} more.",
+		"error-limit-reached-voted": "Sorry, you reached your limit of %s watchers per server. Buy **premium** to increase it.",
+		"error-max-reached": "Sorry, you reached the limit of %s watchers per server.",
 
 		"confirm-price": "%s’s price updates will now be sent into %s.",
 		"confirm-news": "%s’s news will now be sent into %s.",

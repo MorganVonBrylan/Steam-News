@@ -6,7 +6,9 @@ import importJSON from "../importJSON.function.js";
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
 import { voted, premiumSKU, bonus as PREMIUM_BONUS } from "../steam_news/VIPs.js";
+const MAX_LIMIT = LIMIT_WITH_VOTE + PREMIUM_BONUS;
 import { voteURL } from "../topGG.js";
+
 import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js";
 import { HTTPError } from "../steam_news/api.js";
 
@@ -15,6 +17,7 @@ const { SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS } = PermissionFlags
 
 import { guildCommands } from "@brylan/djs-commands";
 const updateUnwatch = guildCommands.updateCmd.bind(null, "unwatch");
+
 
 export const defaultMemberPermissions = "0";
 export const options = [{
@@ -58,6 +61,9 @@ export async function run(inter)
 	const type = inter.options.getString("type");
 	const watchPrice = type === "price";
 
+	const MAX_BONUS = WATCH_VOTE_BONUS + PREMIUM_BONUS;
+	const errorReplaces = { LIMIT, MAX_BONUS, vote: voteURL(inter.locale) };
+
 	watch(+appid, channel, role, watchPrice, LIMIT).then(async success => {
 		await defer;
 		const details = getAppInfo(appid);
@@ -95,10 +101,12 @@ export async function run(inter)
 		if(details.name === "undefined")
 			reply += `\n${t("error-retrieving-details")}`;
 
-		if(success === LIMIT)
+		if(success === MAX_LIMIT)
+			reply += `\n${t("server-max-reached", MAX_LIMIT)}`
+		else if(success === LIMIT)
 			reply += LIMIT === LIMIT_WITH_VOTE
 				? `\n${t("server-limit-reached-voted", LIMIT)}`
-				: `\n${t("server-limit-reached", LIMIT, WATCH_VOTE_BONUS, voteURL(inter.locale))}`;
+				: `\n${t("server-limit-reached", errorReplaces)}`;
 
 		updateUnwatch(inter.guild);
 		inter.editReply(reply);
@@ -107,10 +115,13 @@ export async function run(inter)
 		if(err instanceof TypeError && err.message.includes("appid"))
 			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "bad-appid")});
 		else if(err instanceof RangeError)
-			inter.editReply({ephemeral: true, content: LIMIT === LIMIT_WITH_VOTE
-				? t("error-limit-reached-voted", LIMIT)
-				: t("error-limit-reached", LIMIT, WATCH_VOTE_BONUS, voteURL(inter.locale))
+		{
+			inter.editReply({ ephemeral: true, content:
+				LIMIT === MAX_LIMIT ? t("error-limit-reached", MAX_LIMIT)
+				: LIMIT === LIMIT_WITH_VOTE ? t("error-limit-reached-voted", LIMIT)
+				: t("error-limit-reached", errorReplaces)
 			});
+		}
 		else if(err instanceof HTTPError)
 		{
 			const { code } = err;

@@ -204,12 +204,15 @@
 		"price-free": "Dieses Spiel ist kostenlos!",
 		"price-unknown": "Fehler: Konnte keinen Preis für dieses Spiel finden.",
 
-		"server-limit-reached": "Warnung: Du hast dein Limit von %s Spielen pro Server erreicht.\nStimme auf Top.gg für mich ab, um bis zu %s mehr zu beobachten: %s",
-		"server-limit-reached-voted": "Warnung: Du hast dein Limit von %s Spielen pro Server erreicht.",
 		"error-retrieving-details": "Allerdings ist beim Versuch, die Details der App zu bekommen, ein Fehler aufgetreten. Sie könnte eine Weile lang “undefined” heißen.",
 
-		"error-limit-reached": "Entschuldigung, du hast dein Limit von %s Beobachtern pro Server erreicht.\nStimme auf Top.gg für mich ab, um bis zu %s mehr zu beobachten: %s",
-		"error-limit-reached-voted": "Entschuldigung, du hast dein Limit von %s Beobachtern pro Server erreicht.",
+		"server-limit-reached": "Warnung: Du hast deine Grenze von ${LIMIT} Spielen pro Server erreicht.\nStimme für mich auf [Top.gg](${vote}) oder kaufe **Premium**, um bis zu ${MAX_BONUS} weitere zu beobachten.",
+		"server-limit-reached-voted": "Warnung: Du hast deine Grenze von %s Spielen pro Server erreicht. Kaufe **Premium**, um sie zu erhöhen.",
+		"server-max-reached": "Warnung: Du hast die Grenze von %s Spielen pro Server erreicht.",
+
+		"error-limit-reached": "Du hast die Basisgrenze von ${LIMIT} Beobachtern pro Server erreicht oder überschritten.\nStimme für mich auf [Top.gg](${vote}) oder kaufe **Premium**, um bis zu ${MAX_BONUS} weitere zu beobachten.",
+		"error-limit-reached-voted": "Entschuldigung, du hast deine Grenze von %s Beobachtern pro Server erreicht. Kaufe **Premium**, um es zu erhöhen.",
+		"error-max-reached": "Entschuldigung, du hast die Grenze von %s Beobachtern pro Server erreicht.",
 
 		"confirm-price": "Änderungen im Preis von %s werden nun in %s gesendet.",
 		"confirm-news": "Nachrichten zu %s werden nun in %s gesendet.",
