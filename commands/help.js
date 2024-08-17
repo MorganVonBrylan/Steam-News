@@ -8,6 +8,7 @@ const {
 } = auth;
 const { repository: { url: repository }, version, author } = importJSON("package.json");
 import { voteURL } from "../topGG.js";
+import { trReplace } from "../localization/index.js";
 
 const preparedEmbeds = new Set();
 
@@ -21,15 +22,13 @@ export function run(inter)
 
 	if(!preparedEmbeds.has(locale))
 	{
-		embed.footer.text = embed.footer.text.replace("${v}", version).replace("${author}", author);
+		embed.footer.text = trReplace(embed.footer.text, { v: version, author });
 		for(const field of embed.fields)
 		{
-			field.value = field.value
-				.replace("${WATCH_LIMIT}", WATCH_LIMIT)
-				.replace("${WATCH_VOTE_BONUS}", WATCH_VOTE_BONUS)
-				.replace("${SUPPORT_SERVER}", SUPPORT_SERVER)
-				.replace("${repository}", repository)
-				.replace("${VOTE}", voteURL(locale));
+			field.value = trReplace(field.value, {
+				WATCH_LIMIT, WATCH_VOTE_BONUS, VOTE: voteURL(locale),
+				SUPPORT_SERVER, repository, 
+			});
 		}
 
 		if(DONATE_LINK)

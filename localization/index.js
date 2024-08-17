@@ -36,9 +36,22 @@ if(!locales[FALLBACK])
 }
 
 
-function trReplace(str, replaces)
+/**
+ * Replaces elements in a string for dynamic translation purposes.
+ * @example
+ * trReplace("I am %s, I live %s", ["Joe", "here"])
+ * @example
+ * trReplace("I am ${name}, I live ${where}", {name: "Joe", where: "here"})
+ * 
+ * @param {string} str The source string.
+ * @param {Array<string>|object} replaces Either an array of replacements, or a plain object.
+ * @returns {string} the strings with replaced substrings.
+ */
+export function trReplace(str, replaces)
 {
-	return replaces.reduce((str, r) => str.replace("%s", r), str);
+	return replaces instanceof Array
+		? replaces.reduce((str, r) => str.replace("%s", r), str)
+		: Object.entries(replaces).reduce((str, [key, r]) => str.replaceAll(`\${${key}}`, r), str);
 }
 
 
