@@ -1,5 +1,5 @@
 
-import { Client, GatewayIntentBits, Partials, ThreadChannel } from "discord.js";
+import { Client, GatewayIntentBits, Partials, ActivityType, ThreadChannel } from "discord.js";
 import { readdirSync } from "node:fs";
 import tr from "./localization/index.js";
 
@@ -14,6 +14,9 @@ export const client = new Client({
 		GatewayIntentBits.Guilds,
 	],
 	partials: [Partials.Channel], // for DMs
+	presence: { activities: [{
+		type: ActivityType.Listening, name: "/watch",
+	}]},
 	shards: "auto",
 });
 
