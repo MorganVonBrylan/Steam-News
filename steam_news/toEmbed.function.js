@@ -39,18 +39,28 @@ function toMarkdown(contents, limit = 2000)
 	contents = contents
 		.replaceAll(/{STEAM_CLAN_IMAGE}[^\[]+/g, "")
 		.replaceAll(YT_REGEX_G, "")
-		.replaceAll("[/*]", "")
+		
 		.replaceAll(/\[table\].*?\[\/table\]/gs, "##table##")
 		.replaceAll(/\[url=(http[^\]]+)\]([^\[]+)\[\/url\]/g, "$1")
 		.replaceAll(/\[url=(http[^\]]+)\]\[\/url\]/g, "")
+
 		.replaceAll("[hr][/hr]", "——————————")
 		.replaceAll("&nbsp;", " ")
+
 		.replaceAll(/\n+(\[\/[^\]]+\])/g, "$1")
-		.replaceAll(/\[\/?(b|h[0-9])\]/g, "**")
+
+		.replaceAll(/\n?\[h1\]/g, "\n# ")
+		.replaceAll(/\n?\[h2\]/g, "\n## ")
+		.replaceAll(/\n?\[h[3-9]\]/g, "\n### ")
+		.replaceAll(/\[\/h[0-9]\]\n?/g, "\n")
+
+		.replaceAll(/\[\/?b\]/g, "**")
 		.replaceAll(/\[\/?i\]/g, "*")
 		.replaceAll(/\[\/?u\]/g, "__")
 		.replaceAll(/\[\/?s\]/g, "~~")
+
 		.replaceAll(/\[\/?(img|list)\]/g, "")
+		.replaceAll("[/*]", "")
 		.replaceAll(/\n?\[\*\]/g, "\n- ")
 		.replaceAll(/\n{2,}/g, "\n")
 		.replaceAll(/\[\/?[a-z]+\]/g, "")
