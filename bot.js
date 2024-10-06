@@ -1,5 +1,10 @@
 
-import { Client, GatewayIntentBits, Partials, ActivityType, ThreadChannel } from "discord.js";
+import {
+	Client, Options,
+	GatewayIntentBits, Partials,
+	ActivityType,
+	ThreadChannel,
+} from "discord.js";
 import { readdirSync } from "node:fs";
 import tr from "./localization/index.js";
 
@@ -13,7 +18,16 @@ export const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
 	],
-	partials: [Partials.Channel], // for DMs
+	partials: [
+		Partials.Channel, // for DMs
+		Partials.User, Partials.GuildMember, Partials.ThreadMember, // for performance
+	],
+	makeCache: Options.cacheWithLimits({
+		...Options.DefaultMakeCacheSettings,
+		UserManager: 0,
+		GuildMemberManager: 0,
+		ThreadMemberManager: 0,
+	}),
 	presence: { activities: [{
 		type: ActivityType.Listening, name: "/watch",
 	}]},
