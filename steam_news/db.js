@@ -205,3 +205,5 @@ for(const [name, stmt] of Object.entries(stmts))
 	stmts[name] = stmt[stmt.readonly ? (getAll.includes(name) ? "all" : "get") : "run"].bind(stmt);
 
 stmts.updateSteamLatest = latest => stmts.updateLatest(latest, STEAM_APPID);
+
+Object.freeze(stmts);

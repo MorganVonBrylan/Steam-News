@@ -12,7 +12,9 @@ async function canWriteIn(channel) {
 	return channel?.permissionsFor(await channel.guild.members.fetchMe()).has(REQUIRED_PERMS);
 }
 
-import db, { stmts } from "./db.js";
+export * from "./db_api.js";
+import { stmts } from "./db.js";
+import { getAppInfo, purgeChannel, purgeGuild } from "./db_api.js";
 
 import importJSON from "../importJSON.function.js";
 import __dirname from "../__dirname.js";
@@ -26,65 +28,6 @@ client.once("ready", checkPrices);
 
 
 const CHECK_INTERVAL = 3600_000;
-
-
-/**
- * @param {number} appid The app's id
- * @returns {boolean} Whether the app is known by the bot or not.
- */
-export const isKnown = appid => !!stmts.isAppKnown(appid);
-
-/**
- * @param {number} appid The app's id
- * @returns {?object} The app info (name, NSFW status and latest news timestamp), if known.
- */
-export const getAppInfo = stmts.getAppInfo;
-
-/**
- * Stores or updates the given app info.
- * @param {number} appid The app's id.
- * @param {object} details The relevant details (all optional except the name)
- 	* @param {string} details.name The app's name
- 	* @param {boolean} details.nsfw Whether the app is NSFW or not.
-	* @param {string} details.latest That app's latest news' timestamp.
- */
-export function saveAppInfo(appid, details)
-{
-	const fields = ["name", "nsfw", "latest"].filter(field => field in details);
-	details.appid = appid;
-
-	if(stmts.isAppKnown(appid))
-		db.run(`UPDATE Apps SET ${fields.map(f => `${f} = $${f}`).join()} WHERE appid = $appid`, details);
-	else
-	{
-		fields.push("appid");
-		db.run(`INSERT INTO Apps (${fields.join()}) VALUES (${fields.map(f => "$"+f).join()})`, details);
-	}
-};
-
-/**
- * @param {number} appid The app's id
- * @returns {?string} The app's name, if known.
- */
-export const getAppName = stmts.getAppName;
-/**
- * @param {number} appid The app's id
- * @returns {?bool} Whether is app is NSFW, if known.
- */
-const { isAppNSFW } = stmts;
-export { isAppNSFW as isNSFW };
-
-/**
- * @param {string} guildId The guild id
- * @returns {Array} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
- */
-export const getWatchedApps = stmts.getWatchedApps;
-
-/**
- * @param {string} guildId The guild id
- * @returns {Array} The app prices watched in that guild, in the format {appid, name, nsfw, lastPrice, channelId}
- */
-export const getWatchedPrices = stmts.getWatchedPrices;
 
 
 setInterval(checkForNews, CHECK_INTERVAL);
@@ -149,7 +92,7 @@ export async function checkForNews()
 			if(!appnews)
 				return console.error(`Failed to get news for Steam`);
 
-			const { latest } = stmts.getAppInfo(STEAM_APPID);
+			const { latest } = getAppInfo(STEAM_APPID);
 			const news = [];
 			for(const newsitem of appnews.newsitems)
 			{
@@ -178,7 +121,7 @@ export async function checkForNews()
 		if(!appnews)
 			return console.error(`Failed to get news of app ${id}`);
 
-		const { latest } = stmts.getAppInfo(appid);
+		const { latest } = getAppInfo(appid);
 		const news = [];
 		for(const newsitem of appnews.newsitems)
 		{
@@ -268,13 +211,17 @@ export async function checkPrices()
 			const embed = { embeds: [toPriceEmbed(appid, name, price)] };
 			for(const channelId of appsForThisCC.get(appid))
 			{
-				const channel = await channels.fetch(channelId).catch(Function());
-				if(await canWriteIn(channel) && (!nsfw || channel.nsfw))
-					channel.send(embed).catch(Function());
+				await channels.fetch(channelId).then(async channel => {
+					if(await canWriteIn(channel) && (!nsfw || channel.nsfw))
+						return channel.send(embed);
+				})
+				.catch(handleDeletedChannel);
 			}
 		}
 	}
 }
+
+
 
 /**
  * Adds a watcher for an app.
@@ -297,7 +244,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 		throw new TypeError("'appid' is not a valid app id");
 
 	const guildId = channel.guild.id;
-	const watchedApps = stmts[price ? "getWatchedPrices" : "getWatchedApps"](guildId)
+	const watchedApps = (price ? getWatchedPrices : getWatchedApps)(guildId)
 		.map(({ appid }) => appid);
 
 	if(watchedApps.includes(appid))
@@ -356,7 +303,6 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 }
 
 
-
 /**
  * Stops watching the given app in the given guild.
  * @param {number} appid The app's id.
@@ -372,32 +318,8 @@ export function unwatch(appid, guild, price = false)
 	if(!success)
 		return false;
 
-	const remaining = stmts[price ? "getWatchedPrices" : "getWatchedApps"](guildId).length;
+	const remaining = (price ? getWatchedPrices : getWatchedApps)(guildId).length;
 	if(price && !remaining)
 		stmts.updateLastPrice({appid, lastPrice: null});
 	return remaining;
 }
-
-
-/**
- * Removes all watchers of a guild.
- * @param {string} guildId The guild or guild id.
- * @returns {boolean} true if the server was purged, false if there was nothing to purge.
- */
-export const purgeGuild = guildId => !!stmts.purgeGuild(guildId.id || guildId).changes;
-
-/**
- * Removes all watchers of a channel.
- * @param {string} channelId The channel or channel id.
- * @returns {boolean} true if the channel was purged, false if there was nothing to purge.
- */
-export const purgeChannel = channelId => !!stmts.purgeChannel(channelId.id || channelId).changes;
-
-
-/**
- * Removes all watchers of an app.
- * @param {number} appid The app's id.
- * @returns {boolean} true if the app was purged, false if there was nothing to purge.
- */
-export const purgeApp = appid => !!db.run("DELETE FROM Watchers WHERE appid = ?", appid).changes;
-// Not prepared because it is only used in debug mode
