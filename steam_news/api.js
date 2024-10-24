@@ -137,6 +137,7 @@ export async function exists(appid)
 }
 
 
+const BULK_LIMIT = 400;
 /**
  * Queries prices for one or more apps.
  * @param {number|Array<number>} appids The app id(s)
@@ -146,12 +147,23 @@ export async function exists(appid)
 export async function queryPrices(appids, cc = "US")
 {
 	if(appids instanceof Array)
-		appids = appids.join(",");
+	{
+		const groups = [];
+		for(let i = 0 ; i < appids.length ; i += BULK_LIMIT)
+			groups.push(appids.slice(i, i + BULK_LIMIT).join(","));
+		appids = groups;
+	}
+	else
+		appids = [appids];
 
-	const data = await fetch(`${BASE_PRICE_URL}${appids}&cc=${cc}`).then(handleQuery);
-	for(const appid in data)
-		data[appid] = data[appid].data?.price_overview;
-	return data;
+	const prices = {};
+	for(const group of appids)
+	{
+		const data = await fetch(`${BASE_PRICE_URL}${group}&cc=${cc}`).then(handleQuery);
+		for(const appid in data)
+			prices[appid] = data[appid].data?.price_overview;
+	}
+	return prices;
 }
 
 
