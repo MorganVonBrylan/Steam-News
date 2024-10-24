@@ -1,5 +1,5 @@
 
-import dirname from "../__dirname.js";
+import dirname from "../utils/__dirname.js";
 const __dirname = dirname(import.meta.url);
 
 const FALLBACK = "en";
@@ -7,7 +7,7 @@ const locales = {};
 
 export { FALLBACK as fallbackLocale };
 
-import importJSON from "../importJSON.function.js";
+import importJSON from "../utils/importJSON.function.js";
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
 import applyTranslations from "./applyTranslations.function.js";
 

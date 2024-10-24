@@ -1,7 +1,7 @@
 
 import { getAppName } from "./watchers.js";
 import { getEventId, steamAppLink } from "./api.js";
-import importJSON from "../importJSON.function.js";
+import importJSON from "../utils/importJSON.function.js";
 const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
 const YT_REGEX = /\[previewyoutube=([\w-]+)/;
 const YT_REGEX_G = /\[previewyoutube=([\w-]+)(;full)?\]\[\/previewyoutube\]/g;

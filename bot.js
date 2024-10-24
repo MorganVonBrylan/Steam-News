@@ -8,7 +8,7 @@ import {
 import { readdirSync } from "node:fs";
 import tr from "./localization/index.js";
 
-import importJSON from "./importJSON.function.js";
+import importJSON from "./utils/importJSON.function.js";
 export const auth = importJSON("auth.json");
 
 
@@ -45,7 +45,7 @@ if(!Object.hasOwn(ThreadChannel.prototype, "nsfw"))
 export var master;
 export var myself;
 
-import error from "./error.js";
+import error from "./utils/error.js";
 export async function sendToMaster(msg, onError = error)
 {
 	if(!client.readyAt)
@@ -91,7 +91,7 @@ client.once("ready", () => {
 	}, 3600_000);
 });
 
-import __dirname from "./__dirname.js";
+import __dirname from "./utils/__dirname.js";
 for(const file of readdirSync(__dirname(import.meta.url) + "/events"))
 {
 	// synchronous import causes a dependency loop

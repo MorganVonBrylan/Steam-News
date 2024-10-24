@@ -1,6 +1,6 @@
 
 import { readdirSync } from "node:fs";
-import __dirname from "../../__dirname.js";
+import __dirname from "../../utils/__dirname.js";
 
 export const description = "Explains every admin command";
 

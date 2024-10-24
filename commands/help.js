@@ -1,5 +1,5 @@
 
-import importJSON from "../importJSON.function.js";
+import importJSON from "../utils/importJSON.function.js";
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
 import { auth, myself, master } from "../bot.js";
 const {

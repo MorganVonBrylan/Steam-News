@@ -1,7 +1,7 @@
 
 import { STEAM_APPID } from "./api.js";
 import SQLite3 from "better-sqlite3";
-import dirname from "../__dirname.js";
+import dirname from "../utils/__dirname.js";
 
 const db = new SQLite3(dirname(import.meta.url) + "/watchers.db");
 export default db;

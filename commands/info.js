@@ -3,7 +3,7 @@ import { getDetails, isNSFW, steamAppLink, HTTPError } from "../steam_news/api.j
 import interpretAppidOption from "../interpretAppidOption.function.js";
 import { stmts } from "../steam_news/db.js";
 const { getCC } = stmts;
-import importJSON from "../importJSON.function.js";
+import importJSON from "../utils/importJSON.function.js";
 const { langToCountry } = importJSON("locales.json");
 
 export const dmPermission = true;

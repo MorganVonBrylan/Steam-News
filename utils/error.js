@@ -2,7 +2,7 @@
 global.error = error;
 process.on("unhandledRejection", error);
 
-import { sendToMaster } from "./bot.js";
+import { sendToMaster } from "../bot.js";
 import { DiscordAPIError } from "discord.js";
 
 const recent = new Set();

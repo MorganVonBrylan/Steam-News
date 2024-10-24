@@ -1,10 +1,10 @@
 
-import dirname from "../__dirname.js";
+import dirname from "../utils/__dirname.js";
 const __dirname = dirname(import.meta.url);
 
 import { readdirSync } from "node:fs";
 import { fallbackLocale } from "./index.js";
-import importJSON from "../importJSON.function.js";
+import importJSON from "../utils/importJSON.function.js";
 const embeds = ["help"];
 
 import { NAME_REGEX } from "@brylan/djs-commands/lib/commands/check.function.js";

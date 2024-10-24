@@ -1,7 +1,7 @@
 
 import { stmts } from "../steam_news/db.js";
 const { getCC, setCC } = stmts;
-import importJSON from "../importJSON.function.js";
+import importJSON from "../utils/importJSON.function.js";
 const { codeToCountry } = importJSON("locales.json");
 
 const CC_LIST = "You can find the list here: https://www.iban.com/country-codes";

@@ -2,7 +2,7 @@
 import { STEAM_APPID } from "../steam_news/api.js";
 import interpretAppidOption from "../interpretAppidOption.function.js";
 
-import importJSON from "../importJSON.function.js";
+import importJSON from "../utils/importJSON.function.js";
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
 import { voted, premiumSKU, bonus as PREMIUM_BONUS } from "../steam_news/VIPs.js";
