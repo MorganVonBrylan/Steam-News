@@ -14,7 +14,7 @@ async function canWriteIn(channel) {
 
 export * from "./db_api.js";
 import { stmts } from "./db.js";
-import { getAppInfo } from "./db_api.js";
+import { getAppInfo, getWatchedApps, getWatchedPrices } from "./db_api.js";
 
 import importJSON from "../utils/importJSON.function.js";
 import __dirname from "../utils/__dirname.js";
@@ -23,8 +23,6 @@ const { countryToLang } = importJSON("locales.json");
 
 import { client, sendToMaster } from "../bot.js";
 const { channels } = client;
-client.once("ready", checkForNews);
-client.once("ready", checkPrices);
 
 
 const CHECK_INTERVAL = 3600_000;

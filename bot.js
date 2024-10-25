@@ -78,6 +78,11 @@ client.once("ready", () => {
 		middleware: tr.applyTranslations,
 	}).then((cmds) => console.log(cmds.size, "commands loaded"));
 
+	import("./steam_news/watchers.js").then(({checkForNews, checkPrices}) => {
+		checkForNews();
+		checkPrices();
+	});
+
 	if(auth.topGG)
 		import("./topGG.js").then(({setup}) => setup(client, auth.topGG));
 
