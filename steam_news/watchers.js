@@ -6,25 +6,30 @@ import {
 	STEAM_APPID, STEAM_ICON
 } from "./api.js";
 import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
+import { permissionsIn } from "../utils/discord.js";
 const REQUIRED_PERMS = PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
 
-async function canWriteIn(channel) {
-	return channel?.permissionsFor(await channel.guild.members.fetchMe()).has(REQUIRED_PERMS);
+
+export async function canWriteIn(channel) {
+	if(!channel) return false;
+	return (await permissionsIn(channel))?.has(REQUIRED_PERMS);
 }
 
 export * from "./db_api.js";
 import { stmts } from "./db.js";
-import { getAppInfo, purgeChannel, purgeGuild } from "./db_api.js";
+import {
+	getAppInfo,
+	getWatchedApps, getWatchedPrices,
+	purgeChannel,
+} from "./db_api.js";
 
-import importJSON from "../importJSON.function.js";
-import __dirname from "../__dirname.js";
+import importJSON from "../utils/importJSON.function.js";
+import __dirname from "../utils/__dirname.js";
 const { WATCH_LIMIT } = importJSON(__dirname(import.meta.url)+"/limits.json");
 const { countryToLang } = importJSON("locales.json");
 
 import { client, sendToMaster } from "../bot.js";
 const { channels } = client;
-client.once("ready", checkForNews);
-client.once("ready", checkPrices);
 
 
 const CHECK_INTERVAL = 3600_000;
@@ -37,6 +42,15 @@ import toEmbed, { price as toPriceEmbed } from "./toEmbed.function.js";
 const openInApps = tr.getAll("info.openInApp");
 
 let longestTime = 300;
+
+
+function handleDeletedChannel({status, url}) {
+	if(status !== 404)
+		return;
+	const channelId = url.substring(url.lastIndexOf("/")+1);
+	channels.cache.delete(channelId);
+	purgeChannel(channelId);
+}
 
 /**
  * Triggers all watchers.
@@ -55,7 +69,8 @@ export async function checkForNews()
 		const embeds = { en: { embeds: [baseEmbed] } };
 		let loggedError = false;
 
-		return ({channelId, roleId}) => channels.fetch(channelId).then(async channel => {
+		return ({channelId, roleId}) => channels.fetch(channelId, {force: true})
+		.then(async channel => {
 			if(!await canWriteIn(channel))
 				return;
 
@@ -76,13 +91,16 @@ export async function checkForNews()
 			const message = roleId
 				? { ...embeds[lang], content: `<@&${roleId}>` }
 				: embeds[lang];
-			channel.send(message).catch(loggedError ? Function() : (err) => {
+			channel.send(message).catch(err => {
+				if(handleDeletedChannel(err) || loggedError)
+					return;
 				loggedError = true;
 				error(Object.assign(err, { embeds, targetLang: lang }));
 			});
 			if(yt)
 				channel.send(yt).catch(Function());
-		}, Function());
+		})
+		.catch(handleDeletedChannel);
 	}
 
 	const steamWatchers = stmts.getSteamWatchers();
@@ -104,7 +122,7 @@ export async function checkForNews()
 			}
 
 			if(!news.length)
-				return;
+				news.push(appnews.newsitems[0]);
 
 			const [{date: latestDate}] = news;
 			for(const newsitem of news.reverse())
@@ -211,7 +229,8 @@ export async function checkPrices()
 			const embed = { embeds: [toPriceEmbed(appid, name, price)] };
 			for(const channelId of appsForThisCC.get(appid))
 			{
-				await channels.fetch(channelId).then(async channel => {
+				await channels.fetch(channelId, {force: true})
+				.then(async channel => {
 					if(await canWriteIn(channel) && (!nsfw || channel.nsfw))
 						return channel.send(embed);
 				})
@@ -323,3 +342,14 @@ export function unwatch(appid, guild, price = false)
 		stmts.updateLastPrice({appid, lastPrice: null});
 	return remaining;
 }
+
+
+/**
+ * Adds/updates a watcher for Steam.
+ * @param {GuildChannel} channel The text-based channel to send the news to.
+ * @param {string} roleId The id of the role to ping when posting news/price changes.
+ *
+ * @returns {boolean} whether the operation succeeded
+ */
+export const watchSteam = ({id: channelId, guild: {id: guildId}}, roleId) =>
+	!!stmts.watchSteam({ guildId, channelId, roleId });

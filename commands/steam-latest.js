@@ -1,9 +1,7 @@
 
 import { querySteam, STEAM_ICON } from "../steam_news/api.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
-
-import { PermissionFlagsBits } from "discord.js";
-const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
+import { canSendMessage } from "../utils/discord.js";
 
 export const dmPermission = true;
 export async function run(inter) {
@@ -15,12 +13,6 @@ export async function run(inter) {
 	news.footer.iconUrl = STEAM_ICON;
 	const reply = inter.editReply({ embeds: [news] });
 
-	if(news.yt && await canSendMessage(inter))
+	if(news.yt && await canSendMessage(inter.channel))
 		reply.then(() => inter.channel.send(news.yt));
-}
-
-async function canSendMessage({guild, channel})
-{
-	return !guild
-		|| channel?.permissionsFor(await guild.members.fetchMe())?.has(SEND_MESSAGES);
 }

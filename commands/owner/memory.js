@@ -1,6 +1,10 @@
+import { writeHeapSnapshot } from "node:v8";
 
-export const description = "Gets the amount of memory used.";
-export function run(inter)
+export const description = "Writes a memory snapshot. Warning: temporarily doubles memory usage.";
+export async function run(inter)
 {
-	inter.reply({ephemeral: true, content: `${Math.round(process.memoryUsage().rss / 1000)}k`});
+	//await inter.deferReply({ephemeral: true});
+	console.log("aking snapshot...")
+	const file = writeHeapSnapshot();
+	inter.editReply(`${file} was created.`);
 }

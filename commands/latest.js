@@ -4,8 +4,7 @@ import interpretAppidOption from "../interpretAppidOption.function.js";
 import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
 
-import { PermissionFlagsBits } from "discord.js";
-const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
+import { canSendMessage, fetchEntity } from "../utils/discord.js";
 
 export const dmPermission = true;
 export const options = [{
@@ -51,18 +50,14 @@ export async function run(inter)
 	if(!appnews.newsitems.length)
 		return inter.editReply({ephemeral: true, content: t("no-news")});
 
+	const { channel } = inter;
+	await fetchEntity(channel);
 	let news;
-	const reply = inter.editReply(isAppNSFW(appid) && !inter.channel.nsfw
+	const reply = inter.editReply(isAppNSFW(appid) && !channel.nsfw
 		? { ephemeral: true, content: t("NSFW-content-news") }
 		: { embeds: [news = await toEmbed(appnews.newsitems[0], inter.locale)] }
 	);
 
-	if(news?.yt && await canSendMessage(inter))
-		reply.then(() => inter.channel.send(news.yt));
-}
-
-async function canSendMessage({guild, channel})
-{
-	return !guild
-		|| channel?.permissionsFor(await guild.members.fetchMe())?.has(SEND_MESSAGES);
+	if(news?.yt && await canSendMessage(channel))
+		reply.then(() => channel.send(news.yt));
 }

@@ -14,6 +14,7 @@ import { HTTPError } from "../steam_news/api.js";
 
 import { PermissionFlagsBits } from "discord.js";
 const { SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS } = PermissionFlagsBits;
+import { permissionsIn } from "../utils/discord.js";
 
 import { guildCommands } from "@brylan/djs-commands";
 const updateUnwatch = guildCommands.updateCmd.bind(null, "unwatch");
@@ -41,7 +42,7 @@ export async function run(inter)
 {
 	const channel = inter.options.getChannel("channel")
 		|| await inter.guild.channels.fetch(inter.channelId);
-	const perms = channel.permissionsFor(await inter.guild.members.fetchMe());
+	const perms = await permissionsIn(channel);
 	const t = tr.set(inter.locale, "watch");
 
 	if(!perms?.has(SEND_MESSAGES))
