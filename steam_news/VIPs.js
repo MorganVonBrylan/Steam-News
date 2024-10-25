@@ -57,6 +57,7 @@ if(premiumSKU)
 	*/
 
 	client.on("entitlementCreate", async ent => {
+		await client.guilds.fetch(inter.guildId);
 		if(ent.skuId === premiumSKU)
 		{
 			const guild = await client.guilds.fetch(ent.guildId);

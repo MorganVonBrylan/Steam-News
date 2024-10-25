@@ -3,18 +3,19 @@ import { getWatchedApps, getWatchedPrices } from "../steam_news/watchers.js";
 import { stmts } from "../steam_news/db.js";
 const { getSteamWatcher } = stmts;
 
-export function run(inter) {
+export async function run(inter) {
+	const { guildId } = inter;
+	const guild = await inter.fetchGuild();
 	const t = tr.set(inter.locale, "watched");
-	const { guild } = inter;
-	const watched = getWatchedApps(guild.id);
-	const watchedPrices = getWatchedPrices(guild.id);
+	const watched = getWatchedApps(guildId);
+	const watchedPrices = getWatchedPrices(guildId);
 
 	const embeds = [
 		...split(watched, t("games-watched", guild), tr.plural("games", watched.length)),
 		...split(watchedPrices, t("prices-watched", guild), tr.plural("prices", watchedPrices.length)),
 	];
 
-	const steamWatch = getSteamWatcher(guild.id);
+	const steamWatch = getSteamWatcher(guildId);
 	if(steamWatch)
 		embeds.push({ description: t("steam-watched", `<#${steamWatch}>`) });
 

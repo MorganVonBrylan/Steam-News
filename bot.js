@@ -3,9 +3,8 @@ import {
 	Client, Options,
 	GatewayIntentBits, Partials,
 	ActivityType,
-	ThreadChannel,
 } from "discord.js";
-import { readdirSync } from "node:fs";
+//import { readdirSync } from "node:fs";
 import tr from "./localization/index.js";
 
 import importJSON from "./utils/importJSON.function.js";
@@ -16,7 +15,7 @@ import initCommands from "@brylan/djs-commands";
 
 export const client = new Client({
 	intents: [
-		GatewayIntentBits.Guilds,
+		//GatewayIntentBits.Guilds,
 	],
 	partials: [
 		Partials.Channel, // for DMs
@@ -27,6 +26,7 @@ export const client = new Client({
 		UserManager: 0,
 		GuildMemberManager: 0,
 		ThreadMemberManager: 0,
+		StageInstanceManager: 0,
 	}),
 	presence: { activities: [{
 		type: ActivityType.Listening, name: "/watch",
@@ -34,12 +34,6 @@ export const client = new Client({
 	shards: "auto",
 });
 
-if(!Object.hasOwn(ThreadChannel.prototype, "nsfw"))
-{
-	Object.defineProperty(ThreadChannel.prototype, "nsfw", {
-		get: function() { return this.parent?.nsfw; },
-	});
-}
 
 
 export var master;
@@ -78,6 +72,11 @@ client.once("ready", () => {
 		middleware: tr.applyTranslations,
 	}).then((cmds) => console.log(cmds.size, "commands loaded"));
 
+	import("./steam_news/watchers.js").then(({checkForNews, checkPrices}) => {
+		checkForNews();
+		checkPrices();
+	});
+
 	if(auth.topGG)
 		import("./topGG.js").then(({setup}) => setup(client, auth.topGG));
 
@@ -90,7 +89,7 @@ client.once("ready", () => {
 		}
 	}, 3600_000);
 });
-
+/*
 import __dirname from "./utils/__dirname.js";
 for(const file of readdirSync(__dirname(import.meta.url) + "/events"))
 {
@@ -98,7 +97,7 @@ for(const file of readdirSync(__dirname(import.meta.url) + "/events"))
 	import(`./events/${file}`)
 	.then(({default: handler}) => client.on(file.slice(0, -3), handler));
 }
-
+*/
 
 client.on("shardReady", id => {
 	console.log(`Shard ${id} online!`);

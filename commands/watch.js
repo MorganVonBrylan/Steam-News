@@ -14,6 +14,7 @@ import { HTTPError } from "../steam_news/api.js";
 
 import { PermissionFlagsBits } from "discord.js";
 const { SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS } = PermissionFlagsBits;
+import { permissionsIn } from "../utils/discord.js";
 
 import { guildCommands } from "@brylan/djs-commands";
 const updateUnwatch = guildCommands.updateCmd.bind(null, "unwatch");
@@ -39,9 +40,10 @@ export const options = [{
 export { appsOnly as autocomplete } from "../autocomplete/search.js";
 export async function run(inter)
 {
+	const guild = await inter.fetchGuild();
 	const channel = inter.options.getChannel("channel")
-		|| await inter.guild.channels.fetch(inter.channelId);
-	const perms = channel.permissionsFor(await inter.guild.members.fetchMe());
+		|| await guild.channels.fetch(inter.channelId);
+	const perms = await permissionsIn(channel);
 	const t = tr.set(inter.locale, "watch");
 
 	if(!perms?.has(SEND_MESSAGES))
@@ -90,7 +92,7 @@ export async function run(inter)
 
 		if(details.nsfw && !channel.nsfw)
 		{
-			unwatch(appid, inter.guild);
+			unwatch(appid, guild);
 			return inter.editReply(tr.get(inter.locale, `NSFW-content-${type}`));
 		}
 
@@ -108,7 +110,7 @@ export async function run(inter)
 				? `\n${t("server-limit-reached-voted", LIMIT)}`
 				: `\n${t("server-limit-reached", errorReplaces)}`;
 
-		updateUnwatch(inter.guild);
+		updateUnwatch(guild);
 		inter.editReply(reply);
 	}, async err => {
 		await defer;

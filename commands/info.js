@@ -31,7 +31,7 @@ export async function run(inter)
 
 	const langOpt = inter.options.getString("language");
 	const lang = langOpt && langOpt !== "own" ? langOpt : (
-		getCC(inter.guild?.id)?.toLowerCase() || inter.locale || "en"
+		getCC(inter.guildId)?.toLowerCase() || inter.locale || "en"
 	);
 	const t = tr.set(lang, "info");
 

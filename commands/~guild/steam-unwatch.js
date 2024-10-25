@@ -10,7 +10,7 @@ const deleteCmd = guildCommands.deleteCmd.bind(null, "steam-unwatch");
 export const defaultMemberPermissions = "0";
 export async function run(inter)
 {
-	unwatchSteam(inter.guild.id);
+	unwatchSteam(inter.guildId);
 	inter.reply({ ephemeral: true, content: tr.get(inter.locale, "steam.unwatched") });
-	deleteCmd(inter.guild);
+	deleteCmd(await inter.fetchGuild());
 }

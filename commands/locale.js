@@ -37,7 +37,7 @@ export function run(inter)
 
 	if(!cc)
 	{
-		const currentCC = getCC(inter.guild.id);
+		const currentCC = getCC(inter.guildId);
 		inter.reply(currentCC
 			? t("current", currentCC, codeToCountry[currentCC])
 			: t("no-default")
@@ -51,7 +51,7 @@ export function run(inter)
 			inter.reply({ephemeral: true, content: t("cc-invalid", CC_LIST)});
 		else
 		{
-			setCC(inter.guild.id, cc);
+			setCC(inter.guildId, cc);
 			inter.reply(t("new-default", cc, codeToCountry[cc]));
 		}
 	}

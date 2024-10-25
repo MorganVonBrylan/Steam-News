@@ -77,7 +77,7 @@ export function getOptions(guildId)
 export function autocomplete(inter)
 {
 	const search = (inter.options.getFocused() || "").toLowerCase();
-	const apps = (inter.options.getSubcommand() === "price" ? getWatchedPrices : getWatchedApps)(inter.guild.id);
+	const apps = (inter.options.getSubcommand() === "price" ? getWatchedPrices : getWatchedApps)(inter.guildId);
 	const results = (search ? apps.filter(({name}) => name.toLowerCase().includes(search)) : apps);
 
 	inter.respond(results.slice(0, 25).map(toOptions));
@@ -88,7 +88,7 @@ export async function run(inter)
 	const price = inter.options.getSubcommand() === "price";
 	const appid = inter.options.getString("game");
 	const name = getAppName(appid) || "This game";
-	const unwatched = unwatch(appid, inter.guild, price) !== false;
+	const unwatched = unwatch(appid, inter.guildId, price) !== false;
 	const trKey = `unwatch.${price ? "price" : "news"}-${unwatched ? "unwatched" : "unchanged"}`;
 	inter.reply({
 		ephemeral: true,
@@ -96,5 +96,5 @@ export async function run(inter)
 	});
 
 	if(unwatched)
-		updateCmd(inter.guild);
+		updateCmd(await inter.fetchGuild());
 }
