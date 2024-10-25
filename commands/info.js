@@ -1,6 +1,6 @@
 
 import { getDetails, isNSFW, steamAppLink, HTTPError } from "../steam_news/api.js";
-import interpretAppidOption from "../interpretAppidOption.function.js";
+import interpretAppidOption from "../utils/interpretAppidOption.function.js";
 import { stmts } from "../steam_news/db.js";
 const { getCC } = stmts;
 import importJSON from "../utils/importJSON.function.js";

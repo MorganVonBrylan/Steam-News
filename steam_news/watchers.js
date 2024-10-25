@@ -14,10 +14,10 @@ async function canWriteIn(channel) {
 
 export * from "./db_api.js";
 import { stmts } from "./db.js";
-import { getAppInfo, purgeChannel, purgeGuild } from "./db_api.js";
+import { getAppInfo } from "./db_api.js";
 
-import importJSON from "../importJSON.function.js";
-import __dirname from "../__dirname.js";
+import importJSON from "../utils/importJSON.function.js";
+import __dirname from "../utils/__dirname.js";
 const { WATCH_LIMIT } = importJSON(__dirname(import.meta.url)+"/limits.json");
 const { countryToLang } = importJSON("locales.json");
 
