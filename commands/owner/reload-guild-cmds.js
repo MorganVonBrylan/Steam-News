@@ -9,7 +9,7 @@ export const options = [{
 }];
 export async function run(inter)
 {
-	const guild = inter.client.guilds.cache.get(inter.options.getString("guild")) || inter.guild;
+	const guild = inter.client.guilds.fetch(inter.options.getString("guild") || inter.guildId);
 	if(!guild)
 		return inter.reply({ephemeral: true, content: "Guild not found"});
 

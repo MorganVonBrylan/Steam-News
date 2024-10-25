@@ -236,14 +236,14 @@ export async function checkPrices()
  */
 export async function watch(appid, channel, roleId = null, price = false, LIMIT = WATCH_LIMIT)
 {
-	if(!channel?.isTextBased() || !channel.guild)
+	if(!channel?.isTextBased() || !channel.guildId)
 		throw new TypeError("'channel' must be a text-based channel");
 
 	const {appnews} = await query(appid);
 	if(!appnews)
 		throw new TypeError("'appid' is not a valid app id");
 
-	const guildId = channel.guild.id;
+	const { guildId } = channel;
 	const watchedApps = (price ? getWatchedPrices : getWatchedApps)(guildId)
 		.map(({ appid }) => appid);
 
@@ -306,7 +306,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 /**
  * Stops watching the given app in the given guild.
  * @param {number} appid The app's id.
- * @param {Guild} guild The guild.
+ * @param {Guild} guild The guild or guild id.
  * @param {boolean} price Whether to unwatch for price changes instead of news. Default: false
  *
  * @returns {int|false} false if that guild was not watching that app, or the new number or apps watched by the guild.

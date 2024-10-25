@@ -18,7 +18,7 @@ export async function run(inter)
 {
 	const channel = inter.options.getChannel("channel") || inter.channel;
 	watchSteam({
-		guildId: inter.guild.id,
+		guildId: inter.guildId,
 		channelId: channel.id,
 		roleId: inter.options.getRole("role")?.id,
 	});

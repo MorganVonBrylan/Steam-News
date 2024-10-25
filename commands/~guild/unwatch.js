@@ -77,7 +77,7 @@ export function getOptions(guildId)
 export function autocomplete(inter)
 {
 	const search = (inter.options.getFocused() || "").toLowerCase();
-	const apps = (inter.options.getSubcommand() === "price" ? getWatchedPrices : getWatchedApps)(inter.guild.id);
+	const apps = (inter.options.getSubcommand() === "price" ? getWatchedPrices : getWatchedApps)(inter.guildId);
 	const results = (search ? apps.filter(({name}) => name.toLowerCase().includes(search)) : apps);
 
 	inter.respond(results.slice(0, 25).map(toOptions));
