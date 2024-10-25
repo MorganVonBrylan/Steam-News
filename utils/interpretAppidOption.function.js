@@ -1,5 +1,5 @@
 
-import { search } from "./steam_news/api.js";
+import { search } from "../steam_news/api.js";
 
 export default interpretAppid;
 export async function interpretAppid(inter, ephemeral = false, optionName = "game")
