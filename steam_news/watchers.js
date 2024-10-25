@@ -14,7 +14,7 @@ async function canWriteIn(channel) {
 
 export * from "./db_api.js";
 import { stmts } from "./db.js";
-import { getAppInfo, getWatchedApps, getWatchedPrices } from "./db_api.js";
+import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
 
 import importJSON from "../utils/importJSON.function.js";
 import __dirname from "../utils/__dirname.js";
@@ -27,6 +27,12 @@ const { channels } = client;
 
 const CHECK_INTERVAL = 3600_000;
 
+function handleDeletedChannel({status, url}) {
+    if(status !== 404)
+        return;
+    const channelId = url.substring(url.lastIndexOf("/")+1);
+    purgeChannel(channelId);
+}
 
 setInterval(checkForNews, CHECK_INTERVAL);
 setTimeout(() => setInterval(checkPrices, CHECK_INTERVAL), CHECK_INTERVAL / 2);
@@ -74,13 +80,16 @@ export async function checkForNews()
 			const message = roleId
 				? { ...embeds[lang], content: `<@&${roleId}>` }
 				: embeds[lang];
-			channel.send(message).catch(loggedError ? Function() : (err) => {
+			channel.send(message).catch(err => {
+				if(handleDeletedChannel(err) || loggedError)
+					return;
 				loggedError = true;
 				error(Object.assign(err, { embeds, targetLang: lang }));
 			});
 			if(yt)
 				channel.send(yt).catch(Function());
-		}, Function());
+		})
+		.catch(handleDeletedChannel);
 	}
 
 	const steamWatchers = stmts.getSteamWatchers();
