@@ -41,8 +41,8 @@ function toMarkdown(contents, limit = 2000)
 		.replaceAll(YT_REGEX_G, "")
 		
 		.replaceAll(/\[table\].*?\[\/table\]/gs, "##table##")
-		.replaceAll(/\[url=(http[^\]]+)\]([^\[]+)\[\/url\]/g, "$1")
-		.replaceAll(/\[url=(http[^\]]+)\]\[\/url\]/g, "")
+		.replaceAll(/\[url=(http[^ \]]+)( [^\]]+)?\]\[\/url\]/g, "$1")
+		.replaceAll(/\[url=(http[^ \]]+)( [^\]]+)?\](.+?)\[\/url\]/g, "[$3]($1)")
 
 		.replaceAll("[hr][/hr]", "——————————")
 		.replaceAll("&nbsp;", " ")
