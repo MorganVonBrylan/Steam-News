@@ -5,6 +5,38 @@
 
 	"francophones": ["FR", "BE", "CM", "KM", "CD", "CG", "CI", "DJ", "GA", "GN", "HT", "LU", "ML", "MC", "NE", "CF", "SN", "TD", "TG"],
 
+	"langNames": {
+		"ar": "arabic",
+		"bg": "bulgarian",
+		"zh-CN": "schinese",
+		"zh-TW": "tchinese",
+		"cs": "czech",
+		"da": "danish",
+		"nl": "dutch",
+		"en": "english",
+		"fi": "finnish",
+		"fr": "french",
+		"de": "german",
+		"el": "greek",
+		"hu": "hungarian",
+		"it": "italian",
+		"ja": "japanese",
+		"ko": "koreana",
+		"no": "norwegian",
+		"pl": "polish",
+		"pt-BR": "brazilian",
+		"pt": "portuguese",
+		"ro": "romanian",
+		"ru": "russian",
+		"es-419": "latam",
+		"es": "spanish",
+		"sv": "swedish",
+		"th": "thai",
+		"tr": "turkish",
+		"uk": "ukrainian",
+		"vn": "vietnamese"
+	},
+
 	"langToCountry": {
 		"fr": "FR",
 		"en-GB": "GB",
