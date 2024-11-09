@@ -28,7 +28,8 @@ export function error(err)
 			|| message === "Unknown interaction" || message === "Missing Access"
 			|| message.startsWith("invalid json response body")
 			|| code === "UND_ERR_CONNECT_TIMEOUT"
-			|| code === "UND_ERR_ABORTED")
+			|| code === "UND_ERR_ABORTED"
+			|| code === "UND_ERR_SOCKET")
 			return;
 
 		if(err instanceof DiscordAPIError)
