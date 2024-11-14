@@ -1,4 +1,6 @@
 {
+	"discovery": "**Steam News** allows you to have Steam game news and price changes sent directly to a channel of your choice in your Discord server.\n\nIt also has a command for displaying info on a game, with much more details than just pasting the Steam store URL.",
+	
 	"commands": {
 		"help": {
 			"name": "help",

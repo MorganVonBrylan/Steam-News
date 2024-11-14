@@ -1,4 +1,6 @@
 {
+	"discovery": "**Steam News** vous permet d'avoir les actus et changement de prix de jeux Steam envoyés directement dans un salon de votre serveur Discord.\n\nIl a aussi une commande pour afficher les infos d'un jeu avec bien plus de détails que juste envoyer son adresse du magasin Steam.",
+
 	"commands": {
 		"help": {
 			"name": "aide",

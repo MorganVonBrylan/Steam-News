@@ -1,4 +1,6 @@
 {
+	"discovery": "**Steam News** erlaubt dir, Neuigkeiten über Steam-Spiele und Preisänderungen direkt in einen Kanal deiner Wahl in deinem Discord-Server zu senden.\n\nEs hat außerdem ein Befehl, mit dem du Informationen über ein Spiel mit viel mehr Details anzeigen kannst, als wenn du einfach die Steam-URL in den Kanal schickst.",
+	
 	"commands": {
 		"help": {
 			"name": "hilfe",
