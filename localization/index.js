@@ -19,7 +19,7 @@ for(const file of readdirSync(__dirname).filter(f => f.endsWith(".json")))
 	locales[file.substring(0, file.length - 5)] = locale;
 	const { commands: { watch }, voting } = locale;
 	watch.description = watch.description.replace("%s", WATCH_LIMIT);
-	voting.thanks = voting.thanks.replace("%S", WATCH_VOTE_BONUS);
+	voting.thanks = voting.thanks.replace("%s", WATCH_VOTE_BONUS);
 }
 
 if(!locales[FALLBACK])

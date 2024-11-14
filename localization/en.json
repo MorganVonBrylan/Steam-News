@@ -131,7 +131,7 @@
 	},
 
 	"voting": {
-		"thanks": "Thank you for voting! You can now add %S more watchers of each type to each of your servers."
+		"thanks": "Thank you for voting! You can now add %s more watchers of each type to each of your servers."
 	},
 
 	"help": {
