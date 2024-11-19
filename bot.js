@@ -28,7 +28,11 @@ export const client = new Client({
 		GuildMemberManager: 0,
 		ThreadMemberManager: 0,
 		StageInstanceManager: 0,
+		GuildForumThreadManager: 0,
 		MessageManager: 0,
+		GuildMessageManager: 0,
+		GuildEmojiManager: 0,
+		GuildStickerManager: 0,
 	}),
 	presence: { activities: [{
 		type: ActivityType.Listening, name: "/watch",
