@@ -124,9 +124,14 @@ export async function checkForNews()
 		});
 	}
 
-	await Promise.allSettled(stmts.findWatchedApps().map(appid => query(appid, 5).then(async ({appnews}) => {
+	for(const appid of stmts.findWatchedApps())
+	{
+		const { appnews } = await query(appid, 5);
 		if(!appnews)
-			return console.error(`Failed to get news of app ${id}`);
+		{
+			console.error(`Failed to get news of app ${id}`);
+			continue;
+		}
 
 		const { latest } = getAppInfo(appid);
 		const news = [];
@@ -140,7 +145,7 @@ export async function checkForNews()
 		}
 
 		if(!news.length)
-			return;
+			continue;
 
 		const [{date: latestDate}] = news;
 		total += news.length;
@@ -148,8 +153,7 @@ export async function checkForNews()
 			stmts.getWatchers(appid).forEach(getEmbedSender(await toEmbed(newsitem)));
 
 		stmts.updateLatest({ appid, latest: latestDate });
-	})));
-
+	};
 
 	const time = ~~((Date.now() - start) / 1000);
 	if(time - longestTime > 60)
