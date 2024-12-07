@@ -101,7 +101,7 @@ export async function run(inter)
 
 
 // Thanks Akane!
-function controllerSupport({ controller_support, categories })
+function controllerSupport({ controller_support, categories = [] })
 {
 	if(controller_support === "full" || categories.some(({ id }) => id === 28))
 		return "full";
