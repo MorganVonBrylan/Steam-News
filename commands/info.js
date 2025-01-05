@@ -38,7 +38,7 @@ export async function run(inter)
 	getDetails(appid, lang, langToCountry[lang]).then(async details => {
 		await defer;
 		if(!details)
-			return inter.editReply({ephemeral: true, content: t("invalidAppid")});
+			return inter.editReply({flags: "Ephemeral", content: t("invalidAppid")});
 
 		const {
 			type, fullgame,
@@ -52,7 +52,7 @@ export async function run(inter)
 		const nsfw = isNSFW(details);
 
 		if(nsfw && !inter.channel.nsfw) // temporary
-			return inter.editReply({ephemeral: true, content: t("nsfwForbidden")});
+			return inter.editReply({flags: "Ephemeral", content: t("nsfwForbidden")});
 
 		inter.editReply({ embeds: [{
 			url: "https://store.steampowered.com/app/"+steam_appid,
@@ -82,19 +82,19 @@ export async function run(inter)
 	}, async err => {
 		await defer;
 		if(err instanceof TypeError && err.message.includes("appid"))
-			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "bad-appid")});
+			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "bad-appid")});
 		else if(err instanceof HTTPError)
 		{
 			const { code } = err;
 			inter.editReply({
-				ephemeral: true,
+				flags: "Ephemeral",
 				content: tr.get(inter.locale, code === 403 ? "api-403" : "api-err", code),
 			});
 		}
 		else
 		{
 			error(err);
-			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "error")});
+			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "error")});
 		}
 	});
 }

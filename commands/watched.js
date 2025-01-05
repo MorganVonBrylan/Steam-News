@@ -19,12 +19,12 @@ export function run(inter) {
 		embeds.push({ description: t("steam-watched", `<#${steamWatch}>`) });
 
 	if(!embeds.length)
-		inter.reply({ ephemeral: true, content: t("none") });
+		inter.reply({ flags: "Ephemeral", content: t("none") });
 	else
 	{
-		inter.reply({ ephemeral: true, embeds: embeds.slice(0, 10) }).then(() => {
+		inter.reply({ flags: "Ephemeral", embeds: embeds.slice(0, 10) }).then(() => {
 			for(let i = 10 ; i < embeds.length ; i += 10)
-				inter.followUp({ ephemeral: true, embeds: embeds.slice(i, i+10) });
+				inter.followUp({ flags: "Ephemeral", embeds: embeds.slice(i, i+10) });
 		});
 	}
 }

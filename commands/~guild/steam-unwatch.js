@@ -11,6 +11,6 @@ export const defaultMemberPermissions = "0";
 export async function run(inter)
 {
 	unwatchSteam(inter.guildId);
-	inter.reply({ ephemeral: true, content: tr.get(inter.locale, "steam.unwatched") });
+	inter.reply({ flags: "Ephemeral", content: tr.get(inter.locale, "steam.unwatched") });
 	deleteCmd(inter.guild);
 }

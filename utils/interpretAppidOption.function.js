@@ -15,9 +15,9 @@ export async function interpretAppid(inter, ephemeral = false, optionName = "gam
 		if(game)
 			return { appid: game.id, defer };
 
-		defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}));
+		defer.then(() => inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "no-match", appid)}));
 	} catch {
-		defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "api-failed")}));
+		defer.then(() => inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "api-failed")}));
 	}
 	return { defer };
 }

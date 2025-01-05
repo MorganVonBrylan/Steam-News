@@ -11,10 +11,10 @@ export async function run(inter)
 {
 	const guild = inter.client.guilds.fetch(inter.options.getString("guild") || inter.guildId);
 	if(!guild)
-		return inter.reply({ephemeral: true, content: "Guild not found"});
+		return inter.reply({flags: "Ephemeral", content: "Guild not found"});
 
 	const results = await Promise.allSettled([
-		inter.deferReply({ephemeral: true}).catch(Function()),
+		inter.deferReply({flags: "Ephemeral"}).catch(Function()),
 		...Object.values(commands).map(command => updateCmd(command, guild))
 	]);
 
@@ -22,9 +22,9 @@ export async function run(inter)
 		if(status === "rejected")
 		{
 			console.error(reason);
-			inter.editReply({ephemeral: true, content: `An error occurred:\n${reason.message?.substring(0, 1900)}`});
+			inter.editReply({flags: "Ephemeral", content: `An error occurred:\n${reason.message?.substring(0, 1900)}`});
 			return;
 		}
 
-	inter.editReply({ephemeral: true, content: "Commands reloaded."});
+	inter.editReply({flags: "Ephemeral", content: "Commands reloaded."});
 };

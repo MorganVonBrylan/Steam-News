@@ -91,7 +91,7 @@ export async function run(inter)
 	const unwatched = unwatch(appid, inter.guild, price) !== false;
 	const trKey = `unwatch.${price ? "price" : "news"}-${unwatched ? "unwatched" : "unchanged"}`;
 	inter.reply({
-		ephemeral: true,
+		flags: "Ephemeral",
 		content: tr.get(inter.locale, trKey, name),
 	});
 

@@ -37,5 +37,5 @@ export function run(inter)
 		preparedEmbeds.add(locale);
 	}
 
-	inter.reply({ ephemeral: true, content: SUPPORT_SERVER, embeds: [embed] });
+	inter.reply({ flags: "Ephemeral", content: SUPPORT_SERVER, embeds: [embed] });
 }

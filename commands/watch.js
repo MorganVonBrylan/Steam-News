@@ -45,15 +45,15 @@ export async function run(inter)
 	const t = tr.set(inter.locale, "watch");
 
 	if(!perms?.has(SEND_MESSAGES))
-		return inter.reply({ephemeral: true, content: t("cannot-send", channel)});
+		return inter.reply({flags: "Ephemeral", content: t("cannot-send", channel)});
 	else if(!perms.has(EMBED_LINKS))
-		return inter.reply({ephemeral: true, content: t("cannot-embed", channel)});
+		return inter.reply({flags: "Ephemeral", content: t("cannot-embed", channel)});
 
 	const { appid, defer } = await interpretAppidOption(inter, true);
 	if(!appid)
 		return;
 	else if(+appid === STEAM_APPID)
-		return defer.then(() => inter.editReply({ephemeral: true, content: tr.get(inter.locale, "no-match", appid)}));
+		return defer.then(() => inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "no-match", appid)}));
 
 	const LIMIT = (voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT)
 		+ (inter.entitlements.find(({skuId}) => skuId === premiumSKU) ? PREMIUM_BONUS : 0);
@@ -71,21 +71,21 @@ export async function run(inter)
 		if(!details)
 		{
 			purgeApp(appid);
-			return inter.editReply({ephemeral: true, content: t.get(inter.locale, "bad-appid")});
+			return inter.editReply({flags: "Ephemeral", content: t.get(inter.locale, "bad-appid")});
 		}
 
 		if(watchPrice)
 		{
 			if(success === null)
-				return inter.editReply({ephemeral: true, content: t("price-free")});
+				return inter.editReply({flags: "Ephemeral", content: t("price-free")});
 			if(success === false)
-				return inter.editReply({ephemeral: true, content: t("price-unknown")});
+				return inter.editReply({flags: "Ephemeral", content: t("price-unknown")});
 		}
 
 		if(details.type === "dlc" && !watchPrice)
 		{
 			purgeApp(appid);
-			return inter.editReply({ephemeral: true, content: t.get(inter.locale, "no-DLC-news")});
+			return inter.editReply({flags: "Ephemeral", content: t.get(inter.locale, "no-DLC-news")});
 		}
 
 		if(details.nsfw && !channel.nsfw)
@@ -113,10 +113,10 @@ export async function run(inter)
 	}, async err => {
 		await defer;
 		if(err instanceof TypeError && err.message.includes("appid"))
-			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "bad-appid")});
+			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "bad-appid")});
 		else if(err instanceof RangeError)
 		{
-			inter.editReply({ ephemeral: true, content:
+			inter.editReply({ flags: "Ephemeral", content:
 				LIMIT === MAX_LIMIT ? t("error-limit-reached", MAX_LIMIT)
 				: LIMIT === LIMIT_WITH_VOTE ? t("error-limit-reached-voted", LIMIT)
 				: t("error-limit-reached", errorReplaces)
@@ -126,14 +126,14 @@ export async function run(inter)
 		{
 			const { code } = err;
 			inter.editReply({
-				ephemeral: true,
+				flags: "Ephemeral",
 				content: tr.get(inter.locale, code === 403 ? "api-403" : "api-err", code),
 			});
 		}
 		else
 		{
 			error(err);
-			inter.editReply({ephemeral: true, content: tr.get(inter.locale, "error")});
+			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "error")});
 		}
 	});
 }

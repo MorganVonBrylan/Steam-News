@@ -43,17 +43,17 @@ export async function run(inter)
 	{
 		const details = await fetchInfo;
 		if(details.type === "dlc")
-			return inter.editReply({ephemeral: true, content: t("no-DLC-news")});
+			return inter.editReply({flags: "Ephemeral", content: t("no-DLC-news")});
 
 		saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
 	}
 
 	if(!appnews.newsitems.length)
-		return inter.editReply({ephemeral: true, content: t("no-news")});
+		return inter.editReply({flags: "Ephemeral", content: t("no-news")});
 
 	let news;
 	const reply = inter.editReply(isAppNSFW(appid) && !inter.channel.nsfw
-		? { ephemeral: true, content: t("NSFW-content-news") }
+		? { flags: "Ephemeral", content: t("NSFW-content-news") }
 		: { embeds: [news = await toEmbed(appnews.newsitems[0], inter.locale)] }
 	);
 

@@ -13,7 +13,7 @@ export const options = [{
 export function run(inter)
 {
 	const app = inter.options.getString("what") === "app";
-	inter.reply({ephemeral: true,
+	inter.reply({flags: "Ephemeral",
 		content: (app ? purgeApp : purgeGuild)(inter.options.getString("id"))
 			? (app ? "App purgée." : "Server purgé.")
 			: "There was nothing to purge.",

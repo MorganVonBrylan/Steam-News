@@ -17,4 +17,4 @@ const fields = await Promise.all(readdirSync(__dirname(import.meta.url))
 	})
 );
 
-export const run = inter => inter.reply({ephemeral: true, embeds: [{ fields }]});
+export const run = inter => inter.reply({flags: "Ephemeral", embeds: [{ fields }]});

@@ -10,8 +10,8 @@ export function run(inter)
 { 
 	try {
 		const { changes } = db.run(inter.options.getString("sql"));
-		inter.reply({ephemeral: true, content: `${changes} rows affected`}).catch(console.error);
+		inter.reply({flags: "Ephemeral", content: `${changes} rows affected`}).catch(console.error);
 	} catch(e) {
-		inter.reply({ephemeral: true, content: `Error: ${e}`});
+		inter.reply({flags: "Ephemeral", content: `Error: ${e}`});
 	}
 }

@@ -4,7 +4,7 @@ import { client } from "../../bot.js";
 export const description = "KILLS THE BOT — KILL IT, KILL IT! IT'S GOTTEN ROGUE!";
 export function run(inter)
 {
-	return inter.reply({ ephemeral: true, content: "seeya" })
+	return inter.reply({ flags: "Ephemeral", content: "seeya" })
 		.catch(Function())
 		.finally(async () => {
 			client.destroy();
