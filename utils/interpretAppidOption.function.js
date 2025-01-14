@@ -4,7 +4,7 @@ import { search } from "../steam_news/api.js";
 export default interpretAppid;
 export async function interpretAppid(inter, ephemeral = false, optionName = "game")
 {
-	const defer = inter.deferReply({ ephemeral });
+	const defer = inter.deferReply(ephemeral ? { flags: "Ephemeral" } : {});
 	defer.catch(error);
 	const appid = inter.options.getString(optionName);
 	if(isFinite(appid))
