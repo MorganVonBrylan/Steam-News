@@ -82,7 +82,8 @@ client.once("ready", () => {
 		ownerServer: auth.adminServer,
 		makeEnumsGlobal: true,
 		middleware: tr.applyTranslations,
-	}).then((cmds) => console.log(cmds.size, "commands loaded"));
+	}).then((cmds) => console.log(cmds.size, "commands loaded"))
+	.catch(error);
 
 	import("./steam_news/watchers.js").then(({checkForNews, checkPrices}) => {
 		checkForNews();
