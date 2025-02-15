@@ -144,3 +144,6 @@ Add premium features.
 	2.10.2 (07/12/2024)
 	/info: Fixes an edge case of a game not having a category.
 	Various optimizations and other fixes
+
+2.11 (15/02/2025)
+DM-enabled commands are now universal.
