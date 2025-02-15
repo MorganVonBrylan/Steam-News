@@ -7,7 +7,8 @@ import toEmbed from "../steam_news/toEmbed.function.js";
 import { PermissionFlagsBits } from "discord.js";
 const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
 
-export const dmPermission = true;
+export const integrationTypes = ALL_INTEGRATION_TYPES;
+export const contexts = ALL_CONTEXTS;
 export const options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",

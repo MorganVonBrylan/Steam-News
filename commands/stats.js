@@ -2,7 +2,8 @@
 import { stmts } from "../steam_news/db.js";
 const { getStats } = stmts;
 
-export const dmPermission = true;
+export const integrationTypes = ALL_INTEGRATION_TYPES;
+export const contexts = ALL_CONTEXTS;
 export async function run(inter)
 {
 	const t = tr.set(inter.locale, "stats");

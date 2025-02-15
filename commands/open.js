@@ -1,7 +1,8 @@
 
 import { search, steamAppLink } from "../steam_news/api.js";
 
-export const dmPermission = true;
+export const integrationTypes = ALL_INTEGRATION_TYPES;
+export const contexts = ALL_CONTEXTS;
 export const options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
