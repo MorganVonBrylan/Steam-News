@@ -48,6 +48,7 @@ let longestTime = 300;
  */
 export async function checkForNews()
 {
+	console.info(new Date(), "Checking news");
 	const start = Date.now();
 	const serverToLang = {};
 	for(const {id, cc} of stmts.getAllCC(false))
@@ -174,6 +175,7 @@ export async function checkForNews()
  */
 export async function checkPrices()
 {
+	console.info(new Date(), "Checking prices");
 	const watchedPrices = {};
 	const appsWithUpdatedPrices = [];
 
