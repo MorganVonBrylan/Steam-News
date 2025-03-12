@@ -34,20 +34,28 @@ function handleDeletedChannel({status, url}) {
     purgeChannel(channelId);
 }
 
-setInterval(checkForNews, CHECK_INTERVAL);
-setTimeout(() => setInterval(checkPrices, CHECK_INTERVAL), CHECK_INTERVAL / 2);
 
 import toEmbed, { price as toPriceEmbed } from "./toEmbed.function.js";
 const openInApps = tr.getAll("info.openInApp");
 
 let longestTime = 300;
+let newsSchedule, pricesSchedule;
+export function scheduleChecks() {
+	pricesSchedule = setTimeout(checkPrices, CHECK_INTERVAL / 2, true);
+	return checkForNews(true)
+		.then(() => checkPrices(false));
+}
 
 /**
  * Triggers all watchers.
+ * @param {boolean} reschedule Whether to schedule the next check.
  * @returns {Promise<number>} The number of news sent.
  */
-export async function checkForNews()
+export async function checkForNews(reschedule = false)
 {
+	if(reschedule)
+		newsSchedule = setTimeout(checkForNews, CHECK_INTERVAL, true);
+
 	console.info(new Date(), "Checking news");
 	const start = Date.now();
 	const serverToLang = {};
@@ -171,10 +179,14 @@ export async function checkForNews()
 
 /**
  * Triggers all price watchers.
+ * @param {boolean} reschedule Whether to schedule the next check.
  * @returns {Promise<number>} The number of price updates sent.
  */
-export async function checkPrices()
+export async function checkPrices(reschedule = false)
 {
+	if(reschedule)
+		pricesSchedule = setTimeout(checkPrices, CHECK_INTERVAL, true);
+
 	console.info(new Date(), "Checking prices");
 	const watchedPrices = {};
 	const appsWithUpdatedPrices = [];

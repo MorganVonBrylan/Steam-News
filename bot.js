@@ -85,10 +85,7 @@ client.once("ready", () => {
 	}).then((cmds) => console.log(cmds.size, "commands loaded"))
 	.catch(error);
 
-	import("./steam_news/watchers.js").then(({checkForNews, checkPrices}) => {
-		checkForNews();
-		checkPrices();
-	});
+	import("./steam_news/watchers.js").then(({scheduleChecks}) => scheduleChecks());
 
 	if(auth.topGG)
 		import("./topGG.js").then(({setup}) => setup(client, auth.topGG));
