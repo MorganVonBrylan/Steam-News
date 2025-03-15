@@ -164,7 +164,6 @@ export async function checkForNews(range, reschedule = false)
 
 	for(const appid of newsRanges[range]())
 	{
-		console.log(appid);
 		const { appnews } = await query(appid, 5);
 		if(!appnews)
 		{
