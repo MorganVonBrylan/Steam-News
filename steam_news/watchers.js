@@ -13,7 +13,7 @@ async function canWriteIn(channel) {
 }
 
 export * from "./db_api.js";
-import { stmts } from "./db.js";
+import db, { stmts } from "./db.js";
 import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
 
 import importJSON from "../utils/importJSON.function.js";
@@ -38,25 +38,51 @@ function handleDeletedChannel({status, url}) {
 import toEmbed, { price as toPriceEmbed } from "./toEmbed.function.js";
 const openInApps = tr.getAll("info.openInApp");
 
+
+/**
+ * SELECT substr(appid, 1, 1), COUNT(DISTINCT appid)
+ * FROM Watchers
+ * GROUP BY substr(appid, 1, 1);
+ * Stats on 2025-03-15:
+ * 1	544
+ * 2	505
+ * 3	133
+ * 4,5,6	58+57+50 = 165
+ * 7,8,9	32+39+42 = 113
+ */
+export const ranges = ["= '1'", "= '2'", "= '3'", "IN ('4', '5', '6')", "IN ('7', '8', '9')"];
+const newsRanges = ranges.map(range => {
+	const stmt = db.prepare(`SELECT DISTINCT appid FROM Watchers
+		WHERE substr(appid, 1, 1) ${range}`).pluck();
+	return stmt.all.bind(stmt);
+});
+
 let longestTime = 300;
 let newsSchedule, pricesSchedule;
 export function scheduleChecks() {
-	pricesSchedule = setTimeout(checkPrices, CHECK_INTERVAL / 2, true);
-	return checkForNews(true)
-		.then(() => checkPrices(false));
+	newsSchedule?.forEach(clearInterval);
+	clearInterval(pricesSchedule);
+
+	pricesSchedule = setTimeout(checkPrices, CHECK_INTERVAL * 0.8, true);
+	const newsCheckInterval = CHECK_INTERVAL * 0.6 / (newsRanges.length - 1);
+	checkPrices().then(() => {
+		newsSchedule = newsRanges.map((_, i) => 
+			setTimeout(checkForNews, newsCheckInterval * i, i, true));
+	});
 }
 
 /**
  * Triggers all watchers.
+ * @param {number} range Index of the range of appids to check (see exported 'ranges').
  * @param {boolean} reschedule Whether to schedule the next check.
  * @returns {Promise<number>} The number of news sent.
  */
-export async function checkForNews(reschedule = false)
+export async function checkForNews(range, reschedule = false)
 {
 	if(reschedule)
-		newsSchedule = setTimeout(checkForNews, CHECK_INTERVAL, true);
+		newsSchedule[range] = setTimeout(checkForNews, CHECK_INTERVAL, range, true);
 
-	console.info(new Date(), "Checking news");
+	console.info(new Date(), "Checking news range", ranges[range]);
 	const start = Date.now();
 	const serverToLang = {};
 	for(const {id, cc} of stmts.getAllCC(false))
@@ -101,40 +127,44 @@ export async function checkForNews(reschedule = false)
 		.catch(handleDeletedChannel);
 	}
 
-	const steamWatchers = stmts.getSteamWatchers();
-	if(steamWatchers.length)
+	if(range === newsRanges.length - 1)
 	{
-		querySteam(5).then(async ({appnews}) => {
-			if(!appnews)
-				return console.error(`Failed to get news for Steam`);
+		const steamWatchers = stmts.getSteamWatchers();
+		if(steamWatchers.length)
+		{
+			querySteam(5).then(async ({appnews}) => {
+				if(!appnews)
+					return console.error(`Failed to get news for Steam`);
 
-			const { latest } = getAppInfo(STEAM_APPID);
-			const news = [];
-			for(const newsitem of appnews.newsitems)
-			{
-				if(newsitem.date <= latest)
-					break;
+				const { latest } = getAppInfo(STEAM_APPID);
+				const news = [];
+				for(const newsitem of appnews.newsitems)
+				{
+					if(newsitem.date <= latest)
+						break;
 
-				news.push(newsitem);
-				if(!latest) break;
-			}
+					news.push(newsitem);
+					if(!latest) break;
+				}
 
-			if(!news.length)
-				return;
+				if(!news.length)
+					return;
 
-			const [{date: latestDate}] = news;
-			for(const newsitem of news.reverse())
-			{
-				const baseEmbed = await toEmbed(newsitem);
-				baseEmbed.footer.iconUrl = STEAM_ICON;
-				steamWatchers.forEach(getEmbedSender(baseEmbed));
-			}
-			stmts.updateLatest({ appid: STEAM_APPID, latest: latestDate });
-		});
+				const [{date: latestDate}] = news;
+				for(const newsitem of news.reverse())
+				{
+					const baseEmbed = await toEmbed(newsitem);
+					baseEmbed.footer.iconUrl = STEAM_ICON;
+					steamWatchers.forEach(getEmbedSender(baseEmbed));
+				}
+				stmts.updateLatest({ appid: STEAM_APPID, latest: latestDate });
+			});
+		}
 	}
 
-	for(const appid of stmts.findWatchedApps())
+	for(const appid of newsRanges[range]())
 	{
+		console.log(appid);
 		const { appnews } = await query(appid, 5);
 		if(!appnews)
 		{
@@ -169,7 +199,7 @@ export async function checkForNews(reschedule = false)
 	{
 		const mn = ~~(time / 60);
 		const s = time % 60;
-		sendToMaster(`checkNews took ${mn}:${s < 10 ? `0${s}` : s}`);
+		sendToMaster(`checkNews took ${mn}:${s < 10 ? `0${s}` : s} (range ${ranges[range]})`);
 		longestTime = time;
 	}
 
