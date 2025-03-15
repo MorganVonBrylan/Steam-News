@@ -147,3 +147,6 @@ Add premium features.
 
 2.11 (15/02/2025)
 DM-enabled commands are now universal.
+
+2.12 (15/03/2025)
+News checks are now spread over the hour to alleviate rate limits.
