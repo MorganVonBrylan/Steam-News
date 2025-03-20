@@ -59,7 +59,7 @@ export async function run(inter)
 	);
 
 	if(news?.yt && await canSendMessage(inter))
-		reply.then(() => inter.channel.send(news.yt));
+		reply.then(() => inter.channel?.send(news.yt));
 }
 
 async function canSendMessage({guild, channel})
