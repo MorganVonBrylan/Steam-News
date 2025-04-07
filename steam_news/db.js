@@ -3,7 +3,8 @@ import { STEAM_APPID } from "./api.js";
 import SQLite3 from "better-sqlite3";
 import dirname from "../utils/__dirname.js";
 
-const db = new SQLite3(dirname(import.meta.url) + "/watchers.db");
+const __dirname = dirname(import.meta.url);
+const db = new SQLite3(`${__dirname}/watchers.db`);
 export default db;
 db.pragma("journal_mode = WAL");
 
@@ -207,3 +208,57 @@ for(const [name, stmt] of Object.entries(stmts))
 stmts.updateSteamLatest = latest => stmts.updateLatest(latest, STEAM_APPID);
 
 Object.freeze(stmts);
+
+
+
+/* *************************** */
+/* ********* BACKUPS ********* */
+/* *************************** */
+
+import AdmZip from "adm-zip";
+import { existsSync, mkdirSync } from "node:fs";
+import { rm } from "node:fs/promises";
+import { basename } from "node:path";
+import "../utils/prototypes.js";
+
+const backupsDir = `${__dirname}/_backups`;
+if(!existsSync(backupsDir))
+	mkdirSync(backupsDir);
+
+function backupZipName(date = new Date()) {
+	if(date === "nextMonth") {
+		date = new Date();
+		date.setMonth(date.getMonth() + 1, 1);
+	}
+	return `${backupsDir}/${date.getFullYear()}-${(date.getMonth()+1).padStart(2, 0)}.zip`;
+}
+function backupFileName(date = new Date()) {
+	return backupZipName(date).replace(".zip", `-${date.getDate().padStart(2, 0)}.db`);
+}
+
+let backupZip = new AdmZip(existsSync(backupZipName()) ? backupZipName() : null);
+const backupDb = db.prepare("VACUUM INTO ?");
+scheduleBackup();
+
+function scheduleBackup()
+{
+	const tomorrow = new Date();
+	tomorrow.setHours(0, 1, 0);
+	tomorrow.setDate(tomorrow.getDate() + 1);
+	if(tomorrow.getDate() === 1)
+		backupZip = new AdmZip();
+
+	setTimeout(backup, tomorrow.getTime() - Date.now());
+}
+async function backup()
+{
+	const fileName = backupFileName();
+	const zipName = backupZipName();
+	backupDb.run(fileName);
+	backupZip.addLocalFile(fileName);
+	backupZip.writeZip(zipName);
+	rm(fileName);
+
+	console.log("Database backed up:", basename(fileName), "into", basename(zipName));
+	scheduleBackup();
+}
