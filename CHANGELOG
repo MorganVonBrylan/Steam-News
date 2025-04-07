@@ -150,3 +150,6 @@ DM-enabled commands are now universal.
 
 2.12 (15/03/2025)
 News checks are now spread over the hour to alleviate rate limits.
+
+2.13 (07/04/2025)
+Added automatic daily database backups.
