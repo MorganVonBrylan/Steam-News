@@ -4,6 +4,9 @@ process.on("unhandledRejection", error);
 
 import { sendToMaster } from "../bot.js";
 import { DiscordAPIError } from "discord.js";
+import TopGGAPIError_ from "@top-gg/sdk/dist/utils/ApiError.js";
+const TopGGAPIError = TopGGAPIError_.default;
+
 
 const recent = new Set();
 
@@ -12,7 +15,11 @@ export function error(err)
 {
 	if(err instanceof SyntaxError) // from an import probably
 		throw err;
-	if(err instanceof DOMException) // Discord.js failing some random call
+	
+	if(
+		err instanceof DOMException // Discord.js failing some random call
+		|| err instanceof TopGGAPIError && err.response.statusCode === 429 // occasional Top.gg bug
+	)
 		return;
 	
 	let msg = "An error occurred; read the console for details.";
