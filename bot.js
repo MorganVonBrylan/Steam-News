@@ -13,6 +13,18 @@ export const auth = importJSON("auth.json");
 
 import "./utils/prototypes.js";
 
+if(auth.debug)
+	auth.logLevel = "verbose";
+else
+	auth.logLevel ??= "warn";
+
+switch(auth.logLevel) {
+	case "silent": console.error = Function.noop;
+	case "error": console.warn = Function.noop;
+	case "warn": console.log = Function.noop;
+	case "log": console.info = Function.noop;
+}
+
 import initCommands from "@brylan/djs-commands";
 
 export const client = new Client({

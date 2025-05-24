@@ -32,6 +32,7 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 		}
 	},
 	"debug": false,
+	"logLevel": "warn",
 
 	"supportServer": "(optional) The invite to your support server",
 	"donate": "(optional) The URL for donations"
@@ -40,6 +41,8 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 `debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode.
 
 If the webhook port is not specified, the `SERVER_PORT` environment variable will be used instead.
+
+The `logLevel` can be "silent", "error", "warn", "log" or "verbose". If not set, defaults to "warn". **Note:** if `debug` is `true`, the log level is forcefully set to "verbose".
 
 To start the bot, run `node bot.js`
 
