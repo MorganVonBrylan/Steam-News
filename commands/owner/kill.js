@@ -5,7 +5,7 @@ export const description = "KILLS THE BOT — KILL IT, KILL IT! IT'S GOTTEN ROGU
 export function run(inter)
 {
 	return inter.reply({ flags: "Ephemeral", content: "seeya" })
-		.catch(Function())
+		.catch(Function.noop)
 		.finally(async () => {
 			client.destroy();
 			process.exit();

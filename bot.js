@@ -11,6 +11,7 @@ import tr from "./localization/index.js";
 import importJSON from "./utils/importJSON.function.js";
 export const auth = importJSON("auth.json");
 
+import "./utils/prototypes.js";
 
 import initCommands from "@brylan/djs-commands";
 

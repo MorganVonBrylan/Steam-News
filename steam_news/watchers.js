@@ -122,7 +122,7 @@ export async function checkForNews(range, reschedule = false)
 				error(Object.assign(err, { embeds, targetLang: lang }));
 			});
 			if(yt)
-				channel.send(yt).catch(Function());
+				channel.send(yt).catch(Function.noop);
 		})
 		.catch(handleDeletedChannel);
 	}
@@ -343,11 +343,11 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 			{
 				const cc = price.cc = stmts.getCC(guildId) || "US";
 				if(cc === "US")
-					channel.send({ embeds: [toPriceEmbed(appid, details.name, price)] }).catch(Function());
+					channel.send({ embeds: [toPriceEmbed(appid, details.name, price)] }).catch(Function.noop);
 				else
 					queryPrices(appid, cc)
 						.then(prices => channel.send({ embeds: [toPriceEmbed(appid, details.name, prices[appid])] }))
-						.catch(Function())
+						.catch(Function.noop)
 			}
 		}
 	}

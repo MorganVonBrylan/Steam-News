@@ -14,7 +14,7 @@ export async function run(inter)
 		return inter.reply({flags: "Ephemeral", content: "Guild not found"});
 
 	const results = await Promise.allSettled([
-		inter.deferReply({flags: "Ephemeral"}).catch(Function()),
+		inter.deferReply({flags: "Ephemeral"}).catch(Function.noop),
 		...Object.values(commands).map(command => updateCmd(command, guild))
 	]);
 

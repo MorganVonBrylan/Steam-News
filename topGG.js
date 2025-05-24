@@ -67,7 +67,7 @@ export function setup(client, {token, webhook})
 				},
 			});
 			
-			await handleRequest(req, res, Function());
+			await handleRequest(req, res, Function.noop);
 		});
 
 		webhookServer.listen(port);

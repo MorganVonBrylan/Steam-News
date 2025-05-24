@@ -31,7 +31,7 @@ export function addVoter(id, lang, forceNotif = false)
 	{
 		client.users.fetch(id)
 			.then(user => user.send(tr.get(lang || "en", "voting.thanks")))
-			.catch(Function());
+			.catch(Function.noop);
 	}
 
 	if(lastVote)
