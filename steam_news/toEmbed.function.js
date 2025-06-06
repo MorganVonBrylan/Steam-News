@@ -17,7 +17,7 @@ const { countryToLang } = importJSON("locales.json");
 export default async function toEmbed({ appid, eventId, url, title, contents, date }, lang = "en")
 {
 	if(!eventId) eventId = getEventId({url});
-	const image = contents.match(/({STEAM_CLAN_IMAGE})[^\[ ]+/);
+	const image = contents.match(/({STEAM_CLAN_IMAGE})[^"\[ ]+/);
 	const yt = contents.match(YT_REGEX_G)?.map(match => `https://youtu.be/${YT_REGEX.exec(match)[1]}`).join("\n");
 	const name = getAppName(appid);
 	const steamLink = `url/EventAnnouncementPage/${appid}/${await eventId}`;
@@ -36,12 +36,13 @@ export default async function toEmbed({ appid, eventId, url, title, contents, da
 
 function toMarkdown(contents, limit = 2000)
 {
+	console.log(contents)
 	contents = contents
-		.replaceAll(/{STEAM_CLAN_IMAGE}[^\[]+/g, "")
+		.replaceAll(/{STEAM_CLAN_IMAGE}[^"\[]+/g, "")
 		.replaceAll(YT_REGEX_G, "")
 		
 		.replaceAll(/\[table\].*?\[\/table\]/gs, "##table##")
-		.replaceAll(/\[url=(http[^ \]]+)( [^\]]+)?\]\[\/url\]/g, "$1")
+		.replaceAll(/\[(url=|dynamiclink href=")(http[^ "\]]+)( [^\]]+)?"?]\[\/(url|dynamiclink)\]/g, "$2")
 		.replaceAll(/\[url=(http[^ \]]+)( [^\]]+)?\](.+?)\[\/url\]/g, "[$3]($1)")
 
 		.replaceAll("[hr][/hr]", "——————————")
@@ -59,7 +60,8 @@ function toMarkdown(contents, limit = 2000)
 		.replaceAll(/\[\/?u\]/g, "__")
 		.replaceAll(/\[\/?s\]/g, "~~")
 
-		.replaceAll(/\[\/?(img|list)\]/g, "")
+		.replaceAll(/\[\/?(img|img src=""|list)\]/g, "")
+		.replaceAll("[/p][p]", "\n")
 		.replaceAll("[/*]", "")
 		.replaceAll(/\n?\[\*\]/g, "\n- ")
 		.replaceAll(/\n{2,}/g, "\n")
