@@ -156,3 +156,6 @@ Added automatic daily database backups.
 
 	2.13.1 (25/05/2025)
 	Added adjustable log levels.
+
+	2.13.2 (06/06/2025)
+	Fixed parsing some image and link markups variants.
