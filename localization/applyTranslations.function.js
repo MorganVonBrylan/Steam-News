@@ -56,7 +56,10 @@ export default function applyTranslations(cmdName, cmd)
 		{
 			const tr = options[opt.name];
 			if(!tr)
+			{
 				console.warn(`Missing ${locale} translation for option ${opt.name} of command ${cmdName}`);
+				continue;
+			}
 
 			const {name, description, choices} = tr;
 			if(opt.nameLocalizations) opt.nameLocalizations[locale] = name;
