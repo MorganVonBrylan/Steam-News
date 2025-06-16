@@ -36,7 +36,6 @@ export default async function toEmbed({ appid, eventId, url, title, contents, da
 
 function toMarkdown(contents, limit = 2000)
 {
-	console.log(contents)
 	contents = contents
 		.replaceAll(/{STEAM_CLAN_IMAGE}[^"\[]+/g, "")
 		.replaceAll(YT_REGEX_G, "")
