@@ -3,8 +3,8 @@ import { getAppName } from "./watchers.js";
 import { getEventId, steamAppLink } from "./api.js";
 import importJSON from "../utils/importJSON.function.js";
 const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
-const YT_REGEX = /\[previewyoutube=([\w-]+)/;
-const YT_REGEX_G = /\[previewyoutube=([\w-]+)(;full)?\]\[\/previewyoutube\]/g;
+const YT_REGEX = /\[previewyoutube="?([\w-]+)"?/;
+const YT_REGEX_G = /\[previewyoutube="?([\w-]+)(;full)?"?\]\[\/previewyoutube\]/g;
 
 const { countryToLang } = importJSON("locales.json");
 
@@ -42,8 +42,8 @@ function toMarkdown(contents, limit = 2000)
 		.replaceAll(YT_REGEX_G, "")
 		
 		.replaceAll(/\[table\].*?\[\/table\]/gs, "##table##")
-		.replaceAll(/\[(url=|dynamiclink href=")(http[^ "\]]+)( [^\]]+)?"?]\[\/(url|dynamiclink)\]/g, "$2")
-		.replaceAll(/\[url=(http[^ \]]+)( [^\]]+)?\](.+?)\[\/url\]/g, "[$3]($1)")
+		.replaceAll(/\[(url=|dynamiclink href=)"?(http[^ "\]]+)( [^\]]+)?"?\]\[\/(url|dynamiclink)\]/g, "$2")
+		.replaceAll(/\[url="?(http[^ \]]+)( [^\]]+)?"?\](.+?)\[\/url\]/g, "[$3]($1)")
 
 		.replaceAll("[hr][/hr]", "——————————")
 		.replaceAll("&nbsp;", " ")
