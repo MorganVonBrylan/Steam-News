@@ -161,6 +161,9 @@ tr.set(FALLBACK);
  */
 export function applyTranslations(cmdName, cmd)
 {
+	if(cmd.subfolder === "~debug")
+		return;
+
 	for(const [locale, {commands}] of Object.entries(locales))
 	{
 		if(!commands)
