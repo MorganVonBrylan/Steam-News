@@ -202,10 +202,12 @@ export function applyTranslations(cmdName, cmd)
 							opt.description = description;
 
 						const nChoices = opt.choices?.length;
-
-						if(nChoices && nChoices !== choices?.length)
+						if(nChoices)
 						{
+							if(nChoices !== choices?.length)
 							console.warn(`Mismatched number of fallback choices ${forOption} (expected ${nChoices}, got ${choices?.length})`);
+							else for(let i = 0 ; i < nChoices ; i++)
+								opt.choices[i].name = choices[i];
 						}
 					}
 				}
