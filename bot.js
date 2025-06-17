@@ -6,7 +6,7 @@ import {
 	ThreadChannel,
 } from "discord.js";
 import { readdirSync } from "node:fs";
-import tr from "./localization/index.js";
+import tr, { applyTranslations } from "./localization/index.js";
 
 import importJSON from "./utils/importJSON.function.js";
 export const auth = importJSON("auth.json");
@@ -94,7 +94,7 @@ client.once("ready", () => {
 		debug: auth.debug,
 		ownerServer: auth.adminServer,
 		makeEnumsGlobal: true,
-		middleware: tr.applyTranslations,
+		middleware: applyTranslations,
 	}).then((cmds) => console.log(cmds.size, "commands loaded"))
 	.catch(error);
 
