@@ -175,7 +175,7 @@ export async function checkForNews(range, reschedule = false)
 		const news = [];
 		for(const newsitem of appnews.newsitems)
 		{
-			if(newsitem.date === latest)
+			if(newsitem.date <= latest)
 				break;
 
 			news.push(newsitem);
