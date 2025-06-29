@@ -112,7 +112,7 @@ export const tr = {
 		if(typeof key !== "string")
 			throw new TypeError("'key' must be a string");
 
-		function logError(message) {
+		const logError = (message) => {
 			error(Object.assign(new Error(message)), {
 				locale: this.locale, key, replaces
 			});
@@ -153,7 +153,6 @@ export const tr = {
 
 export default tr;
 global.tr = tr;
-
 
 for(const prop in tr)
 	if(typeof tr[prop] === "function")
