@@ -1,7 +1,8 @@
 
+import { parseStringPromise as parseXML } from "xml2js";
+
 // ISteamNews doc: https://partner.steamgames.com/doc/webapi/ISteamNews
-const BASE_URL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2";
-const NEWS_URL = `${BASE_URL}?feeds=steam_community_announcements&appid=`;
+const NEWS_URL = "https://store.steampowered.com/feeds/news/app/";
 // Steam Store API unofficial doc: https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI
 const STORE_BASE_URL = "https://store.steampowered.com/api/";
 const BASE_DETAILS_URL = `${STORE_BASE_URL}appdetails?appids=`;
@@ -9,7 +10,6 @@ const BASE_PRICE_URL = `${STORE_BASE_URL}appdetails?filters=price_overview&appid
 const BASE_SEARCH_URL = `${STORE_BASE_URL}storesearch/?l=english`;
 
 export const STEAM_APPID = 593110;
-const STEAM_NEWS_URL = `${BASE_URL}?appid=${STEAM_APPID}`;
 export const STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/593110/403da5dab6ce5ea2882dc5b7636d7c4dbb73c81a.jpg";
 
 
@@ -80,49 +80,38 @@ export async function search(terms, cc = "US")
 /**
  * Queries the Steam API to get the latest news of an app.
  * @param {number} appid The id of the Steam app
- * @param {number} count (optional) The number of news to fetch
- * @param {number} maxlength (optional) The max length of the 'contents' field. Any additional characters will be replaced with '...'. This also removes all PHPBB syntax.
+ * @param {string} language (optional) a Steam API language (see https://partner.steamgames.com/doc/store/localization/languages).
  *
- * @returns {Promise<object>} The news
+ * @returns {Promise<object|null>} The news, or null if 
  */
-export function query(appid, count, maxlength)
+export async function query(appid, language)
 {
 	if(!appid) throw new TypeError("appid cannot be null");
 	let url = NEWS_URL + appid;
-	if(count) url += `&count=${count}`;
-	if(maxlength) url += `&maxlength=${maxlength}`;
+	if(language) url += `?l=${language}`;
 
-	return fetch(url).then(handleQuery);
+	const response = await fetch(url);
+	if(!response.ok)
+		return null;
+	const { rss } = await response.text().then(parseXML);
+
+	return { appid, newsitems: rss.channel[0].item.map(item => ({
+		appid,
+		eventId: item.link[0].substring(item.link[0].lastIndexOf("/") + 1),
+		url: item.link[0],
+		title: item.title[0],
+		thumbnail: item.enclosure?.[0].$.url,
+		contents: item.description[0],
+		date: item.pubDate[0],
+	}))};
 }
-
 
 /**
  * Queries the Steam API to get the latest Steam news.
- * @param {number} count (optional) The number of news to fetch
- * @param {number} maxlength (optional) The max length of the 'contents' field. Any additional characters will be replaced with '...'. This also removes all PHPBB syntax.
- *
+ * @param {string} language (optional) a Steam API language (see https://partner.steamgames.com/doc/store/localization/languages).
  * @returns {Promise<object>} The news
  */
-export async function querySteam(count, maxlength)
-{
-	let url = STEAM_NEWS_URL;
-	if(count) url += `&count=${count}`;
-	if(maxlength) url += `&maxlength=${maxlength}`;
-
-	return fetch(url).then(handleQuery);
-}
-
-
-/**
- * Adds the event id corresponding to the given news item.
- * @param {object} newsItem The news item.
- * @returns {string} The evend id
- */
-export async function getEventId(newsItem)
-{
-	const redirect = (await fetch(newsItem.url, {method: "HEAD"})).url;
-	return newsItem.eventId = redirect.substring(redirect.lastIndexOf("/") + 1);
-}
+export const querySteam = query.bind(null, STEAM_APPID);
 
 
 /**
@@ -132,8 +121,9 @@ export async function getEventId(newsItem)
  */
 export async function exists(appid)
 {
-	const {appnews} = await query(appid, 1, 1);
-	return !!appnews;
+
+	const appnews = await fetch(NEWS_URL+appid, {method: "HEAD"});
+	return appnews.ok;
 }
 
 

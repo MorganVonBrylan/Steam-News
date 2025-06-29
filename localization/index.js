@@ -29,9 +29,14 @@ if(!locales[FALLBACK])
 	const countryToLang = localesFile.countryToLang = {};
 	for(const [lang, country] of Object.entries(localesFile.langToCountry))
 		countryToLang[country] = lang;
-	for(const fr of localesFile.francophones)
+	for(const fr of localesFile.langCountries.french)
 		countryToLang[fr] = "fr"
 	countryToLang.GB = countryToLang.US = "en";
+
+	const steamDefaultLanguages = localesFile.steamDefaultLanguages = {};
+	for(const [language, countries] of Object.entries(localesFile.langCountries))
+		for(const country of countries)
+			steamDefaultLanguages[country] = language;
 }
 
 
@@ -208,7 +213,7 @@ export function applyTranslations(cmdName, cmd)
 						if(nChoices)
 						{
 							if(nChoices !== choices?.length)
-							console.warn(`Mismatched number of fallback choices ${forOption} (expected ${nChoices}, got ${choices?.length})`);
+								console.warn(`Mismatched number of fallback choices ${forOption} (expected ${nChoices}, got ${choices?.length})`);
 							else for(let i = 0 ; i < nChoices ; i++)
 								opt.choices[i].name = choices[i];
 						}

@@ -25,7 +25,7 @@ export async function run(inter)
 	const fetchInfo = isKnown(appid) ? null : getDetails(appid);
 	let info;
 	try	{
-		info = await query(appid, 1);
+		info = await query(appid);
 	}
 	catch(err) {
 		await defer;
@@ -35,7 +35,7 @@ export async function run(inter)
 		return;
 	}
 
-	const { appnews } = info;
+	const appnews = info;
 	await defer;
 	if(!appnews)
 		return inter.editReply({content: t("bad-appid")});

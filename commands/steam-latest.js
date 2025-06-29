@@ -9,7 +9,7 @@ export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
 export async function run(inter) {
 	const defer = inter.deferReply().catch(error);
-	const {appnews} = await querySteam(1);
+	const appnews = await querySteam();
 	await defer;
 
 	const news = await toEmbed(appnews.newsitems[0], inter.locale);

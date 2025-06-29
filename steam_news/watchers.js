@@ -132,7 +132,7 @@ export async function checkForNews(range, reschedule = false)
 		const steamWatchers = stmts.getSteamWatchers();
 		if(steamWatchers.length)
 		{
-			querySteam(5).then(async ({appnews}) => {
+			querySteam().then(async ({appnews}) => {
 				if(!appnews)
 					return console.error(`Failed to get news for Steam`);
 
@@ -164,7 +164,7 @@ export async function checkForNews(range, reschedule = false)
 
 	for(const appid of newsRanges[range]())
 	{
-		const { appnews } = await query(appid, 5);
+		const appnews = await query(appid);
 		if(!appnews)
 		{
 			console.error(`Failed to get news of app ${appid}`);
@@ -293,7 +293,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 	if(!channel?.isTextBased() || !channel.guildId)
 		throw new TypeError("'channel' must be a text-based channel");
 
-	const {appnews} = await query(appid);
+	const appnews = await query(appid);
 	if(!appnews)
 		throw new TypeError("'appid' is not a valid app id");
 
