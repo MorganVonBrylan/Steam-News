@@ -167,7 +167,7 @@ export async function checkForNews(range, reschedule = false)
 		const { appnews } = await query(appid, 5);
 		if(!appnews)
 		{
-			console.error(`Failed to get news of app ${id}`);
+			console.error(`Failed to get news of app ${appid}`);
 			continue;
 		}
 
