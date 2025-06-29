@@ -3,6 +3,8 @@ import { query, getDetails, isNSFW, HTTPError } from "../steam_news/api.js";
 import interpretAppidOption from "../utils/interpretAppidOption.function.js";
 import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
+import importJSON from "../utils/importJSON.function.js";
+export const { steamLanguages } = importJSON("locales.json");
 
 import { PermissionFlagsBits } from "discord.js";
 const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
@@ -13,6 +15,10 @@ export const options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
+}, {
+	type: STRING, name: "language",
+	description: "The news' language. Availability depends on the game's developers.",
+	choices: Object.keys(steamLanguages).map(value => ({ value })),
 }];
 export { default as autocomplete } from "../autocomplete/search.js";
 export async function run(inter)
@@ -21,11 +27,12 @@ export async function run(inter)
 	if(!appid)
 		return;
 
-	const t = tr.set(inter.locale);
+	const lang = inter.options.getString("language") || inter.locale;
+	const t = tr.set(lang);
 	const fetchInfo = isKnown(appid) ? null : getDetails(appid);
 	let info;
 	try	{
-		info = await query(appid);
+		info = await query(appid, steamLanguages[lang]);
 	}
 	catch(err) {
 		await defer;

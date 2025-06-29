@@ -5,12 +5,17 @@ import toEmbed from "../steam_news/toEmbed.function.js";
 import { PermissionFlagsBits } from "discord.js";
 const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
 
+import { options as latestOptions, steamLanguages } from "./latest.js";
+const languageOption = latestOptions.find(({name}) => name === "language");
+
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
+export const options = [languageOption];
 export async function run(inter) {
-	const defer = inter.deferReply().catch(error);
-	const appnews = await querySteam();
-	await defer;
+	await inter.deferReply().catch(error);
+	
+	const lang = inter.options.getString("language") || inter.locale;
+	const appnews = await querySteam(steamLanguages[lang]);
 
 	const news = await toEmbed(appnews.newsitems[0], inter.locale);
 	news.footer.iconUrl = STEAM_ICON;

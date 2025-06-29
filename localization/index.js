@@ -16,9 +16,13 @@ for(const file of readdirSync(__dirname).filter(f => f.endsWith(".json")))
 {
 	const locale = importJSON(`${__dirname}/${file}`);
 	locales[file.substring(0, file.length - 5)] = locale;
-	const { commands: { watch }, voting } = locale;
+	const { commands: { watch, latest }, voting } = locale;
 	watch.description = watch.description.replace("%s", WATCH_LIMIT);
 	voting.thanks = voting.thanks.replace("%s", WATCH_VOTE_BONUS);
+
+	const steamLatest = locale.commands["steam-latest"];
+	steamLatest.options ??= {};
+	steamLatest.options.language = latest.options.language;
 }
 
 if(!locales[FALLBACK])

@@ -34,6 +34,11 @@
 				"game": {
 					"name": "game",
 					"description": "The game’s name or id"
+				},
+				"language": {
+					"name": "language",
+					"description": "The news' language. Availability depends on the game's developers.",
+					"choices": ["Arabic", "Simplified Chinese", "Czech", "Danish", "Dutch", "English", "Finnish", "French", "German", "Greek", "Hungarian", "Italian", "Japanese", "Korean", "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Spanish", "Swedish", "Thai", "Turkish", "Ukrainian", "Vietnamese"]
 				}
 			}
 		},
