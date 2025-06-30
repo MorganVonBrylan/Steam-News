@@ -55,7 +55,9 @@ function checkCommand([cmd, {name, description, options = {}}])
 	else if(description.length > DESC_MAX_LENGTH)
 		console.error(`Command ${cmd}'s description is too long (${description.length}/${DESC_MAX_LENGTH})`);
 
-	for(const [optName, {name, description}] of Object.entries(options))
+	if(!Object.values(options).every(Boolean))
+		console.error(`Command ${cmd}'s options have undefined values`);
+	else for(const [optName, {name, description}] of Object.entries(options))
 	{
 		if(!name)
 			console.error(`Command ${cmd}'s option ${optName} is missing a name`);
