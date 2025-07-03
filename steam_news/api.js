@@ -94,8 +94,9 @@ export async function query(appid, language)
 	if(!response.ok)
 		return null;
 	const { rss } = await response.text().then(parseXML);
+	const items = rss.channel[0].item || [];
 
-	return { appid, newsitems: rss.channel[0].item.map(item => ({
+	return { appid, newsitems: items.map(item => ({
 		appid,
 		eventId: item.link[0].substring(item.link[0].lastIndexOf("/") + 1),
 		url: item.link[0],
