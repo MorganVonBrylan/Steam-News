@@ -21,7 +21,7 @@ const html2markdown = nhm.translate.bind(nhm);
 export default async function toEmbed({ appid, url, title, thumbnail, contents, date }, lang = "en")
 {
 	const eventId = url.substring(url.lastIndexOf("/") + 1);
-	thumbnail ??= contents.match(/({STEAM_CLAN_IMAGE})[^"\[ ]+/)[0]
+	thumbnail ??= contents.match(/({STEAM_CLAN_IMAGE})[^"\[ ]+/)?.[0]
 		?.replace("{STEAM_CLAN_IMAGE}", STEAM_CLAN_IMAGE);
 	const yt = contents.match(YT_REGEX_G)?.map(match => `https://youtu.be/${YT_REGEX.exec(match)[1]}`).join("\n");
 	const name = getAppName(appid);
