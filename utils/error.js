@@ -54,5 +54,5 @@ export function error(err)
 		recent.add(msg);
 		setTimeout(recent.delete.bind(recent, msg), 3600_000);
 	}
-	console.error(err);
+	console.error(new Date(), err);
 }
