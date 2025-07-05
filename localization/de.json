@@ -34,6 +34,10 @@
 				"game": {
 					"name": "spiel",
 					"description": "Der Name oder die ID des Spiels"
+				},
+				"language": {
+					"name": "sprache",
+					"description": "Die Sprache der Nachrichten. Verfügbarkeit hängt von den Entwicklern des Spiels ab."
 				}
 			}
 		},
@@ -42,8 +46,12 @@
 			"description": "Zeige/setze die Lokalisierung des Servers (für Preise und Sprachen mit /info und Preisbeobachter)",
 			"options": {
 				"country-code": {
-					"name": "land",
+					"name": "ländercode",
 					"description": "Dein zweibuchstabiger Ländercode, etwa GB, FR, RU, DE etc. Du kannst auch suchen."
+				},
+				"language": {
+					"name": "sprache",
+					"description": "Deine bevorzugte Sprache für Nachrichten. Standardmäßig die Amtssprache deines Landes"
 				}
 			}
 		},
@@ -185,12 +193,44 @@
 	},
 
 	"locale": {
-		"current": "Deine momentane Locale ist %s (%s)",
+		"current": "Deine momentane Region ist %s (%s), mit %s als bevorzugte Sprache.",
 		"no-default": "Dieser Server hat keine Standardlokalisierung.",
-		"new-default": "Die Standardlokalisierung dieses Server ist jetzt %s (%s)",
+		"new-default": "Die Standardregion dieses Servers ist nun %s (%s), mit %s als bevorzugte Sprache.",
 
 		"cc-required": "Du musst den zweibuchstabigen Ländercode eines Landes angeben.\nDie Liste kannst du hier finden: %s",
-		"cc-invalid": "Das ist kein gültiger Ländercode.\nDie Liste kannst du hier finden: %s"
+		"cc-invalid": "Das ist kein gültiger Ländercode.\nDie Liste kannst du hier finden: %s",
+
+		 "languages": {
+			"ar": "Arabisch",
+			"br": "Bulgarisch",
+			"zh-CN": "vereinfachtes Chinesisch",
+			"zh-TW": "traditionelles Chinesisch",
+			"cs": "Tschechisch",
+			"da": "Dänisch",
+			"nl": "Niederländisch",
+			"en": "Englisch",
+			"fi": "Finnisch",
+			"fr": "Französisch",
+			"de": "Deutsch",
+			"el": "Griechisch",
+			"hu": "Ungarisch",
+			"it": "Italienisch",
+			"ja": "Japanisch",
+			"ko": "Koreanisch",
+			"no": "Norwegisch",
+			"pl": "Polisch",
+			"pt": "Portugiesisch",
+			"pt-BR": "Brazilianisches Portugiesisch",
+			"ro": "Rumänisch",
+			"ru": "Russisch",
+			"es-ES": "Spanisch",
+			"es-419": "Amerikanisches Spanisch",
+			"sv": "Swedisch",
+			"th": "Thailändisch",
+			"tr": "Türkisch",
+			"uk": "Ukrainisch",
+			"vn": "Vietnamesisch"
+		}
 	},
 
 	"price": {

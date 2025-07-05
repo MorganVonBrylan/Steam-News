@@ -18,7 +18,7 @@ const html2markdown = nhm.translate.bind(nhm);
  * @param {string} lang The language (default: en)
  * @returns {object} A Discord embed.
  */
-export default async function toEmbed({ appid, url, title, thumbnail, contents, date }, lang = "en")
+export default function toEmbed({ appid, url, title, thumbnail, contents, date }, lang = "en")
 {
 	const eventId = url.substring(url.lastIndexOf("/") + 1);
 	thumbnail ??= contents.match(/({STEAM_CLAN_IMAGE})[^"\[ ]+/)?.[0]

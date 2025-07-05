@@ -37,8 +37,7 @@
 				},
 				"language": {
 					"name": "language",
-					"description": "The news' language. Availability depends on the game's developers.",
-					"choices": ["Arabic", "Simplified Chinese", "Czech", "Danish", "Dutch", "English", "Finnish", "French", "German", "Greek", "Hungarian", "Italian", "Japanese", "Korean", "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Spanish", "Swedish", "Thai", "Turkish", "Ukrainian", "Vietnamese"]
+					"description": "The news' language. Availability depends on the game's developers."
 				}
 			}
 		},
@@ -49,6 +48,10 @@
 				"country-code": {
 					"name": "country-code",
 					"description": "Your 2-letter country code, like GB, FR, RU, etc. You can also make a search."
+				},
+				"language": {
+					"name": "language",
+					"description": "Your preferred language for news. Defaults to your country's official language."
 				}
 			}
 		},
@@ -190,12 +193,44 @@
 	},
 
 	"locale": {
-		"current": "Your current locale is %s (%s)",
+		"current": "Your current locale is %s (%s), with %s as the preferred language.",
 		"no-default": "This server does not have a default locale.",
-		"new-default": "This server’s default locale is now %s (%s)",
+		"new-default": "This server’s default locale is now %s (%s), with %s as its preferred language.",
 
 		"cc-required": "You need to provide a country’s 2-letter code.\nYou can find the list here: %s",
-		"cc-invalid": "This is not a valid Alpha-2 code.\nYou can find the list here: %s"
+		"cc-invalid": "This is not a valid Alpha-2 code.\nYou can find the list here: %s",
+
+		"languages": {
+			"ar": "Arabic",
+			"br": "Bulgarian",
+			"zh-CN": "simplified Chinese",
+			"zh-TW": "traditional Chinese",
+			"cs": "Czech",
+			"da": "Danish",
+			"nl": "Dutch",
+			"en": "English",
+			"fi": "Finnish",
+			"fr": "French",
+			"de": "German",
+			"el": "Greek",
+			"hu": "Hungarian",
+			"it": "Italian",
+			"ja": "Japanese",
+			"ko": "Korean",
+			"no": "Norwegian",
+			"pl": "Polish",
+			"pt": "Portuguese",
+			"pt-BR": "Brazilian Portuguese",
+			"ro": "Romanian",
+			"ru": "Russian",
+			"es-ES": "Spanish",
+			"es-419": "Latin Spanish",
+			"sv": "Swedish",
+			"th": "Thai",
+			"tr": "Turkish",
+			"uk": "Ukrainian",
+			"vn": "Vietnamese"
+		}
 	},
 
 	"price": {

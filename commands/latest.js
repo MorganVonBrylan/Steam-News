@@ -3,8 +3,9 @@ import { query, getDetails, isNSFW, HTTPError } from "../steam_news/api.js";
 import interpretAppidOption from "../utils/interpretAppidOption.function.js";
 import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
-import importJSON from "../utils/importJSON.function.js";
-export const { steamLanguages } = importJSON("locales.json");
+
+import { options as localeOptions, steamLanguages } from "./locale.js";
+const languageOption = localeOptions.find(({name}) => name === "language");
 
 import { PermissionFlagsBits } from "discord.js";
 const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
@@ -15,11 +16,9 @@ export const options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
-}, {
-	type: STRING, name: "language",
-	description: "The news' language. Availability depends on the game's developers.",
-	choices: Object.keys(steamLanguages).map(value => ({ value })),
-}];
+}, 
+	languageOption,
+];
 export { default as autocomplete } from "../autocomplete/search.js";
 export async function run(inter)
 {
@@ -62,7 +61,7 @@ export async function run(inter)
 	let news;
 	const reply = inter.editReply(isAppNSFW(appid) && !inter.channel.nsfw
 		? { flags: "Ephemeral", content: t("NSFW-content-news") }
-		: { embeds: [news = await toEmbed(appnews.newsitems[0], inter.locale)] }
+		: { embeds: [news = toEmbed(appnews.newsitems[0], inter.locale)] }
 	);
 
 	if(news?.yt && await canSendMessage(inter))

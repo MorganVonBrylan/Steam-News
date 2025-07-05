@@ -34,6 +34,10 @@
 				"game": {
 					"name": "jeu",
 					"description": "Le nom ou l’id du jeu"
+				},
+				"language": {
+					"name": "langue",
+					"description": "La langue de l'actu. La disponibilité dépend des dévelopeurs du jeu."
 				}
 			}
 		},
@@ -44,6 +48,10 @@
 				"country-code": {
 					"name": "code-pays",
 					"description": "Le code à 2 lettres de votre pays, comme GB, FR, RU, etc. Vous pouvez aussi faire une recherche."
+				},
+				"language": {
+					"name": "langue",
+					"description": "Votre langue de préférence pour les actus. Par défaut, sera la langue officielle de votre pays."
 				}
 			}
 		},
@@ -185,12 +193,44 @@
 	},
 
 	"locale": {
-		"current": "Votre pays actuel est %s (%s)",
+		"current": "Votre pays actuel est %s (%s) avec le %s pour langue préférée.",
 		"no-default": "Ce serveur n’a pas de pays par défaut.",
-		"new-default": "Le pays par défaut de ce serveur est désormais %s (%s)",
+		"new-default": "Le pays par défaut de ce serveur est désormais %s (%s) avec le %s pour langue préférée.",
 
 		"cc-required": "Vous devez fournir le code à 2 lettres d’un pays.\nVous pouvez en trouver la liste ici : %s",
-		"cc-invalid": "Ceci n’est pas un code Alpha-2 valide.\nVous pouvez en trouver la liste ici : %s"
+		"cc-invalid": "Ceci n’est pas un code Alpha-2 valide.\nVous pouvez en trouver la liste ici : %s",
+
+		"languages": {
+			"ar": "arabe",
+			"br": "bulgare",
+			"zh-CN": "chinois simplifié",
+			"zh-TW": "chinois traditionnel",
+			"cs": "tchèque",
+			"da": "danois",
+			"nl": "néerlandais",
+			"en": "anglais",
+			"fi": "finnois",
+			"fr": "français",
+			"de": "allemand",
+			"el": "grec",
+			"hu": "hongrois",
+			"it": "italien",
+			"ja": "japonais",
+			"ko": "coréen",
+			"no": "norvégien",
+			"pl": "polonais",
+			"pt": "portugais",
+			"pt-BR": "portugais du Brésil",
+			"ro": "roumain",
+			"ru": "russe",
+			"es-ES": "espagnol",
+			"es-419": "espagnol d'Amérique",
+			"sv": "suédois",
+			"th": "thaï",
+			"tr": "turc",
+			"uk": "ukrainien",
+			"vn": "vietnamien"
+		}
 	},
 
 	"price": {

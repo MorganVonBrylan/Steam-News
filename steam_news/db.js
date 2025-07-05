@@ -3,12 +3,15 @@ import { STEAM_APPID } from "./api.js";
 import SQLite3 from "better-sqlite3";
 import dirname from "../utils/__dirname.js";
 
+import importJSON from "../utils/importJSON.function.js";
+const { langCountries } = importJSON("locales.json");
+
 const __dirname = dirname(import.meta.url);
 const db = new SQLite3(`${__dirname}/watchers.db`);
 export default db;
 db.pragma("journal_mode = WAL");
 
-const DB_VERSION = 5;
+const DB_VERSION = 6;
 
 db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
@@ -50,7 +53,8 @@ CREATE TABLE IF NOT EXISTS SteamWatchers (
 
 CREATE TABLE IF NOT EXISTS Guilds (
 	id TEXT PRIMARY KEY,
-	cc TEXT NOT NULL
+	cc TEXT NOT NULL,
+	lang TEXT NOT NULL DEFAULT 'english'
 );
 
 CREATE TABLE IF NOT EXISTS Voters (
@@ -102,6 +106,11 @@ if(currentVersion < DB_VERSION)
 			ALTER TABLE SteamWatchers ADD roleId TEXT DEFAULT NULL;
 			ALTER TABLE SteamWatchers RENAME channelID TO channelId;
 		`);
+
+	case 5:
+		db.exec("ALTER TABLE Guilds ADD lang TEXT NOT NULL DEFAULT 'english'");
+		for(const [lang, countries] of Object.entries(langCountries))
+			db.exec(`UPDATE Guilds SET lang = '${lang}' WHERE cc IN ('${countries.join("','")}')`);
 	}
 
 	db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
@@ -110,9 +119,9 @@ if(currentVersion < DB_VERSION)
 const setSteamWatch = db.prepare("INSERT INTO SteamWatchers (guildId, channelId, roleId) VALUES ($guildId, $channelId, $roleId)");
 const updateSteamWatch = db.prepare("UPDATE SteamWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId");
 
-const getAllCC = db.prepare("SELECT id, cc FROM Guilds");
-const setCC = db.prepare("INSERT INTO Guilds (id, cc) VALUES ($id, $cc)");
-const updateCC = db.prepare("UPDATE Guilds SET cc = $cc WHERE id = $id");
+const getAllLocales = db.prepare("SELECT id, cc, lang FROM Guilds");
+const setLocale = db.prepare("INSERT INTO Guilds (id, cc, lang) VALUES ($id, $cc, $lang)");
+const updateLocale = db.prepare("UPDATE Guilds SET cc = $cc, lang = $lang WHERE id = $id");
 
 export const stmts = {
 	getStats: db.prepare(`SELECT
@@ -163,11 +172,13 @@ export const stmts = {
 	updateLastPrice: db.prepare("UPDATE Apps SET lastPrice = $lastPrice WHERE appid = $appid"),
 
 	getCC: db.prepare("SELECT cc FROM Guilds WHERE id = ?").pluck(),
-	setCC: {run: (id, cc) => updateCC.run({id, cc}).changes || setCC.run({id, cc}).changes},
-	getAllCC: {readonly: true, all: (indexById = true) => {
-		if(!indexById) return getAllCC.all();
+	getLocale: db.prepare("SELECT cc, lang FROM Guilds WHERE id = ?"),
+	setLocale: {run: (id, cc, lang) => updateLocale.run({id, cc, lang}).changes
+										|| setLocale.run({id, cc, lang}).changes},
+	getAllLocales: {readonly: true, all: (indexById = true) => {
+		if(!indexById) return getAllLocales.all();
 		const ccs = {};
-		for(const {id, cc} of getAllCC.all())
+		for(const {id, cc} of getAllLocales.all())
 			ccs[id] = cc;
 		return ccs;
 	}},
@@ -199,7 +210,7 @@ const getAll = [
 	"getWatchers", "getWatchedApps", "findWatchedApps",
 	"getPriceWatchers", "getWatchedPrices", "findWatchedPrices",
 	"getSteamWatchers",
-	"getAllCC", "getRecentVoters",
+	"getAllLocales", "getRecentVoters",
 ];
 
 for(const [name, stmt] of Object.entries(stmts))

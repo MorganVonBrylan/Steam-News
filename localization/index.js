@@ -9,13 +9,15 @@ export { FALLBACK as fallbackLocale };
 
 import importJSON from "../utils/importJSON.function.js";
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
+const localesFile = importJSON("locales.json");
 
 import { readdirSync } from "node:fs";
 
 for(const file of readdirSync(__dirname).filter(f => f.endsWith(".json")))
 {
 	const locale = importJSON(`${__dirname}/${file}`);
-	locales[file.substring(0, file.length - 5)] = locale;
+	const localeName = file.substring(0, file.length - 5);
+	locales[localeName] = locale;
 	const { commands: { watch, latest }, voting } = locale;
 	watch.description = watch.description.replace("%s", WATCH_LIMIT);
 	voting.thanks = voting.thanks.replace("%s", WATCH_VOTE_BONUS);
@@ -23,13 +25,18 @@ for(const file of readdirSync(__dirname).filter(f => f.endsWith(".json")))
 	const steamLatest = locale.commands["steam-latest"];
 	steamLatest.options ??= {};
 	steamLatest.options.language = latest.options.language;
+
+	const { locale: { languages } } = locale;
+	if(!languages)
+		console.warn(`Missing language name translations for ${localeName}`);
+	else for(const [code, language] of Object.entries(languages))
+		languages[localesFile.steamLanguages[code]] = language;
 }
 
 if(!locales[FALLBACK])
 	throw new Error(`Missing fallback localization (${FALLBACK})`);
 
 {
-	const localesFile = importJSON("locales.json");
 	const countryToLang = localesFile.countryToLang = {};
 	for(const [lang, country] of Object.entries(localesFile.langToCountry))
 		countryToLang[country] = lang;
@@ -41,6 +48,10 @@ if(!locales[FALLBACK])
 	for(const [language, countries] of Object.entries(localesFile.langCountries))
 		for(const country of countries)
 			steamDefaultLanguages[country] = language;
+	
+	const languageCodes = localesFile.languageCodes = {};
+	for(const [code, language] of Object.entries(localesFile.steamLanguages))
+		languageCodes[language] = code;
 }
 
 
@@ -172,57 +183,65 @@ export function applyTranslations(cmdName, cmd)
 	if(cmd.subfolder === "~debug")
 		return;
 
-	for(const [locale, {commands}] of Object.entries(locales))
+	const { commands, locale: {languages} } = locales[FALLBACK];
+
+	if(!commands)
+		console.warn("Missing fallback command translations");
+	else if(!(cmdName in commands))
+		console.warn(`Missing fallback translation for command ${cmdName}`);
+	else
 	{
-		if(!commands)
+		const {description, options} = commands[cmdName];
+		if(!description)
+			console.warn(`Missing fallback description for command ${cmdName}`);
+		else
+			cmd.description = description;
+
+		if(cmd.options?.length)
 		{
-			console.warn(`Missing ${locale} command translations`);
-			continue;
-		}
-
-		if(locale === FALLBACK)
-		{
-			if(!(cmdName in commands))
+			if(!options)
+				console.warn(`Missing fallback option translations for command ${cmdName}`);
+			else for(const opt of cmd.options)
 			{
-				console.warn(`Missing fallback translation for command ${cmdName}`);
-				continue;
-			}
-
-			const {description, options} = commands[cmdName];
-			if(!description)
-				console.warn(`Missing fallback description for command ${cmdName}`);
-			else
-				cmd.description = description;
-
-			if(cmd.options?.length)
-			{
-				if(!options)
-					console.warn(`Missing fallback option translations for command ${cmdName}`);
-				else for(const opt of cmd.options)
+				const forOption = `for option ${opt.name} of command ${cmdName}`;
+				const tr = options[opt.name];
+				if(!tr)
+					console.warn(`Missing fallback translation ${forOption}`);
+				else
 				{
-					const forOption = `for option ${opt.name} of command ${cmdName}`;
-					const tr = options[opt.name];
-					if(!tr)
-						console.warn(`Missing fallback translation ${forOption}`);
+					const { description, choices } = tr;
+					if(!description)
+						console.warn(`Missing fallback description ${forOption}`);
 					else
-					{
-						const { description, choices } = tr;
-						if(!description)
-							console.warn(`Missing fallback description ${forOption}`);
-						else
-							opt.description = description;
+						opt.description = description;
 
-						const nChoices = opt.choices?.length;
-						if(nChoices)
+					const nChoices = opt.choices?.length;
+					if(nChoices)
+					{
+						if(nChoices !== choices?.length)
 						{
-							if(nChoices !== choices?.length)
+							if(opt.name === "language")
+								for(const choice of opt.choices)
+									choice.name = languages[choice.value];
+							else
 								console.warn(`Mismatched number of fallback choices ${forOption} (expected ${nChoices}, got ${choices?.length})`);
-							else for(let i = 0 ; i < nChoices ; i++)
-								opt.choices[i].name = choices[i];
 						}
+						else for(let i = 0 ; i < nChoices ; i++)
+							opt.choices[i].name = choices[i];
 					}
 				}
 			}
+		}
+	}
+
+	for(const [locale, {commands, locale: {languages}}] of Object.entries(locales))
+	{
+		if(locale === FALLBACK)
+			continue;
+
+		if(!commands)
+		{
+			console.warn(`Missing ${locale} command translations`);
 			continue;
 		}
 
@@ -288,11 +307,18 @@ export function applyTranslations(cmdName, cmd)
 			if(!nChoices)
 				continue;
 
-			if(nChoices !== choices?.length)
+			if(nChoices !== choices?.length && opt.name === "language")
 			{
-				console.warn(`Mismatched number of choices in ${locale} ${forOption} (expected ${nChoices}, got ${choices?.length})`);
+				if(opt.name === "language")
+					choices = opt.choices.map(l => languages[l]);
+				else
+				{
+					console.warn(`Mismatched number of choices in ${locale} ${forOption} (expected ${nChoices}, got ${choices?.length})`);
+					continue;
+				}
 			}
-			else for(let i = 0 ; i < nChoices ; ++i)
+
+			for(let i = 0 ; i < nChoices ; ++i)
 			{
 				const choice = opt.choices[i];
 				if(choice.nameLocalizations) choice.nameLocalizations[locale] = choices[i];

@@ -19,7 +19,6 @@ import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db
 import importJSON from "../utils/importJSON.function.js";
 import __dirname from "../utils/__dirname.js";
 const { WATCH_LIMIT } = importJSON(__dirname(import.meta.url)+"/limits.json");
-const { countryToLang } = importJSON("locales.json");
 
 import { client, sendToMaster } from "../bot.js";
 const { channels } = client;
@@ -71,6 +70,10 @@ export function scheduleChecks() {
 	});
 }
 
+function timestamp(rssDate) {
+	return new Date(rssDate).getTime() / 1000;
+}
+
 /**
  * Triggers all watchers.
  * @param {number} range Index of the range of appids to check (see exported 'ranges').
@@ -85,60 +88,72 @@ export async function checkForNews(range, reschedule = false)
 	console.info(new Date(), "Checking news range", ranges[range]);
 	const start = Date.now();
 	const serverToLang = {};
-	for(const {id, cc} of stmts.getAllCC(false))
-		serverToLang[id] = countryToLang[cc];
+	for(const { id, lang } of stmts.getAllLocales(false))
+		serverToLang[id] = lang;
+
 	let total = 0;
 
-	function getEmbedSender(baseEmbed) {
-		const {yt} = baseEmbed;
-		const embeds = { en: { embeds: [baseEmbed] } };
+	function getNewsSender(baseEmbeds, query) {
+		const nNews = baseEmbeds.length;
+		const { footer: { iconUrl } } = baseEmbeds[0];
+		const embeds = { english: baseEmbeds };
 		let loggedError = false;
 
 		return ({channelId, roleId}) => channels.fetch(channelId).then(async channel => {
 			if(!await canWriteIn(channel))
 				return;
 
-			const lang = serverToLang[channel.guild.id] || "en";
-			if(!(lang in embeds))
+			const lang = serverToLang[channel.guild.id] || "english";
+			if(!Object.hasOwn(embeds, lang))
 			{
-				const openInApp = openInApps[lang];
-				if(openInApp)
+				const { appid, newsitems, error } = await query(lang);
+				if(error)
 				{
-					const trEmbed = {...baseEmbed};
-					trEmbed.fields[0].name = openInApps[lang];
-					embeds[lang] = { embeds: [trEmbed] };
+					error(`Failed to get ${lang} news for app ${appid}: ${error}`);
+					embeds[lang] = embeds.english;
 				}
 				else
-					embeds[lang] = embeds.en;
+				{
+					newsitems.length = nNews;
+					const trEmbeds = newsitems.reverse().map(item => toEmbed(item, lang));
+					if(iconUrl) for(const embed of trEmbeds)
+						embed.footer.iconUrl = iconUrl;
+					
+					embeds[lang] = trEmbeds;
+				}
 			}
 
-			const message = roleId
-				? { ...embeds[lang], content: `<@&${roleId}>` }
-				: embeds[lang];
-			channel.send(message).catch(err => {
-				if(handleDeletedChannel(err) || loggedError)
-					return;
-				loggedError = true;
-				error(Object.assign(err, { embeds, targetLang: lang }));
-			});
-			if(yt)
-				channel.send(yt).catch(Function.noop);
+			for(const embed of embeds[lang])
+			{
+				let content = roleId ? `<@&${roleId}>` : "";
+				if(embed.yt)
+					content += `\n${yt}`;
+				channel.send(content
+					? { content, embeds: [embed] }
+					: { embeds: [embed] })
+				.catch(err => {
+					if(handleDeletedChannel(err) || loggedError)
+						return;
+					loggedError = true;
+					error(Object.assign(err, { embeds, targetLang: lang }));
+				});
+			}
 		})
 		.catch(handleDeletedChannel);
 	}
 
-	if(range === newsRanges.length - 1)
+	if(range !== newsRanges.length - 1)
 	{
 		const steamWatchers = stmts.getSteamWatchers();
 		if(steamWatchers.length)
 		{
-			querySteam().then(async ({appnews}) => {
-				if(!appnews)
-					return console.error(`Failed to get news for Steam`);
+			querySteam().then(async ({newsitems, error}) => {
+				if(error)
+					return console.error(`Failed to get news for Steam: ${error}`);
 
 				const { latest } = getAppInfo(STEAM_APPID);
 				const news = [];
-				for(const newsitem of appnews.newsitems)
+				for(const newsitem of newsitems)
 				{
 					if(newsitem.date <= latest)
 						break;
@@ -150,30 +165,32 @@ export async function checkForNews(range, reschedule = false)
 				if(!news.length)
 					return;
 
+				total += news.length;
 				const [{date: latestDate}] = news;
-				for(const newsitem of news.reverse())
-				{
-					const baseEmbed = await toEmbed(newsitem);
-					baseEmbed.footer.iconUrl = STEAM_ICON;
-					steamWatchers.forEach(getEmbedSender(baseEmbed));
-				}
-				stmts.updateLatest({ appid: STEAM_APPID, latest: latestDate });
+				const baseEmbeds = news.reverse().map(newsitem => {
+					const embed = toEmbed(newsitem);
+					embed.footer.iconUrl = STEAM_ICON;
+					return embed;
+				});
+				steamWatchers.forEach(getNewsSender(baseEmbeds, querySteam));
+				stmts.updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
 			});
 		}
 	}
 
 	for(const appid of newsRanges[range]())
 	{
-		const appnews = await query(appid);
-		if(!appnews)
+		const queryNews = query.bind(null, appid);
+		const { newsitems, error } = await queryNews();
+		if(error)
 		{
-			console.error(`Failed to get news of app ${appid}`);
+			console.error(`Failed to get news of app ${appid}: ${error}`);
 			continue;
 		}
 
 		const { latest } = getAppInfo(appid);
 		const news = [];
-		for(const newsitem of appnews.newsitems)
+		for(const newsitem of newsitems)
 		{
 			if(newsitem.date <= latest)
 				break;
@@ -185,12 +202,11 @@ export async function checkForNews(range, reschedule = false)
 		if(!news.length)
 			continue;
 
-		const [{date: latestDate}] = news;
 		total += news.length;
-		for(const newsitem of news.reverse())
-			stmts.getWatchers(appid).forEach(getEmbedSender(await toEmbed(newsitem)));
-
-		stmts.updateLatest({ appid, latest: latestDate });
+		const [{date: latestDate}] = news;
+		const baseEmbeds = news.reverse().map(newsitem => toEmbed(newsitem));
+		stmts.getWatchers(appid).forEach(getNewsSender(baseEmbeds, queryNews));
+		stmts.updateLatest({ appid, latest: timestamp(latestDate) });
 	};
 
 	const time = ~~((Date.now() - start) / 1000);
