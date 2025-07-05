@@ -1,6 +1,6 @@
 
 import dirname from "../utils/__dirname.js";
-const __dirname = dirname(import.meta.url);
+const dataFolder = dirname(import.meta.url) + "/data";
 
 const FALLBACK = "en";
 const locales = {};
@@ -9,13 +9,13 @@ export { FALLBACK as fallbackLocale };
 
 import importJSON from "../utils/importJSON.function.js";
 const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
-const localesFile = importJSON("locales.json");
+import localesFile from "./locales.js";
 
 import { readdirSync } from "node:fs";
 
-for(const file of readdirSync(__dirname).filter(f => f.endsWith(".json")))
+for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 {
-	const locale = importJSON(`${__dirname}/${file}`);
+	const locale = importJSON(`${dataFolder}/${file}`);
 	const localeName = file.substring(0, file.length - 5);
 	locales[localeName] = locale;
 	const { commands: { watch, latest }, voting } = locale;
@@ -35,24 +35,6 @@ for(const file of readdirSync(__dirname).filter(f => f.endsWith(".json")))
 
 if(!locales[FALLBACK])
 	throw new Error(`Missing fallback localization (${FALLBACK})`);
-
-{
-	const countryToLang = localesFile.countryToLang = {};
-	for(const [lang, country] of Object.entries(localesFile.langToCountry))
-		countryToLang[country] = lang;
-	for(const fr of localesFile.langCountries.french)
-		countryToLang[fr] = "fr"
-	countryToLang.GB = countryToLang.US = "en";
-
-	const steamDefaultLanguages = localesFile.steamDefaultLanguages = {};
-	for(const [language, countries] of Object.entries(localesFile.langCountries))
-		for(const country of countries)
-			steamDefaultLanguages[country] = language;
-	
-	const languageCodes = localesFile.languageCodes = {};
-	for(const [code, language] of Object.entries(localesFile.steamLanguages))
-		languageCodes[language] = code;
-}
 
 
 /**

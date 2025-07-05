@@ -1,12 +1,12 @@
 
 import { stmts } from "../steam_news/db.js";
 const { getCC, getLocale, setLocale } = stmts;
-import importJSON from "../utils/importJSON.function.js";
+import locales from "../localization/locales.js";
 const {
 	codeToCountry,
 	steamLanguages, steam_exclude,
 	steamDefaultLanguages,
-} = importJSON("locales.json");
+} = locales;
 
 export { steamLanguages };
 

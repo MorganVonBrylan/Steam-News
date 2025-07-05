@@ -21,7 +21,7 @@ const EMBED_MAX_LENGTH = Object.freeze({
 const mainLocale = {};
 const locales = new Map();
 
-for(const file of readdirSync(__dirname).filter(f => f.endsWith(".json")))
+for(const file of readdirSync(__dirname+"/data").filter(f => f.endsWith(".json")))
 {
 	const localizationData = importJSON(`${__dirname}/${file}`);
 	const locale = file.slice(0, -5);

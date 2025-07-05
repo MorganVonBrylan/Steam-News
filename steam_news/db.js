@@ -3,8 +3,8 @@ import { STEAM_APPID } from "./api.js";
 import SQLite3 from "better-sqlite3";
 import dirname from "../utils/__dirname.js";
 
-import importJSON from "../utils/importJSON.function.js";
-const { langCountries } = importJSON("locales.json");
+import locales from "../localization/locales.js";
+const { langCountries } = locales;
 
 const __dirname = dirname(import.meta.url);
 const db = new SQLite3(`${__dirname}/watchers.db`);

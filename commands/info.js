@@ -3,8 +3,8 @@ import { getDetails, isNSFW, steamAppLink, HTTPError } from "../steam_news/api.j
 import interpretAppidOption from "../utils/interpretAppidOption.function.js";
 import { stmts } from "../steam_news/db.js";
 const { getCC } = stmts;
-import importJSON from "../utils/importJSON.function.js";
-const { langToCountry } = importJSON("locales.json");
+import locales from "../localization/locales.js";
+const { langToCountry } = locales;
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;

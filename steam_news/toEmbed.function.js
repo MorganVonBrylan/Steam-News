@@ -1,12 +1,12 @@
 
 import { getAppName } from "./watchers.js";
 import { steamAppLink } from "./api.js";
-import importJSON from "../utils/importJSON.function.js";
 const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
 const YT_REGEX = /\[previewyoutube="?([\w-]+)"?/;
 const YT_REGEX_G = /\[previewyoutube="?([\w-]+)(;full)?"?\]\[\/previewyoutube\]/g;
 
-const { countryToLang } = importJSON("locales.json");
+import locales from "../localization/locales.js";
+const { countryToLang } = locales;
 
 import { NodeHtmlMarkdown } from "node-html-markdown";
 const nhm = new NodeHtmlMarkdown({ maxConsecutiveNewlines: 2 });
