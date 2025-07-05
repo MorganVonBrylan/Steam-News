@@ -81,5 +81,5 @@ export const purgeChannel = channelId => !!stmts.purgeChannel(channelId.id || ch
  * @param {number} appid The app's id.
  * @returns {boolean} true if the app was purged, false if there was nothing to purge.
  */
-export const purgeApp = appid => !!db.run("DELETE FROM Watchers WHERE appid = ?", appid).changes;
-// Not prepared because it is only used in debug mode
+export const purgeApp = appid => !!db.run("DELETE FROM Apps WHERE appid = ?", appid).changes;
+// Not prepared because it is rare
