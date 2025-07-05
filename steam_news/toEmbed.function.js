@@ -2,8 +2,7 @@
 import { getAppName } from "./watchers.js";
 import { steamAppLink } from "./api.js";
 const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
-const YT_REGEX = /\[previewyoutube="?([\w-]+)"?/;
-const YT_REGEX_G = /\[previewyoutube="?([\w-]+)(;full)?"?\]\[\/previewyoutube\]/g;
+const YT_REGEX = /data-youtube="([\w-]+)"/g;
 
 import locales from "../localization/locales.js";
 const { countryToLang } = locales;
@@ -23,7 +22,7 @@ export default function toEmbed({ appid, url, title, thumbnail, contents, date }
 	const eventId = url.substring(url.lastIndexOf("/") + 1);
 	thumbnail ??= contents.match(/({STEAM_CLAN_IMAGE})[^"\[ ]+/)?.[0]
 		?.replace("{STEAM_CLAN_IMAGE}", STEAM_CLAN_IMAGE);
-	const yt = contents.match(YT_REGEX_G)?.map(match => `https://youtu.be/${YT_REGEX.exec(match)[1]}`).join("\n");
+	const yt = contents.match(YT_REGEX)?.map(m => `https://youtu.be/${m.slice(14, -1)}`).join("\n");
 	const name = getAppName(appid);
 	const steamLink = `url/EventAnnouncementPage/${appid}/${eventId}`;
 	return {
