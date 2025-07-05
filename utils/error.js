@@ -22,6 +22,7 @@ export function error(err)
 	)
 		return;
 	
+	console.error(new Date(), err);
 	let msg = "An error occurred; read the console for details.";
 
 	if(err?.message)
@@ -56,5 +57,4 @@ export function error(err)
 		recent.add(msg);
 		setTimeout(recent.delete.bind(recent, msg), 3600_000);
 	}
-	console.error(new Date(), err);
 }
