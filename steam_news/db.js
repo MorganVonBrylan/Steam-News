@@ -270,6 +270,6 @@ async function backup()
 	backupZip.writeZip(zipName);
 	rm(fileName);
 
-	console.log("Database backed up:", basename(fileName), "into", basename(zipName));
+	console.info("Database backed up:", basename(fileName), "into", basename(zipName));
 	scheduleBackup();
 }

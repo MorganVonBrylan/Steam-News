@@ -18,7 +18,7 @@ import "./utils/prototypes.js";
 if(auth.debug)
 	auth.logLevel = "verbose";
 else
-	auth.logLevel ??= "warn";
+	auth.logLevel ??= "log";
 
 switch(auth.logLevel) {
 	case "silent": console.error = Function.noop;
