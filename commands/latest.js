@@ -56,16 +56,17 @@ export async function run(inter)
 	}
 
 	if(!appnews.newsitems.length)
-		return inter.editReply({flags: "Ephemeral", content: t("no-news")});
+		inter.editReply({flags: "Ephemeral", content: t("no-news")});
+	else if(isAppNSFW(appid) && !inter.channel.nsfw)
+		inter.editReply({flags: "Ephemeral", content: t("NSFW-content-news")});
+	else
+	{
+		const news = toEmbed(appnews.newsitems[0], inter.locale);
+		const reply = inter.editReply({ embeds: [news] });
+		if(news?.yt && await canSendMessage(inter))
+			reply.then(() => inter.channel?.send(news.yt));
+	}
 
-	let news;
-	const reply = inter.editReply(isAppNSFW(appid) && !inter.channel.nsfw
-		? { flags: "Ephemeral", content: t("NSFW-content-news") }
-		: { embeds: [news = toEmbed(appnews.newsitems[0], inter.locale)] }
-	);
-
-	if(news?.yt && await canSendMessage(inter))
-		reply.then(() => inter.channel?.send(news.yt));
 }
 
 async function canSendMessage({guild, channel})
