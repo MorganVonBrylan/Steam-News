@@ -13,6 +13,7 @@ async function canWriteIn(channel) {
 }
 
 export * from "./db_api.js";
+import { purgeApp } form "./db_api.js";
 import db, { stmts } from "./db.js";
 import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
 
@@ -185,6 +186,8 @@ export async function checkForNews(range, reschedule = false)
 		if(error)
 		{
 			console.error(`Failed to get news of app ${appid}: ${error}`);
+			if(error === "404 Not Found")
+				purgeApp(appid);
 			continue;
 		}
 
