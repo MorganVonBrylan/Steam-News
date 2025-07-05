@@ -155,7 +155,7 @@ export async function checkForNews(range, reschedule = false)
 				const news = [];
 				for(const newsitem of newsitems)
 				{
-					if(newsitem.date <= latest)
+					if(timestamp(newsitem.date) <= latest)
 						break;
 
 					news.push(newsitem);
@@ -192,7 +192,7 @@ export async function checkForNews(range, reschedule = false)
 		const news = [];
 		for(const newsitem of newsitems)
 		{
-			if(newsitem.date <= latest)
+			if(timestamp(newsitem.date) <= latest)
 				break;
 
 			news.push(newsitem);
