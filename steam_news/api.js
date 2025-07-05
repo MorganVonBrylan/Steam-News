@@ -1,7 +1,7 @@
 
 import { parseStringPromise as parseXML } from "xml2js";
 
-// ISteamNews doc: https://partner.steamgames.com/doc/webapi/ISteamNews
+// Example: view-source:https://store.steampowered.com/feeds/news/app/593110?l=japanese
 const NEWS_URL = "https://store.steampowered.com/feeds/news/app/";
 // Steam Store API unofficial doc: https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI
 const STORE_BASE_URL = "https://store.steampowered.com/api/";
