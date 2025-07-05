@@ -8,6 +8,8 @@ import {
 import { readdirSync } from "node:fs";
 import tr, { applyTranslations } from "./localization/index.js";
 
+import "./saveMyRAM.js";
+
 import importJSON from "./utils/importJSON.function.js";
 export const auth = importJSON("auth.json");
 
