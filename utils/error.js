@@ -47,6 +47,8 @@ export function error(err)
 		else
 			msg += `\nMessage : ${message}`;
 	}
+	else
+		msg += `\n${err}`;
 
 	if(!recent.has(msg))
 	{
