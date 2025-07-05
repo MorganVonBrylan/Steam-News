@@ -142,7 +142,7 @@ export async function checkForNews(range, reschedule = false)
 		.catch(handleDeletedChannel);
 	}
 
-	if(range !== newsRanges.length - 1)
+	if(range === newsRanges.length - 1)
 	{
 		const steamWatchers = stmts.getSteamWatchers();
 		if(steamWatchers.length)
