@@ -92,7 +92,8 @@ export async function query(appid, language)
 
 	const response = await fetch(url);
 	if(!response.ok)
-		return null;
+		return { appid, error: `${response.status} ${response.statusText}` };
+	
 	const { rss } = await response.text().then(parseXML);
 	const items = rss.channel[0].item || [];
 
@@ -122,7 +123,6 @@ export const querySteam = query.bind(null, STEAM_APPID);
  */
 export async function exists(appid)
 {
-
 	const appnews = await fetch(NEWS_URL+appid, {method: "HEAD"});
 	return appnews.ok;
 }
