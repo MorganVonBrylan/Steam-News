@@ -292,7 +292,7 @@ export function applyTranslations(cmdName, cmd)
 			if(nChoices !== choices?.length && opt.name === "language")
 			{
 				if(opt.name === "language")
-					choices = opt.choices.map(l => languages[l]);
+					choices = opt.choices.map(({value}) => languages[value]);
 				else
 				{
 					console.warn(`Mismatched number of choices in ${locale} ${forOption} (expected ${nChoices}, got ${choices?.length})`);
