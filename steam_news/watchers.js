@@ -13,7 +13,7 @@ async function canWriteIn(channel) {
 }
 
 export * from "./db_api.js";
-import { purgeApp } form "./db_api.js";
+import { purgeApp } from "./db_api.js";
 import db, { stmts } from "./db.js";
 import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
 
