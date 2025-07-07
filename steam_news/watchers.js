@@ -131,18 +131,20 @@ export async function checkForNews(range, reschedule = false)
 				channel.send(content
 					? { content, embeds: [embed] }
 					: { embeds: [embed] })
-				.catch(err => {
-					if(!handleDeletedChannel(err))
-						error({
-							message: "Error sending news",
-							rawError: err.rawError,
+				.catch(err =>
+					handleDeletedChannel(err)
+					|| console.error(new Date(), {
+						message: "Error sending news",
+						rawError: err.rawError,
+						response: {
 							status: err.status,
 							method: err.method,
 							url: err.url,
-							channelId: err.url.match(/channels\/([0-9]+)/)?.[1],
-							embeds, targetLang: lang,
-						});
-				});
+						},
+						channelId: err.url.match(/channels\/([0-9]+)/)?.[1],
+						embeds, targetLang: lang,
+					})
+				);
 			}
 		})
 		.catch(handleDeletedChannel);
