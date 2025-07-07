@@ -98,7 +98,6 @@ export async function checkForNews(range, reschedule = false)
 		const nNews = baseEmbeds.length;
 		const { footer: { iconUrl } } = baseEmbeds[0];
 		const embeds = { english: baseEmbeds };
-		let loggedError = false;
 
 		return ({channelId, roleId}) => channels.fetch(channelId).then(async channel => {
 			if(!await canWriteIn(channel))
@@ -133,10 +132,16 @@ export async function checkForNews(range, reschedule = false)
 					? { content, embeds: [embed] }
 					: { embeds: [embed] })
 				.catch(err => {
-					if(handleDeletedChannel(err) || loggedError)
-						return;
-					loggedError = true;
-					error(Object.assign(err, { embeds, targetLang: lang }));
+					if(!handleDeletedChannel(err))
+						error({
+							message: "Error sending news",
+							rawError: err.rawError,
+							status: err.status,
+							method: err.method,
+							url: err.url,
+							channelId: err.url.match(/channels\/([0-9]+)/)?.[1],
+							embeds, targetLang: lang,
+						});
 				});
 			}
 		})
