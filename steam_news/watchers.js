@@ -100,6 +100,7 @@ export async function checkForNews(range, reschedule = false)
 		const nNews = baseEmbeds.length;
 		const { footer: { iconUrl } } = baseEmbeds[0];
 		const embeds = { english: baseEmbeds };
+		const loggedErrors = new Set();
 
 		return ({channelId, roleId}) => channels.fetch(channelId).then(async channel => {
 			if(!await canWriteIn(channel))
@@ -133,20 +134,12 @@ export async function checkForNews(range, reschedule = false)
 				channel.send(content
 					? { content, embeds: [embed] }
 					: { embeds: [embed] })
-				.catch(err =>
-					handleDeletedChannel(err)
-					|| console.error(new Date(), {
-						message: "Error sending news",
-						rawError: err.rawError,
-						response: {
-							status: err.status,
-							method: err.method,
-							url: err.url,
-						},
-						channelId: err.url.match(/channels\/([0-9]+)/)?.[1],
-						embeds, targetLang: lang,
-					})
-				);
+				.catch(err => {
+					if(handleDeletedChannel(err) || loggedErrors.has(err.message))
+						return;
+					loggedErrors.add(err.message);
+					error(Object.assign(err, { embeds, targetLang: lang }));
+				});
 			}
 		})
 		.catch(handleDeletedChannel);
