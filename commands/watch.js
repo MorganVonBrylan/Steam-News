@@ -60,11 +60,6 @@ export async function run(inter)
 	if(cannotSend)
 		return inter.reply({flags: "Ephemeral", content: t(cannotSend, channel)});
 
-	if(!perms?.has(SEND_MESSAGES))
-		return inter.reply({flags: "Ephemeral", content: t("cannot-send", channel)});
-	else if(!perms.has(EMBED_LINKS))
-		return inter.reply({flags: "Ephemeral", content: t("cannot-embed", channel)});
-
 	const { appid, defer } = await interpretAppidOption(inter, true);
 	if(!appid)
 		return;
