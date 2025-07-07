@@ -13,11 +13,24 @@ import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js"
 import { HTTPError } from "../steam_news/api.js";
 
 import { PermissionFlagsBits } from "discord.js";
-const { SendMessages: SEND_MESSAGES, EmbedLinks: EMBED_LINKS } = PermissionFlagsBits;
+const {
+	SendMessages: SEND_MESSAGES,
+	SendMessagesInThreads: SEND_MESSAGES_IN_THREADS,
+	EmbedLinks: EMBED_LINKS,
+} = PermissionFlagsBits;
 
 import { guildCommands } from "@brylan/djs-commands";
 const updateUnwatch = guildCommands.updateCmd.bind(null, "unwatch");
 
+
+export async function checkPerms(channel)
+{
+	const perms = channel.permissionsFor(await channel.guild.members.fetchMe());
+	if(!perms?.has(channel.isThread() ? SEND_MESSAGES_IN_THREADS : SEND_MESSAGES))
+		return "cannot-send";
+	else if(!perms.has(EMBED_LINKS))
+		return "cannot-embed";
+}
 
 export const defaultMemberPermissions = "0";
 export const options = [{
@@ -39,10 +52,13 @@ export const options = [{
 export { appsOnly as autocomplete } from "../autocomplete/search.js";
 export async function run(inter)
 {
+	const t = tr.set(inter.locale, "watch");
 	const channel = inter.options.getChannel("channel")
 		|| await inter.guild.channels.fetch(inter.channelId);
-	const perms = channel.permissionsFor(await inter.guild.members.fetchMe());
-	const t = tr.set(inter.locale, "watch");
+
+	const cannotSend = await checkPerms(channel);
+	if(cannotSend)
+		return inter.reply({flags: "Ephemeral", content: t(cannotSend, channel)});
 
 	if(!perms?.has(SEND_MESSAGES))
 		return inter.reply({flags: "Ephemeral", content: t("cannot-send", channel)});

@@ -5,6 +5,8 @@ const { watchSteam } = stmts;
 import { guildCommands } from "@brylan/djs-commands";
 const createCmd = guildCommands.createCmd.bind(null, "steam-unwatch");
 
+import { checkPerms } from "./watch.js";
+
 export const defaultMemberPermissions = "0";
 export const options = [{
 	type: ROLE, name: "role",
@@ -17,6 +19,10 @@ export const options = [{
 export async function run(inter)
 {
 	const channel = inter.options.getChannel("channel") || inter.channel;
+	const cannotSend = await checkPerms(channel);
+	if(cannotSend)
+		return inter.reply({flags: "Ephemeral", content: tr.get(inter.locale, `watch.${cannotSend}`, channel)});
+
 	watchSteam({
 		guildId: inter.guildId,
 		channelId: channel.id,

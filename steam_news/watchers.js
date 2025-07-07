@@ -7,9 +7,11 @@ import {
 } from "./api.js";
 import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
 const REQUIRED_PERMS = PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
+const REQUIRED_THREAD_PERMS = PERMISSIONS.SendMessagesInThreads | PERMISSIONS.EmbedLinks;
 
 async function canWriteIn(channel) {
-	return channel?.permissionsFor(await channel.guild.members.fetchMe()).has(REQUIRED_PERMS);
+	return channel?.permissionsFor(await channel.guild.members.fetchMe())
+		.has(channel.isThread() ? REQUIRED_THREAD_PERMS : REQUIRED_PERMS);
 }
 
 export * from "./db_api.js";
