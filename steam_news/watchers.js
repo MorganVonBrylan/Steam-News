@@ -135,10 +135,17 @@ export async function checkForNews(range, reschedule = false)
 					? { content, embeds: [embed] }
 					: { embeds: [embed] })
 				.catch(err => {
-					if(handleDeletedChannel(err) || loggedErrors.has(err.message))
-						return;
-					loggedErrors.add(err.message);
-					error(Object.assign(err, { embeds, targetLang: lang }));
+					if(err.status === 403)
+						console.error({
+							message: "Error sending news: missing access",
+							channelId: err.url.match(/channels\/([0-9]+)/)?.[1],
+							embeds, targetLang: lang,
+						});
+					else if(!handleDeletedChannel(err) && !loggedErrors.has(err.message))
+					{
+						loggedErrors.add(err.message);
+						error(Object.assign(err, { embeds, targetLang: lang }));
+					}
 				});
 			}
 		})
