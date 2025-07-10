@@ -61,7 +61,7 @@ export function run(inter)
 		if(!cc)
 			cc = getCC(inter.guildId);
 
-		if(cc.length !== 2)
+		if(cc?.length !== 2)
 			inter.reply({flags: "Ephemeral", content: t("cc-required", CC_LIST)});
 		else if(!(cc in codeToCountry))
 			inter.reply({flags: "Ephemeral", content: t("cc-invalid", CC_LIST)});
