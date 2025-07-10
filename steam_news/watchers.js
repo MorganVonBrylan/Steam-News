@@ -38,7 +38,6 @@ function handleDeletedChannel({status, url}) {
 
 
 import toEmbed, { price as toPriceEmbed } from "./toEmbed.function.js";
-const openInApps = tr.getAll("info.openInApp");
 
 
 /**
