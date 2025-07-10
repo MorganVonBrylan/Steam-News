@@ -133,7 +133,7 @@ export async function checkForNews(range, reschedule = false)
 					: { embeds: [embed] }
 				).then(() => {
 					if(embed.yt)
-						return channel.send(yt);
+						return channel.send(embed.yt);
 				}).catch(err => {
 					if(err.status === 403)
 						console.error(new Date(), {
