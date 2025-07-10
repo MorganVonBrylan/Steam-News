@@ -14,10 +14,11 @@ export const STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public
 
 
 export class HTTPError extends Error {
-	constructor(url, code) {
+	constructor({url, code, statusText}) {
 		super(`Query ended with code ${code}`);
 		this.url = url;
 		this.code = code;
+		this.status = statusText;
 	}
 }
 
@@ -43,7 +44,7 @@ function handleQuery(res, retry = true)
 	else if(res.ok)
 		throw new Error("Query did not return JSON");
 	else
-		throw new HTTPError(url, status);
+		throw new HTTPError(res);
 }
 
 
