@@ -55,16 +55,18 @@ export async function run(inter)
 		saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
 	}
 
+	const channel = inter.channel || await inter.guild.channels.fetch(inter.channelId);
+
 	if(!appnews.newsitems.length)
 		inter.editReply({flags: "Ephemeral", content: t("no-news")});
-	else if(isAppNSFW(appid) && !inter.channel.nsfw)
+	else if(isAppNSFW(appid) && !channel.nsfw)
 		inter.editReply({flags: "Ephemeral", content: t("NSFW-content-news")});
 	else
 	{
 		const news = toEmbed(appnews.newsitems[0], inter.locale);
 		const reply = inter.editReply({ embeds: [news] });
 		if(news?.yt && await canSendMessage(inter))
-			reply.then(() => inter.channel?.send(news.yt));
+			reply.then(() => channel.send(news.yt));
 	}
 
 }
@@ -72,5 +74,5 @@ export async function run(inter)
 async function canSendMessage({guild, channel})
 {
 	return !guild
-		|| channel?.memberPermissions(await guild.members.fetchMe())?.has(SEND_MESSAGES);
+		|| channel.memberPermissions(await guild.members.fetchMe())?.has(SEND_MESSAGES);
 }
