@@ -53,7 +53,6 @@ function replace({prototype}, newPatch)
 replace(AnonymousGuild, function(data) {
 	delete data.name;
 	delete data.description;
-    this.patch = this._truePatch;
 	this._truePatch(data);
 });
 
