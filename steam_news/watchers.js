@@ -131,10 +131,8 @@ export async function checkForNews(range, reschedule = false)
 				channel.send(roleId
 					? { content: `<@&${roleId}>`, embeds: [embed] }
 					: { embeds: [embed] }
-				).then(() => {
-					if(embed.yt)
-						return channel.send(embed.yt);
-				}).catch(err => {
+				).then(embed.yt ? () => channel.send(embed.yt) : Function.noop)
+				.catch(err => {
 					if(err.status === 403)
 						console.error(new Date(), {
 							message: "Error sending news: missing access",
