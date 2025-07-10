@@ -136,7 +136,7 @@ export async function checkForNews(range, reschedule = false)
 					: { embeds: [embed] })
 				.catch(err => {
 					if(err.status === 403)
-						console.error({
+						console.error(new Date(), {
 							message: "Error sending news: missing access",
 							channelId: err.url.match(/channels\/([0-9]+)/)?.[1],
 							embeds, targetLang: lang,
