@@ -6,8 +6,8 @@ import {
 	STEAM_APPID, STEAM_ICON
 } from "./api.js";
 import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
-const REQUIRED_PERMS = PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
-const REQUIRED_THREAD_PERMS = PERMISSIONS.SendMessagesInThreads | PERMISSIONS.EmbedLinks;
+const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
+const REQUIRED_THREAD_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessagesInThreads | PERMISSIONS.EmbedLinks;
 
 async function canWriteIn(channel) {
 	return channel?.memberPermissions(await channel.guild.members.fetchMe())

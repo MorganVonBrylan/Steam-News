@@ -14,6 +14,7 @@ import { HTTPError } from "../steam_news/api.js";
 
 import { PermissionFlagsBits } from "discord.js";
 const {
+	ViewChannel: VIEW_CHANNEL,
 	SendMessages: SEND_MESSAGES,
 	SendMessagesInThreads: SEND_MESSAGES_IN_THREADS,
 	EmbedLinks: EMBED_LINKS,
@@ -26,7 +27,9 @@ const updateUnwatch = guildCommands.updateCmd.bind(null, "unwatch");
 export async function checkPerms(channel)
 {
 	const perms = channel.memberPermissions(await channel.guild.members.fetchMe());
-	if(!perms?.has(channel.isThread() ? SEND_MESSAGES_IN_THREADS : SEND_MESSAGES))
+	if(!perms.has(VIEW_CHANNEL))
+		return "cannot-see";
+	else if(!perms?.has(channel.isThread() ? SEND_MESSAGES_IN_THREADS : SEND_MESSAGES))
 		return "cannot-send";
 	else if(!perms.has(EMBED_LINKS))
 		return "cannot-embed";

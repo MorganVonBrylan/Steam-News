@@ -240,6 +240,7 @@
 	},
 
 	"watch": {
+		"cannot-see": "I do not have access to %s.",
 		"cannot-send": "I cannot send messages in %s.",
 		"cannot-embed": "I cannot send embeds in %s.",
 
