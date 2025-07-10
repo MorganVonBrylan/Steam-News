@@ -14,10 +14,33 @@
  */
 
 import {
+	Options,
 	AnonymousGuild,
 	BaseChannel,
 	Role,
 } from "discord.js";
+
+
+export const cacheLimits = Options.cacheWithLimits({
+	...Options.DefaultMakeCacheSettings,
+	UserManager: 0,
+	GuildMemberManager: 0,
+	ThreadMemberManager: 0,
+	StageInstanceManager: 0,
+	GuildForumThreadManager: 0,
+	MessageManager: 0,
+	GuildMessageManager: 0,
+	BaseGuildEmojiManager: 0,
+	GuildEmojiManager: 0,
+	GuildStickerManager: 0,
+	GuildBanManager: 0,
+	GuildInviteManager: 0,
+	GuildScheduledEventManager: 0,
+	AutoModerationRuleManager: 0,
+	DMMessageManager: 0,
+	VoiceStateManager: 0,
+});
+
 
 function replace({prototype}, newPatch)
 {

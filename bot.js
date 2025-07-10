@@ -1,14 +1,14 @@
 
 import {
-	Client, Options,
+	Client,
 	GatewayIntentBits, Partials,
 	ActivityType,
 	ThreadChannel,
 } from "discord.js";
 import { readdirSync } from "node:fs";
-import tr, { applyTranslations } from "./localization/index.js";
+import { applyTranslations } from "./localization/index.js";
 
-import "./saveMyRAM.js";
+import { cacheLimits } from "./saveMyRAM.js";
 
 import importJSON from "./utils/importJSON.function.js";
 export const auth = importJSON("auth.json");
@@ -37,18 +37,7 @@ export const client = new Client({
 		Partials.Channel, // for DMs
 		Partials.User, Partials.GuildMember, Partials.ThreadMember, // for performance
 	],
-	makeCache: Options.cacheWithLimits({
-		...Options.DefaultMakeCacheSettings,
-		UserManager: 0,
-		GuildMemberManager: 0,
-		ThreadMemberManager: 0,
-		StageInstanceManager: 0,
-		GuildForumThreadManager: 0,
-		MessageManager: 0,
-		GuildMessageManager: 0,
-		GuildEmojiManager: 0,
-		GuildStickerManager: 0,
-	}),
+	makeCache: cacheLimits,
 	presence: { activities: [{
 		type: ActivityType.Listening, name: "/watch",
 	}]},
