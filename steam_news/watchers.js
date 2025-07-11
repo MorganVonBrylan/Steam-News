@@ -93,6 +93,7 @@ export async function checkForNews(range, reschedule = false)
 	for(const { id, lang } of stmts.getAllLocales(false))
 		serverToLang[id] = lang;
 
+	let attempts = 0, successes = 0;
 	let total = 0;
 
 	function getNewsSender(baseEmbeds, query) {
@@ -102,6 +103,7 @@ export async function checkForNews(range, reschedule = false)
 		const loggedErrors = new Set();
 
 		return ({channelId, roleId}) => channels.fetch(channelId).then(async channel => {
+			attempts++;
 			if(!await canWriteIn(channel))
 				return;
 
@@ -131,6 +133,7 @@ export async function checkForNews(range, reschedule = false)
 					? { content: `<@&${roleId}>`, embeds: [embed] }
 					: { embeds: [embed] }
 				).then(embed.yt ? () => channel.send(embed.yt) : Function.noop)
+				.then(() => successes++)
 				.catch(err => {
 					if(err.status === 403)
 						console.error(new Date(), {
@@ -148,6 +151,8 @@ export async function checkForNews(range, reschedule = false)
 		})
 		.catch(handleDeletedChannel);
 	}
+
+	let promises = [];
 
 	if(range === newsRanges.length - 1)
 	{
@@ -179,7 +184,7 @@ export async function checkForNews(range, reschedule = false)
 					embed.footer.iconUrl = STEAM_ICON;
 					return embed;
 				});
-				steamWatchers.forEach(getNewsSender(baseEmbeds, querySteam));
+				promises.push(...steamWatchers.map(getNewsSender(baseEmbeds, querySteam)));
 				stmts.updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
 			});
 		}
@@ -214,7 +219,7 @@ export async function checkForNews(range, reschedule = false)
 		total += news.length;
 		const [{date: latestDate}] = news;
 		const baseEmbeds = news.reverse().map(newsitem => toEmbed(newsitem));
-		stmts.getWatchers(appid).forEach(getNewsSender(baseEmbeds, queryNews));
+		promises.push(...stmts.getWatchers(appid).map(getNewsSender(baseEmbeds, queryNews)));
 		stmts.updateLatest({ appid, latest: timestamp(latestDate) });
 	};
 
@@ -226,6 +231,9 @@ export async function checkForNews(range, reschedule = false)
 		sendToMaster(`checkNews took ${mn}:${s < 10 ? `0${s}` : s} (range ${ranges[range]})`);
 		longestTime = time;
 	}
+
+	if(promises.length)
+		Promise.allSettled(promises).then(() => console.log(new Date(), "Successfully sent", successes, "out of", attempts));
 
 	return total;
 }
