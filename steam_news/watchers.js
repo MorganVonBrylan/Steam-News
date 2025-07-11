@@ -233,7 +233,7 @@ export async function checkForNews(range, reschedule = false)
 	}
 
 	if(promises.length)
-		Promise.allSettled(promises).then(() => console.log(new Date(), "Successfully sent", successes, "out of", attempts));
+		Promise.allSettled(promises).then(() => console.info(new Date(), "Successfully sent", successes, "/", attempts));
 
 	return total;
 }
