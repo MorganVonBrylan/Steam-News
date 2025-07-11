@@ -54,7 +54,7 @@ export async function run(inter)
 		saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
 	}
 
-	const channel = inter.channel || await inter.guild.channels.fetch(inter.channelId);
+	const channel = inter.channel || await inter.client.channels.fetch(inter.channelId);
 
 	if(!channel?.send)
 		error({ message: "No channel.send", interChannel: inter.channel && true, channel });
