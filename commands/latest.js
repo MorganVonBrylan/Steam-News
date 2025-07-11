@@ -29,12 +29,12 @@ export async function run(inter)
 	const lang = inter.options.getString("language") || inter.locale;
 	const t = tr.set(lang);
 	const fetchInfo = isKnown(appid) ? null : getDetails(appid);
+	await defer;
 	let info;
 	try	{
 		info = await query(appid, steamLanguages[lang]);
 	}
 	catch(err) {
-		await defer;
 		inter.editReply(err instanceof HTTPError
 			? (err.code === 403 ? t("api-403") : t("api-err", err.code))
 			: "Error while fetching data from the Steam API. Please retry later.");
@@ -42,7 +42,6 @@ export async function run(inter)
 	}
 
 	const appnews = info;
-	await defer;
 	if(!appnews)
 		return inter.editReply({content: t("bad-appid")});
 
