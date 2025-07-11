@@ -43,7 +43,7 @@ function handleQuery(res, retry = true)
 	}
 	else if(res.ok)
 		throw new Error("Query did not return JSON");
-	else
+	else if(status !== 504) // Gateway Timeout
 		throw new HTTPError(res);
 }
 
