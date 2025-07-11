@@ -56,6 +56,9 @@ export async function run(inter)
 
 	const channel = inter.channel || await inter.guild.channels.fetch(inter.channelId);
 
+	if(!channel?.send)
+		error({ message: "No channel.send", interChannel: inter.channel && true, channel });
+
 	if(!appnews.newsitems.length)
 		inter.editReply({flags: "Ephemeral", content: t("no-news")});
 	else if(isAppNSFW(appid) && !channel.nsfw)
