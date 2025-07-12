@@ -68,7 +68,7 @@ export function run(inter)
 		else
 		{
 			let lang = inter.options.getString("language");
-			lang = lang ? steamLanguages[lang] : steamDefaultLanguages[cc];
+			lang = (lang ? steamLanguages[lang] : steamDefaultLanguages[cc]) || "english";
 			setLocale(inter.guildId, cc, lang);
 			inter.reply(t("new-default", cc, codeToCountry[cc], t("languages."+lang)));
 		}
