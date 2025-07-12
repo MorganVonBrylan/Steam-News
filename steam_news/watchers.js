@@ -103,6 +103,9 @@ export async function checkForNews(range, reschedule = false)
 		const loggedErrors = new Set();
 
 		return ({channelId, roleId}) => channels.fetch(channelId).then(async channel => {
+			if(channel.locked)
+				return purgeChannel(channelId);
+
 			attempts++;
 			if(!await canWriteIn(channel))
 				return;
