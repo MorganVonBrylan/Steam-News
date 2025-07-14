@@ -1,15 +1,4 @@
 
-import {
-	Client,
-	GatewayIntentBits, Partials,
-	ActivityType,
-	ThreadChannel,
-} from "discord.js";
-import { readdirSync } from "node:fs";
-import { applyTranslations } from "./localization/index.js";
-
-import { cacheLimits } from "./saveMyRAM.js";
-
 import importJSON from "./utils/importJSON.function.js";
 export const auth = importJSON("auth.json");
 
@@ -27,7 +16,17 @@ switch(auth.logLevel) {
 	case "log": console.info = Function.noop;
 }
 
+import {
+	Client,
+	GatewayIntentBits, Partials,
+	ActivityType,
+	ThreadChannel,
+} from "discord.js";
 import initCommands from "@brylan/djs-commands";
+import { applyTranslations } from "./localization/index.js";
+import { readdirSync } from "node:fs";
+
+import { cacheLimits } from "./saveMyRAM.js";
 
 export const client = new Client({
 	intents: [
