@@ -7,8 +7,8 @@ import toEmbed from "../steam_news/toEmbed.function.js";
 import { options as localeOptions, steamLanguages } from "./locale.js";
 const languageOption = localeOptions.find(({name}) => name === "language");
 
-import { PermissionFlagsBits } from "discord.js";
-const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
+import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
+const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages;
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
@@ -76,5 +76,5 @@ export async function run(inter)
 async function canSendMessage({guild, channel})
 {
 	return !guild
-		|| channel.memberPermissions(await guild.members.fetchMe())?.has(SEND_MESSAGES);
+		|| channel.memberPermissions(await guild.members.fetchMe())?.has(REQUIRED_PERMS);
 }
