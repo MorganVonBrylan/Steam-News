@@ -164,3 +164,8 @@ Added automatic daily database backups.
 2.14 (05/07/2025)
 Added news localisation!
 Added an experimental memory-saving scheme.
+
+	2.14.1 (14/07/2025)
+	Improvement of news formatting.
+	Mild improvements to "save my RAM".
+	Various bug fixes, notably pertaining to checking permissions.
