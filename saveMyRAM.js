@@ -46,6 +46,8 @@ export const cacheLimits = Options.cacheWithLimits({
 
 function replace({prototype}, newPatch)
 {
+	if(!Object.hasOwn(prototype, "_patch"))
+		throw new TypeError("This class does not have a '_patch' method.");
 	prototype._truePatch = prototype._patch;
 	Reflect.defineProperty(prototype, "_patch", { value: newPatch });
 }
