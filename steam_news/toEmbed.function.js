@@ -20,8 +20,7 @@ const html2markdown = nhm.translate.bind(nhm);
 export default function toEmbed({ appid, url, title, thumbnail, contents, date }, lang = "en")
 {
 	const eventId = url.substring(url.lastIndexOf("/") + 1);
-	thumbnail ??= contents.match(/({STEAM_CLAN_IMAGE})[^"\[ ]+/)?.[0]
-		?.replace("{STEAM_CLAN_IMAGE}", STEAM_CLAN_IMAGE);
+	thumbnail ??= contents.match(/<img src="(https[^"]+)"/)?.[1];
 	const yt = contents.match(YT_REGEX)?.map(m => `https://youtu.be/${m.slice(14, -1)}`).join("\n");
 	const name = getAppName(appid);
 	const steamLink = `url/EventAnnouncementPage/${appid}/${eventId}`;
@@ -40,8 +39,10 @@ export default function toEmbed({ appid, url, title, thumbnail, contents, date }
 
 function toMarkdown(contents, limit = 2000)
 {
+	contents = contents.replaceAll(/<div class="bb_h([0-9])">(.+?)<\/div>/g, "<h$1>$2</h$1>");
 	contents = html2markdown(contents)
 		.replaceAll(/!\[\]\([^)]+\)/g, "") // e.g. ![](https://whtv.com/some_image.gif)
+		.replaceAll(/(\n *){3,}/g, "\n\n")
 		.trim();
 
 	return contents.length < limit ? contents : `${contents.substring(0, limit-1)}…`;
