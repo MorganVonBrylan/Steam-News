@@ -56,25 +56,23 @@ export async function run(inter)
 
 	const channel = inter.channel || await inter.client.channels.fetch(inter.channelId);
 
-	if(!channel?.send)
-		error({ message: "No channel.send", interChannel: inter.channel && true, channel });
-
 	if(!appnews.newsitems.length)
 		inter.editReply({flags: "Ephemeral", content: t("no-news")});
-	else if(isAppNSFW(appid) && !channel.nsfw)
+	else if(isAppNSFW(appid) && !(channel.nsfw || channel.isDMBased()))
 		inter.editReply({flags: "Ephemeral", content: t("NSFW-content-news")});
 	else
 	{
 		const news = toEmbed(appnews.newsitems[0], inter.locale);
 		const reply = inter.editReply({ embeds: [news] });
-		if(news?.yt && await canSendMessage(inter))
+		if(news?.yt && await canSendMessage(channel))
 			reply.then(() => channel.send(news.yt));
 	}
 
 }
 
-async function canSendMessage({guild, channel})
+async function canSendMessage(channel)
 {
-	return !guild
-		|| channel.memberPermissions(await guild.members.fetchMe())?.has(REQUIRED_PERMS);
+	return "send" in channel && 
+		(!channel.guild
+		|| channel.memberPermissions(await channel.guild.members.fetchMe())?.has(REQUIRED_PERMS));
 }
