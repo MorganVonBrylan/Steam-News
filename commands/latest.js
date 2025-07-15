@@ -72,7 +72,8 @@ export async function run(inter)
 
 async function canSendMessage(channel)
 {
-	return "send" in channel && 
+	return "send" in channel &&
 		(!channel.guild
-		|| channel.memberPermissions(await channel.guild.members.fetchMe())?.has(REQUIRED_PERMS));
+		|| !channel.locked
+		&& channel.memberPermissions(await channel.guild.members.fetchMe())?.has(REQUIRED_PERMS));
 }
