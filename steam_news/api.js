@@ -164,6 +164,7 @@ export async function queryPrices(appids, cc = "US")
  * Returns details about an app.
  * @param {number} appid The app's id.
  * @param {string} lang (optional) The language to get the details in. Default: en
+ * @param {string} cc (optional) The country to get the details for. Mostly for prices. Default: US
  * @returns {Promise<object?>} The app's details, or null if it doesn't exist.
  */
 export async function getDetails(appid, lang = "en", cc = "US")
