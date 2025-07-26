@@ -26,7 +26,7 @@ const updateUnwatch = guildCommands.updateCmd.bind(null, "unwatch");
 
 export async function checkPerms(channel)
 {
-	const perms = channel.memberPermissions(await channel.guild.members.fetchMe());
+	const perms = channel.permissionsFor(await channel.guild.members.fetchMe());
 	if(!perms.has(VIEW_CHANNEL))
 		return "cannot-see";
 	else if(!perms?.has(channel.isThread() ? SEND_MESSAGES_IN_THREADS : SEND_MESSAGES))
