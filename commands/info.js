@@ -32,7 +32,7 @@ export async function run(inter)
 	if(!appid)
 		return;
 
-	let cc = inter.options.getString("country");
+	let cc = inter.options.getString("country-code")?.toUpperCase();
 	let lang;
 	const guildLocale = inter.guild && getLocale(inter.guildId);
 	if(guildLocale)
