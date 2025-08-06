@@ -2,9 +2,9 @@
 import { getDetails, isNSFW, steamAppLink, HTTPError } from "../steam_news/api.js";
 import interpretAppidOption from "../utils/interpretAppidOption.function.js";
 import { stmts } from "../steam_news/db.js";
-const { getCC } = stmts;
+const { getLocale } = stmts;
 import locales from "../localization/locales.js";
-const { langToCountry } = locales;
+const { langToCountry, languageCodes } = locales;
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
@@ -13,30 +13,45 @@ export const options = [{
 	description: "The game’s name or id",
 	autocomplete: true,
 }, {
-	type: STRING, name: "language",
-	description: "The language to display info in (if unspecified, the server's default or your own locale)",
-	choices: [
-		{ name: "English (price in US$)", value: "en" },
-		{ name: "English (price in pounds)", value: "en-UK" },
-		{ name: "Français", value: "fr" },
-		{ name: "Deutsch", value: "de" },
-		{ name: "My own locale", value: "own" },
-	],
+	type: STRING, name: "country-code",
+	description: "2-letter code of the country to display info for (by default the server's locale, or your own)",
+	autocomplete: true,
 }];
-export { default as autocomplete } from "../autocomplete/search.js";
+import { default as searchGame } from "../autocomplete/search.js";
+import { autocomplete as searchLocale } from "./locale.js";
+export function autocomplete(inter) {
+	const { name } = inter.options.getFocused(true);
+	if(name === "game")
+		searchGame(inter);
+	else
+		searchLocale(inter);
+}
 export async function run(inter)
 {
 	const { appid, defer } = await interpretAppidOption(inter);
 	if(!appid)
 		return;
 
-	const langOpt = inter.options.getString("language");
-	const lang = langOpt && langOpt !== "own" ? langOpt : (
-		getCC(inter.guild?.id)?.toLowerCase() || inter.locale || "en"
-	);
+	let cc = inter.options.getString("country");
+	let lang;
+	const guildLocale = inter.guild && getLocale(inter.guildId);
+	if(guildLocale)
+	{
+		if(cc)
+			({lang} = guildLocale);
+		else
+			({cc, lang} = guildLocale)
+		lang = languageCodes[lang];
+	}
+	else
+	{
+		lang = inter.locale || "en";
+		cc ??= langToCountry[lang];
+	}
+
 	const t = tr.set(lang, "info");
 
-	getDetails(appid, lang, langToCountry[lang]).then(async details => {
+	getDetails(appid, lang, cc).then(async details => {
 		await defer;
 		if(!details)
 			return inter.editReply({flags: "Ephemeral", content: t("invalidAppid")});

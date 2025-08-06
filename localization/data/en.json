@@ -14,16 +14,9 @@
 					"name": "game",
 					"description": "The game’s name or id"
 				},
-				"language": {
-					"name": "language",
-					"description": "The language to display info in (if unspecified, the server’s default or your own locale)",
-					"choices": [
-						"English (price in US$)",
-						"English (price in pounds)",
-						"Français",
-						"Deutsch",
-						"My own locale"
-					]
+				"country-code": {
+					"name": "country-code",
+					"description": "2-letter code of the country to display info for (defaults to the server's locale, or your own)"
 				}
 			}
 		},

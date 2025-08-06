@@ -14,16 +14,9 @@
 					"name": "jeu",
 					"description": "Le nom ou l’id du jeu"
 				},
-				"language": {
-					"name": "langue",
-					"description": "La langue dans laquelle afficher l’info (par défaut la valeur du serveur ou votre propre langue)",
-					"choices": [
-						"Anglais (prix en dollars)",
-						"Anglais (prix en livres)",
-						"Français",
-						"Deutsch",
-						"Ma propre langue"
-					]
+				"country-code": {
+					"name": "code-pays",
+					"description": "Code à 2 lettres du pays pour lequel afficher l’info (par défaut celui du serveur, ou le vôtre)"
 				}
 			}
 		},

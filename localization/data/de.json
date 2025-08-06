@@ -14,16 +14,9 @@
 					"name": "spiel",
 					"description": "Der Name oder die ID des Spiels"
 				},
-				"language": {
-					"name": "sprache",
-					"description": "Die Lokalisierung für Infos (Falls nicht angegeben, die Sprache des Servers oder deine eigene)",
-					"choices": [
-						"English (preise in US$)",
-						"English (preise in pounds)",
-						"Français",
-						"Deutsch",
-						"Meine Eigene Locale"
-					]
+				"country-code": {
+					"name": "ländercode",
+					"description": "Der zweibuchstabiger Ländercode für Infos (Standard ist der des Servers oder Ihrer)"
 				}
 			}
 		},
