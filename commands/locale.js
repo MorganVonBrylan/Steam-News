@@ -39,7 +39,7 @@ export function autocomplete(inter)
 
 	inter.respond(results.map(upperName => {
 		const cc = countryToCode[upperName];
-		return { name: codeToCountry[cc], value: cc };
+		return { name: `${cc} (${codeToCountry[cc]})`, value: cc };
 	}));
 };
 export function run(inter)
