@@ -169,3 +169,8 @@ Added an experimental memory-saving scheme.
 	Improvement of news formatting.
 	Mild improvements to "save my RAM".
 	Various bug fixes, notably pertaining to checking permissions.
+
+2.15 (06/08/2025)
+/info now allows selecting any locale.
+/locale's autocomplete choices now include the CC.
+Fixes somes permission checks.
