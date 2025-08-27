@@ -64,8 +64,14 @@ export async function run(inter)
 	{
 		const news = toEmbed(appnews.newsitems[0], inter.locale);
 		const reply = inter.editReply({ embeds: [news] });
+		try {
 		if(news?.yt && await canSendMessage(channel))
 			reply.then(() => channel.send(news.yt));
+		}
+		catch(err) {
+			error(err);
+			console.error("Channel:", channel);
+		}
 	}
 
 }
