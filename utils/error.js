@@ -35,7 +35,7 @@ export function error(err)
 		|| code === "UND_ERR_ABORTED"
 		|| code === "UND_ERR_SOCKET")
 	{
-		console.error(new Date(), message);
+		console.error(new Date(), err.constructor.name, message);
 		return;
 	}
 	
