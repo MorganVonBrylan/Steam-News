@@ -232,6 +232,10 @@ import { rm } from "node:fs/promises";
 import { basename } from "node:path";
 import "../utils/prototypes.js";
 
+function padNum(number) {
+	return number.toString().padStart(2, 0);
+}
+
 const backupsDir = `${__dirname}/_backups`;
 if(!existsSync(backupsDir))
 	mkdirSync(backupsDir);
@@ -241,10 +245,10 @@ function backupZipName(date = new Date()) {
 		date = new Date();
 		date.setMonth(date.getMonth() + 1, 1);
 	}
-	return `${backupsDir}/${date.getFullYear()}-${(date.getMonth()+1).padStart(2, 0)}.zip`;
+	return `${backupsDir}/${date.getFullYear()}-${padNum(date.getMonth()+1)}.zip`;
 }
 function backupFileName(date = new Date()) {
-	return backupZipName(date).replace(".zip", `-${date.getDate().padStart(2, 0)}.db`);
+	return backupZipName(date).replace(".zip", `-${padNum(date.getDate())}.db`);
 }
 
 let backupZip = new AdmZip(existsSync(backupZipName()) ? backupZipName() : null);
