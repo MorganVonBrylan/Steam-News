@@ -67,7 +67,7 @@ export async function run(inter)
 		} = details;
 		const nsfw = isNSFW(details);
 
-		if(nsfw && !inter.channel.nsfw) // temporary
+		if(nsfw && inter.guild && !inter.channel.nsfw)
 			return inter.editReply({flags: "Ephemeral", content: t("nsfwForbidden")});
 
 		inter.editReply({ embeds: [{
