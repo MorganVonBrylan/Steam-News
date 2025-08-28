@@ -28,7 +28,7 @@ export function error(err)
 	const code = err.code || err.cause?.code;
 
 	if(message === "read ECONNRESET"
-		|| status === 403 || status === 404 || status === 408 || status >= 500
+		|| /*status === 403 ||*/ status === 404 || status === 408 || status >= 500
 		|| message === "Unknown interaction" || message === "Missing Access"
 		|| message.startsWith("invalid json response body")
 		|| code === "UND_ERR_CONNECT_TIMEOUT"
