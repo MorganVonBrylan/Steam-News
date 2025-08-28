@@ -19,6 +19,7 @@ export function setup(client, {token, webhook})
 
 	const autoPoster = new DJSPoster(token, client);
 	autoPoster.on("error", error);
+	console.log("Top.gg autoposter enabled");
 
 	const {id} = client.user;
 	voteURLs.default = `https://top.gg/bot/${id}/vote`;
@@ -71,5 +72,6 @@ export function setup(client, {token, webhook})
 		});
 
 		webhookServer.listen(port);
+		console.log("Top.gg webhook listening on port", port);
 	}
 }
