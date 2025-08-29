@@ -116,7 +116,7 @@ export async function checkForNews(range, reschedule = false)
 				const { appid, newsitems, error } = await query(lang);
 				if(error)
 				{
-					error(`Failed to get ${lang} news for app ${appid}: ${error}`);
+					error(new Date(), `Failed to get ${lang} news for app ${appid}: ${error}`);
 					embeds[lang] = embeds.english;
 				}
 				else
@@ -164,7 +164,7 @@ export async function checkForNews(range, reschedule = false)
 		{
 			querySteam().then(async ({newsitems, error}) => {
 				if(error)
-					return console.error(`Failed to get news for Steam: ${error}`);
+					return console.error(new Date(), `Failed to get news for Steam: ${error}`);
 
 				const { latest } = getAppInfo(STEAM_APPID);
 				const news = [];
@@ -199,7 +199,7 @@ export async function checkForNews(range, reschedule = false)
 		const { newsitems, error } = await queryNews();
 		if(error)
 		{
-			console.error(`Failed to get news of app ${appid}: ${error}`);
+			console.error(new Date(), `Failed to get news of app ${appid}: ${error}`);
 			if(error === "404 Not Found")
 				purgeApp(appid);
 			continue;
@@ -350,7 +350,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 	if(price || wasUnknown)
 	{
 		const details = await getDetails(appid);
-		if(!details) throw new Error(`Failed to get details of app ${appid}`);
+		if(!details) throw new Error(new Date(), `Failed to get details of app ${appid}`);
 
 		let knownPrice = null;
 		if(wasUnknown)
