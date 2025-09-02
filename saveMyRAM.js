@@ -29,6 +29,7 @@ export const cacheLimits = Options.cacheWithLimits({
 	ThreadMemberManager: 0,
 	StageInstanceManager: 0,
 	GuildForumThreadManager: 0,
+	GuildTextThreadManager: 0,
 
 	MessageManager: 0,
 	GuildMessageManager: 0,
