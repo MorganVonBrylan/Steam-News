@@ -72,14 +72,8 @@ export async function sendToMaster(msg, onError = error)
 
 client.login(auth.token);
 
-client.on("ready", async () => {
-	console.log(`Running as ${client.user.tag}!`);
+client.once("shardReady", () => {
 	myself = client.user;
-	const { members } = await client.guilds.fetch(auth.adminServer);
-	master = (await members.fetch(auth.master)).user;
-});
-
-client.once("ready", () => {
 	initCommands(client, {
 		debug: auth.debug,
 		ownerServer: auth.adminServer,
@@ -87,7 +81,15 @@ client.once("ready", () => {
 		middleware: applyTranslations,
 	}).then((cmds) => console.log(cmds.size, "commands loaded"))
 	.catch(error);
+});
 
+client.on("ready", async () => {
+	console.log(`Running as ${client.user.tag}!`);
+	const { members } = await client.guilds.fetch(auth.adminServer);
+	master = (await members.fetch(auth.master)).user;
+});
+
+client.once("ready", () => {
 	import("./steam_news/watchers.js").then(({scheduleChecks}) => scheduleChecks());
 
 	if(auth.topGG)
