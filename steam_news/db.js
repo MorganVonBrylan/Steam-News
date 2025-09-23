@@ -232,6 +232,12 @@ import { rm } from "node:fs/promises";
 import { basename } from "node:path";
 import "../utils/prototypes.js";
 
+const { BACKUP_SCHEDULE } = process.env;
+console.log("Database backup schedule:", BACKUP_SCHEDULE);
+
+if(BACKUP_SCHEDULE)
+{
+
 function padNum(number) {
 	return number.toString().padStart(2, 0);
 }
@@ -257,13 +263,17 @@ scheduleBackup();
 
 function scheduleBackup()
 {
-	const tomorrow = new Date();
-	tomorrow.setHours(0, 1, 0);
-	tomorrow.setDate(tomorrow.getDate() + 1);
-	if(tomorrow.getDate() === 1)
-		backupZip = new AdmZip();
+	let next = new Date();
+	const currentMonth = next.getMonth();
+	next.setHours(0, 1, 0);
+	if(BACKUP_SCHEDULE === "daily")
+		next.setDate(next.getDate() + 1);
+	else
+		next.setDate(next.getDate() + 7 - next.getDay());
 
-	setTimeout(backup, tomorrow.getTime() - Date.now());
+	if(next.getMonth() !== currentMonth)
+		backupZip = new AdmZip();
+	setTimeout(backup, next.getTime() - Date.now());
 }
 async function backup()
 {
@@ -277,3 +287,5 @@ async function backup()
 	console.info("Database backed up:", basename(fileName), "into", basename(zipName));
 	scheduleBackup();
 }
+
+} // if(BACKUP_SCHEDULE)

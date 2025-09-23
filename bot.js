@@ -16,6 +16,8 @@ switch(auth.logLevel) {
 	case "log": console.info = Function.noop;
 }
 
+process.env.BACKUP_SCHEDULE ??= auth.backups ?? "weekly";
+
 import {
 	Client,
 	GatewayIntentBits, Partials,

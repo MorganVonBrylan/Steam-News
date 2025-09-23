@@ -33,6 +33,7 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 	},
 	"debug": false,
 	"logLevel": "warn",
+	"backups": false,
 
 	"supportServer": "(optional) The invite to your support server",
 	"donate": "(optional) The URL for donations"
@@ -43,6 +44,8 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 If the webhook port is not specified, the `SERVER_PORT` environment variable will be used instead.
 
 The `logLevel` can be "silent", "error", "warn", "log" or "verbose". If not set, defaults to "warn". **Note:** if `debug` is `true`, the log level is forcefully set to "verbose".
+
+`backups` assigns the backup schedule. Possible values are `false`, `"daily"` and `"weekly"`. Weekly is every Sunday at midnight. If omitted or null, defaults to "weekly". If the `BACKUP_SCHEDULE` environment variable is set, it will have priority.
 
 To start the bot, run `node bot.js`
 
