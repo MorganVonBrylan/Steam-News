@@ -60,7 +60,7 @@ import error from "./utils/error.js";
 export async function sendToMaster(msg, onError = error)
 {
 	if(!client.readyAt)
-		client.once("ready", () => client.users.fetch(auth.master)
+		client.once("clientReady", () => client.users.fetch(auth.master)
 		.then(master => master.send(msg))
 		.catch(onError));
 	else
@@ -85,13 +85,13 @@ client.once("shardReady", () => {
 	.catch(error);
 });
 
-client.on("ready", async () => {
+client.on("clientReady", async () => {
 	console.log(`Running as ${client.user.tag}!`);
 	const { members } = await client.guilds.fetch(auth.adminServer);
 	master = (await members.fetch(auth.master)).user;
 });
 
-client.once("ready", () => {
+client.once("clientReady", () => {
 	import("./steam_news/watchers.js").then(({scheduleChecks}) => scheduleChecks());
 
 	if(auth.topGG)

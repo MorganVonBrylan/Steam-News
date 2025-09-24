@@ -50,7 +50,7 @@ if(premiumSKU)
 {
 	/* Doing subscriber role properly requires GUILD_MEMBERS, and I'm not even sure I can get the user id properly
 	let supportServer, subRole;
-	client.once("ready", async () => {
+	client.once("clientReady", async () => {
 		supportServer = await client.guilds.fetch(premium.supportServer);
 		subRole = supportServer.roles.fetch(premium.premiumRole);
 	});
