@@ -67,5 +67,6 @@ export function price(appid, name, price)
 			? `${t.sale} ~~${price.initial_formatted}~~ **${price.final_formatted}** (-${price.discount_percent}%)`
 			: t.published.replace("%s", price.final_formatted),
 		fields: [{name: t.openInApp, value: steamAppLink("steam://store/"+appid)}],
+		image: { url: `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/capsule_184x69.jpg` },
 	};
 }
