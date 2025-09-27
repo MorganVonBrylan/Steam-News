@@ -45,35 +45,34 @@ export const cacheLimits = Options.cacheWithLimits({
 });
 
 
-function replace({prototype}, newPatch)
+function patch({prototype}, patchData)
 {
 	const className = prototype.constructor.name;
 	if(!Object.hasOwn(prototype, "_patch"))
 		throw new TypeError(`${className} does not have a '_patch' method.`);
 
 	prototype._truePatch = prototype._patch;
-	if(Reflect.defineProperty(prototype, "_patch", { value: newPatch }))
+	if(Reflect.defineProperty(prototype, "_patch",
+		{ value: function(data) { patchData(data); return this._truePatch(data); }})
+	)
 		console.info(`Patched: ${className}`);
 	else
 		console.error(`Redefining '_patch' on ${className} failed.`);
 }
 
-replace(AnonymousGuild, function(data) {
+patch(AnonymousGuild, (data) => {
 	delete data.name;
 	delete data.description;
-	this._truePatch(data);
 });
 
-replace(BaseChannel, function(data) {
+patch(BaseChannel, (data) => {
 	delete data.name;
 	delete data.topic;
-	this._truePatch(data);
 });
 
-replace(Role, function(data) {
+patch(Role, (data) => {
 	delete data.name;
 	delete data.color;
 	delete data.icon;
 	delete data.unicode_emoji;
-	this._truePatch(data);
 });
