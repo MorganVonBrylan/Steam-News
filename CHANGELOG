@@ -178,3 +178,6 @@ Fixes somes permission checks.
 2.16 (23/09/2025)
 Database backups are now configurable: they can be scheduled daily, weekly (default), or disabled.
 Price updates now show a banner for the game.
+
+	2.16.1 (27/09/2025)
+	Some memory optimisation.
