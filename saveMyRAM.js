@@ -18,6 +18,7 @@ import {
 	AnonymousGuild,
 	BaseChannel,
 	Role,
+	ApplicationCommand,
 } from "discord.js";
 
 
@@ -75,4 +76,15 @@ patch(Role, (data) => {
 	delete data.color;
 	delete data.icon;
 	delete data.unicode_emoji;
+});
+
+/* This may seem like a bad idea, however djs-commands does not use Discord.js command objects.
+ * It uses its own cache, made of the imported command files.
+ * The only thing it does require is the name, as it uses that to retrieve it for updating/deleting.
+ */
+patch(ApplicationCommand, (data) => {
+	delete data.name_localizations;
+	delete data.description;
+	delete data.description_localizations;
+	delete data.options;
 });
