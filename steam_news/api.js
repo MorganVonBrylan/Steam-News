@@ -130,7 +130,7 @@ export async function exists(appid)
 }
 
 
-const BULK_LIMIT = 300;
+const BULK_LIMIT = 250;
 /**
  * Queries prices for one or more apps.
  * @param {number|Array<number>} appids The app id(s)
