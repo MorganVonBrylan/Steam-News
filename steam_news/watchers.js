@@ -19,9 +19,8 @@ import { purgeApp } from "./db_api.js";
 import db, { stmts } from "./db.js";
 import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
 
-import importJSON from "../utils/importJSON.function.js";
 import __dirname from "../utils/__dirname.js";
-const { WATCH_LIMIT } = importJSON(__dirname(import.meta.url)+"/limits.json");
+import { WATCH_LIMIT } from "./limits.js";
 
 import { client, sendToMaster } from "../bot.js";
 const { channels } = client;

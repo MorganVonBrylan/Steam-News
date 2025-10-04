@@ -2,11 +2,10 @@
 import { STEAM_APPID } from "../steam_news/api.js";
 import interpretAppidOption from "../utils/interpretAppidOption.function.js";
 
-import importJSON from "../utils/importJSON.function.js";
-const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
+import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../steam_news/limits.js";
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
-import { voted, premiumSKU, bonus as PREMIUM_BONUS } from "../steam_news/VIPs.js";
-const MAX_LIMIT = LIMIT_WITH_VOTE + PREMIUM_BONUS;
+import { voted, premiumSKU } from "../steam_news/VIPs.js";
+const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
 import { voteURL } from "../topGG.js";
 
 import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js";
@@ -70,12 +69,12 @@ export async function run(inter)
 		return defer.then(() => inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "no-match", appid)}));
 
 	const LIMIT = (voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT)
-		+ (inter.entitlements.find(({skuId}) => skuId === premiumSKU) ? PREMIUM_BONUS : 0);
+		+ (inter.entitlements.find(({skuId}) => skuId === premiumSKU) ? WATCH_PREMIUM_BONUS : 0);
 	const role = inter.options.getRole("role")?.id;
 	const type = inter.options.getString("type");
 	const watchPrice = type === "price";
 
-	const MAX_BONUS = WATCH_VOTE_BONUS + PREMIUM_BONUS;
+	const MAX_BONUS = WATCH_VOTE_BONUS + WATCH_PREMIUM_BONUS;
 	const errorReplaces = { LIMIT, MAX_BONUS, vote: voteURL(inter.locale) };
 
 	watch(+appid, channel, role, watchPrice, LIMIT).then(async success => {

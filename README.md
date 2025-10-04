@@ -24,18 +24,25 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 	"token": "your bot's authentication token",
  	"master": "your user id",
 	"adminServer": "the id of the server where the admin commands will be available, for you",
+    "baseWatcherLimit": 25,
+
 	"topGG": {
 		"token": "(optional) your bot's Top.gg token",
 		"webhook": {
 			"port": 5050,
 			"password": "your password here"
-		}
+		},
+		"voteWatcherBonus": 25
 	},
 	"debug": false,
 	"logLevel": "warn",
 	"backups": false,
 
 	"supportServer": "(optional) The invite to your support server",
+    "premium": {
+        "sku": "the SKU id",
+        "bonus": 250
+    },
 	"donate": "(optional) The URL for donations"
 }
 ```
@@ -46,6 +53,8 @@ If the webhook port is not specified, the `SERVER_PORT` environment variable wil
 The `logLevel` can be "silent", "error", "warn", "log" or "verbose". If not set, defaults to "warn". **Note:** if `debug` is `true`, the log level is forcefully set to "verbose".
 
 `backups` assigns the backup schedule. Possible values are `false`, `"daily"` and `"weekly"`. Weekly is every Sunday at midnight. If omitted or null, defaults to "weekly". If the `BACKUP_SCHEDULE` environment variable is set, it will have priority.
+
+The `premium` category is optional.
 
 To start the bot, run `node bot.js`
 

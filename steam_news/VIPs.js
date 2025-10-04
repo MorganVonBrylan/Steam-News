@@ -54,6 +54,7 @@ if(premiumSKU)
 		supportServer = await client.guilds.fetch(premium.supportServer);
 		subRole = supportServer.roles.fetch(premium.premiumRole);
 	});
+	client.on("guildMemberAdd", member => {});
 	*/
 
 	client.on("entitlementCreate", async ent => {
@@ -98,6 +99,4 @@ if(premiumSKU)
 			sendToMaster(`Supporter cancelled: <@${id}> (${ent.userId})`);
 		}
 	});
-
-	//client.on("guildMemberAdd", member => {});
 }

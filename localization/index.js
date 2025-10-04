@@ -8,7 +8,7 @@ const locales = {};
 export { FALLBACK as fallbackLocale };
 
 import importJSON from "../utils/importJSON.function.js";
-const { WATCH_LIMIT, WATCH_VOTE_BONUS } = importJSON("steam_news/limits.json");
+import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "../steam_news/limits.js";
 import localesFile from "./locales.js";
 
 import { readdirSync } from "node:fs";
