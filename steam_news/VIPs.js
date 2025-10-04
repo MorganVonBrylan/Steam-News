@@ -42,9 +42,18 @@ export function addVoter(id, lang, forceNotif = false)
 
 
 const { premium } = auth;
+import { ComponentType, ButtonStyle } from "discord.js";
 
 export const premiumSKU = premium?.sku;
 export const bonus = premium?.bonus || 0;
+export const button = premiumSKU ? {
+	type: ComponentType.ActionRow,
+	components: [{
+		type: ComponentType.Button,
+		style: ButtonStyle.Premium,
+		sku_id: premiumSKU,
+	}],
+} : null;
 
 if(premiumSKU)
 {

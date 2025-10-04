@@ -4,7 +4,7 @@ import interpretAppidOption from "../utils/interpretAppidOption.function.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../steam_news/limits.js";
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
-import { voted, premiumSKU } from "../steam_news/VIPs.js";
+import { voted, premiumSKU, button as premiumButton } from "../steam_news/VIPs.js";
 const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
 import { voteURL } from "../topGG.js";
 
@@ -117,9 +117,14 @@ export async function run(inter)
 		if(success === MAX_LIMIT)
 			reply += `\n${t("server-max-reached", MAX_LIMIT)}`
 		else if(success === LIMIT)
+		{
 			reply += LIMIT === LIMIT_WITH_VOTE
 				? `\n${t("server-limit-reached-voted", LIMIT)}`
 				: `\n${t("server-limit-reached", errorReplaces)}`;
+			if(premiumButton)
+				reply = { content: reply, components: [premiumButton] };
+			console.log(reply)
+		}
 
 		updateUnwatch(inter.guild);
 		inter.editReply(reply);
@@ -132,7 +137,8 @@ export async function run(inter)
 			inter.editReply({ flags: "Ephemeral", content:
 				LIMIT === MAX_LIMIT ? t("error-limit-reached", MAX_LIMIT)
 				: LIMIT === LIMIT_WITH_VOTE ? t("error-limit-reached-voted", LIMIT)
-				: t("error-limit-reached", errorReplaces)
+				: t("error-limit-reached", errorReplaces),
+				components: premiumButton ? [premiumButton] : undefined,
 			});
 		}
 		else if(err instanceof HTTPError)
