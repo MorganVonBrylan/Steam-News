@@ -105,6 +105,9 @@ export const tr = {
 		if(typeof key !== "string")
 			throw new TypeError("'key' must be a string");
 
+		if(replaces.length === 1 && typeof replaces[0] === "object")
+			replaces = replaces[0];
+
 		const logError = (message) => {
 			error(Object.assign(new Error(message)), {
 				locale: this.locale, key, replaces
