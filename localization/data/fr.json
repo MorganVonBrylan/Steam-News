@@ -246,7 +246,7 @@
 		"server-limit-reached-voted": "Attention : vous avez atteint la limite de %s jeux par serveur. Achetez le **premium** pour en avoir plus.",
 		"server-max-reached": "Attention : vous avez atteint la limite de %s jeux par serveur.",
 
-		"error-limit-reached": "Vous avez atteint ou dépassé la limite de {LIMIT} jeux suivis par serveur.\nVotez pour moi sur [Top.gg](${vote}) ou achetez le **premium** pour en avoir jusque ${MAX_BONUS} de plus.",
+		"error-limit-reached": "Vous avez atteint ou dépassé la limite de ${LIMIT} jeux suivis par serveur.\nVotez pour moi sur [Top.gg](${vote}) ou achetez le **premium** pour en avoir jusque ${MAX_BONUS} de plus.",
 		"error-limit-reached-voted": "Désolé, vous avez atteint ou dépassé votre limite de %s jeux suivis par serveur. Achetez le **premium** pour l'augmenter.",
 		"error-max-reached": "Désolé, vous avez atteint ou dépassé la limite de %s jeux suivis par serveur.",
 
