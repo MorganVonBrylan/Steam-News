@@ -10,7 +10,7 @@ export function run(inter) {
     try {
         message = JSON.parse(message);
     } catch {
-        message = { content: message };
+        message = { content: message.replaceAll("\\n", "\n") };
     }
 
     if("flags" in message)
@@ -25,6 +25,6 @@ export function run(inter) {
     }
     else
         message.flags = "Ephemeral";
-    
+
     inter.reply(message);
 }
