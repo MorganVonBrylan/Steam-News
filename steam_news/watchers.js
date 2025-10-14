@@ -20,7 +20,8 @@ import db, { stmts } from "./db.js";
 import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
 
 import __dirname from "../utils/__dirname.js";
-import { WATCH_LIMIT } from "./limits.js";
+import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "./limits.js";
+import { premiumSKU, premiumGuilds } from "./VIPs.js";
 
 import { client, sendToMaster } from "../bot.js";
 const { channels } = client;
@@ -221,7 +222,11 @@ export async function checkForNews(range, reschedule = false)
 		total += news.length;
 		const [{date: latestDate}] = news;
 		const baseEmbeds = news.reverse().map(newsitem => toEmbed(newsitem));
-		promises.push(...stmts.getWatchers(appid).map(getNewsSender(baseEmbeds, queryNews)));
+
+		const watchers = stmts.getWatchers(appid)
+			.filter(({premium, guildId}) => !premium || premiumGuilds.includes(guildId));
+		promises.push(...watchers.map(getNewsSender(baseEmbeds, queryNews)));
+
 		stmts.updateLatest({ appid, latest: timestamp(latestDate) });
 	};
 
@@ -345,6 +350,8 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 	if(watchedApps.length >= LIMIT)
 		throw new RangeError(`This server reached its limit of ${LIMIT} watched ${price ? "prices" : "apps"}.`);
 
+	const premium = watchedApps.length > WATCH_LIMIT+WATCH_VOTE_BONUS;
+
 	const wasUnknown = !stmts.isAppKnown(appid);
 	if(price || wasUnknown)
 	{
@@ -387,7 +394,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 		}
 	}
 
-	stmts[price ? "watchPrice" : "watch"]({appid, guildId, channelId: channel.id, roleId});
+	stmts[price ? "watchPrice" : "watch"]({appid, guildId, channelId: channel.id, roleId, premium});
 	return watchedApps.length + 1;
 }
 

@@ -40,6 +40,7 @@ export function addVoter(id, lang, forceNotif = false)
 		insertLastVote({id, date});
 }
 
+export const premiumGuilds = new Set();
 
 const { premium } = auth;
 import { ComponentType, ButtonStyle } from "discord.js";
@@ -66,16 +67,25 @@ if(premiumSKU)
 	client.on("guildMemberAdd", member => {});
 	*/
 
-	client.on("entitlementCreate", async ent => {
-		if(ent.skuId === premiumSKU)
+	client.once("clientReady", async () => {
+		(await client.application.entitlements.fetch({cache: false}))
+			.filter(sku => sku.skuId === premiumSKU && sku.isActive())
+			.forEach(({guildId}) => premiumGuilds.add(guildId));
+	});
+
+	client.on("entitlementCreate", async ({skuId, userId, guildId}) => {
+		switch(skuId)
 		{
-			const guild = await client.guilds.fetch(ent.guildId);
-			sendToMaster(`New sub! Guild: ${guild} (${ent.guildId}), owner: ${guild.ownerId}, user: ${ent.userId}`);
-		}
-		else
-		{
-			const {userId: id} = ent;
-			sendToMaster(`New supporter! <@${id}> (${ent.userId})`);
+			case premiumSKU:
+				premiumGuilds.add(guildId);
+				const guild = await client.guilds.fetch(guildId);
+				sendToMaster(`New sub! Guild: ${guild} (${guildId}), owner: ${guild.ownerId}, user: ${userId}`);
+				break;
+			case rebrandSKU:
+				sendToMaster(`<@${userId}> bought a rebrand! (${userId})`);
+				break;
+			default:
+				sendToMaster(`New supporter! <@${userId}> (${userId})`);
 		}
 	});
 
