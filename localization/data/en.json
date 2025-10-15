@@ -186,6 +186,8 @@
 			"pay": "Sorry, this is a paid feature. Please buy a rebrand token in the store.",
 			"missing-args": "You did not specify an avatar or banner. If you want to remove the custom branding, use rebrand-reset.",
 			"too-large": "This file is too large. The maximum is 1 MB.",
+			"avatar-rate-limit": "You made me change my avatar too much and Discord is rate-limiting me. Please try again later.",
+			"banner-rate-limit": "You made me change my banner too much and Discord is rate-limiting me. Please try again later.",
 			"failure": "The rebranding failed with the message '%s'.\nYour rebrand token has not been consumed.",
 			"success": "My appearance has been changed! I feel young again.\nIf you do not see the change, try reloading Discord.",
 			"grace": "In case you change your mind or want to make adjustments, you can use this command again for free within the next hour.",

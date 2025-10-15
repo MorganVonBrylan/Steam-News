@@ -56,8 +56,15 @@ export async function run(inter)
             inter.editReply(msg);
         }
         catch(err) {
-            console.error(err);
-            inter.editReply({content: t("rebrand.failure", err.message)});
+            if(err.message.includes("AVATAR_RATE_LIMIT"))
+                inter.editReply({content: t("rebrand.avatar-rate-limit")});
+            else if(err.message.includes("BANNER_RATE_LIMIT"))
+                inter.editReply({content: t("rebrand.banner-rate-limit")});
+            else
+            {
+                console.error(err);
+                inter.editReply({content: t("rebrand.failure", err.message)});
+            }
         }
     }
 }

@@ -220,6 +220,8 @@
 			"pay": "Désolé, cette fonctionnalité est payante. Veuillez acheter un ticket de relooking dans la boutique.",
 			"missing-args": "Vous n'avez pas indiqué d'avatar ni de bannière. Si vous voulez retirer votre relooking, utilisez relooking-annule.",
 			"too-large": "Ce fichier est trop lourd. Le maximum est 1 Mo.",
+			"avatar-rate-limit": "Vous m'avez trop fait changer d'avatar et Discord me bloque. Veuillez réessayer plus tard.",
+			"banner-rate-limit": "Vous m'avez trop fait changer de bannière et Discord me bloque. Veuillez réessayer plus tard.",
 			"failure": "Le relooking a échoué avec le message '%s'.\nVotre ticket de relooking n'a pas été utilisé.",
 			"success": "Mon apparence est changée ! Je me sens jeune à nouveau.\nSi vous ne voyez pas de changement, essayez de recharger Discord.",
 			"grace": "Au cas où vous changeriez d'avis ou voudriez faire des ajustements, vous pouvez utiliser cette commande gratuitement pendant une heure.",

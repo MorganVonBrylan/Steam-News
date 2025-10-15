@@ -220,6 +220,8 @@
 			"pay": "Entschuldigung, Dies ist eine Premium-Funktion. Bitte kaufe einen Rebrand-Token im Laden.",
 			"missing-args": "Du hast weder ein Profilbild noch ein Banner angegeben. Falls du die Darstellung zurücksetzen möchtest, benutze darstellung-zurücksetzen.",
 			"too-large": "Diese Datei ist zu groß. Die Maximale Größe ist 1MB.",
+			"avatar-rate-limit": "Du hast mich zu oft aufgefordert, mein Profilbild zu ändern und Discord begrenzt mich. Bitte versuche es später nochmal.",
+			"banner-rate-limit": "Du hast mich zu oft aufgefordert, mein Banner zu ändern und Discord begrenzt mich. Bitte versuche es später nochmal.",
 			"failure": "Die Änderung der Darstellung ist mit der Nachricht '%s' fehlgeschlagen.\nDein Rebrand-Token wurde nicht verbraucht.",
 			"success": "Mein Aussehen wurde geändert! Ich fühle mich wieder jung.\nFalls du keine Änderung siehst, lade Discord neu.",
 			"grace": "Falls du deine Meinung änderst oder Änderungen vornehmen möchtest, kannst du dieses Kommando innerhalb der nächsten Stunde kostenlos nochmal benutzen.",
