@@ -45,10 +45,10 @@ export async function run(inter)
         await inter.deferReply();
         try {
             await members.editMe({ avatar: avatar?.url, banner: banner?.url });
-            entitlement?.consume();
             let msg = t("rebrand.success");
             if(!gracePeriod.has(id))
             {
+                entitlement.consume();
                 msg += `\n${t("rebrand.grace")}`;
                 gracePeriod.add(id);
                 setTimeout(gracePeriod.delete.bind(gracePeriod, id), 3600_000);
