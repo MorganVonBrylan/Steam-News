@@ -40,8 +40,9 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 
 	"supportServer": "(optional) The invite to your support server",
     "premium": {
-        "sku": "the SKU id",
-        "bonus": 250
+		"sku": "the 'more watchers' SKU id",
+		"bonus": 250,
+		"rebrand": "the 'rebrand' SKU id"
     },
 	"donate": "(optional) The URL for donations"
 }

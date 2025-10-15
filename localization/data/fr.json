@@ -20,6 +20,35 @@
 				}
 			}
 		},
+		"premium": {
+			"name": "premium",
+			"description": "Commandes premium",
+			"rebrand": {
+				"name": "relooking",
+				"description": "Change l'avatar et/ou la bannière du bot dans ce serveur.",
+				"options": {
+					"avatar": {
+						"name": "avatar",
+						"description": "La nouvelle image de profil du bot"
+					},
+					"banner": {
+						"name": "bannière",
+						"description": "La nouvelle bannière du bot (taille idéale: 680×240)"
+					}
+				}
+			},
+			"rebrand-reset": {
+				"name": "relooking-annule",
+				"description": "Retourne le bot à son apparence par défaut (gratuitement).",
+				"options": {
+					"what": {
+						"name": "quoi",
+						"description": "Que réinitialiser ?",
+						"choices": ["Avatar", "Bannière", "Les deux"]
+					}
+				}
+			}
+		},
 		"latest": {
 			"name": "dernière",
 			"description": "Voir la dernière actu d’un jeu.",
@@ -183,6 +212,20 @@
 		"multi": "Multi",
 		"languages": "Langues",
 		"openInApp": "Ouvrir dans l’application"
+	},
+
+	"premium": {
+		"rebrand": {
+			"disabled": "Désolé! Le relooking est actuellement désactivé.",
+			"pay": "Désolé, cette fonctionnalité est payante. Veuillez acheter un ticket de relooking dans la boutique.",
+			"missing-args": "Vous n'avez pas indiqué d'avatar ni de bannière. Si vous voulez retirer votre relooking, utilisez relooking-annule.",
+			"too-large": "Ce fichier est trop lourd. Le maximum est 1 Mo.",
+			"failure": "Le relooking a échoué avec le message '%s'.\nVotre ticket de relooking n'a pas été utilisé.",
+			"success": "Mon apparence est changée ! Je me sens jeune à nouveau.\nSi vous ne voyez pas de changement, essayez de recharger Discord.",
+			"grace": "Au cas où vous changeriez d'avis ou voudriez faire des ajustements, vous pouvez utiliser cette commande gratuitement pendant une heure.",
+			"resetFailure": "Réinitialiser mon apparence a échoué avec le message '%s'.",
+			"resetSuccess": "Mon apparence a été réinitialisée.\nSi vous ne voyez pas de changement, essayez de recharger Discord."
+		}
 	},
 
 	"locale": {

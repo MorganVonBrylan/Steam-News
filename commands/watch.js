@@ -4,7 +4,8 @@ import interpretAppidOption from "../utils/interpretAppidOption.function.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../steam_news/limits.js";
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
-import { voted, premiumSKU, button as premiumButton } from "../steam_news/VIPs.js";
+import { voted, premiumSKU, buttons } from "../steam_news/VIPs.js";
+const premiumButton = buttons(premiumSKU);
 const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
 import { voteURL } from "../topGG.js";
 

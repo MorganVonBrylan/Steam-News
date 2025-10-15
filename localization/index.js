@@ -65,14 +65,21 @@ export const tr = {
 		if(!(lang in locales))
 			lang = FALLBACK;
 		this.lang = lang;
-		this.locale = locales[lang];
-		if(this.group)
+		if(group)
 		{
-			this.locale = this.locale[this.group];
-			this.fallback = locales[FALLBACK][this.group];
+			this.locale = locales[lang][group];
+			this.fallback = locales[FALLBACK][group];
+			if(!this.locale)
+			{
+				this.locale = this.fallback;
+				console.warn(`Missing ${group} group in ${lang} translation.`);
+			}
 		}
 		else
+		{
+			this.locale = locales[lang];
 			this.fallback = locales[FALLBACK];
+		}
 		return this.t;
 	},
 

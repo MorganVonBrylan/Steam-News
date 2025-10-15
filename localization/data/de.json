@@ -20,6 +20,35 @@
 				}
 			}
 		},
+		"premium": {
+			"name": "premium",
+			"description": "Premium-Kommandos",
+			"rebrand": {
+				"name": "darstellung-ändern",
+				"description": "Ändere das Profilbild oder Banner des Bots auf diesem Server.",
+				"options": {
+					"avatar": {
+						"name": "profilbild",
+						"description": "Das neue Profilbild des Bots"
+					},
+					"banner": {
+						"name": "banner",
+						"description": "Das neue Banner des Bots (ideale Größe: 680×240)"
+					}
+				}
+			},
+			"rebrand-reset": {
+				"name": "darstellung-zurücksetzen",
+				"description": "Kehre zur Standarddarstellung des Bots zurück (dies ist kostenlos).",
+				"options": {
+					"what": {
+						"name": "was",
+						"description": "Wähle aus, was zurückgesetzt werden soll",
+						"choices": ["Profilbild", "Banner", "Beide"]
+					}
+				}
+			}
+		},
 		"latest": {
 			"name": "neuste",
 			"description": "Zeige die letzten Neuigkeiten über ein Spiel an",
@@ -183,6 +212,20 @@
 		"multi": "Multiplayer",
 		"languages": "Sprachen",
 		"openInApp": "In der App öffnen"
+	},
+
+	"premium": {
+		"rebrand": {
+			"disabled": "Entschuldigung! Die Fähigkeit, die Darstellung zu ändern, ist momentan deaktiviert.",
+			"pay": "Entschuldigung, Dies ist eine Premium-Funktion. Bitte kaufe einen Rebrand-Token im Laden.",
+			"missing-args": "Du hast weder ein Profilbild noch ein Banner angegeben. Falls du die Darstellung zurücksetzen möchtest, benutze darstellung-zurücksetzen.",
+			"too-large": "Diese Datei ist zu groß. Die Maximale Größe ist 1MB.",
+			"failure": "Die Änderung der Darstellung ist mit der Nachricht '%s' fehlgeschlagen.\nDein Rebrand-Token wurde nicht verbraucht.",
+			"success": "Mein Aussehen wurde geändert! Ich fühle mich wieder jung.\nFalls du keine Änderung siehst, lade Discord neu.",
+			"grace": "Falls du deine Meinung änderst oder Änderungen vornehmen möchtest, kannst du dieses Kommando innerhalb der nächsten Stunde kostenlos nochmal benutzen.",
+			"resetFailure": "Das Zurücksetzen des Aussehens ist mit der Nachricht '%s' fehlgeschlagen.",
+			"resetSuccess": "Mein Aussehen wurde zurückgesetzt.\nFalls du keine Änderung siehst, lade Discord neu."
+		}
 	},
 
 	"locale": {

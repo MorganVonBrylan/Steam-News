@@ -6,6 +6,35 @@
 			"name": "help",
 			"description": "Get help about the bot"
 		},
+		"premium": {
+			"name": "premium",
+			"description": "Premium commands",
+			"rebrand": {
+				"name": "rebrand",
+				"description": "Change the bot's profile picture and/or banner in this server.",
+				"options": {
+					"avatar": {
+						"name": "avatar",
+						"description": "The bot's new profile picture"
+					},
+					"banner": {
+						"name": "banner",
+						"description": "The bot's new banner (ideal size: 680×240)"
+					}
+				}
+			},
+			"rebrand-reset": {
+				"name": "rebrand-reset",
+				"description": "Return to the bot's default appearance (this is free).",
+				"options": {
+					"what": {
+						"name": "what",
+						"description": "Choose what to reset",
+						"choices": ["Avatar", "Banner", "Both"]
+					}
+				}
+			}
+		},
 		"info": {
 			"name": "info",
 			"description": "See info about a game (genre, price, release date, etc)",
@@ -149,6 +178,20 @@
 		],
 		"footer": { "text": "Steam News v${v} by ${author}." },
 		"donate": "Also consider making a donation:"
+	},
+
+	"premium": {
+		"rebrand": {
+			"disabled": "Sorry! The rebranding is currently disabled.",
+			"pay": "Sorry, this is a paid feature. Please buy a rebrand token in the store.",
+			"missing-args": "You did not specify an avatar or banner. If you want to remove the custom branding, use rebrand-reset.",
+			"too-large": "This file is too large. The maximum is 1 MB.",
+			"failure": "The rebranding failed with the message '%s'.\nYour rebrand token has not been consumed.",
+			"success": "My appearance has been changed! I feel young again.\nIf you do not see the change, try reloading Discord.",
+			"grace": "In case you change your mind or want to make adjustments, you can use this command again for free within the next hour.",
+			"resetFailure": "The appearance reset failed with the message '%s'.",
+			"resetSuccess": "My appearance has been reset.\nIf you do not see the change, try reloading Discord."
+		}
 	},
 
 	"error": "An error occurred.",

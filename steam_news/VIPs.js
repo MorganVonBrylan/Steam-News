@@ -44,17 +44,20 @@ export const premiumGuilds = new Set();
 
 const { premium } = auth;
 import { ComponentType, ButtonStyle } from "discord.js";
-
 export const premiumSKU = premium?.sku;
 export const bonus = premium?.bonus || 0;
-export const button = premiumSKU ? {
-	type: ComponentType.ActionRow,
-	components: [{
-		type: ComponentType.Button,
-		style: ButtonStyle.Premium,
-		sku_id: premiumSKU,
-	}],
-} : null;
+export const rebrandSKU = premium?.rebrand;
+
+export function button(sku_id) {
+	return { type: ComponentType.Button, style: ButtonStyle.Premium, sku_id };
+}
+export function buttons(...skus) {
+	skus = skus.filter(Boolean);
+	return skus.length ? {
+		type: ComponentType.ActionRow,
+		components: skus.map(button),
+	} : null;
+}
 
 if(premiumSKU)
 {
@@ -95,6 +98,7 @@ if(premiumSKU)
 
 		if(ent.skuId === premiumSKU)
 		{
+			premiumGuilds.delete(ent.guildId);
 			const guild = await client.guilds.fetch(ent.guildId);
 			sendToMaster(`Sub ended. Guild: ${guild} (${ent.guildId}), user: ${ent.userId}`);
 		}
@@ -104,11 +108,11 @@ if(premiumSKU)
 			sendToMaster(`Supporter lost: <@${id}> (${ent.userId})`);
 		}
 	});
-	
 
 	client.on("entitlementDelete", async ent => {
 		if(ent.skuId === premiumSKU)
 		{
+			premiumGuilds.delete(ent.guildId);
 			const guild = await client.guilds.fetch(ent.guildId);
 			sendToMaster(`Sub cancelled. Guild: ${guild} (${ent.guildId}), user: ${ent.userId}`);
 		}
