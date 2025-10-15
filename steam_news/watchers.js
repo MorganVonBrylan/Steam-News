@@ -351,7 +351,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 		throw new RangeError(`This server reached its limit of ${LIMIT} watched ${price ? "prices" : "apps"}.`);
 
 	// + because SQLite fails if you give it a boolean
-	const premium = +(watchedApps.length > WATCH_LIMIT+WATCH_VOTE_BONUS);
+	const premium = +(watchedApps.length >= WATCH_LIMIT+WATCH_VOTE_BONUS);
 
 	const wasUnknown = !stmts.isAppKnown(appid);
 	if(price || wasUnknown)
