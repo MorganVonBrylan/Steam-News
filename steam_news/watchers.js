@@ -21,7 +21,7 @@ import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db
 
 import __dirname from "../utils/__dirname.js";
 import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "./limits.js";
-import { premiumSKU, premiumGuilds } from "./VIPs.js";
+import { premiumGuilds } from "./VIPs.js";
 
 import { client, sendToMaster } from "../bot.js";
 const { channels } = client;
@@ -224,7 +224,7 @@ export async function checkForNews(range, reschedule = false)
 		const baseEmbeds = news.reverse().map(newsitem => toEmbed(newsitem));
 
 		const watchers = stmts.getWatchers(appid)
-			.filter(({premium, guildId}) => !premium || premiumGuilds.includes(guildId));
+			.filter(({premium, guildId}) => !premium || premiumGuilds.has(guildId));
 		promises.push(...watchers.map(getNewsSender(baseEmbeds, queryNews)));
 
 		stmts.updateLatest({ appid, latest: timestamp(latestDate) });
