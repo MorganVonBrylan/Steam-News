@@ -34,6 +34,7 @@ function handleDeletedChannel({status, url}) {
         return;
     const channelId = url.substring(url.lastIndexOf("/")+1);
     purgeChannel(channelId);
+	return true;
 }
 
 
