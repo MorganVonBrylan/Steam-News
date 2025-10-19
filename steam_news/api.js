@@ -188,3 +188,16 @@ export function isNSFW({ required_age, content_descriptors })
 	const notes = content_descriptors.notes?.toLowerCase();
 	return required_age >= 18 || notes && (notes.includes("nudity") || notes.includes("sex"));
 }
+
+/**
+ * Get the banner for the provided app.
+ * @param {number} appid The app's id
+ * @param {string} size The banner's size. Defaults to banner.MEDIUM.
+ */
+export function banner(appid, size = banner.MEDIUM)
+{
+	return `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/${size}.jpg`;
+}
+Object.defineProperty(banner, "SMALL", {value: "capsule_184x69"});
+Object.defineProperty(banner, "MEDIUM", {value: "capsule_231x87"});
+Object.defineProperty(banner, "LARGE", {value: "header"});
