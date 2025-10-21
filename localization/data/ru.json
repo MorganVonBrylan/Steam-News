@@ -212,7 +212,7 @@
 			}
 		],
 		"footer": {
-			"text": "Steam News v${v} от ${author}."
+			"text": "Steam News v${v} от ${author}.\nПеревод на русский язык выполнен B1ngell."
 		},
 		"donate": "Также подумайте о пожертвовании:"
 	},
