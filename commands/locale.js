@@ -33,7 +33,12 @@ export function autocomplete(inter)
 	const search = inter.options.getFocused().toUpperCase();
 	const results = countryNames.filter(name => name.includes(search));
 	if(search in codeToCountry)
+	{
+		const pos = results.indexOf(search);
+		if(pos !== -1)
+			results.splice(pos, 1);
 		results.unshift(codeToCountry[search].toUpperCase());
+	}
 	if(results.length > 25)
 		results.length = 25;
 
