@@ -36,6 +36,9 @@ for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 if(!locales[FALLBACK])
 	throw new Error(`Missing fallback localization (${FALLBACK})`);
 
+locales["en-GB"] = locales[FALLBACK];
+locales["en-US"] = locales[FALLBACK];
+
 
 /**
  * Replaces elements in a string for dynamic translation purposes.
