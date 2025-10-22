@@ -123,12 +123,28 @@ if(currentVersion < DB_VERSION)
 }
 
 
-const setSteamWatch = db.prepare("INSERT INTO SteamWatchers (guildId, channelId, roleId) VALUES ($guildId, $channelId, $roleId)");
-const updateSteamWatch = db.prepare("UPDATE SteamWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId");
+/**
+ * Makes a proxy, for when just one statement isn't enough.
+ * @param {string|string[]} sql SQL statement(s). If this argument is provided, the statement(s) will be prepared, and bound to the run function as thisArg.
+ * @param {function} run The function to run. Make sure this is not an arrow function.
+ * @returns {object} Something that looks, swims and quacks like a prepared statement.
+ */
+function makeProxy(sql, run) {
+	let readonly;
+	if(sql instanceof Array)
+	{
+		sql = sql.map(db.prepare.bind(db));
+		readonly = sql.every(stmt => stmt.readonly);
+	}
+	else
+	{
+		sql = db.prepare(sql);
+		readonly = sql.readonly;
+	}
+	return { readonly, [readonly ? "all" : "run"]: run.bind(sql) };
+}
 
-const getAllLocales = db.prepare("SELECT id, cc, lang FROM Guilds");
-const setLocale = db.prepare("INSERT INTO Guilds (id, cc, lang) VALUES ($id, $cc, $lang)");
-const updateLocale = db.prepare("UPDATE Guilds SET cc = $cc, lang = $lang WHERE id = $id");
+const watchTables = ["Watchers", "PriceWatchers", "SteamWatchers"];
 
 export const stmts = {
 	getStats: db.prepare(`SELECT
@@ -159,9 +175,12 @@ export const stmts = {
 		ORDER BY name`),
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
 
-	watchSteam: { run: (params) =>
-		updateSteamWatch.run(params).changes
-		|| setSteamWatch.run(params).changes },
+	watchSteam: makeProxy([
+		"INSERT INTO SteamWatchers (guildId, channelId, roleId) VALUES ($guildId, $channelId, $roleId)",
+		"UPDATE SteamWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId",
+	], function(params) {
+		return this[0].run(params).changes || this[1].run(params).changes;
+	}),
 	getSteamWatcher: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
 	unwatchSteam: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
 	getSteamWatchers: db.prepare("SELECT channelId, roleId FROM SteamWatchers"),
@@ -180,37 +199,35 @@ export const stmts = {
 
 	getCC: db.prepare("SELECT cc FROM Guilds WHERE id = ?").pluck(),
 	getLocale: db.prepare("SELECT cc, lang FROM Guilds WHERE id = ?"),
-	setLocale: {run: (id, cc, lang) => updateLocale.run({id, cc, lang}).changes
-										|| setLocale.run({id, cc, lang}).changes},
-	getAllLocales: {readonly: true, all: (indexById = true) => {
-		if(!indexById) return getAllLocales.all();
+	setLocale: makeProxy([
+		"UPDATE Guilds SET cc = $cc, lang = $lang WHERE id = $id",
+		"INSERT INTO Guilds (id, cc, lang) VALUES ($id, $cc, $lang)"
+	], function(id, cc, lang) {
+		const args = { id, cc, lang };
+		return this[0].run(args).changes || this[1].run(args).changes;
+	}),
+	getAllLocales: makeProxy("SELECT id, cc, lang FROM Guilds",
+	function(indexById = true) {
+		if(!indexById) return this.all();
 		const ccs = {};
-		for(const {id, cc} of getAllLocales.all())
+		for(const {id, cc} of this.all())
 			ccs[id] = cc;
 		return ccs;
-	}},
+	}),
 
 	getLastVote: db.prepare("SELECT lastVote FROM Voters WHERE id = ?").pluck(),
 	insertLastVote: db.prepare("INSERT INTO Voters (id, lastVote) VALUES ($id, $date)"),
 	updateLastVote: db.prepare("UPDATE Voters SET lastVote = $date WHERE id = $id"),
 	getRecentVoters: db.prepare("SELECT * FROM Voters WHERE lastVote > ?"),
 
-	purgeGuild: {
-		w: db.prepare("DELETE FROM Watchers WHERE guildId = ?"),
-		p: db.prepare("DELETE FROM PriceWatchers WHERE guildId = ?"),
-		s: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
-		run: function(id) {
-			return {changes: this.w.run(id).changes + this.p.run(id).changes + this.s.run(id).changes};
-		},
-	},
-	purgeChannel: {
-		w: db.prepare("DELETE FROM Watchers WHERE channelId = ?"),
-		p: db.prepare("DELETE FROM PriceWatchers WHERE channelId = ?"),
-		s: db.prepare("DELETE FROM SteamWatchers WHERE channelId = ?"),
-		run: function(id) {
-			return {changes: this.w.run(id).changes + this.p.run(id).changes + this.s.run(id).changes};
-		},
-	},
+	purgeGuild: makeProxy(watchTables.map(table => `DELETE FROM ${table} WHERE guildId = ?`),
+	function(id) {
+		return { changes: this.reduce((changes, stmt) => changes + stmt.run(id), 0) };
+	}),
+	purgeChannel: makeProxy(watchTables.map(table => `DELETE FROM ${table} WHERE channelId = ?`),
+	function(id) {
+		return { changes: this.reduce((changes, stmt) => changes + stmt.run(id), 0) };
+	}),
 };
 
 const getAll = [
