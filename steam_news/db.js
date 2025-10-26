@@ -176,8 +176,8 @@ export const stmts = {
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
 
 	watchSteam: makeProxy([
-		"INSERT INTO SteamWatchers (guildId, channelId, roleId) VALUES ($guildId, $channelId, $roleId)",
 		"UPDATE SteamWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId",
+		"INSERT INTO SteamWatchers (guildId, channelId, roleId) VALUES ($guildId, $channelId, $roleId)",
 	], function(params) {
 		return this[0].run(params).changes || this[1].run(params).changes;
 	}),
