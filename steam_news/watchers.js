@@ -10,7 +10,7 @@ const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages | PERM
 const REQUIRED_THREAD_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessagesInThreads | PERMISSIONS.EmbedLinks;
 
 async function canWriteIn(channel) {
-	return channel?.memberPermissions(await channel.guild.members.fetchMe())
+	return channel?.permissionsFor(await channel.guild.members.fetchMe())
 		.has(channel.isThread() ? REQUIRED_THREAD_PERMS : REQUIRED_PERMS);
 }
 

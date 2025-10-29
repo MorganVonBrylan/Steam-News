@@ -28,5 +28,5 @@ export async function run(inter) {
 async function canSendMessage({guild, channel})
 {
 	return !guild
-		|| channel?.memberPermissions(await guild.members.fetchMe())?.has(SEND_MESSAGES);
+		|| channel?.permissionsFor(await guild.members.fetchMe())?.has(SEND_MESSAGES);
 }

@@ -81,5 +81,5 @@ async function canSendMessage(channel)
 	return "send" in channel &&
 		(!channel.guild
 		|| !channel.locked
-		&& channel.memberPermissions(await channel.guild.members.fetchMe())?.has(REQUIRED_PERMS));
+		&& channel.permissionsFor(await channel.guild.members.fetchMe())?.has(REQUIRED_PERMS));
 }
