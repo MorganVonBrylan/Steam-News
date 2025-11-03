@@ -124,7 +124,6 @@ export async function run(inter)
 				: `\n${t("server-limit-reached", errorReplaces)}`;
 			if(premiumButton)
 				reply = { content: reply, components: [premiumButton] };
-			console.log(reply)
 		}
 
 		updateUnwatch(inter.guild);
