@@ -4,19 +4,10 @@ import {
 	getAppName, getWatchedApps, getWatchedPrices
 } from "../../steam_news/watchers.js";
 import { guildCommands } from "@brylan/djs-commands";
+import { gameToOption } from "../../utils/commands.js";
 
 const MAX_OPTIONS = 25;
 const CMD_NAME = "unwatch";
-
-function toString() {
-	return this.name;
-}
-function formatName(name) {
-	return name.length > 32 ? name.substring(0, 31) + "…" : name;
-}
-function toOptions({ name, appid }) {
-	return { name: formatName(name), value: ""+appid, toString };
-}
 
 const updateCmd = guildCommands.updateCmd.bind(null, CMD_NAME);
 
@@ -48,8 +39,8 @@ const appidOption = {
 export const options = [appidOption];
 export function getOptions(guildId)
 {
-	const watchedApps = getWatchedApps(guildId).map(toOptions);
-	const watchedPrices = getWatchedPrices(guildId).map(toOptions);
+	const watchedApps = getWatchedApps(guildId).map(gameToOption);
+	const watchedPrices = getWatchedPrices(guildId).map(gameToOption);
 	const nApps = watchedApps.length;
 	const nPrices = watchedPrices.length;
 	const options = [];
@@ -80,7 +71,7 @@ export function autocomplete(inter)
 	const apps = (inter.options.getSubcommand() === "price" ? getWatchedPrices : getWatchedApps)(inter.guildId);
 	const results = (search ? apps.filter(({name}) => name.toLowerCase().includes(search)) : apps);
 
-	inter.respond(results.slice(0, 25).map(toOptions));
+	inter.respond(results.slice(0, 25).map(gameToOption));
 }
 
 export async function run(inter)

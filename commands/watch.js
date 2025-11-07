@@ -1,6 +1,6 @@
 
 import { STEAM_APPID } from "../steam_news/api.js";
-import interpretAppidOption from "../utils/interpretAppidOption.function.js";
+import { interpretAppidOption } from "../utils/commands.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../steam_news/limits.js";
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;

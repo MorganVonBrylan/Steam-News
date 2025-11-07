@@ -1,6 +1,6 @@
 
 import { query, getDetails, isNSFW, HTTPError } from "../steam_news/api.js";
-import interpretAppidOption from "../utils/interpretAppidOption.function.js";
+import { interpretAppidOption } from "../utils/commands.js";
 import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
 
