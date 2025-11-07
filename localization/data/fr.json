@@ -23,28 +23,30 @@
 		"premium": {
 			"name": "premium",
 			"description": "Commandes premium",
-			"rebrand": {
-				"name": "relooking",
-				"description": "Change l'avatar et/ou la bannière du bot dans ce serveur.",
-				"options": {
-					"avatar": {
-						"name": "avatar",
-						"description": "La nouvelle image de profil du bot"
-					},
-					"banner": {
-						"name": "bannière",
-						"description": "La nouvelle bannière du bot (taille idéale: 680×240)"
+			"options": {
+				"rebrand": {
+					"name": "relooking",
+					"description": "Change l'avatar et/ou la bannière du bot dans ce serveur.",
+					"options": {
+						"avatar": {
+							"name": "avatar",
+							"description": "La nouvelle image de profil du bot"
+						},
+						"banner": {
+							"name": "bannière",
+							"description": "La nouvelle bannière du bot (taille idéale: 680×240)"
+						}
 					}
-				}
-			},
-			"rebrand-reset": {
-				"name": "relooking-annule",
-				"description": "Retourne le bot à son apparence par défaut (gratuitement).",
-				"options": {
-					"what": {
-						"name": "quoi",
-						"description": "Que réinitialiser ?",
-						"choices": ["Avatar", "Bannière", "Les deux"]
+				},
+				"rebrand-reset": {
+					"name": "relooking-annule",
+					"description": "Retourne le bot à son apparence par défaut (gratuitement).",
+					"options": {
+						"what": {
+							"name": "quoi",
+							"description": "Que réinitialiser ?",
+							"choices": ["Avatar", "Bannière", "Les deux"]
+						}
 					}
 				}
 			}

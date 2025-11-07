@@ -9,28 +9,30 @@
 		"premium": {
 			"name": "premium",
 			"description": "Premium commands",
-			"rebrand": {
-				"name": "rebrand",
-				"description": "Change the bot's profile picture and/or banner in this server.",
-				"options": {
-					"avatar": {
-						"name": "avatar",
-						"description": "The bot's new profile picture"
-					},
-					"banner": {
-						"name": "banner",
-						"description": "The bot's new banner (ideal size: 680×240)"
+			"options": {
+				"rebrand": {
+					"name": "rebrand",
+					"description": "Change the bot's profile picture and/or banner in this server.",
+					"options": {
+						"avatar": {
+							"name": "avatar",
+							"description": "The bot's new profile picture"
+						},
+						"banner": {
+							"name": "banner",
+							"description": "The bot's new banner (ideal size: 680×240)"
+						}
 					}
-				}
-			},
-			"rebrand-reset": {
-				"name": "rebrand-reset",
-				"description": "Return to the bot's default appearance (this is free).",
-				"options": {
-					"what": {
-						"name": "what",
-						"description": "Choose what to reset",
-						"choices": ["Avatar", "Banner", "Both"]
+				},
+				"rebrand-reset": {
+					"name": "rebrand-reset",
+					"description": "Return to the bot's default appearance (this is free).",
+					"options": {
+						"what": {
+							"name": "what",
+							"description": "Choose what to reset",
+							"choices": ["Avatar", "Banner", "Both"]
+						}
 					}
 				}
 			}

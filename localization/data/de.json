@@ -23,28 +23,30 @@
 		"premium": {
 			"name": "premium",
 			"description": "Premium-Kommandos",
-			"rebrand": {
-				"name": "darstellung-ändern",
-				"description": "Ändere das Profilbild oder Banner des Bots auf diesem Server.",
-				"options": {
-					"avatar": {
-						"name": "profilbild",
-						"description": "Das neue Profilbild des Bots"
-					},
-					"banner": {
-						"name": "banner",
-						"description": "Das neue Banner des Bots (ideale Größe: 680×240)"
+			"options": {
+				"rebrand": {
+					"name": "darstellung-ändern",
+					"description": "Ändere das Profilbild oder Banner des Bots auf diesem Server.",
+					"options": {
+						"avatar": {
+							"name": "profilbild",
+							"description": "Das neue Profilbild des Bots"
+						},
+						"banner": {
+							"name": "banner",
+							"description": "Das neue Banner des Bots (ideale Größe: 680×240)"
+						}
 					}
-				}
-			},
-			"rebrand-reset": {
-				"name": "darstellung-zurücksetzen",
-				"description": "Kehre zur Standarddarstellung des Bots zurück (dies ist kostenlos).",
-				"options": {
-					"what": {
-						"name": "was",
-						"description": "Wähle aus, was zurückgesetzt werden soll",
-						"choices": ["Profilbild", "Banner", "Beide"]
+				},
+				"rebrand-reset": {
+					"name": "darstellung-zurücksetzen",
+					"description": "Kehre zur Standarddarstellung des Bots zurück (dies ist kostenlos).",
+					"options": {
+						"what": {
+							"name": "was",
+							"description": "Wähle aus, was zurückgesetzt werden soll",
+							"choices": ["Profilbild", "Banner", "Beide"]
+						}
 					}
 				}
 			}
