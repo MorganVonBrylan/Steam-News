@@ -56,7 +56,7 @@ if(!Object.hasOwn(ThreadChannel.prototype, "nsfw"))
 export var master;
 export var myself;
 
-import error from "./utils/error.js";
+import { commandRegisterError } from "./utils/error.js";
 export async function sendToMaster(msg, onError = error)
 {
 	if(!client.readyAt)
@@ -82,7 +82,7 @@ client.once("shardReady", () => {
 		makeEnumsGlobal: true,
 		middleware: applyTranslations,
 	}).then((cmds) => console.log(cmds.size, "commands loaded"))
-	.catch(error);
+	.catch(commandRegisterError);
 });
 
 client.on("clientReady", async () => {

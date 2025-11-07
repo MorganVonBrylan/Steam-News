@@ -62,3 +62,26 @@ export function error(err)
 		setTimeout(recent.delete.bind(recent, msg), 3600_000);
 	}
 }
+
+
+export function commandRegisterError(err)
+{
+	console.error(err.message);
+	if(err.message.startsWith("Invalid Form Body"))
+	{
+		const path = err.message.substring("Invalid Form Body".length+1).split(".");
+		const id = path[0];
+		let offender = err.requestBody.json[id];
+		const offenderName = offender.name;
+		for(let i = 1 ; i < path.length ; i++)
+		{
+			const [, prop, index] = path[i].match(/([^\[]+)\[(.+)\]/);
+			if(typeof offender === "object" && prop in offender) offender = offender[prop];
+			else break;
+			if(typeof offender === "object" && index in offender) offender = offender[index];
+			else break;
+		}
+		console.error("Offender:", offenderName, "->", offender);
+	}
+	sendToMaster(err.message);
+}
