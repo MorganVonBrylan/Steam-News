@@ -29,6 +29,11 @@ const { channels } = client;
 
 const CHECK_INTERVAL = 3600_000;
 
+/**
+ * Purge a channel from the database if trying to send in it ended in a 404 error.
+ * @param {Error} error The Error received when trying to send news/prices.
+ * @returns {boolean} true if the error was handled, false if it wasn't a 404
+ */
 function handleDeletedChannel({status, url}) {
     if(status !== 404)
         return;
