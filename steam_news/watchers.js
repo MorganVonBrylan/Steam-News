@@ -122,7 +122,7 @@ export async function checkForNews(range, reschedule = false)
 				const { appid, newsitems, error } = await query(lang);
 				if(error)
 				{
-					error(new Date(), `Failed to get ${lang} news for app ${appid}: ${error}`);
+					error(new Error(`Failed to get ${lang} news for app ${appid}: ${error}`));
 					embeds[lang] = embeds.english;
 				}
 				else
@@ -363,7 +363,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 	if(price || wasUnknown)
 	{
 		const details = await getDetails(appid);
-		if(!details) throw new Error(new Date(), `Failed to get details of app ${appid}`);
+		if(!details) throw new Error(`Failed to get details of app ${appid}`);
 
 		let knownPrice = null;
 		if(wasUnknown)
