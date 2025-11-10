@@ -168,7 +168,7 @@ export const stmts = {
 	unwatch: db.prepare("DELETE FROM Watchers WHERE appid = ? AND guildid = ?"),
 	updateWatcher: db.prepare("UPDATE Watchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId AND appid = $appid"),
 	findWatchedApps: db.prepare("SELECT DISTINCT appid FROM Watchers").pluck(),
-	getWatchers: db.prepare("SELECT guildId, channelId, roleId, premium FROM Watchers WHERE appid = ?"),
+	getWatchers: db.prepare("SELECT * FROM Watchers WHERE appid = ?"),
 	getWatchedApps: db.prepare(`SELECT a.appid, name, nsfw, channelId, roleId
 		FROM Apps a JOIN Watchers w ON (a.appid = w.appid)
 		WHERE guildId = ?
@@ -183,13 +183,13 @@ export const stmts = {
 	}),
 	getSteamWatcher: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
 	unwatchSteam: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
-	getSteamWatchers: db.prepare("SELECT channelId, roleId FROM SteamWatchers"),
+	getSteamWatchers: db.prepare("SELECT * FROM SteamWatchers"),
 
 	watchPrice: db.prepare("INSERT INTO PriceWatchers (appid, guildId, channelId, roleId, premium) VALUES ($appid, $guildId, $channelId, $roleId, $premium)"),
 	unwatchPrice: db.prepare("DELETE FROM PriceWatchers WHERE appid = ? AND guildid = ?"),
 	updatePriceWatcher: db.prepare("UPDATE PriceWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId AND appid = $appid"),
 	findWatchedPrices: db.prepare("SELECT appid, name, nsfw, lastPrice FROM Apps a WHERE EXISTS (SELECT '*' FROM PriceWatchers WHERE appid = a.appid)"),
-	getPriceWatchers: db.prepare(`SELECT guildId, channelId, roleId, COALESCE(cc, 'US') "cc", premium
+	getPriceWatchers: db.prepare(`SELECT PriceWatchers.*, lang, COALESCE(cc, 'US') "cc"
 		FROM PriceWatchers LEFT JOIN Guilds ON id = guildId WHERE appid = ?`),
 	getWatchedPrices: db.prepare(`SELECT a.appid, name, lastPrice, nsfw, channelId, roleId
 		FROM Apps a JOIN PriceWatchers w ON (a.appid = w.appid)
