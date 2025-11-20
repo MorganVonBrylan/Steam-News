@@ -1,0 +1,364 @@
+{
+	"discovery": "**Wiadomości Steam** umożliwiają wysyłanie wiadomości o grach Steam i zmianach cen bezpośrednio na wybrany kanał na Twoim serwerze Discord.\n\nZawiera również polecenie wyświetlania informacji o grze, oferujące znacznie więcej szczegółów niż tylko wklejenie adresu URL sklepu Steam.",
+	"commands": {
+		"help": {
+			"name": "pomoc",
+			"description": "Uzyskaj pomoc dotyczącą bota"
+		},
+		"premium": {
+			"name": "premium",
+			"description": "Polecenia premium",
+			"options": {
+				"rebrand": {
+					"name": "zmien_marke",
+					"description": "Zmień zdjęcie profilowe i/lub baner bota na tym serwerze.",
+					"options": {
+						"avatar": {
+							"name": "awatara",
+							"description": "Nowe zdjęcie profilowe bota"
+						},
+						"banner": {
+							"name": "transparent",
+							"description": "Nowy baner bota (idealny rozmiar: 680×240)"
+						}
+					}
+				},
+				"rebrand-reset": {
+					"name": "rebranding-reset",
+					"description": "Przywróć domyślny wygląd bota (to nic nie kosztuje).",
+					"options": {
+						"what": {
+							"name": "co",
+							"description": "Wybierz, co chcesz zresetować",
+							"choices": [
+								"Awatara",
+								"Transparent",
+								"Obydwa"
+							]
+						}
+					}
+				}
+			}
+		},
+		"info": {
+			"name": "informacje",
+			"description": "Zobacz informacje o grze (gatunek, cenę, datę wydania itp.)",
+			"options": {
+				"game": {
+					"name": "gra",
+					"description": "id gry lub nazwa"
+				},
+				"country-code": {
+					"name": "kod_kraju",
+					"description": "2-literowy kod kraju, dla którego mają zostać wyświetlone informacje (domyślnie jest to ustawienie r"
+				}
+			}
+		},
+		"latest": {
+			"name": "najnowszy",
+			"description": "Zobacz najnowsze wiadomości na temat gry.",
+			"options": {
+				"game": {
+					"name": "gra",
+					"description": "nazwa gry lub id"
+				},
+				"language": {
+					"name": "język",
+					"description": "Język wiadomości. Dostępność zależy od twórców gry."
+				}
+			}
+		},
+		"locale": {
+			"name": "widownia",
+			"description": "Zobacz lub ustaw domyślne ustawienia regionalne tego serwera (dla cen i języka za pomocą /info i obs",
+			"options": {
+				"country-code": {
+					"name": "kod_kraju",
+					"description": "Dwuliterowy kod kraju, np. GB, FR, RU itd. Możesz również przeprowadzić wyszukiwanie."
+				},
+				"language": {
+					"name": "język",
+					"description": "Twój preferowany język wiadomości. Domyślnie jest to język urzędowy Twojego kraju."
+				}
+			}
+		},
+		"open": {
+			"name": "otwarte",
+			"description": "Uzyskaj link umożliwiający otwarcie gry w aplikacji Steam",
+			"options": {
+				"game": {
+					"name": "gra",
+					"description": "nazwa gry lub id"
+				}
+			}
+		},
+		"watch": {
+			"name": "oglądać",
+			"description": "(tylko dla administratorów) Śledź aktualności gry lub zmiany cen (maksymalnie %s każdego na serwer)",
+			"options": {
+				"type": {
+					"name": "typ",
+					"description": "Czy oglądać wiadomości czy zmiany cen",
+					"choices": [
+						"Aktualności",
+						"cena"
+					]
+				},
+				"game": {
+					"name": "gra",
+					"description": "nazwa gry lub id"
+				},
+				"role": {
+					"name": "rola",
+					"description": "Rola polegająca na wysyłaniu sygnałów dźwiękowych w przypadku opublikowania wiadomości"
+				},
+				"channel": {
+					"name": "kanał",
+					"description": "Kanał, na który mają zostać wysłane wiadomości (jeśli nie podano, domyślnie jest to kanał bieżący)"
+				}
+			}
+		},
+		"watched": {
+			"name": "oglądałem",
+			"description": "Zobacz, jakie gry są oglądane na tym serwerze."
+		},
+		"unwatch": {
+			"name": "nie_oglądaj",
+			"description": "(tylko dla administratorów) Przestań oglądać kanał informacyjny dotyczący gry.",
+			"options": {
+				"news": {
+					"name": "aktualności",
+					"description": "(tylko dla administratorów) Przestań oglądać kanał informacyjny dotyczący gry."
+				},
+				"price": {
+					"name": "cena",
+					"description": "(tylko dla administratorów) Przestań śledzić cenę gry."
+				},
+				"game": {
+					"name": "gra",
+					"description": "nazwa gry lub id"
+				}
+			}
+		},
+		"steam-latest": {
+			"name": "najnowsze_na_steamie",
+			"description": "Zobacz najnowsze wiadomości o Steam."
+		},
+		"steam-watch": {
+			"name": "oglądanie-steam",
+			"description": "(tylko dla administratorów) Oglądaj aktualności na Steamie.",
+			"options": {
+				"channel": {
+					"name": "kanał",
+					"description": "Kanał, na który mają zostać wysłane wiadomości (jeśli nie podano, domyślnie jest to kanał bieżący)"
+				},
+				"role": {
+					"name": "rola",
+					"description": "Rola polegająca na wysyłaniu sygnałów dźwiękowych w przypadku opublikowania wiadomości"
+				}
+			}
+		},
+		"steam-unwatch": {
+			"name": "steam-unwatch",
+			"description": "(tylko dla administratorów) Przestań oglądać wiadomości o Steamie."
+		},
+		"stats": {
+			"name": "statystyki",
+			"description": "Wyświetl statystyki dotyczące bota"
+		}
+	},
+	"voting": {
+		"thanks": "Dziękujemy za głosowanie! Możesz teraz dodać %s więcej obserwatorów każdego typu na swoich serwerach."
+	},
+	"help": {
+		"title": "Pomoc dotycząca wiadomości Steam",
+		"description": "**Steam News** to bot umożliwiający śledzenie aktualności ze świata gier Steam poprzez wysyłanie ogłoszeń społeczności, informacji o poprawkach itp. bezpośrednio na kanał.",
+		"fields": [
+			{
+				"name": "Jak śledzić aktualności i ceny gry?",
+				"value": "Dodaj obserwatora za pomocą `/watch` i usuń go za pomocą `/unwatch`."
+			},
+			{
+				"name": "Ile gier mogę śledzić?",
+				"value": "Domyślnie możesz śledzić ${WATCH_LIMIT} kanałów informacyjnych i dowolną liczbę cen (mogą to być różne gry). Możesz otrzymać dodatkowy ${WATCH_VOTE_BONUS} kanałów informacyjnych i cen, jeśli zagłosujesz na nas na Top.gg (link na końcu tej wiadomości)."
+			},
+			{
+				"name": "Bot nie wysłał najnowszych wiadomości od razu, gdy się pojawiły!",
+				"value": "To normalne. Sprawdza wiadomości raz na godzinę, więc opóźnienie może sięgać nawet godziny."
+			},
+			{
+				"name": "A co z grami NSFW?",
+				"value": "Bot będzie wysyłał informacje i newsy o grach NSFW wyłącznie na kanałach NSFW."
+			},
+			{
+				"name": "Czy mogę skopiować Twojego bota?",
+				"value": "Jasne! Jest udostępniany na licencji open source GNU GPL 3.0.Oto repozytorium Git: ${repository}"
+			},
+			{
+				"name": "Nadal potrzebuję pomocy!",
+				"value": "To przykre. Możesz zgłosić swój problem na naszym serwerze wsparcia: ${SUPPORT_SERVER}"
+			},
+			{
+				"name": "Ostatnia rzecz",
+				"value": "Lubisz Steam News? Rozważ zagłosowanie na nie na Top.gg: ${VOTE}"
+			}
+		],
+		"footer": {
+			"text": "Wiadomości Steam v${v} autorstwa ${author}.\n\nTłumaczenie w języku polskim autorstwa jakubex"
+		},
+		"donate": "Możesz także rozważyć dokonanie darowizny:"
+	},
+	"premium": {
+		"rebrand": {
+			"disabled": "Przepraszamy! Rebranding jest obecnie wyłączony.",
+			"pay": "Przepraszamy, ta funkcja jest płatna. Proszę kupić token rebrandingu w sklepie.",
+			"missing-args": "Nie określono awatara ani baneru. Jeśli chcesz usunąć niestandardowy branding, użyj polecenia rebrand-reset.",
+			"too-large": "Ten plik jest za duży. Maksymalny rozmiar to 1 MB.",
+			"avatar-rate-limit": "Zmusiłeś mnie do zbyt częstej zmiany awatara, a Discord ogranicza mi prędkość. Spróbuj ponownie później.",
+			"banner-rate-limit": "Zmusiłeś mnie do zbyt zmiany awatara, a Discord ogranicza mi prędkość. najpierw ponownie później.",
+			"failure": "Rebranding nie powiódł się, pojawił się komunikat „%s”.\nTwój token rebrandingu nie został wykorzystany.",
+			"success": "Mój wygląd się zmienił! Znów czuję się młodo.\nJeśli nie widzisz zmiany, spróbuj odświeżyć Discorda.",
+			"grace": "Jeśli zmienisz zdanie lub zechcesz dokonać zmian, możesz w ciągu najbliższej godziny ponownie skorzystać z tego polecenia całkowicie bezpłatnie.",
+			"resetFailure": "Resetowanie wyglądu nie powiodło się, pojawił się komunikat '%s'.",
+			"resetSuccess": "Mój wygląd został zresetowany.\nJeśli nie widzisz zmiany, spróbuj ponownie uruchomić Discorda."
+		}
+	},
+	"error": "Wystąpił błąd.",
+	"api-failed": "Nie udało się nawiązać połączenia z API Steam. Spróbuj ponownie za kilka minut.",
+	"api-403": "Dostęp do tej gry został zabroniony (błąd 403).",
+	"api-err": "Pobieranie danych nie powiodło się (błąd %s).",
+	"no-match": "Nie znaleziono żadnej gry odpowiadającej „%s”.",
+	"bad-appid": "Podane przez Ciebie identyfikatory nie należą do żadnej aplikacji Steam.",
+	"no-DLC-news": "Dodatki DLC nie mają kanału informacyjnego.",
+	"no-news": "Ta aplikacja nie zawiera żadnych wiadomości.",
+	"NSFW-content-news": "Ta gra zawiera treści dla dorosłych. Wiadomości na jej temat można wyświetlać tylko na kanale NSFW.",
+	"NSFW-content-price": "Ta gra zawiera treści dla dorosłych. Cenę gry można wyświetlić tylko na kanale NSFW.",
+	"table": "tabela",
+	"info": {
+		"yes": "tak",
+		"no": "nie",
+		"invalidAppid": "Podane przez Ciebie identyfikatory nie należą do żadnej aplikacji Steam.",
+		"nsfwForbidden": "Ta gra zawiera treści dla dorosłych. Informacje o niej można wyświetlać tylko na kanale NSFW.",
+		"comingSoon": "*już wkrótce*",
+		"genre": "gatunek",
+		"genres": "Gatunki",
+		"none": "*nic*",
+		"metacritic": "Wynik Metakrytyczny",
+		"unknown": "*Nieznany*",
+		"nsfw": "NSFW",
+		"releaseDate": "Data wydania",
+		"price": "Cena",
+		"free": "Bezpłatny",
+		"undefined": "nieokreślony",
+		"DLC": "DLC",
+		"game": "gra:",
+		"platforms": "Platformy",
+		"controllerSupport": "Wsparcie kontrolera",
+		"controller_no": "nie",
+		"controller_partial": "Częściowy",
+		"controller_full": "Pełny",
+		"multi": "Tryb wieloosobowy",
+		"languages": "Języki",
+		"openInApp": "Otwórz w aplikacji"
+	},
+	"locale": {
+		"current": "Twoja aktualna lokalizacja to %s (%s), a %s jest językiem preferowanym.",
+		"no-default": "Ten serwer nie ma domyślnych ustawień regionalnych.",
+		"new-default": "Domyślnym ustawieniem regionalnym tego serwera jest teraz %s (%s), a preferowanym językiem jest %s.",
+		"cc-required": "Musisz podać 2-literowy kod kraju. Listę znajdziesz tutaj: %s",
+		"cc-invalid": "To nie jest prawidłowy kod Alpha-2. Listę znajdziesz tutaj: %s",
+		"languages": {
+			"ar": "arabski",
+			"br": "bułgarski",
+			"zh-CN": "uproszczony chiński",
+			"zh-TW": "tradycyjny chiński",
+			"cs": "czeski",
+			"da": "duński",
+			"nl": "Holenderski",
+			"en": "angielski",
+			"fi": "fiński",
+			"fr": "francuski",
+			"de": "niemiecki",
+			"el": "grecki",
+			"hu": "węgierski",
+			"it": "włoski",
+			"ja": "japoński",
+			"ko": "koreański",
+			"no": "Norwegian",
+			"pl": "Polski",
+			"pt": "Portuguese",
+			"pt-BR": "brazylijski portugalski",
+			"ro": "rumuński",
+			"ru": "rosyjski",
+			"es-ES": "hiszpański",
+			"es-419": "Łaciński hiszpański",
+			"sv": "szwedzki",
+			"th": "tajski",
+			"tr": "turecki",
+			"uk": "ukraiński",
+			"vn": "wietnamski"
+		}
+	},
+	"price": {
+		"sale": "W sprzedaży!",
+		"published": "Gra jest już dostępna! Kosztuje **%s**",
+		"openInApp": "Otwórz w aplikacji"
+	},
+	"watch": {
+		"cannot-see": "Nie mam dostępu do %s.",
+		"cannot-send": "Nie mogę wysyłać wiadomości w %s.",
+		"cannot-embed": "Nie mogę wysłać osadzonych elementów w %s.",
+		"price-free": "Ta gra jest darmowa!",
+		"price-unknown": "Błąd: nie można znaleźć ceny tej gry.",
+		"error-retrieving-details": "Wystąpił jednak błąd podczas próby pobrania szczegółów aplikacji. Przez jakiś czas może ona widnieć jako „niezdefiniowana”.",
+		"server-limit-reached": "Ostrzeżenie: osiągnąłeś limit ${LIMIT} gier na serwer.\nZagłosuj na mnie na [Top.gg](${vote}) lub kup **premium**, aby obejrzeć do ${MAX_BONUS} więcej.",
+		"server-limit-reached-voted": "Ostrzeżenie: osiągnięto limit %s gier na serwer. Kup **premium**, aby go zwiększyć.",
+		"server-max-reached": "Ostrzeżenie: osiągnięto limit %s gier na serwer.",
+		"error-limit-reached": "Osiągnąłeś lub przekroczyłeś limit ${LIMIT} obserwujących na serwer.\nZagłosuj na mnie na [Top.gg](${vote}) lub kup **premium**, aby oglądać do ${MAX_BONUS} więcej.",
+		"error-limit-reached-voted": "Przepraszamy, osiągnąłeś limit %s obserwujących na serwer. Kup **premium**, aby go zwiększyć.",
+		"error-max-reached": "Przepraszamy, osiągnięto limit %s obserwujących na serwer.",
+		"confirm-price": "Aktualizacje cen %s będą teraz wysyłane do %s.",
+		"confirm-news": "Wiadomości %s będą teraz wysyłane do %s.",
+		"already-price": "Cena %s była już obserwowana na tym serwerze.",
+		"already-news": "Kanał informacyjny %s był już oglądany na tym serwerze."
+	},
+	"watched": {
+		"games-watched": "Mecze obejrzane w %s",
+		"prices-watched": "Ceny obserwowane w %s",
+		"steam-watched": "Wiadomości o Steamie wysłane w %s",
+		"games": {
+			"1": "1 gra obejrzana",
+			"default": "%n obejrzanych gier"
+		},
+		"prices": {
+			"1": "Obserwowano 1 cenę",
+			"default": "Obejrzano %n cen"
+		},
+		"ping": "ping:",
+		"no-ping": "nie",
+		"none": "Na tym serwerze nie ogląda się żadnego meczu.",
+		"id": "Id: %s",
+		"NSFW-yes": "NSFW: tak",
+		"NSFW-no": "NSFW: nie",
+		"channel": "Kanał: %s"
+	},
+	"unwatch": {
+		"news-unwatched": "%s nie jest już oglądany na tym serwerze.",
+		"news-unchanged": "%s nie był oglądany na tym serwerze.",
+		"price-unwatched": "Cena %s nie jest już obserwowana na tym serwerze.",
+		"price-unchanged": "Cena %s nie była obserwowana na tym serwerze."
+	},
+	"steam": {
+		"watched": "Wiadomości dotyczące platformy Steam będą teraz wysyłane do %s.",
+		"unwatched": "Wiadomości dotyczące Steam nie są już śledzone na tym serwerze."
+	},
+	"stats": {
+		"watchers": "Obserwatorzy wiadomości",
+		"games-watched": "Oglądane gry",
+		"most-watched": "Najczęściej oglądana gra",
+		"n-watchers": "%s obserwatorów",
+		"price-watchers": "Obserwatorzy cen",
+		"prices-watched": "Ceny gier obserwowane",
+		"active-since": "Aktywny od"
+	}
+}
