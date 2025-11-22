@@ -55,9 +55,9 @@ function toMarkdown(contents, limit = 2000)
  * @param {string} name The app's name
  * @param {object} price A price_overview object, with a cc property (country code)
  * 
- * @returns {object} A Discord embed.
+ * @returns {Promise<object>} A Discord embed.
  */
-export function price(appid, name, price)
+export async function price(appid, name, price)
 {
 	const t = tr.get(countryToLang[price.cc], "price");
 	return {
@@ -67,6 +67,6 @@ export function price(appid, name, price)
 			? `${t.sale} ~~${price.initial_formatted}~~ **${price.final_formatted}** (-${price.discount_percent}%)`
 			: t.published.replace("%s", price.final_formatted),
 		fields: [{name: t.openInApp, value: steamAppLink("steam://store/"+appid)}],
-		image: { url: banner(appid, banner.SMALL) },
+		image: { url: await banner(appid, banner.SMALL) },
 	};
 }

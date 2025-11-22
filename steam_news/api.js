@@ -174,6 +174,7 @@ export async function getDetails(appid, lang = "en", cc = "US")
 			"Accept-Language": lang === "en" ? "en" : `${lang}, en`,
 		},
 	}).then(handleQuery);
+	cacheBanners(res);
 	const { [appid]: details } = res;
 	return details.success ? details.data : null;
 }
@@ -189,15 +190,46 @@ export function isNSFW({ required_age, content_descriptors })
 	return required_age >= 18 || notes && (notes.includes("nudity") || notes.includes("sex"));
 }
 
+
+const bannerCache = Object.create(null);
+function cacheBanners(details)
+{
+	const { SMALL, MEDIUM, LARGE } = banner;
+	for(const [appid, {success, data}] of Object.entries(details))
+	{
+		if(success)
+		{
+			const banners = {
+				[SMALL]: data[SMALL],
+				[MEDIUM]: data[MEDIUM],
+				[LARGE]: data[LARGE],
+			};
+			bannerCache[appid] = banners;
+		}
+	}
+}
 /**
  * Get the banner for the provided app.
  * @param {number} appid The app's id
  * @param {string} size The banner's size. Defaults to banner.MEDIUM.
+ * @returns {Promise<string>} The banner URL
  */
-export function banner(appid, size = banner.MEDIUM)
+export async function banner(appid, size = banner.MEDIUM)
 {
-	return `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/${size}.jpg`;
+	const banners = bannerCache[appid] ??= await fetchBanner(appid) || Object.null;
+	return banners[size];
 }
-Object.defineProperty(banner, "SMALL", {value: "capsule_184x69"});
-Object.defineProperty(banner, "MEDIUM", {value: "capsule_231x87"});
-Object.defineProperty(banner, "LARGE", {value: "header"});
+Object.defineProperty(banner, "SMALL", {value: "capsule_imagev5"});
+Object.defineProperty(banner, "MEDIUM", {value: "capsule_image"});
+Object.defineProperty(banner, "LARGE", {value: "header_image"});
+
+async function fetchBanner(appid)
+{
+	const res = await fetch(`${BASE_DETAILS_URL}${appid}&filters=basic`);
+	if(res.ok)
+	{
+		cacheBanners(await res.json());
+		return bannerCache[appid];
+	}
+}
+

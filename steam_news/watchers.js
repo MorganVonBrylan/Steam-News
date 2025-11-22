@@ -308,7 +308,7 @@ export async function checkPrices(reschedule = false)
 
 			price.cc = cc;
 			const { name, nsfw } = watchedPrices[appid];
-			const embed = { embeds: [toPriceEmbed(appid, name, price)] };
+			const embed = { embeds: [await toPriceEmbed(appid, name, price)] };
 			for(const channelId of appsForThisCC.get(appid))
 			{
 				await channels.fetch(channelId).then(async channel => {
@@ -392,11 +392,17 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 			{
 				const cc = price.cc = stmts.getCC(guildId) || "US";
 				if(cc === "US")
-					channel.send({ embeds: [toPriceEmbed(appid, details.name, price)] }).catch(Function.noop);
+				{
+					channel.send({ embeds: [await toPriceEmbed(appid, details.name, price)] })
+						.catch(Function.noop);
+				}
 				else
+				{
 					queryPrices(appid, cc)
-						.then(prices => channel.send({ embeds: [toPriceEmbed(appid, details.name, prices[appid])] }))
+						.then(prices => toPriceEmbed(appid, details.name, prices[appid]))
+						.then(embed => channel.send({ embeds: [embed] }))
 						.catch(Function.noop)
+				}
 			}
 		}
 	}
