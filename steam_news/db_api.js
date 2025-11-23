@@ -8,6 +8,7 @@ import db, { stmts } from "./db.js";
 export const isKnown = appid => !!stmts.isAppKnown(appid);
 
 /**
+ * @type {function}
  * @param {number} appid The app's id
  * @returns {?object} The app info (name, NSFW status and latest news timestamp), if known.
  */
@@ -36,11 +37,13 @@ export function saveAppInfo(appid, details)
 };
 
 /**
+ * @type {function}
  * @param {number} appid The app's id
  * @returns {?string} The app's name, if known.
  */
 export const getAppName = stmts.getAppName;
 /**
+ * @type {function}
  * @param {number} appid The app's id
  * @returns {?bool} Whether is app is NSFW, if known.
  */
@@ -48,12 +51,14 @@ const { isAppNSFW } = stmts;
 export { isAppNSFW as isNSFW };
 
 /**
+ * @type {function}
  * @param {string} guildId The guild id
  * @returns {Array} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
  */
 export const getWatchedApps = stmts.getWatchedApps;
 
 /**
+ * @type {function}
  * @param {string} guildId The guild id
  * @returns {Array} The app prices watched in that guild, in the format {appid, name, nsfw, lastPrice, channelId}
  */
