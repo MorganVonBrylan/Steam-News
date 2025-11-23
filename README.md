@@ -26,6 +26,8 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 	"adminServer": "the id of the server where the admin commands will be available, for you",
     "baseWatcherLimit": 25,
 
+	"steamGridDB": "Your SteamGridDB token here, for fetching icons",
+
 	"topGG": {
 		"token": "(optional) your bot's Top.gg token",
 		"webhook": {

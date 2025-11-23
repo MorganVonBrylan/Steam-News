@@ -1,4 +1,5 @@
 
+import importJSON from "../utils/importJSON.function.js";
 import { parseStringPromise as parseXML } from "xml2js";
 
 // Example: view-source:https://store.steampowered.com/feeds/news/app/593110?l=japanese
@@ -233,3 +234,65 @@ async function fetchBanner(appid)
 	}
 }
 
+
+// Docs: https://www.steamgriddb.com/api/v2
+// This is an imperfect solution, as Steam Grid DB:
+// 1) Does not have images for all games
+// 2) Is not guaranteed to have the offical icon first or highest rated
+// But it is (probably) better than nothing in the absence of an official API for game icons
+const SGDB_BASE_URL = "https://www.steamgriddb.com/api/v2";
+const { steamGridDB } = importJSON("auth.json");
+const sgdbAuth = steamGridDB ? `Bearer ${steamGridDB}` : null;
+const iconCache = Object.create(null);
+iconCache[STEAM_APPID] = STEAM_ICON;
+/**
+ * Return an icon for the game from Steam Grid DB.
+ * @param {number} appid That app's id
+ * @param {boolean} defaultToBanner Whether to return the small banner or null in case Steam Grid DB does not have that game.
+ * @return {Promise<?string>}
+ */
+export async function icon(appid, defaultToBanner = true)
+{
+	if(appid in iconCache)
+		return iconCache[appid];
+
+	let icon = null;
+	if(sgdbAuth)
+	{
+		const res = await fetch(`${SGDB_BASE_URL}/icons/steam/${appid}?styles=official&types=static`, {headers: { Authorization: sgdbAuth }});
+		if(res.ok)
+		{
+			const { data } = await res.json();
+			const { url, thumb = url } = data.reduce((prevBest, current) => current.score > prevBest.score ? current : prevBest, { score: -1 });
+			if(url === thumb)
+				icon = url;
+			else if(url.endsWith(".ico"))
+				icon = thumb;
+			else
+			{
+				const urlData = await fetch(url, { method: "HEAD" });
+				const thumbData = await fetch(thumb, { method: "HEAD" });
+				if(!thumbData.ok)
+					icon = url;
+				else if(!urlData.ok)
+					icon = thumb;
+				else
+				{
+					const urlSize = +urlData.headers.get("Content-Length");
+					const thumbSize = +thumbData.headers.get("Content-Length");
+					if(!urlSize)
+						icon = thumb;
+					else if(!thumbSize)
+						icon = url;
+					else
+						icon = urlSize < thumbSize ? url : thumb;
+				}
+			}
+		}
+	}
+
+	if(defaultToBanner)
+		icon ??= await banner(appid, banner.SMALL);
+
+	return iconCache[appid] = icon;
+}

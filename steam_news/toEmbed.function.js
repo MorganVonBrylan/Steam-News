@@ -1,6 +1,6 @@
 
 import { getAppName } from "./watchers.js";
-import { steamAppLink, banner } from "./api.js";
+import { steamAppLink, banner, icon } from "./api.js";
 const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
 const YT_REGEX = /data-youtube="([\w-]+)"/g;
 
@@ -15,14 +15,15 @@ const html2markdown = nhm.translate.bind(nhm);
  * Returns the given Steam news item as a Discord embed.
  * @param {object} newsitem The news item.
  * @param {string} lang The language (default: en)
- * @returns {object} A Discord embed.
+ * @returns {Promise<object>} A Discord embed.
  */
-export default function toEmbed({ appid, url, title, thumbnail, contents, date }, lang = "en")
+export default async function toEmbed({ appid, url, title, thumbnail, contents, date }, lang = "en")
 {
 	const eventId = url.substring(url.lastIndexOf("/") + 1);
 	thumbnail ??= contents.match(/<img src="(https[^"]+)"/)?.[1];
 	const yt = contents.match(YT_REGEX)?.map(m => `https://youtu.be/${m.slice(14, -1)}`).join("\n");
 	const name = getAppName(appid);
+	const iconURL = await icon(appid, false);
 	const steamLink = `url/EventAnnouncementPage/${appid}/${eventId}`;
 	return {
 		url,
@@ -32,7 +33,7 @@ export default function toEmbed({ appid, url, title, thumbnail, contents, date }
 		fields: [{name: tr.get(lang, "info.openInApp"), value: steamAppLink(steamLink, lang) }],
 		yt,
 		author: name ? { name, url: "https://store.steampowered.com/app/"+appid } : undefined,
-		footer: name ? { text: name } : undefined,
+		footer: name || iconURL ? { text: name, iconURL } : undefined,
 		timestamp: new Date(date).toISOString(),
 	};
 };

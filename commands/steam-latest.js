@@ -1,5 +1,5 @@
 
-import { querySteam, STEAM_ICON } from "../steam_news/api.js";
+import { querySteam } from "../steam_news/api.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
 
 import { PermissionFlagsBits } from "discord.js";
@@ -17,8 +17,7 @@ export async function run(inter) {
 	const lang = inter.options.getString("language") || inter.locale;
 	const appnews = await querySteam(steamLanguages[lang]);
 
-	const news = toEmbed(appnews.newsitems[0], inter.locale);
-	news.footer.iconUrl = STEAM_ICON;
+	const news = await toEmbed(appnews.newsitems[0], inter.locale);
 	const reply = inter.editReply({ embeds: [news] });
 
 	if(news.yt && await canSendMessage(inter))

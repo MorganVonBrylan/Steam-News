@@ -3,7 +3,7 @@ import {
 	query, queryPrices, querySteam,
 	getDetails,
 	isNSFW,
-	STEAM_APPID, STEAM_ICON
+	STEAM_APPID
 } from "./api.js";
 import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
 const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
@@ -82,6 +82,10 @@ function timestamp(rssDate) {
 	return new Date(rssDate).getTime() / 1000;
 }
 
+function newsToEmbeds(news, ...toEmbedParams) {
+	return Promise.all(news.reverse().map(item => toEmbed(item, ...toEmbedParams)));
+}
+
 /**
  * Triggers all watchers.
  * @param {number} range Index of the range of appids to check (see exported 'ranges').
@@ -128,7 +132,7 @@ export async function checkForNews(range, reschedule = false)
 				else
 				{
 					newsitems.length = nNews;
-					const trEmbeds = newsitems.reverse().map(item => toEmbed(item, lang));
+					const trEmbeds = await newsToEmbeds(newsitems, lang);
 					if(iconUrl) for(const embed of trEmbeds)
 						embed.footer.iconUrl = iconUrl;
 					
@@ -188,11 +192,7 @@ export async function checkForNews(range, reschedule = false)
 
 				total += news.length;
 				const [{date: latestDate}] = news;
-				const baseEmbeds = news.reverse().map(newsitem => {
-					const embed = toEmbed(newsitem);
-					embed.footer.iconUrl = STEAM_ICON;
-					return embed;
-				});
+				const baseEmbeds = await newsToEmbeds(news);
 				promises.push(...steamWatchers.map(getNewsSender(baseEmbeds, querySteam)));
 				stmts.updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
 			});
@@ -227,7 +227,7 @@ export async function checkForNews(range, reschedule = false)
 
 		total += news.length;
 		const [{date: latestDate}] = news;
-		const baseEmbeds = news.reverse().map(newsitem => toEmbed(newsitem));
+		const baseEmbeds = await newsToEmbeds(news);
 
 		const watchers = stmts.getWatchers(appid)
 			.filter(({premium, guildId}) => !premium || premiumGuilds.has(guildId));
