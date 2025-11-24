@@ -37,30 +37,29 @@ export function saveAppInfo(appid, details)
 };
 
 /**
- * @type {function}
+ * @type {(appid:number)=>string|undefined}
  * @param {number} appid The app's id
- * @returns {?string} The app's name, if known.
+ * @returns The app's name, if known.
  */
 export const getAppName = stmts.getAppName;
 /**
- * @type {function}
+ * @type {(appid:number)=>?boolean}
  * @param {number} appid The app's id
- * @returns {?bool} Whether is app is NSFW, if known.
+ * @returns Whether is app is NSFW, if known.
  */
-const { isAppNSFW } = stmts;
-export { isAppNSFW as isNSFW };
+export const isNSFW = stmts.isAppNSFW;
 
 /**
- * @type {function}
+ * @type {(appid:number)=>{appid:number, name:string, nsfw:?boolean, channelId:string}}
  * @param {string} guildId The guild id
- * @returns {Array} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
+ * @returns The apps watched in that guild, in the format {appid, name, nsfw, channelId}
  */
 export const getWatchedApps = stmts.getWatchedApps;
 
 /**
- * @type {function}
+ * @type {(guildId:string)=>{appid:number, name:string, nsfw:?boolean, lastPrice:number, channelId:string}[]}
  * @param {string} guildId The guild id
- * @returns {Array} The app prices watched in that guild, in the format {appid, name, nsfw, lastPrice, channelId}
+ * @returns The app prices watched in that guild, in the format {appid, name, nsfw, lastPrice, channelId}
  */
 export const getWatchedPrices = stmts.getWatchedPrices;
 
