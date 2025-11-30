@@ -61,7 +61,7 @@ export async function run(inter)
 
 	const cannotSend = await checkPerms(channel);
 	if(cannotSend)
-		return inter.reply({flags: "Ephemeral", content: t(cannotSend, channel)});
+		return inter.reply({flags: "Ephemeral", content: t(cannotSend, channel.toString())});
 
 	const { appid, defer } = await interpretAppidOption(inter, true);
 	if(!appid)

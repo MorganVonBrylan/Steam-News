@@ -21,13 +21,13 @@ export async function run(inter)
 	const channel = inter.options.getChannel("channel") || inter.channel;
 	const cannotSend = await checkPerms(channel);
 	if(cannotSend)
-		return inter.reply({flags: "Ephemeral", content: tr.get(inter.locale, `watch.${cannotSend}`, channel)});
+		return inter.reply({flags: "Ephemeral", content: tr.get(inter.locale, `watch.${cannotSend}`, channel.toString())});
 
 	watchSteam({
 		guildId: inter.guildId,
 		channelId: channel.id,
 		roleId: inter.options.getRole("role")?.id,
 	});
-	inter.reply(tr.get(inter.locale, "steam.watched", channel));
+	inter.reply(tr.get(inter.locale, "steam.watched", channel.toString()));
 	createCmd(inter.guild, true);
 }
