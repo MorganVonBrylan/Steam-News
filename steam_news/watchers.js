@@ -381,8 +381,14 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 			if(!knownPrice)
 				knownPrice = stmts.getPrice(appid);
 			if(knownPrice === "free")
+			{
+				if(details.is_free)
 				return null;
-			else if(knownPrice === null || !price)
+				else if(price)
+					stmts.updateLastPrice({appid, lastPrice: price.final});
+			}
+			
+			if(knownPrice === null || !price)
 			{
 				stmts.updateLastPrice({appid, lastPrice: price?.final});
 				return false;
