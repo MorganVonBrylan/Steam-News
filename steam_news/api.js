@@ -106,7 +106,7 @@ export async function query(appid, language)
 		url: item.link[0],
 		title: item.title[0],
 		thumbnail: item.enclosure?.[0].$.url,
-		contents: item.description[0],
+		contents: item.description?.[0] || "",
 		date: item.pubDate[0],
 	}))};
 }
