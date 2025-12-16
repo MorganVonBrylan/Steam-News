@@ -34,7 +34,7 @@ const components = new Map();
  * @returns {boolean} true if the component was registered, false if there was already one with that id
  * @throws {TypeError}
  */
-export function register(customId, callback, { singleUse = false, timeout = 180})
+export function register(customId, callback, { singleUse = false, timeout = 180} = {})
 {
 	if(customId.customId)
 		customId = customId.customId;
