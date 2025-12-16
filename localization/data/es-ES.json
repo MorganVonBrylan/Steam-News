@@ -1,0 +1,393 @@
+{
+	"discovery": "**Steam News** le permite tener noticias sobre juegos en Steam y cambios de precio enviados directamente al canal de su elección en su servidor de Discord.\n\nTambién tiene un comando para mostrar información sobre un juego, con muchos más detalles que simplemente pegar la URL de la tienda de Steam.",
+	"commands": {
+		"help": {
+			"name": "ayuda",
+			"description": "Obtiene ayuda sobre el bot"
+		},
+		"premium": {
+			"name": "premium",
+			"description": "Comandos Premium",
+			"rebrand": {
+				"name": "rebrand",
+				"description": "Cambia la foto de perfil y/o banner del bot en este servidor.",
+				"options": {
+					"avatar": {
+						"name": "avatar",
+						"description": "La nueva foto de perfil del bot"
+					},
+					"banner": {
+						"name": "banner",
+						"description": "El nuevo banner del bot (tamaño ideal: 680×240)"
+					}
+				}
+			},
+			"rebrand-reset": {
+				"name": "rebrand-reset",
+				"description": "Volver a la apariencia predeterminada del bot (gratis).",
+				"options": {
+					"what": {
+						"name": "que",
+						"description": "Elija qué restablecer",
+						"choices": [
+							"Avatar",
+							"Banner",
+							"Ambos"
+						]
+					}
+				}
+			},
+			"options": {
+				"rebrand": {
+					"name": "aspecto",
+					"description": "Cambia la foto de perfil o el cartel del bot en este servidor",
+					"options": {
+						"avatar": {
+							"name": "avatar",
+							"description": "La nueva foto de perfil del bot"
+						},
+						"banner": {
+							"name": "cartel",
+							"description": "El nuevo cartel del bot (Tamaño ideal: 680×240)"
+						}
+					}
+				},
+				"rebrand-reset": {
+					"name": "reiniciar-aspecto",
+					"description": "Devuelve al bot a su aspecto original (Gratuito).",
+					"options": {
+						"what": {
+							"name": "qué",
+							"description": "Elige que reiniciar",
+							"choices": [
+								"avatar",
+								"banner",
+								"ambos"
+							]
+						}
+					}
+				}
+			}
+		},
+		"info": {
+			"name": "información",
+			"description": "Muestra información sobre un juego (género, precio, fecha de lanzamiento, etc)",
+			"options": {
+				"game": {
+					"name": "juego",
+					"description": "El nombre o id del juego"
+				},
+				"country-code": {
+					"name": "codigo-de-pais",
+					"description": "Código de 2 letras del país del que mostrar información (por defecto el del servidor, o el suyo)"
+				}
+			}
+		},
+		"latest": {
+			"name": "recientes",
+			"description": "Muestra las últimas noticias de un juego.",
+			"options": {
+				"game": {
+					"name": "juego",
+					"description": "El nombre o id del juego"
+				},
+				"language": {
+					"name": "idioma",
+					"description": "El idioma de las noticias. La disponibilidad depende de los desarrolladores del juego."
+				}
+			}
+		},
+		"locale": {
+			"name": "idioma",
+			"description": "Muestra o establece la localizacion del servidor (Para el idioma y precio de /info y similares)",
+			"options": {
+				"country-code": {
+					"name": "codigo-de-pais",
+					"description": "El código de 2 letras, como ES, FR, RU, etc. También puede hacer una búsqueda."
+				},
+				"language": {
+					"name": "idioma",
+					"description": "Su idioma preferido para las noticias. (Por defecto, el idioma oficial de su país)"
+				}
+			}
+		},
+		"open": {
+			"name": "abrir",
+			"description": "Obtiene un enlace para abrir un juego en Steam",
+			"options": {
+				"game": {
+					"name": "juego",
+					"description": "El nombre o id del juego"
+				}
+			}
+		},
+		"watch": {
+			"name": "suscribir",
+			"description": "(Sólo admins) Se suscribe a las noticias o cambios de precio de un juego (Máximo %s por servidor)",
+			"options": {
+				"type": {
+					"name": "tipo",
+					"description": "Elige si muestra noticias o cambios de precio",
+					"choices": [
+						"Noticias",
+						"Precio"
+					]
+				},
+				"game": {
+					"name": "juego",
+					"description": "El nombre o id del juego"
+				},
+				"role": {
+					"name": "rol",
+					"description": "Un rol a notificar cuando se publiquen noticias"
+				},
+				"channel": {
+					"name": "canal",
+					"description": "El canal donde se enviarán las noticias (Por defecto, el canal actual)"
+				}
+			}
+		},
+		"watched": {
+			"name": "suscripciones",
+			"description": "Muestra a qué juegos se está suscrito en este servidor."
+		},
+		"unwatch": {
+			"name": "desuscribir",
+			"description": "(Sólo admins) Se desuscribe de las noticias de un juego.",
+			"options": {
+				"news": {
+					"name": "noticias",
+					"description": "(Sólo admins) Se desuscribe de las noticias de un juego."
+				},
+				"price": {
+					"name": "precio",
+					"description": "(Sólo admins) Desuscribase del precio de un juego."
+				},
+				"game": {
+					"name": "juego",
+					"description": "El nombre o id del juego"
+				}
+			}
+		},
+		"steam-latest": {
+			"name": "recientes-steam",
+			"description": "Muestra las últimas noticias sobre Steam."
+		},
+		"steam-watch": {
+			"name": "suscribir-steam",
+			"description": "(Sólo admins) Se suscribe a las noticias sobre Steam.",
+			"options": {
+				"channel": {
+					"name": "canal",
+					"description": "El canal donde se enviarán las noticias (Por defecto, el canal actual)"
+				},
+				"role": {
+					"name": "rol",
+					"description": "Un rol a notificar cuando se publiquen noticias"
+				}
+			}
+		},
+		"steam-unwatch": {
+			"name": "desuscribir-steam",
+			"description": "(Sólo admins) Se desuscribe de las noticias sobre Steam."
+		},
+		"stats": {
+			"name": "estadisticas",
+			"description": "Muestra las estadísticas sobre el bot"
+		}
+	},
+	"voting": {
+		"thanks": "¡Gracias por votar! Ahora puede añadir %s suscripciones más de cada tipo a cada uno de sus servidores."
+	},
+	"help": {
+		"title": "Ayuda de Steam News",
+		"description": "**Steam News** es un bot que le permite seguir las noticias de Steam enviando anuncios, notas de parche, etc, directamente a un canal.",
+		"fields": [
+			{
+				"name": "¿Cómo sigo las noticias o precio de un juego?",
+				"value": "Agregue una suscripción con `/suscribir`, o elimínela con `/desuscribir`."
+			},
+			{
+				"name": "¿Cuántos juegos puedo seguir?",
+				"value": "Por defecto, puede seguir ${WATCH_LIMIT} fuentes de noticias y la misma cantidad de precios (que no tienen por qué ser del mismo juego). Puede obtener ${WATCH_VOTE_BONUS} fuentes de noticias y precios adicionales si vota por nosotros en Top.gg (link al final de este mensaje)."
+			},
+			{
+				"name": "¡El bot no envió las últimas noticias en el momento que salieron!",
+				"value": "Eso es normal. El bot revisa las noticias cada hora, así que puede haber hasta una hora de retraso."
+			},
+			{
+				"name": "¿Se pueden seguir juegos NSFW?",
+				"value": "Sí, pero el bot sólo enviará información y noticias sobre los juegos NSFW en los canales marcados como NSFW."
+			},
+			{
+				"name": "¿Puedo copiar tu bot?",
+				"value": "¡Claro! Se distribuye bajo la licencia GNU GPL 3.0.\nAquí está el repositorio Git: ${repository}"
+			},
+			{
+				"name": "¡Todavía necesito ayuda!",
+				"value": "Que lástima. Puede explicar su problema en nuestro servidor de soporte: ${SUPPORT_SERVER}"
+			},
+			{
+				"name": "Una última cosa",
+				"value": "¿Le gusta Steam News? Considere recomendarlo en Top.gg: ${VOTE}"
+			}
+		],
+		"footer": {
+			"text": "Steam News v${v} por ${author}.\nTraducción a español por ajuanjojjj"
+		},
+		"donate": "Considere también hacer una donación:"
+	},
+	"premium": {
+		"rebrand": {
+			"disabled": "¡Lo sentimos! Los cambios de aspecto están deshabilitados en estos momentos.",
+			"pay": "Lo siento, esto es una característica de pago. Por favor, compre una ficha de aspecto en la tienda.",
+			"missing-args": "No especificó un avatar o banner. Para eliminar el aspecto personalizado, use reiniciar-aspecto.",
+			"too-large": "Este archivo es demasiado grande. El tamaño máximo es de 1 MB.",
+			"avatar-rate-limit": "Me hizo cambiar mi avatar demasiado y Discord me está limitando. Por favor, inténtelo de nuevo más tarde.",
+			"banner-rate-limit": "Me hizo cambiar mi banner demasiado y Discord me está limitando. Por favor, inténtelo de nuevo más tarde.",
+			"failure": "El cambio de aspecto falló con el mensaje '%s'.\nSu ficha de aspecto no se ha consumido.",
+			"success": "¡Mi apariencia ha cambiado! Me siento joven otra vez.\nSi no ve el cambio, pruebe a reiniciar Discord.",
+			"grace": "En caso de que cambie de opinión o desee reajustar, puede volver a utilizar este comando de forma gratuita durante la siguiente hora.",
+			"resetFailure": "El reinicio de apariencia falló con el mensaje '%s'.",
+			"resetSuccess": "Mi apariencia ha sido reiniciada.\nSi no ve el cambio, pruebe a reiniciar Discord."
+		}
+	},
+	"error": "Se produjo un error.",
+	"api-failed": "La conexión a la API de Steam falló; por favor inténtelo de nuevo en unos minutos.",
+	"api-403": "Se denegó el acceso a este juego (error 403).",
+	"api-err": "Error al obtener los datos (error %s).",
+	"no-match": "No se ha encontrado un juego que coincida con \"%s\".",
+	"bad-appid": "El id proporcionado no pertenece a ninguna aplicación de Steam.",
+	"no-DLC-news": "Los DLC no tienen noticias.",
+	"no-news": "Esta aplicación no tiene noticias.",
+	"NSFW-content-news": "Este juego tiene contenido para adultos. Sólo puede mostrar sus noticias en un canal marcado como NSFW.",
+	"NSFW-content-price": "Este juego tiene contenido para adultos. Sólo puede mostrar su precio en un canal marcado como NSFW.",
+	"table": "tabla",
+	"info": {
+		"yes": "Sí",
+		"no": "No",
+		"invalidAppid": "El id proporcionado no pertenece a ninguna aplicación de Steam.",
+		"nsfwForbidden": "Este juego tiene contenido para adultos. Sólo puede mostrar su información en un canal marcado como NSFW.",
+		"comingSoon": "*en desarrollo*",
+		"genre": "Género",
+		"genres": "Géneros",
+		"none": "*ninguno*",
+		"metacritic": "Puntuación de Metacritic",
+		"unknown": "*Desconocido*",
+		"nsfw": "Sólo para adultos",
+		"releaseDate": "Fecha de lanzamiento",
+		"price": "Precio",
+		"free": "Gratis",
+		"undefined": "sin definir",
+		"DLC": "DLC",
+		"game": "Juego:",
+		"platforms": "Plataformas",
+		"controllerSupport": "Soporte para Mandos",
+		"controller_no": "No",
+		"controller_partial": "Parcial",
+		"controller_full": "Total",
+		"multi": "Multijugador",
+		"languages": "Idiomas",
+		"openInApp": "Abrir en aplicación"
+	},
+	"locale": {
+		"current": "Su localización actual es %s (%s), con %s como el idioma preferido.",
+		"no-default": "Este servidor no tiene un idioma predeterminado.",
+		"new-default": "La localizacion predeterminada de este servidor ahora es %s (%s), con %s como el idioma preferido.",
+		"cc-required": "Necesita proporcionar el código de 2 letras de un país.\nPuede encontrar la lista aquí: %s",
+		"cc-invalid": "Esto no es un código Alpha-2 válido.\nPuede encontrar la lista aquí: %s",
+		"languages": {
+			"ar": "Árabe",
+			"br": "Búlgaro",
+			"zh-CN": "Chino Simplificado",
+			"zh-TW": "Chino Tradicional",
+			"cs": "Checo",
+			"da": "Danés",
+			"nl": "Neerlandés",
+			"en": "Inglés",
+			"fi": "Finlandés",
+			"fr": "Francés",
+			"de": "Alemán",
+			"el": "Griego",
+			"hu": "Húngaro",
+			"it": "Italiano",
+			"ja": "Japonés",
+			"ko": "Coreano",
+			"no": "Noruego",
+			"pl": "Polaco",
+			"pt": "Portugués",
+			"pt-BR": "Brasileño",
+			"ro": "Rumano",
+			"ru": "Ruso",
+			"es-ES": "Español España",
+			"es-419": "Español Latinoamérica",
+			"sv": "Sueco",
+			"th": "Tailandés",
+			"tr": "Turco",
+			"uk": "Ucraniano",
+			"vn": "Vietnamita"
+		}
+	},
+	"price": {
+		"sale": "¡En descuento!",
+		"published": "¡El juego ha salido! Cuesta **%s**",
+		"openInApp": "Abrir en aplicación"
+	},
+	"watch": {
+		"cannot-see": "No tengo acceso a %s.",
+		"cannot-send": "No puedo enviar mensajes en %s.",
+		"cannot-embed": "No puedo enviar embebidos en %s.",
+		"price-free": "¡Este juego es gratis!",
+		"price-unknown": "Error: no he podido encontrar precio para este juego.",
+		"error-retrieving-details": "Sin embargo, se produjo un error al intentar obtener los detalles de la aplicación. Puede que se llame “sin definir” por un tiempo.",
+		"server-limit-reached": "Advertencia: ha alcanzado el límite de ${LIMIT} juegos por servidor.\nRecomiéndeme en [Top.gg](${vote}) o compre **premium** para seguir hasta ${MAX_BONUS} juegos más.",
+		"server-limit-reached-voted": "Advertencia: ha alcanzado el límite de %s juegos por servidor. Compre **premium** para aumentarlo.",
+		"server-max-reached": "Advertencia: alcanzó el límite de %s juegos por servidor.",
+		"error-limit-reached": "Alcanzó o superó el límite base de ${LIMIT} suscripciones por servidor.\nRecomiéndeme en [Top.gg](${vote}) o compre **premium** para seguir hasta ${MAX_BONUS} más.",
+		"error-limit-reached-voted": "Lo siento, ha alcanzado su límite de %s suscripciones por servidor. Compre **premium** para aumentarlo.",
+		"error-max-reached": "Lo siento, alcanzó el límite de %s suscripciones por servidor.",
+		"confirm-price": "Las actualizaciones de precios de %s se enviarán ahora en %s.",
+		"confirm-news": "Las noticias de %s serán enviadas ahora en %s.",
+		"already-price": "Ya existe una suscripcion para el precio de %s en este servidor.",
+		"already-news": "Ya existe una suscripcion para el feed de noticias de %s en este servidor."
+	},
+	"watched": {
+		"games-watched": "Juegos suscritos en %s",
+		"prices-watched": "Precios suscritos en %s",
+		"steam-watched": "Noticias sobre Steam enviadas en %s",
+		"games": {
+			"1": "1 juego suscrito",
+			"default": "%n juegos suscritos"
+		},
+		"prices": {
+			"1": "1 precio suscrito",
+			"default": "%n precios suscritos"
+		},
+		"ping": "Ping:",
+		"no-ping": "no",
+		"none": "No existe ninguna suscripción a ningún juego en este servidor.",
+		"id": "Id: %s",
+		"NSFW-yes": "NSFW: Sí",
+		"NSFW-no": "NSFW: No",
+		"channel": "Canal: %s"
+	},
+	"unwatch": {
+		"news-unwatched": "Se ha eliminado la suscripción a %s en este servidor.",
+		"news-unchanged": "No existía una sucripción a %s en este servidor.",
+		"price-unwatched": "Se ha eliminado la suscripción al precio de %s en este servidor.",
+		"price-unchanged": "No existía una suscripción al precio de %s en este servidor."
+	},
+	"steam": {
+		"watched": "Las noticias sobre Steam se enviarán ahora a %s.",
+		"unwatched": "Se ha eliminado la suscripción a las noticias sobre Steam en este servidor."
+	},
+	"stats": {
+		"watchers": "Suscripciones a noticias",
+		"games-watched": "Suscripciones a juegos",
+		"most-watched": "Juego más suscrito",
+		"n-watchers": "%s suscripciones",
+		"price-watchers": "Suscripciones a precios",
+		"prices-watched": "Precios de juegos seguidos",
+		"active-since": "Activo desde"
+	}
+}
