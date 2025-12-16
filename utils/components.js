@@ -60,18 +60,21 @@ export const registered = components.has.bind(components);
 
 /**
  * Handles the given component interaction, calling the appropriate callback if a component with the same custom id was registered (it is then un-registered).
- * @param {MessageComponentInteraction} interaction The interaction
- * @returns {boolean} true if the interaction was handled, false if no component with the same custom id was registered.
+ * @param {BaseInteraction} interaction The interaction
+ * @returns {?boolean} true if the interaction was handled, false if no component with the same custom id was registered, null if it wasn't an interaction with a custom id.
  */
 export function handleInteraction(interaction)
 {
-	const component = components.get(interaction.customId);
+	const { customId } = interaction;
+	if(!customId)
+		return null;
+	const component = components.get(customId);
 	if(!component)
 		return false;
 
 	if(component.singleUse)
 	{
-		components.delete(interaction.customId);
+		components.delete(customId);
 		clearTimeout(component.clear);
 	}
 	component.callback(interaction);

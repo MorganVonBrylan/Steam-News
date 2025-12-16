@@ -114,11 +114,8 @@ for(const file of readdirSync(__dirname(import.meta.url) + "/events"))
 	.then(({default: handler}) => client.on(file.slice(0, -3), handler));
 }
 
-import { handleInteraction as componentInteraction } from "./utils/components.js";
-client.on("interactionCreate", interaction => {
-	if(interaction.isMessageComponent())
-		componentInteraction(interaction);
-});
+import { handleInteraction as handleComponentInteraction } from "./utils/components.js";
+client.on("interactionCreate", handleComponentInteraction);
 
 
 client.on("shardReady", id => {
