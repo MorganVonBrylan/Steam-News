@@ -1,14 +1,24 @@
 
 import { ComponentType, ButtonStyle } from "discord.js";
-const {	ActionRow: ACTION_ROW, StringSelect: STRING_SELECT, Button: BUTTON } = ComponentType;
+const {
+	ActionRow: ACTION_ROW,
+	StringSelect: STRING_SELECT,
+	Button: BUTTON,
+	Label: LABEL,
+} = ComponentType;
 const { Primary: PRIMARY } = ButtonStyle;
 
 
 export function selectMenu(selectMenu)
 {
-	return {
+	selectMenu.type = STRING_SELECT;
+	const { label } = selectMenu;
+	return label ? {
+		type: LABEL, label,
+		component: selectMenu,
+	} : {
 		type: ACTION_ROW,
-		components: [{ ...selectMenu, type: STRING_SELECT }],
+		components: [selectMenu],
 	};
 }
 
