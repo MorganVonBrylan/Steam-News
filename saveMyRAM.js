@@ -53,9 +53,8 @@ function patch({prototype}, patchData)
 		throw new TypeError(`${className} does not have a '_patch' method.`);
 
 	prototype._truePatch = prototype._patch;
-	if(Reflect.defineProperty(prototype, "_patch",
-		{ value: function(data) { patchData(data); return this._truePatch(data); }})
-	)
+	const patcher = function(data) { patchData(data); return this._truePatch(data); };
+	if(Reflect.defineProperty(prototype, "_patch", { value: patcher }))
 		console.info(`Patched: ${className}`);
 	else
 		console.error(`Redefining '_patch' on ${className} failed.`);
@@ -64,18 +63,35 @@ function patch({prototype}, patchData)
 patch(AnonymousGuild, (data) => {
 	delete data.name;
 	delete data.description;
+	delete data.icon;
+	delete data.banner;
+	delete data.splash;
+	delete data.soundboard_sounds;
+	delete data.discovery_splash;
+	delete data.afk_channel_id;
+	delete data.system_channel_id;
+	delete data.widget_channel_id;
+	delete data.rules_channel_id;
+	delete data.public_updates_channel_id;
+	delete data.safety_alerts_channel_id;
 });
 
 patch(BaseChannel, (data) => {
 	delete data.name;
 	delete data.topic;
+	delete data.last_message_id;
+	delete data.last_pin_timestamp;
+	delete data.available_tags;
+	delete data.default_reaction_emoji;
 });
 
 patch(Role, (data) => {
 	delete data.name;
 	delete data.color;
+	delete data.colors;
 	delete data.icon;
 	delete data.unicode_emoji;
+	delete data.tags;
 });
 
 /* This may seem like a bad idea, however djs-commands does not use Discord.js command objects.
@@ -84,7 +100,9 @@ patch(Role, (data) => {
  */
 patch(ApplicationCommand, (data) => {
 	delete data.name_localizations;
+	delete data.name_localized;
 	delete data.description;
 	delete data.description_localizations;
+	delete data.description_localized;
 	delete data.options;
 });
