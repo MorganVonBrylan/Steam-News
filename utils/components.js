@@ -66,6 +66,7 @@ export function register(customId, callback, { singleUse = false, timeout = 180}
 
 
 export const registered = components.has.bind(components);
+export const unregister = components.delete.bind(components);
 
 
 /**
