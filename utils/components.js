@@ -4,11 +4,11 @@ const {	ActionRow: ACTION_ROW, StringSelect: STRING_SELECT, Button: BUTTON } = C
 const { Primary: PRIMARY } = ButtonStyle;
 
 
-export function selectMenu(customId, options, minValues = 1, maxValues = 1)
+export function selectMenu(selectMenu)
 {
 	return {
 		type: ACTION_ROW,
-		components: [{ type: STRING_SELECT, customId, options, minValues, maxValues }],
+		components: [{ ...selectMenu, type: STRING_SELECT }],
 	};
 }
 
