@@ -34,7 +34,7 @@ export async function run(inter)
 
 	let cc = inter.options.getString("country-code")?.toUpperCase();
 	let lang;
-	const guildLocale = inter.guild && getLocale(inter.guildId);
+	const guildLocale = inter.guild && getLocale(inter.guildId) || inter.guild.preferredLocale;
 	if(guildLocale)
 	{
 		if(cc)
