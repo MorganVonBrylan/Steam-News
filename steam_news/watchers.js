@@ -29,6 +29,12 @@ const { channels } = client;
 
 const CHECK_INTERVAL = 3600_000;
 
+function logQueryError(message, httpStatus)
+{
+	if(httpStatus[0] !== "5")
+		console.error(new Date(), `${message}: ${httpStatus}`);
+}
+
 /**
  * Purge a channel from the database if trying to send in it ended in a 404 error.
  * @param {Error} error The Error received when trying to send news/prices.
@@ -126,7 +132,7 @@ export async function checkForNews(range, reschedule = false)
 				const { appid, newsitems, error: err } = await query(lang);
 				if(err)
 				{
-					error(new Error(`Failed to get ${lang} news for app ${appid}: ${err}`));
+					logQueryError(`Failed to get ${lang} news for app ${appid}`, err);
 					embeds[lang] = embeds.english;
 				}
 				else
@@ -172,9 +178,9 @@ export async function checkForNews(range, reschedule = false)
 		const steamWatchers = stmts.getSteamWatchers();
 		if(steamWatchers.length)
 		{
-			querySteam().then(async ({newsitems, error}) => {
-				if(error)
-					return console.error(new Date(), `Failed to get news for Steam: ${error}`);
+			querySteam().then(async ({newsitems, error: err}) => {
+				if(err)
+					return logQueryError("Failed to get news for Steam", err);
 
 				const { latest } = getAppInfo(STEAM_APPID);
 				const news = [];
@@ -202,11 +208,11 @@ export async function checkForNews(range, reschedule = false)
 	for(const appid of newsRanges[range]())
 	{
 		const queryNews = query.bind(null, appid);
-		const { newsitems, error } = await queryNews();
-		if(error)
+		const { newsitems, error: err } = await queryNews();
+		if(err)
 		{
-			console.error(new Date(), `Failed to get news of app ${appid}: ${error}`);
-			if(error === "404 Not Found")
+			logQueryError(`Failed to get news of app ${appid}`, err);
+			if(err.startsWith("404"))
 				purgeApp(appid);
 			continue;
 		}
