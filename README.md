@@ -14,6 +14,7 @@ Do check out [Steam Watch](https://github.com/dukeofsussex/SteamWatch) by DukeOf
 - French: Morgân von Brylân
 - German: jemand2001
 - Russian: B1ngell
+- Spanish: ajuanjojjj
 
 # Usage
 This bot requires Node.JS 16 or higher.
