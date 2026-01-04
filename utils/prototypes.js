@@ -1,4 +1,4 @@
 
 Function.noop ??= ()=>{};
 
-Object.null ??= Object.create(null);
+Object.null ??= Object.freeze(Object.create(null));
