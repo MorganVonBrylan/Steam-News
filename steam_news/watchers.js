@@ -123,10 +123,10 @@ export async function checkForNews(range, reschedule = false)
 			const lang = serverToLang[channel.guild.id] || "english";
 			if(!Object.hasOwn(embeds, lang))
 			{
-				const { appid, newsitems, error } = await query(lang);
-				if(error)
+				const { appid, newsitems, error: err } = await query(lang);
+				if(err)
 				{
-					error(new Error(`Failed to get ${lang} news for app ${appid}: ${error}`));
+					error(new Error(`Failed to get ${lang} news for app ${appid}: ${err}`));
 					embeds[lang] = embeds.english;
 				}
 				else
