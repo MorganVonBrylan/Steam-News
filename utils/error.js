@@ -7,6 +7,64 @@ import { DiscordAPIError } from "discord.js";
 import TopGGAPIError_ from "@top-gg/sdk/dist/utils/ApiError.js";
 const TopGGAPIError = TopGGAPIError_.default;
 
+import importJSON from "./importJSON.function.js";
+const settings = importJSON("errors.json", {
+	ignore: { status: ">=500" },
+	truncate: {
+		status: 408,
+		message: "read ECONNRESET",
+	},
+	downgrade: {
+		status: [403, 404],
+		message: ["Unknown interaction", "^invalid json response body"],
+	},
+});
+settings.ignore ??= Object.null;
+settings.simplify ??= Object.null;
+settings.downgrade ??= Object.null;
+Object.freeze(settings);
+
+const IGNORE = 1, SIMPLIFY = 1<<1, DOWNGRADE = 1<<2;
+function testRule(value, rule) {
+	switch(rule[0])
+	{
+		case "^": return value.startsWith(rule.substring(1));
+		case "*": return value.includes(rule.substring(1));
+		case "$": return value.endsWith(rule.substring(1));
+		case ">": return value > rule.substring(1);
+		case "≥": return value >= rule.substring(1);
+		case "<": return value < rule.substring(1);
+		case "≤": return value <= rule.substring(1);
+		case "\\": return value === rule.substring(1);
+		default: return value === rule;
+	}
+}
+function test(value, rules) {
+	return !value ? false
+		: rules instanceof Array ? rules.some(testRule.bind(null, value))
+		: testRule(value, rules);
+}
+function specialTreatment(err)
+{
+	const { ignore, simplify, downgrade } = settings;
+	for(const rule in ignore)
+		if(test(err[rule], ignore[rule]))
+			return IGNORE;
+	let flags = 0;
+	for(const rule in simplify)
+		if(test(err[rule], simplify[rule]))
+		{
+			flags = SIMPLIFY;
+			break;
+		}
+	for(const rule in downgrade)
+		if(test(err[rule], downgrade[rule]))
+		{
+			flags |= DOWNGRADE;
+			break;
+		}
+	return flags;
+};
 
 const recent = new Set();
 
@@ -23,23 +81,23 @@ export function error(err)
 		return;
 
 	const { message } = err;
-	const status = err instanceof TopGGAPIError ? err.response?.statusCode
-		: (err.httpStatus || err.response?.status || err.response?.statusCode || err.code);
-	const code = err.code || err.cause?.code;
+	const treatment = specialTreatment({ message,
+		code: err.code || err.cause?.code,
+		status: err instanceof TopGGAPIError ? err.response?.statusCode
+			: (err.httpStatus || err.response?.status || err.response?.statusCode || err.code),
+	});
+	if(treatment === IGNORE) return;
 
-	if(message === "read ECONNRESET"
-		|| /*status === 403 ||*/ status === 404 || status === 408 || status >= 500
-		|| message === "Unknown interaction" || message === "Missing Access"
-		|| message.startsWith("invalid json response body")
-		|| code === "UND_ERR_CONNECT_TIMEOUT"
-		|| code === "UND_ERR_ABORTED"
-		|| code === "UND_ERR_SOCKET")
+	const log = treatment & DOWNGRADE ? console.warn : console.error;
+	if(log === Function.noop) return;
+
+	if(treatment & SIMPLIFY)
 	{
-		console.error(new Date(), err.constructor.name, message);
+		log(new Date(), err.constructor.name, message);
 		return;
 	}
 	
-	console.error(new Date(), err);
+	log(new Date(), err);
 	let msg = "An error occurred; read the console for details.";
 
 	if(message)
@@ -47,7 +105,7 @@ export function error(err)
 		if(err instanceof DiscordAPIError)
 		{
 			msg += `\nMessage : ${message}\nPath : ${err.path || err.url}`;
-			console.error("data:", err.requestBody?.json?.data);
+			log("data:", err.requestBody?.json?.data);
 		}
 		else
 			msg += `\nMessage : ${message}`;

@@ -62,6 +62,49 @@ The `premium` category is optional.
 
 To start the bot, run `node bot.js`
 
+## Error reporting settings
+
+You can customize which errors are ignored or truncated by created a `errors.json` file.
+
+`errors.json` is a JSON file that can have the following keys:
+- `ignore` for rules for ignoring some errors
+- `truncate` to only log the error message and not the 
+- `downgrade` to log the error as a warning, meaning it could be ignored if the log level is low enough.
+
+Note that an error can be both truncated and downgraded if it matches a rule of both.
+
+The values for these properties is an object that can have the following keys:
+- `message` to test the error message
+- `status` to test HTTP status codes
+- `code` to test Node.JS error codes
+
+The values for these properties are either rules or arrays of rules. A rule is a value to check against. By default, it tests for equality, but you can add a prefix to make other checks:
+- `^` to check if it starts with the substring
+- `*` to check if it contains the substring
+- `$` to check if it ends with the substring
+- `<`, `≤`, `>`, `≥`: check if the value is lesser/greater/or equal
+
+If you want to check for equality with those symbols at the beginning, you can escape the prefix with a backslash.
+
+Example: ignore server errors, connection errors and timeouts, truncate "forbidden" errors, truncate and downgrade "not found" errors, downgrade all `fetch` errors (they start with "UND_" because Node uses Undici)
+```json
+{
+	"ignore": {
+		"status": ["≥500", 408],
+		"message": "read ECONNRESET"
+	},
+	"truncate": {
+		"status": [403, 404]
+	},
+	"downgrade": {
+		"status": 404,
+		"code": "^UND_"
+	}
+}
+```
+
+See the `const settings = ...` part in `utils/error.js` to see the default behavior.
+
 ## Database schema
 Just read steam_news/db.js, there is a bunch of CREATE TABLE at the beginning.
 
