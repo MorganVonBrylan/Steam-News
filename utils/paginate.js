@@ -12,7 +12,7 @@ const registerOptions = { singleUse: true, timeout: 3600 };
  * @param {string} data.customId A custom id to use for the buttons (default to interaction id) (max 90 characters)
  * @param {number} data.pageLength How many items will be shown at a time
  * @param {number} data.page The page number at which to start, indexed at 0. Defaults to 0. 
- * @param {(slice: Array, range:{start:number,end:number,total:number,page:number,totalPages:number})=>{chooseLabel: string, embed: object}} data.renderer A function that takes a slice of the data and the range of items shown (indexed at 1 for convenient user display) and returns the embed and the label for the "choose a page" button.
+ * @param {(slice: Array, range:{start:number,end:number,total:number,page:number,totalPages:number})=>object} data.renderer A function that takes a slice of the data and the range of items shown (indexed at 1 for convenient user display) and returns the embed.
  * @returns {Promise<InteractionResponse>} The interaction reponse promise
  */
 export default function paginate(interaction, data)
@@ -33,10 +33,12 @@ export default function paginate(interaction, data)
 	if(shift >= total)
 		throw new RangeError(`Requested page number (${page}) exceeds the number of pages (${totalPages})`);
 
-	const {embed, chooseLabel} = renderer(
+	const embed = renderer(
 		items.slice(shift, shift+pageLength),
 		{ start: shift+1, end: Math.min(shift+pageLength+1, total), total, page, totalPages },
 	);
+
+	const chooseLabel = tr.get(interaction.locale, "page-display", {current: page, total: totalPages});
 
 	const reply = { embeds: [embed] };
 	if(total > pageLength)

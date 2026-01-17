@@ -210,6 +210,9 @@
 	"NSFW-content-price": "This game has adult content. You can only display its price in a NSFW channel.",
 
 	"table": "table",
+	"page-display": "${current}/${total}",
+	"choose-page": "Choose a page between 1 and %s",
+	"page-number": "Page number",
 
 	"info": {
 		"yes": "Yes", "no": "No",
