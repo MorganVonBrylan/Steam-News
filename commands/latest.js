@@ -54,7 +54,16 @@ export async function run(inter)
 		saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
 	}
 
-	const channel = inter.channel || await inter.client.channels.fetch(inter.channelId);
+	const channel = inter.channel
+		|| await inter.client.channels.fetch(inter.channelId).catch(err => 
+			// We assume nsfw:true because inaccessible channels are most likely either DMs or some other form of private channel
+			err.status === 403 ? { nsfw: true }
+			: err.status === 404 ? null
+			: error(err)
+		);
+
+	if(!channel)
+		return inter.editReply({flags: "Ephemeral", content: t("error")});;
 
 	if(!appnews.newsitems.length)
 		inter.editReply({flags: "Ephemeral", content: t("no-news")});
