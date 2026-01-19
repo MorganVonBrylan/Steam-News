@@ -1,4 +1,5 @@
 
+import onError from "./_errorHandler.js";
 import { search } from "../steam_news/api.js";
 
 const resultToOption = ({ id, name }) => ({
@@ -10,13 +11,14 @@ export default all;
 export function all(inter)
 {
 	search(inter.options.getFocused()).then(results => {
-		inter.respond(results.map(resultToOption));
+		inter.respond(results.map(resultToOption)).catch(onError);
 	});
 }
 
 export function appsOnly(inter)
 {
 	search(inter.options.getFocused()).then(results => {
-		inter.respond(results.filter(({type}) => type === "app").map(resultToOption));
+		const options = results.filter(({type}) => type === "app").map(resultToOption);
+		inter.respond(options).catch(onError);
 	});
 }

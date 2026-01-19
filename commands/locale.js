@@ -1,4 +1,5 @@
 
+import onAutocompleteError from "../autocomplete/_errorHandler.js";
 import { stmts } from "../steam_news/db.js";
 const { getCC, getLocale, setLocale } = stmts;
 import locales from "../localization/locales.js";
@@ -45,7 +46,7 @@ export function autocomplete(inter)
 	inter.respond(results.map(upperName => {
 		const cc = countryToCode[upperName];
 		return { name: `${cc} (${codeToCountry[cc]})`, value: cc };
-	}));
+	})).catch(onAutocompleteError);
 };
 export function run(inter)
 {

@@ -1,4 +1,5 @@
 
+import onAutocompleteError from "../../autocomplete/_errorHandler.js";
 import {
 	unwatch,
 	getAppName, getWatchedApps, getWatchedPrices
@@ -71,7 +72,7 @@ export function autocomplete(inter)
 	const apps = (inter.options.getSubcommand() === "price" ? getWatchedPrices : getWatchedApps)(inter.guildId);
 	const results = (search ? apps.filter(({name}) => name.toLowerCase().includes(search)) : apps);
 
-	inter.respond(results.slice(0, 25).map(gameToOption));
+	inter.respond(results.slice(0, 25).map(gameToOption)).catch(onAutocompleteError);
 }
 
 export async function run(inter)
