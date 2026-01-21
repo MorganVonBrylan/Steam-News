@@ -20,6 +20,8 @@ export default function paginate(interaction, data)
 	data.customId ??= interaction.id;
 	data.page ??= 0;
 	const { items, customId, pageLength, page, renderer } = data;
+	if(!items?.length)
+		throw new TypeError("The data is empty.");
 	if(!Number.isInteger(pageLength) || pageLength <= 0)
 		throw new TypeError("'pageLength' must be a positive integer.");
 	if(!Number.isInteger(page) || page < 0)
