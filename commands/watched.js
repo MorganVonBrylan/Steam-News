@@ -10,8 +10,8 @@ export function run(inter) {
 	const watchedPrices = getWatchedPrices(guild.id);
 
 	const embeds = [
-		...split(watched, t("games-watched", guild), tr.plural("games", watched.length)),
-		...split(watchedPrices, t("prices-watched", guild), tr.plural("prices", watchedPrices.length)),
+		...split(watched, t("games-watched"), tr.plural("games", watched.length)),
+		...split(watchedPrices, t("prices-watched"), tr.plural("prices", watchedPrices.length)),
 	];
 
 	const steamWatch = getSteamWatcher(guild.id);

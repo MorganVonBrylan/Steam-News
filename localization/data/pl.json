@@ -323,8 +323,8 @@
 		"already-news": "Kanał informacyjny %s był już oglądany na tym serwerze."
 	},
 	"watched": {
-		"games-watched": "Mecze obejrzane w %s",
-		"prices-watched": "Ceny obserwowane w %s",
+		"games-watched": "Mecze obejrzane na tym serwerze",
+		"prices-watched": "Ceny obserwowane na tym serwerze",
 		"steam-watched": "Wiadomości o Steamie wysłane w %s",
 		"games": {
 			"1": "1 gra obejrzana",

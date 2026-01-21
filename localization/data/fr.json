@@ -304,8 +304,8 @@
 	},
 
 	"watched": {
-		"games-watched": "Jeux suivis dans %s",
-		"prices-watched": "Prix suivis dans %s",
+		"games-watched": "Jeux suivis dans ce serveur",
+		"prices-watched": "Prix suivis dans ce serveur",
 		"steam-watched": "Actus à propos de Steam envoyées dans %s",
 		"games": {
 			"1": "1 jeu suivi",

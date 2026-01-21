@@ -352,8 +352,8 @@
 		"already-news": "Ya existe una suscripcion para el feed de noticias de %s en este servidor."
 	},
 	"watched": {
-		"games-watched": "Juegos suscritos en %s",
-		"prices-watched": "Precios suscritos en %s",
+		"games-watched": "Juegos suscritos en este servidor",
+		"prices-watched": "Precios suscritos en este servidor",
 		"steam-watched": "Noticias sobre Steam enviadas en %s",
 		"games": {
 			"1": "1 juego suscrito",
