@@ -50,7 +50,7 @@ export const getAppName = stmts.getAppName;
 export const isNSFW = stmts.isAppNSFW;
 
 /**
- * @type {(appid:number)=>{appid:number, name:string, nsfw:?boolean, channelId:string}}
+ * @type {(appid:number)=>{appid:number, name:string, nsfw:?boolean, channelId:string}[]}
  * @param {string} guildId The guild id
  * @returns The apps watched in that guild, in the format {appid, name, nsfw, channelId}
  */
