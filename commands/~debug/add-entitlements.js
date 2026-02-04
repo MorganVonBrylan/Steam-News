@@ -3,7 +3,7 @@ import {
 	premiumSKU, premiumGuilds,
 } from "../../steam_news/VIPs.js";
 
-const entitlements = {
+export const entitlements = {
 	Watchers:  { bit: 1<<0, sku: premiumSKU, list: premiumGuilds },
 };
 
@@ -19,11 +19,24 @@ export const options = [{
 export function run(inter)
 {
 	const subscription = inter.options.getInteger("subscription");
-	const { guildId } = inter;
+	inter.reply({flags: "Ephemeral", content: setEntitlements(inter.guildId, subscription)});
+}
+
+/**
+ * Sets the entitlements for the current bot session.
+ * @param {string} guildId The guild id the set entitlements for
+ * @param {number|object[]} ents A bitset or array of entitlements
+ * @return {string} a confirmation message
+ */
+export function setEntitlements(guildId, ents)
+{
+	if(ents instanceof Array)
+		ents = ents.reduce((bitset, {bit}) => bitset | bit, 0);
+
 	const messages = [];
 	for(const [name, { bit, sku, list }] of Object.entries(entitlements))
 	{
-		if(subscription & bit)
+		if(ents & bit)
 		{
 			list.add(guildId);
 			messages.push(sku
@@ -37,6 +50,5 @@ export function run(inter)
 			messages.push(`❌ ${name} entitlement removed!`);
 		}
 	}
-	
-	inter.reply({flags: "Ephemeral", content: messages.join("\n")});
+	return messages.join("\n");
 }

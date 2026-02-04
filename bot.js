@@ -99,6 +99,23 @@ client.once("clientReady", () => {
 	if(auth.topGG)
 		import("./topGG.js").then(({setup}) => setup(client, auth.topGG));
 
+	if(auth.debug instanceof Array)
+	{
+		import("./commands/~debug/add-entitlements.js")
+		.then(({entitlements, setEntitlements}) => {
+			const testitlements = Array.from(auth.debug, testitlement => {
+				if(testitlement in entitlements)
+					return entitlements[testitlement];
+				else
+				{
+					console.warn("[debug] Unknown entitlement:", testitlement);
+					return { bit: 0 };
+				}
+			});
+			console.log(setEntitlements(auth.adminServer, testitlements));
+		});
+	}
+
 	const guildCountCheck = setInterval(() => {
 		const nGuilds = client.guilds.cache.size;
 		if(nGuilds > 12000)
