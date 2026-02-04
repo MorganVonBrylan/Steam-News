@@ -133,7 +133,8 @@ export const tr = {
 				obj = obj[part];
 			else
 			{
-				logError(`Missing ${this.lang} translation for ${key}`);
+				if(!process.env.DEBUG)
+					logError(`Missing ${this.lang} translation for ${key}`);
 				obj = undefined;
 				break;
 			}

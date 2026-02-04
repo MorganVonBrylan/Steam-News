@@ -5,7 +5,10 @@ export const auth = importJSON("auth.json");
 import "./utils/prototypes.js";
 
 if(auth.debug)
+{
+	process.env.DEBUG = true;
 	auth.logLevel = "verbose";
+}
 else
 	auth.logLevel ??= "log";
 
