@@ -72,9 +72,16 @@ export async function run(inter)
 	else
 	{
 		const news = await toEmbed(appnews.newsitems[0], inter.locale);
+		if(!news)
+		{
+			error(new Error(`Got empty news embed. appid: ${appid}`));
+			console.error(appnews);
+			return inter.editReply({flags: "Ephemeral", content: t("error")});;
+		}
+
 		const reply = inter.editReply({ embeds: [news] });
 		try {
-		if(news?.yt && await canSendMessage(channel))
+		if(news.yt && await canSendMessage(channel))
 			reply.then(() => channel.send(news.yt));
 		}
 		catch(err) {
