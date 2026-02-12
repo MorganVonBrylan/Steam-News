@@ -31,6 +31,11 @@ export function setup(client, {token, webhook})
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(Object.values(commands)),
+			}).then(async res => {
+				if(res.ok)
+					console.log("Top.GG command list updated");
+				else
+					console.warn(`${res.status} error trying to update the command list on Top.GG:`, await res.body.text());
 			});
 		}), 3000);
 
