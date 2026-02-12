@@ -17,6 +17,27 @@ export function setup(client, {token, webhook})
 	process.on("uncaughtException", error);
 	let webhookServer;
 
+	if(typeof token === "object")
+	{
+		const { v1 } = token;
+		// timeout to make sure the commands were loaded
+		if(v1) setTimeout(() => import("@brylan/djs-commands").then(({commands}) => {
+			commands = { ...commands };
+			delete commands.owner;
+			delete commands.unwatch;
+			delete commands["steam-unwatch"];
+			fetch("https://top.gg/api/v1/projects/@me/commands", {
+				headers: {
+					Authorization: `Bearer ${v1}`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(Object.values(commands)),
+			});
+		}), 3000);
+
+		token = token.v0;
+	}
+
 	const autoPoster = new DJSPoster(token, client);
 	autoPoster.on("error", error);
 	console.log("Top.gg autoposter enabled");

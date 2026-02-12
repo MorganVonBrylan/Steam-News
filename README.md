@@ -45,7 +45,9 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
     "premium": {
 		"sku": "the 'more watchers' SKU id",
 		"bonus": 250,
-		"rebrand": "the 'rebrand' SKU id"
+		"rebrand": "the 'rebrand' SKU id",
+		"chameleon": "the 'chameleon' SKU id",
+		"gold": "the 'gold plan' SKU id"
     },
 	"donate": "(optional) The URL for donations"
 }
@@ -63,6 +65,19 @@ The `logLevel` can be "silent", "error", "warn", "log" or "verbose". If not set,
 The `premium` category is optional.
 
 To start the bot, run `node bot.js`
+
+## Top.gg
+
+To update the bot's stats on Top.gg, set its API token.
+
+If you also want to update the command list on startup, instead of token being a string, make it an object with the following structure:
+```json
+{
+	"v0": "v0 token, for updating stats",
+	"v1": "v1 token, for updating commands"
+}
+```
+Your v1 token needs to have write permissions.
 
 ## Error reporting settings
 
