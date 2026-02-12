@@ -26,6 +26,7 @@ export function setup(client, {token, webhook})
 			delete commands.unwatch;
 			delete commands["steam-unwatch"];
 			fetch("https://top.gg/api/v1/projects/@me/commands", {
+				method: "POST",
 				headers: {
 					Authorization: `Bearer ${v1}`,
 					"Content-Type": "application/json",
