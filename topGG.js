@@ -9,6 +9,7 @@ import { createServer } from "node:http";
 
 const voteURLs = { default: "*oops, it seems I am actually not on Top.gg*" };
 const topggLanguages = ["fr", "de", "hi", "tr"];
+const excludeTopggCommands = ["owner", "unwatch", "steam-unwatch"];
 
 export const voteURL = locale => voteURLs[locale] || voteURLs.default;
 
@@ -22,9 +23,8 @@ export function setup(client, {token, webhook})
 		// timeout to make sure the commands were loaded
 		if(v1) setTimeout(() => import("@brylan/djs-commands").then(({commands}) => {
 			commands = { ...commands };
-			delete commands.owner;
-			delete commands.unwatch;
-			delete commands["steam-unwatch"];
+			for(const command of excludeTopggCommands)
+				delete commands[command];
 			fetch("https://top.gg/api/v1/projects/@me/commands", {
 				method: "POST",
 				headers: {
