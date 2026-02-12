@@ -15,7 +15,6 @@ export const voteURL = locale => voteURLs[locale] || voteURLs.default;
 export function setup(client, {token, webhook})
 {
 	process.on("uncaughtException", error);
-	let webhookServer;
 
 	if(typeof token === "object")
 	{
@@ -47,10 +46,12 @@ export function setup(client, {token, webhook})
 	for(const lang of topggLanguages.concat(tr.locales))
 		voteURLs[lang] = `https://top.gg/${topggLanguages.includes(lang) ? `${lang}/` : ""}bot/${id}/vote?lang=${lang}`;
 
-	const port = webhook?.port || process.env.SERVER_PORT;
 
 	if(webhook)
 	{
+		let webhookServer;
+		const port = webhook?.port || process.env.SERVER_PORT;
+
 		// In case a previous listener was left dangling...
 		exec(`lsof -i TCP:${port} | grep LISTEN`, (_, stdout) => {
 			if(stdout)
@@ -58,41 +59,41 @@ export function setup(client, {token, webhook})
 			else
 				launchWebhook();
 		});
-	}
 
-	function launchWebhook()
-	{
-		webhookServer?.close();
-		const topggWebhook = new Webhook(webhook.password);
-		const handleRequest = topggWebhook.listener(vote => {
-			if(vote)
-				addVoter(vote.user, vote.query?.lang, vote.type === "test");
-		})
+		function launchWebhook()
+		{
+			webhookServer?.close();
+			const topggWebhook = new Webhook(webhook.password);
+			const handleRequest = topggWebhook.listener(vote => {
+				if(vote)
+					addVoter(vote.user, vote.query?.lang, vote.type === "test");
+			})
 
-		webhookServer = createServer(async (req, res) => {
-			if(req.method !== "POST")
-			{
-				res.setHeader("Allow", "POST");
-				res.statusCode = req.method === "OPTIONS" ? 200 : 405;
-				return res.end();
-			}
+			webhookServer = createServer(async (req, res) => {
+				if(req.method !== "POST")
+				{
+					res.setHeader("Allow", "POST");
+					res.statusCode = req.method === "OPTIONS" ? 200 : 405;
+					return res.end();
+				}
 
-			// to mimic express.js
-			Object.assign(res, {
-				sendStatus: code => {
-					res.statusCode = code;
-					res.end();
-				},
-				status: code => {
-					res.statusCode = code;
-					return { json: json => res.end(JSON.stringify(json)) };
-				},
+				// to mimic express.js
+				Object.assign(res, {
+					sendStatus: code => {
+						res.statusCode = code;
+						res.end();
+					},
+					status: code => {
+						res.statusCode = code;
+						return { json: json => res.end(JSON.stringify(json)) };
+					},
+				});
+				
+				await handleRequest(req, res, Function.noop);
 			});
-			
-			await handleRequest(req, res, Function.noop);
-		});
 
-		webhookServer.listen(port);
-		console.log("Top.gg webhook listening on port", port);
+			webhookServer.listen(port);
+			console.log("Top.gg webhook listening on port", port);
+		}
 	}
 }
