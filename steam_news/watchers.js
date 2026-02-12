@@ -159,10 +159,7 @@ export async function checkForNews(range, reschedule = false)
 							channelId: err.url.match(/channels\/([0-9]+)/)?.[1],
 							embeds, targetLang: lang,
 						});
-					else if((channel instanceof Webhook
-						? !handleDeletedWebhook(channel, sendNews, watcher, err)
-						: !handleDeletedChannel(err))
-						&& !loggedErrors.has(err.message))
+					else if(!handleDeletedChannel(err) && !loggedErrors.has(err.message))
 					{
 						loggedErrors.add(err.message);
 						error(Object.assign(err, { embeds, targetLang: lang }));
@@ -170,7 +167,7 @@ export async function checkForNews(range, reschedule = false)
 				});
 			}));
 		})
-		.catch(handleDeletedChannel)};
+		.catch(handleDeletedChannel);
 	}
 
 	let promises = [];
