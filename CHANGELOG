@@ -185,3 +185,6 @@ Price updates now show a banner for the game.
 	2.16.2 (04/10/2025)
 	Adds a button to the store when suggesting premium.
 	Some localization fixes.
+
+2.17 (12/02/2026)
+The bot can now update its command list on Top.GG upon startup.
