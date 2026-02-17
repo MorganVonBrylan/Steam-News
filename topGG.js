@@ -1,54 +1,54 @@
-// vote test:
-// fetch("http://localhost:5050/dblwebhook", {method: "post", headers: {Authorization: "giveme25morewatchersNOW"}, body: JSON.stringify({user: "263709367633838081",bot: "929757212841226292", type: "test", isWeekend: false})}).then(console.log)
 
 import { addVoter } from "./steam_news/VIPs.js";
 import { Api, Webhook } from "@top-gg/sdk";
 import { exec } from "node:child_process";
 import { createServer } from "node:http";
 
+import { commands } from "@brylan/djs-commands";
+const excludeCommands = ["owner", "unwatch", "steam-unwatch"];
+
 const voteURLs = { default: "*oops, it seems I am actually not on Top.gg*" };
 const topggLanguages = ["fr", "de", "hi", "tr"];
-const excludeTopggCommands = ["owner", "unwatch", "steam-unwatch"];
 
 export const voteURL = locale => voteURLs[locale] || voteURLs.default;
 
 export function setup(client, {token, webhook})
 {
 	process.on("uncaughtException", error);
+	const clientReady = client.ws.status === 0;
+	const api = new Api(token);
 
 	if(token.startsWith("Bearer")) // v1 token
 	{
 		// timeout to make sure the commands were loaded
-		setTimeout(() => import("@brylan/djs-commands").then(({commands}) => {
-			commands = { ...commands };
-			for(const command of excludeTopggCommands)
-				delete commands[command];
-			fetch("https://top.gg/api/v1/projects/@me/commands", {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${v1}`,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(Object.values(commands)),
-			}).then(async res => {
-				if(res.ok)
-					console.log("Top.GG command list updated");
-				else
-					console.warn(`${res.status} error trying to update the command list on Top.GG:`, await res.body.text());
-			});
-		}), 3000);
+		if(clientReady)
+			setTimeout(postCommands, 3000);
+		else
+			client.once("clientReady", () => setTimeout(postCommands, 3000));
+
+		function postCommands() {
+			const topggCommands = Object.values(commands)
+				.filter(({name}) => !excludeCommands.includes(name));
+				
+			api._request("POST", "/v1/projects/@me/commands", JSON.stringify(topggCommands))
+			.then(() => console.log("Top.GG command list updated"))
+			.catch(error);
+		}
 	}
 
-	const api = new Api(token);
-	const postStats = api.postStats.bind(api);
-	if(client.ws.status === 0) // ready
+	function postStats() {
+		return api.postStats({
+            serverCount: client.guilds.cache.size,
+            shardId: client.shard?.ids[0],
+            shardCount: client.options.shardCount || 1,
+        });
+	}
+	if(clientReady)
 		postStats();
 	else
 		client.once("clientReady", postStats);
-
 	setInterval(postStats, 3600_000);
 	console.log("Top.gg stat posting enabled");
-	console.log("Top.gg autoposter enabled");
 
 	const {id} = client.user;
 	voteURLs.default = `https://top.gg/bot/${id}/vote`;
