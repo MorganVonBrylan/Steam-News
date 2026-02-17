@@ -16,11 +16,10 @@ export function setup(client, {token, webhook})
 {
 	process.on("uncaughtException", error);
 
-	if(typeof token === "object")
+	if(token.startsWith("Bearer")) // v1 token
 	{
-		const { v1 } = token;
 		// timeout to make sure the commands were loaded
-		if(v1) setTimeout(() => import("@brylan/djs-commands").then(({commands}) => {
+		setTimeout(() => import("@brylan/djs-commands").then(({commands}) => {
 			commands = { ...commands };
 			for(const command of excludeTopggCommands)
 				delete commands[command];
@@ -38,8 +37,6 @@ export function setup(client, {token, webhook})
 					console.warn(`${res.status} error trying to update the command list on Top.GG:`, await res.body.text());
 			});
 		}), 3000);
-
-		token = token.v0;
 	}
 
 	const api = new Api(token);

@@ -56,8 +56,6 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 
 Additionally, `debug` can be a list of entitlements to immediately enable in the test server for the current bot session, for example `["Watchers", "Chameleon"]`. See `commands/~debug/add-entitlements.js`
 
-If the webhook port is not specified, the `SERVER_PORT` environment variable will be used instead.
-
 The `logLevel` can be "silent", "error", "warn", "log" or "verbose". If not set, defaults to "warn". **Note:** if `debug` is `true`, the log level is forcefully set to "verbose".
 
 `backups` assigns the backup schedule. Possible values are `false`, `"daily"` and `"weekly"`. Weekly is every Sunday at midnight. If omitted or null, defaults to "weekly". If the `BACKUP_SCHEDULE` environment variable is set, it will have priority.
@@ -70,14 +68,9 @@ To start the bot, run `node bot.js`
 
 To update the bot's stats on Top.gg, set its API token.
 
-If you also want to update the command list on startup, instead of token being a string, make it an object with the following structure:
-```json
-{
-	"v0": "v0 token, for updating stats",
-	"v1": "v1 token, for updating commands"
-}
-```
-Your v1 token needs to have write permissions.
+If using a v1 token, do specify the `Bearer` prefix. Make sure the token has write permissions.
+
+If the webhook port is not specified, the `SERVER_PORT` environment variable will be used instead.
 
 ## Error reporting settings
 
