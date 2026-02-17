@@ -2,8 +2,7 @@
 // fetch("http://localhost:5050/dblwebhook", {method: "post", headers: {Authorization: "giveme25morewatchersNOW"}, body: JSON.stringify({user: "263709367633838081",bot: "929757212841226292", type: "test", isWeekend: false})}).then(console.log)
 
 import { addVoter } from "./steam_news/VIPs.js";
-import { DJSPoster } from "topgg-autoposter";
-import { Webhook } from "@top-gg/sdk";
+import { Api, Webhook } from "@top-gg/sdk";
 import { exec } from "node:child_process";
 import { createServer } from "node:http";
 
@@ -43,8 +42,15 @@ export function setup(client, {token, webhook})
 		token = token.v0;
 	}
 
-	const autoPoster = new DJSPoster(token, client);
-	autoPoster.on("error", error);
+	const api = new Api(token);
+	const postStats = api.postStats.bind(api);
+	if(client.ws.status === 0) // ready
+		postStats();
+	else
+		client.once("clientReady", postStats);
+
+	setInterval(postStats, 3600_000);
+	console.log("Top.gg stat posting enabled");
 	console.log("Top.gg autoposter enabled");
 
 	const {id} = client.user;
@@ -73,7 +79,7 @@ export function setup(client, {token, webhook})
 			const handleRequest = topggWebhook.listener(vote => {
 				if(vote)
 					addVoter(vote.user, vote.query?.lang, vote.type === "test");
-			})
+			});
 
 			webhookServer = createServer(async (req, res) => {
 				if(req.method !== "POST")
