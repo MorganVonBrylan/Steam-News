@@ -98,8 +98,6 @@ export function error(err)
 	}
 	
 	log(new Date(), err);
-	if(err instanceof DiscordAPIError)
-		err.response?.body.json().then(log);
 
 	let msg = "An error occurred; read the console for details.";
 
