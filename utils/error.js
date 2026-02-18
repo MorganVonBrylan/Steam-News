@@ -88,6 +88,7 @@ export function error(err)
 	});
 	if(treatment === IGNORE) return;
 
+	let additionalInfo;
 	const log = treatment & DOWNGRADE ? console.warn : console.error;
 	if(log === Function.noop) return;
 
@@ -98,6 +99,9 @@ export function error(err)
 	}
 	
 	log(new Date(), err);
+	if(err instanceof DiscordAPIError)
+		err.response?.body.json().then(log);
+	
 	let msg = "An error occurred; read the console for details.";
 
 	if(message)
