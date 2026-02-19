@@ -95,9 +95,8 @@ export function setup(client, {token, webhook})
 					return;
 				}
 				
-				const { type, data: { user: { platform_id: id } } } = JSON.parse(rawBody);
-				// getting the language isn't possible anymore it seems
-				addVoter(id, null, type === "test");
+				const { type, data: { user: { platform_id: id } }, query } = JSON.parse(rawBody);
+				addVoter(id, query?.lang, type === "test");
 			});
 
 			webhookServer.listen(port);
