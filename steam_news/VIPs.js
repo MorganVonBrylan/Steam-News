@@ -4,7 +4,7 @@ import { client, auth, sendToMaster } from "../bot.js";
 import { stmts } from "./db.js";
 const { getLastVote, insertLastVote, updateLastVote, getRecentVoters } = stmts;
 const VOTE_NOTIFICATION_COOLDOWN = 604800_000; // 7 days
-const VOTE_BONUS_DURATION = 57600_000; // 16 hours
+const VOTE_BONUS_DURATION = 43200_000; // 12 hours, which is how often one can vote
 
 const voters = new Map();
 function setVoter(id, timeout)
