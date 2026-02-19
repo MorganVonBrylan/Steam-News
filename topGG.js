@@ -30,7 +30,7 @@ export function setup(client, {token, webhook})
 			const topggCommands = Object.values(commands)
 				.filter(({name}) => !excludeCommands.includes(name));
 				
-			api._request("POST", "/v1/projects/@me/commands", JSON.stringify(topggCommands))
+			api._request("POST", "/v1/projects/@me/commands", topggCommands)
 			.then(() => console.log("Top.GG command list updated"))
 			.catch(error);
 		}
@@ -38,10 +38,10 @@ export function setup(client, {token, webhook})
 
 	function postStats() {
 		return api.postStats({
-            serverCount: client.guilds.cache.size,
-            shardId: client.shard?.ids[0],
-            shardCount: client.options.shardCount || 1,
-        });
+			serverCount: client.guilds.cache.size,
+			shardId: client.shard?.ids[0],
+			shardCount: client.options.shardCount || 1,
+		});
 	}
 	if(clientReady)
 		postStats();
