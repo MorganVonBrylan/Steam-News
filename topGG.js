@@ -1,8 +1,10 @@
 
 import { addVoter } from "./steam_news/VIPs.js";
-import { Api, Webhook } from "@top-gg/sdk";
+import { Api } from "@top-gg/sdk";
 import { exec } from "node:child_process";
 import { createServer } from "node:http";
+import { createHmac } from "node:crypto";
+import getRawBody from "raw-body";
 
 import { commands } from "@brylan/djs-commands";
 const excludeCommands = ["owner", "unwatch", "steam-unwatch"];
@@ -59,7 +61,10 @@ export function setup(client, {token, webhook})
 	if(webhook)
 	{
 		let webhookServer;
-		const port = webhook?.port || process.env.SERVER_PORT;
+		const {
+			port = process.env.SERVER_PORT,
+			secret,
+		} = webhook;
 
 		// In case a previous listener was left dangling...
 		exec(`lsof -i TCP:${port} | grep LISTEN`, (_, stdout) => {
@@ -72,12 +77,6 @@ export function setup(client, {token, webhook})
 		function launchWebhook()
 		{
 			webhookServer?.close();
-			const topggWebhook = new Webhook(webhook.password);
-			const handleRequest = topggWebhook.listener(vote => {
-				if(vote)
-					addVoter(vote.user, vote.query?.lang, vote.type === "test");
-			});
-
 			webhookServer = createServer(async (req, res) => {
 				if(req.method !== "POST")
 				{
@@ -86,19 +85,19 @@ export function setup(client, {token, webhook})
 					return res.end();
 				}
 
-				// to mimic express.js
-				Object.assign(res, {
-					sendStatus: code => {
-						res.statusCode = code;
-						res.end();
-					},
-					status: code => {
-						res.statusCode = code;
-						return { json: json => res.end(JSON.stringify(json)) };
-					},
-				});
+				const rawBody = await getRawBody(req, { encoding: "utf-8" });
+				const err = await verifySignature(req.headers, rawBody, secret);
+				if(err)
+				{
+					error(`Received a bogus vote: ${err.error}`);
+					res.statusCode = err.code;
+					res.end(err.error);
+					return;
+				}
 				
-				await handleRequest(req, res, Function.noop);
+				const { type, data: { user: { platform_id: id } } } = JSON.parse(rawBody);
+				// getting the language isn't possible anymore it seems
+				addVoter(id, null, type === "test");
 			});
 
 			webhookServer.listen(port);
@@ -106,3 +105,55 @@ export function setup(client, {token, webhook})
 		}
 	}
 }
+
+
+
+// from https://github.com/top-gg/webhooks-v2-nodejs-example/blob/main/index.js
+/**
+ * Verify the signature of an incoming vote request.
+ * @param {{[header: string]: string}} headers The request headers.
+ * @param {string} rawBody The request body
+ * @param {string} secret The webhook secret, in the form whs_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ * @returns {Promise<?{code: 400|401|403, error: string}>} What made the signature fail, or null if the signature was valid.
+ * @example import { createServer } from "node:http";
+  import getRawBody from "raw-body";
+  createServer(async (req, res) => {
+	const body = await getRawBody(req, { encoding: "utf-8" });
+	const err = await verifySignature(req.headers, body, "whs_abc123");
+	if(err) {
+	 	res.statusCode = err.code;
+		res.end(err.error);
+	} else {
+		res.end();
+		// apply reward for the vote
+	}
+  }).listen(5050);
+ */
+async function verifySignature(headers, rawBody, secret)
+{
+	const signatureHeader = headers["x-topgg-signature"];
+	if(!signatureHeader)
+		return { code: 401, error: "Missing signature" };
+
+	// Signature format: t={unix timestamp},v1={signature}
+	const parsedSignature = signatureHeader.split(",").map(part => part.split("="));
+	const {
+		t: timestamp,
+		v1: signature,
+	} = Object.fromEntries(parsedSignature);
+
+	if(!timestamp || !signature)
+		return { code: 400, error: "Invalid signature format" };
+
+	const hmac = createHmac("sha256", secret);
+	const digest = hmac.update(`${timestamp}.${rawBody}`).digest("hex");
+	/* If this fails, there's a few things that could've happened:
+	 * 1. The webhook secret is incorrect
+	 * 2. The payload was tampered with
+	 * 3. The request did not originate from Top.gg
+	 * In any of these cases, we want to reject the request. */
+	if(signature !== digest)
+		return { code: 403, error: "Invalid signature" };
+
+	return null;
+};
