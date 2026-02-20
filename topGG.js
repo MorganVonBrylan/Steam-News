@@ -95,6 +95,7 @@ export function setup(client, {token, webhook})
 					return;
 				}
 				
+				res.end();
 				const { type, data: { user: { platform_id: id } }, query } = JSON.parse(rawBody);
 				addVoter(id, query?.lang, type === "test");
 			});
