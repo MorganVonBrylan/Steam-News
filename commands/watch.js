@@ -53,6 +53,7 @@ export const options = [{
 	description: "The channel where to send the news (defaults to current channel if not provided)"
 }];
 export { appsOnly as autocomplete } from "../autocomplete/search.js";
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	const t = tr.set(inter.locale, "watch");

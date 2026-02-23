@@ -13,6 +13,7 @@ export const options = [{
 	type: ATTACHMENT, name: "banner",
 	description: "The bot's new banner.",
 }];
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	const t = tr.set(inter.locale, "premium");

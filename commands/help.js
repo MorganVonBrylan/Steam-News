@@ -14,6 +14,7 @@ const preparedEmbeds = new Set();
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export function run(inter)
 {
 	const {locale} = inter;

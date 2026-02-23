@@ -4,6 +4,7 @@ const { getStats } = stmts;
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	const t = tr.set(inter.locale, "stats");

@@ -2,12 +2,14 @@
 import onError from "./_errorHandler.js";
 import { search } from "../steam_news/api.js";
 
+/** @param {import("discord.js").AutocompleteInteraction} inter */
 const resultToOption = ({ id, name }) => ({
 	name: name.length > 100 ? name.substring(0, 99) + "…" : name,
 	value: "" + id,
 });
 
 export default all;
+/** @param {import("discord.js").AutocompleteInteraction} inter */
 export function all(inter)
 {
 	search(inter.options.getFocused()).then(results => {
@@ -15,6 +17,7 @@ export function all(inter)
 	});
 }
 
+/** @param {import("discord.js").AutocompleteInteraction} inter */
 export function appsOnly(inter)
 {
 	search(inter.options.getFocused()).then(results => {

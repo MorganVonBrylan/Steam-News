@@ -19,6 +19,7 @@ export const options = [{
 }];
 import { default as searchGame } from "../autocomplete/search.js";
 import { autocomplete as searchLocale } from "./locale.js";
+/** @param {import("discord.js").AutocompleteInteraction} inter */
 export function autocomplete(inter) {
 	const { name } = inter.options.getFocused(true);
 	if(name === "game")
@@ -26,6 +27,7 @@ export function autocomplete(inter) {
 	else
 		searchLocale(inter);
 }
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	const { appid, defer } = await interpretAppidOption(inter);

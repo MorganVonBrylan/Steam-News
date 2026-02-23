@@ -3,6 +3,7 @@ import { getWatchedApps, getWatchedPrices } from "../steam_news/watchers.js";
 import { stmts } from "../steam_news/db.js";
 const { getSteamWatcher } = stmts;
 
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export function run(inter) {
 	const t = tr.set(inter.locale, "watched");
 	const { guild } = inter;

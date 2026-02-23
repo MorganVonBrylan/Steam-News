@@ -66,6 +66,7 @@ export function getOptions(guildId)
 	return options;
 }
 
+/** @param {import("discord.js").AutocompleteInteraction} inter */
 export function autocomplete(inter)
 {
 	const search = (inter.options.getFocused() || "").toLowerCase();
@@ -75,6 +76,7 @@ export function autocomplete(inter)
 	inter.respond(results.slice(0, 25).map(gameToOption)).catch(onAutocompleteError);
 }
 
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	const price = inter.options.getSubcommand() === "price";

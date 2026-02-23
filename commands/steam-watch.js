@@ -16,6 +16,7 @@ export const options = [{
 	channelTypes: ALL_TEXT_CHANNEL_TYPES,
 	description: "The channel where to send the news (defaults to current channel if not provided)"
 }];
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	const channel = inter.options.getChannel("channel") || inter.channel;

@@ -9,6 +9,7 @@ export const options = [{
 	autocomplete: true,
 }];
 export { default as autocomplete } from "../autocomplete/search.js";
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	let appid = inter.options.getString("game");

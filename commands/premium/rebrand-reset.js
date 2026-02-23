@@ -12,6 +12,7 @@ export const options = [{
         { name: "Both", value: AVATAR | BANNER },
     ],
 }];
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
     const what = inter.options.getNumber("what");

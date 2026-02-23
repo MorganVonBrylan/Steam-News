@@ -20,6 +20,7 @@ export const options = [{
 	languageOption,
 ];
 export { default as autocomplete } from "../autocomplete/search.js";
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	const { appid, defer } = await interpretAppidOption(inter);

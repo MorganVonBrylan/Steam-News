@@ -11,6 +11,7 @@ const languageOption = localeOptions.find(({name}) => name === "language");
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
 export const options = [languageOption];
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter) {
 	await inter.deferReply().catch(error);
 	

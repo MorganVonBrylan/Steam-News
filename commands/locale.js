@@ -29,6 +29,7 @@ export const options = [{
 		.filter(l => !steam_exclude.includes(l))
 		.map(value => ({ value })),
 }];
+/** @param {import("discord.js").AutocompleteInteraction} inter */
 export function autocomplete(inter)
 {
 	const search = inter.options.getFocused().toUpperCase();
@@ -48,6 +49,7 @@ export function autocomplete(inter)
 		return { name: `${cc} (${codeToCountry[cc]})`, value: cc };
 	})).catch(onAutocompleteError);
 };
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export function run(inter)
 {
 	const t = tr.set(inter.locale, "locale");
