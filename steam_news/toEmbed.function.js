@@ -12,10 +12,18 @@ const nhm = new NodeHtmlMarkdown({ maxConsecutiveNewlines: 2 });
 const html2markdown = nhm.translate.bind(nhm);
 
 /**
+ * @typedef {{name:string,value:string}} EmbedField
+ * @typedef {{url:string}} EmbedImage
+ * @typedef {{name:string,url:string}} EmbedAuthor
+ * @typedef {{text:string,iconURL:string|undefined}} EmbedFooter
+ */
+
+/**
  * Returns the given Steam news item as a Discord embed.
  * @param {object} newsitem The news item.
  * @param {string} lang The language (default: en)
- * @returns {Promise<object>} A Discord embed.
+ * @typedef {{url:string,image:undefined|EmbedImage,title:string,description:string,fields:EmbedField[],yt:string,author:undefined|EmbedAuthor,footer:undefined|EmbedFooter,date:string}} NewsEmbed
+ * @returns {Promise<NewsEmbed>} A Discord embed.
  */
 export default async function toEmbed({ appid, url, title, thumbnail, contents, date }, lang = "en")
 {
@@ -38,6 +46,12 @@ export default async function toEmbed({ appid, url, title, thumbnail, contents, 
 	};
 };
 
+/**
+ * Converts HTML code to Markdown
+ * @param {string} contents HTML code
+ * @param {number} limit Maximum character limit for the result. Set to Infinity for no limit.
+ * @returns {string} Discord Markdown
+ */
 function toMarkdown(contents, limit = 2000)
 {
 	contents = contents.replaceAll(/<div class="bb_h([0-9])">(.+?)<\/div>/g, "<h$1>$2</h$1>");
@@ -57,7 +71,8 @@ function toMarkdown(contents, limit = 2000)
  * @param {string} name The app's name
  * @param {object} price A price_overview object, with a cc property (country code)
  * 
- * @returns {Promise<object>} A Discord embed.
+ * @typedef {{url:string,title:string,description:string,fields:EmbedField[],image:EmbedImage}} PriceEmbed
+ * @returns {Promise<PriceEmbed>} A Discord embed.
  */
 export async function price(appid, name, price)
 {

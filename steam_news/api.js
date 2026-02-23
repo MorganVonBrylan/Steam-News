@@ -85,7 +85,8 @@ export async function search(terms, cc = "US")
  * @param {number} appid The id of the Steam app
  * @param {string} language (optional) a Steam API language (see https://partner.steamgames.com/doc/store/localization/languages).
  *
- * @returns {Promise<object|null>} The news, or null if 
+ * @typedef {{appid:string, eventId:string,url:string,title:string,thumbnail:?string,contents:string,date:string}} NewsItem
+ * @returns {Promise<{appid:number,newsitems:NewsItem[]}|{appid:number,error:string}}>} The news, or an object with error
  */
 export async function query(appid, language)
 {
@@ -114,7 +115,7 @@ export async function query(appid, language)
 /**
  * Queries the Steam API to get the latest Steam news.
  * @param {string} language (optional) a Steam API language (see https://partner.steamgames.com/doc/store/localization/languages).
- * @returns {Promise<object>} The news
+ * @returns The news
  */
 export const querySteam = query.bind(null, STEAM_APPID);
 
@@ -136,7 +137,9 @@ const BULK_LIMIT = 250;
  * Queries prices for one or more apps.
  * @param {number|Array<number>} appids The app id(s)
  * @param {string} cc The country code for the price (e.g. "FR", "UK", etc). Default: "US"
- * @returns {Promise<object>} A promise resolving to a dictionary of appid => price_overview pairs.
+ * 
+ * @typedef {{currency:string,initial:number,final:number,discount_percent:number,initial_formatted:string,final_formatted:string}} PriceOverview
+ * @returns {Promise<{[appid:string]:?PriceOverview}>} A promise resolving to a dictionary of appid => price_overview pairs.
  */
 export async function queryPrices(appids, cc = "US")
 {
@@ -167,6 +170,7 @@ export async function queryPrices(appids, cc = "US")
  * @param {string} lang (optional) The language to get the details in. Default: en
  * @param {string} cc (optional) The country to get the details for. Mostly for prices. Default: US
  * @returns {Promise<object?>} The app's details, or null if it doesn't exist.
+ * @see https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI#Result_data_3
  */
 export async function getDetails(appid, lang = "en", cc = "US")
 {

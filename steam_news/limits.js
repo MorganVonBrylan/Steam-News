@@ -1,5 +1,6 @@
 
 import importJSON from "../utils/importJSON.function.js";
+/** @type {{baseWatcherLimit:number,topGG:?{voteWatcherBonus:number},premium:?{bonus:number}}} */
 const { baseWatcherLimit, topGG, premium } = importJSON("auth.json");
 
 export const WATCH_LIMIT = baseWatcherLimit ?? 25;

@@ -88,8 +88,14 @@ function timestamp(rssDate) {
 	return new Date(rssDate).getTime() / 1000;
 }
 
-function newsToEmbeds(news, ...toEmbedParams) {
-	return Promise.all(news.reverse().map(item => toEmbed(item, ...toEmbedParams)));
+/**
+ * Make news embeds and order them in ascending chronological order.
+ * @param {object[]} news The news items in descending chronological order (as returned by the API)
+ * @param  {string} language The language 
+ * @returns The news embeds
+ */
+function newsToEmbeds(news, language) {
+	return Promise.all(news.reverse().map(item => toEmbed(item, language)));
 }
 
 /**
@@ -112,6 +118,10 @@ export async function checkForNews(range, reschedule = false)
 	let attempts = 0, successes = 0;
 	let total = 0;
 
+	/**
+	 * @param {object[]} baseEmbeds The news embeds in the default language
+	 * @param {(lang:string)=>ReturnType<query>} query The query function bound to an appid
+	 */
 	function getNewsSender(baseEmbeds, query) {
 		const nNews = baseEmbeds.length;
 		const { footer: { iconUrl } } = baseEmbeds[0];
