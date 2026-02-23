@@ -1,5 +1,6 @@
 
 import { search } from "../steam_news/api.js";
+import { ApplicationCommand } from "discord.js";
 
 export async function interpretAppidOption(inter, ephemeral = false, optionName = "game")
 {
@@ -21,6 +22,25 @@ export async function interpretAppidOption(inter, ephemeral = false, optionName 
 	return { defer };
 }
 
+
+export function mention(cmdOrInter)
+{
+	if(cmdOrInter instanceof ApplicationCommand)
+		return `</${cmdOrInter.name}:${cmdOrInter.id}`;
+	else
+	{
+		const { options, commandName, commandId } = cmdOrInter;
+		let fullName = commandName;
+		const group = options.getSubcommandGroup(false);
+		if(group)
+			fullName += ` ${group}`;
+		const subCommand = options.getSubcommand(false);
+		if(subCommand)
+			fullName += ` ${subCommand}`;
+
+		return `</${fullName}:${commandId}>`;
+	}
+}
 
 function toString() {
 	return this.name;
