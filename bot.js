@@ -126,8 +126,8 @@ client.once("clientReady", () => {
 	}, 3600_000);
 });
 
-import __dirname from "./utils/__dirname.js";
-for(const file of readdirSync(__dirname(import.meta.url) + "/events"))
+
+for(const file of readdirSync(`${import.meta.dirname}/events`))
 {
 	// synchronous import causes a dependency loop
 	import(`./events/${file}`)

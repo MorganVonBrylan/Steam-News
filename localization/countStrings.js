@@ -1,7 +1,7 @@
 
 import importJSON from "../utils/importJSON.function.js";
-import __dirname from "../utils/__dirname.js";
-console.log(count(importJSON(__dirname(import.meta.url)+"/en.json")), "strings");
+
+console.log(count(importJSON(import.meta.dirname+"/en.json")), "strings");
 
 function count(group)
 {

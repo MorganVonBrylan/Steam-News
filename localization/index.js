@@ -1,8 +1,7 @@
 
 // ref: https://discord.com/developers/docs/reference#locales
 
-import dirname from "../utils/__dirname.js";
-const dataFolder = dirname(import.meta.url) + "/data";
+const dataFolder = `${import.meta.dirname}/data`;
 
 const FALLBACK = "en";
 const locales = {};

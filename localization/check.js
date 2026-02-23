@@ -1,7 +1,4 @@
 
-import dirname from "../utils/__dirname.js";
-const __dirname = dirname(import.meta.url);
-
 import { readdirSync } from "node:fs";
 import { fallbackLocale } from "./index.js";
 import importJSON from "../utils/importJSON.function.js";
@@ -9,6 +6,8 @@ const embeds = ["help"];
 
 import { NAME_REGEX } from "@brylan/djs-commands/lib/commands/check.function.js";
 const DESC_MAX_LENGTH = 100;
+
+const dataFolder = `${import.meta.dirname}/data`;
 
 const EMBED_MAX_LENGTH = Object.freeze({
 	TITLE: 256,
@@ -21,9 +20,9 @@ const EMBED_MAX_LENGTH = Object.freeze({
 const mainLocale = {};
 const locales = new Map();
 
-for(const file of readdirSync(__dirname+"/data").filter(f => f.endsWith(".json")))
+for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 {
-	const localizationData = importJSON(`${__dirname}/data/${file}`);
+	const localizationData = importJSON(`${dataFolder}/${file}`);
 	const locale = file.slice(0, -5);
 	if(locale === fallbackLocale)
 		Object.assign(mainLocale, localizationData);

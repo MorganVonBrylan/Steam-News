@@ -19,7 +19,6 @@ import { purgeApp } from "./db_api.js";
 import db, { stmts } from "./db.js";
 import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
 
-import __dirname from "../utils/__dirname.js";
 import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "./limits.js";
 import { premiumGuilds } from "./VIPs.js";
 

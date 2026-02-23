@@ -1,10 +1,9 @@
 
 import { readdirSync } from "node:fs";
-import __dirname from "../../utils/__dirname.js";
 
 export const description = "Explains every admin command";
 
-const fields = await Promise.all(readdirSync(__dirname(import.meta.url))
+const fields = await Promise.all(readdirSync(import.meta.dirname)
 	.filter(f => f[0] !== "~" && f.endsWith(".js"))
 	.map(async file => {
 		if(file === "help.js")
