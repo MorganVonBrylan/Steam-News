@@ -1,7 +1,15 @@
 
 import { search } from "../steam_news/api.js";
-import { ApplicationCommand } from "discord.js";
+import { ApplicationCommand, ChatInputCommandInteraction } from "discord.js";
 
+/**
+ * Defers an interaction and returns the defer promise and app id.
+ * If the option is not an appid, a search will be made on the Steam API; if it fails, it replies to the interaction with an error and won't include the app id in the return value.
+ * @param {ChatInputCommandInteraction} inter the interaction
+ * @param {boolean} ephemeral Whether to make the defer ephemeral
+ * @param {string} optionName The name of the appid option
+ * @returns {Promise<{appid: ?string, defer: Promise}>}
+ */
 export async function interpretAppidOption(inter, ephemeral = false, optionName = "game")
 {
 	const defer = inter.deferReply(ephemeral ? { flags: "Ephemeral" } : {});
@@ -23,6 +31,11 @@ export async function interpretAppidOption(inter, ephemeral = false, optionName 
 }
 
 
+/**
+ * Format a command or interaction into a command mention.
+ * @param {ApplicationCommand|ChatInputCommandInteraction} cmdOrInter An application command or a command interaction
+ * @returns {`</${string}:${string}>`} a command mention
+ */
 export function mention(cmdOrInter)
 {
 	if(cmdOrInter instanceof ApplicationCommand)
