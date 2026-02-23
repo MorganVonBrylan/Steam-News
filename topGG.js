@@ -97,7 +97,7 @@ export function setup(client, {token, webhook})
 				
 				res.end();
 				const { type, data: { user: { platform_id: id } }, query } = JSON.parse(rawBody);
-				addVoter(id, query?.lang, type === "test");
+				addVoter(id, query?.lang, type === "webhook.test");
 			});
 
 			webhookServer.listen(port);
