@@ -16,7 +16,7 @@ export const STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public
 
 export class HTTPError extends Error {
 	constructor({url, status, statusText}) {
-		super(`Query ended with code ${code}`);
+		super(`Query ended with code ${status}`);
 		this.url = url;
 		this.code = status;
 		this.status = statusText;
