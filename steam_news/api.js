@@ -244,9 +244,12 @@ async function fetchBanner(appid)
 // 1) Does not have images for all games
 // 2) Is not guaranteed to have the offical icon first or highest rated
 // But it is (probably) better than nothing in the absence of an official API for game icons
-const SGDB_BASE_URL = "https://www.steamgriddb.com/api/v2";
 const { steamGridDB } = importJSON("auth.json");
 const sgdbAuth = steamGridDB ? `Bearer ${steamGridDB}` : null;
+function sbdg(path) {
+	return fetch(`https://www.steamgriddb.com/api/v2/${path}`, { headers: { Authorization: sgdbAuth } });
+}
+
 const iconCache = Object.create(null);
 iconCache[STEAM_APPID] = STEAM_ICON;
 /**
@@ -262,41 +265,64 @@ export async function icon(appid, defaultToBanner = true)
 
 	let icon = null;
 	if(sgdbAuth)
-	{
-		const res = await fetch(`${SGDB_BASE_URL}/icons/steam/${appid}?styles=official&types=static`, {headers: { Authorization: sgdbAuth }});
-		if(res.ok)
-		{
-			const { data } = await res.json();
-			const { url, thumb = url } = data.reduce((prevBest, current) => current.score > prevBest.score ? current : prevBest, { score: -1 });
-			if(url === thumb)
-				icon = url;
-			else if(url.endsWith(".ico"))
-				icon = thumb;
-			else
-			{
-				const urlData = await fetch(url, { method: "HEAD" });
-				const thumbData = await fetch(thumb, { method: "HEAD" });
-				if(!thumbData.ok)
-					icon = url;
-				else if(!urlData.ok)
-					icon = thumb;
-				else
-				{
-					const urlSize = +urlData.headers.get("Content-Length");
-					const thumbSize = +thumbData.headers.get("Content-Length");
-					if(!urlSize)
-						icon = thumb;
-					else if(!thumbSize)
-						icon = url;
-					else
-						icon = urlSize < thumbSize ? url : thumb;
-				}
-			}
-		}
-	}
+		icon = await getOfficialIcon(appid)
+			|| await getUnofficialIcon(appid);
 
 	if(defaultToBanner)
 		icon ??= await banner(appid, banner.SMALL);
 
 	return iconCache[appid] = icon;
+}
+
+async function getOfficialIcon(appid)
+{
+	const idRes = await sbdg(`games/steam/${appid}`);
+	if(!idRes.ok)
+		return null;
+
+	const { data: { id } } = await idRes.json();
+	// it's a bit dirty but fundamentally we're not hitting their DB more than with the actual API
+	const res = await fetch(`https://www.steamgriddb.com/api/public/game/${id}`, {
+		headers: { Referer: `https://www.steamgriddb.com/game/${id}` },
+	});
+	if(!res.ok)
+		return null;
+
+	const { data } = await res.json();
+	const iconId = data.platforms.steam.metadata.icon;
+	return `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${appid}/${iconId}.jpg`;
+}
+
+async function getUnofficialIcon(appid)
+{
+	const res = await sbdg(`icons/steam/${appid}?styles=official&types=static`);
+	if(!res.ok)
+		return null;
+
+	const { data } = await res.json();
+	const { url, thumb = url } = data.reduce((prevBest, current) => current.score > prevBest.score ? current : prevBest, { score: -1 });
+	if(url === thumb)
+		icon = url;
+	else if(url.endsWith(".ico"))
+		icon = thumb;
+	else
+	{
+		const urlData = await fetch(url, { method: "HEAD" });
+		const thumbData = await fetch(thumb, { method: "HEAD" });
+		if(!thumbData.ok)
+			icon = url;
+		else if(!urlData.ok)
+			icon = thumb;
+		else
+		{
+			const urlSize = +urlData.headers.get("Content-Length");
+			const thumbSize = +thumbData.headers.get("Content-Length");
+			if(!urlSize)
+				icon = thumb;
+			else if(!thumbSize)
+				icon = url;
+			else
+				icon = urlSize < thumbSize ? url : thumb;
+		}
+	}
 }
