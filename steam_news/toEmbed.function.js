@@ -54,7 +54,9 @@ export default async function toEmbed({ appid, url, title, thumbnail, contents, 
  */
 function toMarkdown(contents, limit = 2000)
 {
-	contents = contents.replaceAll(/<div class="bb_h([0-9])">(.+?)<\/div>/g, "<h$1>$2</h$1>");
+	contents = contents
+		.replaceAll(/<div class="bb_h([0-9])">(.+?)<\/div>/g, "<h$1>$2</h$1>")
+		.replaceAll(/\[expand.+?\[\/expand\]/g, "[details]");
 	contents = html2markdown(contents)
 		.replaceAll(/!\[\]\([^)]+\)/g, "") // e.g. ![](https://whtv.com/some_image.gif)
 		.replaceAll("\\[carousel\\]\\[/carousel\\]", "[carousel]")
