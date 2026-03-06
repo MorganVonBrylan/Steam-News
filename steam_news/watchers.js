@@ -156,7 +156,7 @@ export async function checkForNews(range, reschedule = false)
 			}
 
 			return Promise.allSettled(embeds[lang].map(embed => {
-				channel.send(roleId
+				return channel.send(roleId
 					? { content: `<@&${roleId}>`, embeds: [embed] }
 					: { embeds: [embed] }
 				).then(embed.yt ? () => channel.send(embed.yt) : Function.noop)
