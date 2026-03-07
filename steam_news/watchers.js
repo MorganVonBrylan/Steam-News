@@ -345,8 +345,9 @@ export async function checkPrices(reschedule = false)
  * @param {string} roleId The id of the role to ping when posting news/price changes.
  * @param {boolean} price Whether to watch for price changes instead of news. Default: false
  *
- * @returns {Promise<int|boolean|null>} false if that app was already watched in that guild, or the new number of watched apps.
- * Rejects with a TypeError if either parameter is invalid, or with a RangeError if the server reached its LIMIT of apps.
+ * @returns {Promise<int|object|false|null>} false if that app was already watched in that guild, null if it's a price watch and the game is free, the old watcher data if the watcher existed and was updated, or the new number of watched apps if it was added.
+ * @throws {TypeError} if either parameter is invalid
+ * @throws {RangeError} if the server reached its LIMIT of apps
  */
 export async function watch(appid, channel, roleId = null, price = false, LIMIT = WATCH_LIMIT)
 {
@@ -358,13 +359,13 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 		throw new TypeError("'appid' is not a valid app id");
 
 	const { guildId } = channel;
-	const watchedApps = (price ? getWatchedPrices : getWatchedApps)(guildId)
-		.map(({ appid }) => appid);
-
-	if(watchedApps.includes(appid))
+	const watchedApps = (price ? getWatchedPrices : getWatchedApps)(guildId);
+	const watcher = watchedApps.find(w => w.appid === appid);
+	if(watcher)
 	{
-		stmts[price ? "updatePriceWatcher" : "updateWatcher"]({ appid, guildId, roleId, channelId: channel.id });
-		return true;
+		const stmt = stmts[price ? "updatePriceWatcher" : "updateWatcher"];
+		stmt({ ...watcher, roleId, channelId: channel.id });
+		return watcher;
 	}
 	
 	if(watchedApps.length >= LIMIT)
@@ -397,7 +398,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 			if(knownPrice === "free")
 			{
 				if(details.is_free)
-				return null;
+					return null;
 				else if(price)
 					stmts.updateLastPrice({appid, lastPrice: price.final});
 			}

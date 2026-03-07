@@ -156,7 +156,7 @@ export const stmts = {
 
 	insertApp: db.prepare("INSERT INTO Apps (appid, name, nsfw, latest, lastPrice) VALUES (?, ?, ?, ?, ?)"),
 
-	isAppKnown: db.prepare("SELECT 1 FROM Apps WHERE appid = ?"),
+	isAppKnown: db.prepare("SELECT 1 FROM Apps WHERE appid = ?").pluck(),
 	getAppInfo: db.prepare("SELECT * FROM Apps WHERE appid = ?"),
 	getAppName: db.prepare("SELECT name FROM Apps WHERE appid = ?").pluck(),
 	isAppNSFW: db.prepare("SELECT nsfw FROM Apps WHERE appid = ?").pluck(),
@@ -167,7 +167,7 @@ export const stmts = {
 	updateWatcher: db.prepare("UPDATE Watchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId AND appid = $appid"),
 	findWatchedApps: db.prepare("SELECT DISTINCT appid FROM Watchers").pluck(),
 	getWatchers: db.prepare("SELECT * FROM Watchers WHERE appid = ?"),
-	getWatchedApps: db.prepare(`SELECT a.appid, name, nsfw, channelId, roleId
+	getWatchedApps: db.prepare(`SELECT name, nsfw, latest, w.*
 		FROM Apps a JOIN Watchers w ON (a.appid = w.appid)
 		WHERE guildId = ?
 		ORDER BY name`),
@@ -189,7 +189,7 @@ export const stmts = {
 	findWatchedPrices: db.prepare("SELECT appid, name, nsfw, lastPrice FROM Apps a WHERE EXISTS (SELECT '*' FROM PriceWatchers WHERE appid = a.appid)"),
 	getPriceWatchers: db.prepare(`SELECT PriceWatchers.*, lang, COALESCE(cc, 'US') "cc"
 		FROM PriceWatchers LEFT JOIN Guilds ON id = guildId WHERE appid = ?`),
-	getWatchedPrices: db.prepare(`SELECT a.appid, name, lastPrice, nsfw, channelId, roleId
+	getWatchedPrices: db.prepare(`SELECT name, lastPrice, nsfw, w.*
 		FROM Apps a JOIN PriceWatchers w ON (a.appid = w.appid)
 		WHERE guildId = ?
 		ORDER BY name`),
