@@ -229,7 +229,7 @@
 			"pay": "You need a subscription to access this feature.",
 			"help": {
 				"title": "Chameleon help",
-				"description": "First of all, your server needs to have either the Chameleon of the Gold Plan subscription (see the buttons below).\nOnce your are subscribed, the chameleon features will be enabled in your server. The bot uses **webhooks** to send news/sales with a different name and avatar for each name.\nThere are two ways to set those webhooks up:",
+				"description": "First of all, your server needs to have either the Chameleon of the Gold Plan subscription (see the buttons below).\nOnce your are subscribed, the chameleon features will be enabled in your server. The bot uses **webhooks** to send news/sales with a different name and avatar for each game.\nThere are two ways to set those webhooks up:",
 				"fields": [{
 					"name": "Letting the bot do it",
 					"description": "First, you need to grand the bot the **manage webhooks** permissions.\nOnce this is done, you can use `/premium chameleon create` to make a new webhook, or `/premium chameleon auto` to automatically create a webhook for all your watched games, using each game's name and logo.\nThe bot tries to only use one webhook per channel to avoid clutter, but don't worry, it can still change its appearance for every game!"
@@ -249,8 +249,8 @@
 
 			"invalid-url": "You did not provide a valid webhook URL.",
 			"wrong-token": "I seem to be unable to use this webhook. Are you sure you provided the full, correct URL?",
-			"not-found": "I could not find any webhook with that URL. Did you provide the wrong URL or was it deleted?",
-			"wrong-channel": "That webhook is for a different channel than the one where that game's news are sent.\nChannels only share their webhooks with their threads.",
+			"not-found": "I could not find any webhook with that URL. Either it was the wrong URL, or the webhook was deleted.",
+			"wrong-channel": "That webhook belongs to a different channel than the one where that game's news are sent.\nChannels only share their webhooks with their threads.",
 			"server-error": "The Discord servers errorred when I tried checking that webhook URL. Please try again later.",
 			"unknown-error": "Got error %s when trying to validate the webhook URL.",
 
