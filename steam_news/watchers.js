@@ -106,7 +106,7 @@ function newsToEmbeds(news, language) {
 export async function checkForNews(range, reschedule = false)
 {
 	if(reschedule)
-		newsSchedule[range] = setTimeout(checkForNews, CHECK_INTERVAL, range, true);
+		newsSchedule[range] = setTimeout(checkForNews, CHECK_INTERVAL, range, reschedule);
 
 	console.info(new Date(), "Checking news range", ranges[range]);
 	const start = Date.now();
@@ -274,7 +274,7 @@ export async function checkForNews(range, reschedule = false)
 export async function checkPrices(reschedule = false)
 {
 	if(reschedule)
-		pricesSchedule = setTimeout(checkPrices, CHECK_INTERVAL, true);
+		pricesSchedule = setTimeout(checkPrices, CHECK_INTERVAL, reschedule);
 
 	console.info(new Date(), "Checking prices");
 	const watchedPrices = {};
