@@ -278,24 +278,10 @@ export async function checkPrices(reschedule = false)
 
 	console.info(new Date(), "Checking prices");
 	const watchedPrices = {};
-	const appsWithUpdatedPrices = [];
-
 	for(const appDetails of stmts.findWatchedPrices())
 		watchedPrices[appDetails.appid] = appDetails;
 
-	const priceData = await queryPrices(Object.keys(watchedPrices));
-	for(const [appid, {final, discount_percent} = {}] of Object.entries(priceData))
-	{
-		if(!final) continue; // Sometimes the API call just... fails
-
-		const lastKnownPrice = watchedPrices[appid].lastPrice;
-		if(final === lastKnownPrice)
-			continue;
-
-		stmts.updateLastPrice({appid, lastPrice: final});
-		if(lastKnownPrice === null || final < watchedPrices[appid] || discount_percent)
-			appsWithUpdatedPrices.push(appid);
-	}
+	const appsWithUpdatedPrices = await updatePriceDatabase(watchedPrices);
 
 	const newPricesByCC = new Map();
 	for(const appid of appsWithUpdatedPrices)
@@ -333,6 +319,25 @@ export async function checkPrices(reschedule = false)
 			}
 		}
 	}
+}
+
+async function updatePriceDatabase(watchedPrices)
+{
+	const appsWithUpdatedPrices = [];
+	const priceData = await queryPrices(Object.keys(watchedPrices));
+	for(const [appid, {final, discount_percent} = {}] of Object.entries(priceData))
+	{
+		if(!final) continue; // Sometimes the API call just... fails
+
+		const lastKnownPrice = watchedPrices[appid].lastPrice;
+		if(final === lastKnownPrice)
+			continue;
+
+		stmts.updateLastPrice({appid, lastPrice: final});
+		if(lastKnownPrice === null || final < watchedPrices[appid] || discount_percent)
+			appsWithUpdatedPrices.push(appid);
+	}
+	return appsWithUpdatedPrices;
 }
 
 
