@@ -63,6 +63,64 @@ export const getWatchedApps = stmts.getWatchedApps;
  */
 export const getWatchedPrices = stmts.getWatchedPrices;
 
+const channelGetters = {
+	news: stmts.getWatcherChannel,
+	price: stmts.getPriceWatcherChannel,
+	steam: ({guildId}) => stmts.getSteamWatcher(guildId),
+};
+/**
+ * Get the channel of a watcher.
+ * @param {"news"|"price"|"steam"} type The watcher type
+ * @param {{guildId:string,appid:string}} guildAndAppIds An object containing the guildId and appid
+ * @returns {string} the channel id
+ */
+export function getWatcherChannel(type, guildAndAppIds)
+{
+	return channelGetters[type](guildAndAppIds);
+}
+
+
+/** @typedef {import("../commands/premium/chameleon/~webhook.js").WebhookInfo} WebhookInfo */
+
+const webhookSetters = { news: stmts.setWebhook, price: stmts.setPriceWebhook, steam: stmts.setSteamWebhook};
+/**
+ * @param {"news"|"price"|"steam"} type The watcher type
+ * @param {{appid: number, channelId: string, webhook: string}} params
+ * @param {number} params.appid The appid
+ * @param {string} params.channelId The channel id
+ * @param {WebhookInfo} params.webhook The webhook info
+ * @returns {boolean} true if the watcher was updated, false if it couldn't be found
+ */
+export function setWebhook(type, params)
+{
+	return !!webhookSetters[type](params);
+}
+
+/**
+ * @type {(params: {guildId: string, appid: string})=>?WebhookInfo}
+ * Returns the webhooks for a given app in a given server.
+ * @param params.guildId The guild id.
+ * @param params.appid The app id.
+ * @returns The webhook info, or null is none was set for that app
+ */
+export const getWebhook = stmts.getWebhook;
+
+/**
+ * @type {(guildId: string)=>({type: "news"|"price", appid: number, appName: string, channelId: string, webhook: WebhookInfo}|{type: "steam", channelId: string, webhook: WebhookInfo})[]}
+ * Returns all the webhooks of a given server.
+ * @param {string} guildId The guild id.
+ * @returns A list of webhook infos
+ */
+export const getWebhooks = stmts.getWebhooks;
+
+/**
+ * @type {(webhook:string)=>boolean}
+ * Sets all watchers using the provided webhook to use the channel instead.
+ * @param {string} webhook The webhook id or id/token.
+ * @returns true if the server was purged, false if there was nothing to purge.
+ */
+export const purgeWebhook = stmts.purgeWebhook;
+
 
 
 /**

@@ -34,6 +34,34 @@
 							"choices": ["Avatar", "Banner", "Both"]
 						}
 					}
+				},
+				"chameleon": {
+					"name": "chameleon",
+					"description": "Commands for customizing the bot per-game.",
+					"options": {
+						"help": {
+							"name": "help",
+							"description": "Get explanation on how to use the chameleon features."
+						},
+						"list": {
+							"name": "list",
+							"description": "See all webhooks set up in this server."
+						},
+						"set": {
+							"name": "set",
+							"description": "Set a watcher to use the provided webhook.",
+							"options": {
+								"watcher": {
+									"name": "watcher",
+									"description": "The watcher to customize"
+								},
+								"webhook-url": {
+									"name": "webhook-url",
+									"description": "The webhook to use"
+								}
+							}
+						}
+					}
 				}
 			}
 		},
@@ -195,6 +223,41 @@
 			"grace": "In case you change your mind or want to make adjustments, you can use this command again for free within the next hour.",
 			"resetFailure": "The appearance reset failed with the message '%s'.",
 			"resetSuccess": "My appearance has been reset.\nIf you do not see the change, try reloading Discord."
+		},
+		"chameleon": {
+			"disabled": "Sorry! Chameleon features are currently disabled.",
+			"pay": "You need a subscription to access this feature.",
+			"help": {
+				"title": "Chameleon help",
+				"description": "First of all, your server needs to have either the Chameleon of the Gold Plan subscription (see the buttons below).\nOnce your are subscribed, the chameleon features will be enabled in your server. The bot uses **webhooks** to send news/sales with a different name and avatar for each name.\nThere are two ways to set those webhooks up:",
+				"fields": [{
+					"name": "Letting the bot do it",
+					"description": "First, you need to grand the bot the **manage webhooks** permissions.\nOnce this is done, you can use `/premium chameleon create` to make a new webhook, or `/premium chameleon auto` to automatically create a webhook for all your watched games, using each game's name and logo.\nThe bot tries to only use one webhook per channel to avoid clutter, but don't worry, it can still change its appearance for every game!"
+				}, {
+					"name": "Setting up the webhooks yourself",
+					"description": "First, create a webhook by opening the channel settings and going into “Integrations”. There you can customize its name and avatar.\nThen, copy its URL.\nFinally, use the `/webhook chameleon set` to assign that webhook to a given watcher. "
+				}]
+			},
+			"price": "Price",
+			"news": "News",
+			"steam": "Steam",
+			"no-webhooks": "You have no webhooks set up.",
+			"webhooks": "This server's Steam News webhooks",
+			"webhook-name": "Webhook name: %s",
+			"name-used": "Name used: %s",
+			"avatar-used": "Avatar used: %s",
+
+			"invalid-url": "You did not provide a valid webhook URL.",
+			"wrong-token": "I seem to be unable to use this webhook. Are you sure you provided the full, correct URL?",
+			"not-found": "I could not find any webhook with that URL. Did you provide the wrong URL or was it deleted?",
+			"wrong-channel": "That webhook is for a different channel than the one where that game's news are sent.\nChannels only share their webhooks with their threads.",
+			"server-error": "The Discord servers errorred when I tried checking that webhook URL. Please try again later.",
+			"unknown-error": "Got error %s when trying to validate the webhook URL.",
+
+			"webhook-set": "The webhook was set. You can test it by using %s with that game in its channel.",
+			"webhook-set-price": "The webhook was set for price updates.",
+			"unknown-watcher": "I could not find this watcher. Please make sure to select an option from the autocomplete.",
+			"webhook-set-error": "I could not set the webhook. Please try again later."
 		}
 	},
 
@@ -208,6 +271,8 @@
 	"no-news": "This app has no news.",
 	"NSFW-content-news": "This game has adult content. You can only display its news in a NSFW channel.",
 	"NSFW-content-price": "This game has adult content. You can only display its price in a NSFW channel.",
+
+	"used-command": "${user} used ${command}",
 
 	"table": "table",
 	"page-display": "${current}/${total}",
@@ -303,7 +368,8 @@
 		"confirm-price": "%s’s price updates will now be sent into %s.",
 		"confirm-news": "%s’s news will now be sent into %s.",
 		"already-price": "%s’s price was already watched in this server.",
-		"already-news": "%s’s news feed was already watched in this server."
+		"already-news": "%s’s news feed was already watched in this server.",
+		"webhook-auto-unset": "Since the watcher channel changed, the webhook has been unset."
 	},
 
 	"watched": {

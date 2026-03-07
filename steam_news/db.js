@@ -9,7 +9,7 @@ const db = new SQLite3(`${import.meta.dirname}/watchers.db`);
 export default db;
 db.pragma("journal_mode = WAL");
 
-const DB_VERSION = 7;
+const DB_VERSION = 8;
 
 db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS Watchers (
 	channelId TEXT NOT NULL,
 	roleId TEXT DEFAULT NULL,
 	premium BOOLEAN DEFAULT FALSE,
+	webhook TEXT DEFAULT NULL,
 	PRIMARY KEY (appId, guildId),
 	CONSTRAINT fk_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
 );
@@ -41,6 +42,7 @@ CREATE TABLE IF NOT EXISTS PriceWatchers (
 	channelId TEXT NOT NULL,
 	roleId TEXT DEFAULT NULL,
 	premium BOOLEAN DEFAULT FALSE,
+	webhook TEXT DEFAULT NULL,
 	PRIMARY KEY (appId, guildId),
 	CONSTRAINT fk_price_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
 );
@@ -48,7 +50,8 @@ CREATE TABLE IF NOT EXISTS PriceWatchers (
 CREATE TABLE IF NOT EXISTS SteamWatchers (
 	guildId TEXT PRIMARY KEY,
 	channelId TEXT NOT NULL,
-	roleId TEXT DEFAULT NULL
+	roleId TEXT DEFAULT NULL,
+	webhook TEXT DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Guilds (
@@ -115,6 +118,9 @@ if(currentVersion < DB_VERSION)
 	case 6:
 		db.exec(`ALTER TABLE Watchers ADD premium BOOLEAN DEFAULT FALSE;
 			ALTER TABLE PriceWatchers ADD premium BOOLEAN DEFAULT FALSE;`);
+	case 7:
+		db.exec(["Watchers", "PriceWatchers", "SteamWatchers"]
+			.map(table => `ALTER TABLE ${table} ADD webhook TEXT DEFAULT NULL;`).join(""));
 	}
 
 	db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
@@ -143,6 +149,20 @@ function makeProxy(sql, run) {
 }
 
 const watchTables = ["Watchers", "PriceWatchers", "SteamWatchers"];
+/**
+ * Returns a callback that sets an object's "type" property to the provided type.
+ * Meant for use with .forEach() and .map()
+ * @example priceWatchers.forEach(setType("price"));
+ * console.log(priceWatchers[0].type); // "price"
+ * @param {string} type The type
+ * @returns {function} The callback
+ */
+function setType(type) {
+	return watcher => {
+		watcher.type = type;
+		return watcher;
+	};
+}
 
 export const stmts = {
 	getStats: db.prepare(`SELECT
@@ -172,6 +192,7 @@ export const stmts = {
 		WHERE guildId = ?
 		ORDER BY name`),
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
+	getWatcherChannel: db.prepare("SELECT channelId from Watchers WHERE appid = $appid AND guildId = $guildId").pluck(),
 
 	watchSteam: makeProxy([
 		"UPDATE SteamWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId",
@@ -194,6 +215,31 @@ export const stmts = {
 		WHERE guildId = ?
 		ORDER BY name`),
 	updateLastPrice: db.prepare("UPDATE Apps SET lastPrice = $lastPrice WHERE appid = $appid"),
+	getPriceWatcherChannel: db.prepare("SELECT channelId from PriceWatchers WHERE appid = $appid AND guildId = $guildId").pluck(),
+
+	setWebhook: db.prepare("UPDATE Watchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
+	setPriceWebhook: db.prepare("UPDATE PriceWatchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
+	setSteamWebhook: db.prepare("UPDATE SteamWatchers SET webhook = $webhook WHERE channelId = $channelId"),
+	getWebhook: db.prepare("SELECT webhook FROM Watchers WHERE guildId = $guildId AND appid = $appid").pluck(),
+	getWebhooks: makeProxy([
+		...["Watchers", "PriceWatchers"].map(table => `
+			SELECT a.appid, name "appName", channelId, webhook
+			FROM ${table} w JOIN Apps a ON w.appid = a.appid
+			WHERE guildId = ? AND webhook IS NOT NULL
+		`),
+		"SELECT channelId, webhook FROM SteamWatchers WHERE guildId = ?",
+	], function(guildId) {
+		const steam = this[2].get(guildId);
+		return this[0].all(guildId).map(setType("news")).concat(
+			this[1].all(guildId).map(setType("price")),
+			steam ? setType("steam")(steam) : [],
+		);
+	}),
+	purgeWebhook: makeProxy(watchTables.map(table => `UPDATE ${table}
+		SET webhook = NULL WHERE webhook LIKE ? || '%';`
+	), function(webhookIdAndToken) {
+		return !!this.reduce((changes, stmt) => changes + stmt.run(webhookIdAndToken), 0);
+	}),
 
 	getCC: db.prepare("SELECT cc FROM Guilds WHERE id = ?").pluck(),
 	getLocale: db.prepare("SELECT cc, lang FROM Guilds WHERE id = ?"),
@@ -232,6 +278,7 @@ const getAll = [
 	"getWatchers", "getWatchedApps", "findWatchedApps",
 	"getPriceWatchers", "getWatchedPrices", "findWatchedPrices",
 	"getSteamWatchers",
+	"getWebhooks",
 	"getAllLocales", "getRecentVoters",
 ];
 

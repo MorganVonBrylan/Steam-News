@@ -1,10 +1,12 @@
 
 import {
 	premiumSKU, premiumGuilds,
+	chameleonSKU, chameleonGuilds,
 } from "../../steam_news/VIPs.js";
 
 export const entitlements = {
 	Watchers:  { bit: 1<<0, sku: premiumSKU, list: premiumGuilds },
+	Chameleon: { bit: 1<<1, sku: chameleonSKU, list: chameleonGuilds },
 };
 
 export const description = "Enable entitlements on the test server.";
@@ -12,7 +14,9 @@ export const options = [{
 	type: INTEGER, name: "subscription", required: true,
 	description: "Which subscription to emulate?",
 	choices: [
+		{ name: "Chameleon", value: entitlements.Chameleon.bit },
 		{ name: "More watchers", value: entitlements.Watchers.bit },
+		{ name: "Gold plan", value: entitlements.Chameleon.bit | entitlements.Watchers.bit },
 		{ name: "NOTHING!", value: 0 },
 	],
 }];

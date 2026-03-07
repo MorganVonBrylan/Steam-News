@@ -41,12 +41,15 @@ export function addVoter(id, lang, forceNotif = false)
 }
 
 export const premiumGuilds = new Set();
+export const chameleonGuilds = new Set();
 
 const { premium } = auth;
 import { ComponentType, ButtonStyle } from "discord.js";
 export const premiumSKU = premium?.sku;
 export const bonus = premium?.bonus || 0;
 export const rebrandSKU = premium?.rebrand;
+export const chameleonSKU = premium?.chameleon;
+export const goldSKU = premium?.gold;
 
 export function button(sku_id) {
 	return { type: ComponentType.Button, style: ButtonStyle.Premium, sku_id };
@@ -70,17 +73,40 @@ if(premiumSKU)
 	client.on("guildMemberAdd", member => {});
 	*/
 
+	function wait_a_bit() {
+		return new Promise(resolve => setTimeout(resolve, 3000));
+	}
+
 	client.once("clientReady", async () => {
-		(await client.application.entitlements.fetch({cache: false}))
-			.filter(sku => sku.skuId === premiumSKU && sku.isActive())
-			.forEach(({guildId}) => premiumGuilds.add(guildId));
+		const start = Date.now();
+		for(const entitlement of await client.application.entitlements.fetch({cache: false}))
+		{
+			if(!entitlement.isActive())
+				continue;
+
+			const { skuId, guildId } = entitlement;
+			if(skuId === premiumSKU || skuId === goldSKU)
+				premiumGuilds.add(guildId);
+			if(skuId === chameleonSKU || skuId === goldSKU)
+				chameleonGuilds.add(guildId);
+		}
+		console.log(`Entitlements loaded in ${((Date.now()-start) / 1000).toFixed(1)}s`);
 	});
 
 	client.on("entitlementCreate", async ({skuId, userId, guildId}) => {
+		// Changing a subscription call both an ENTITLEMENT_UPDATE and ENTITLEMENT_CREATE events
+		// Not sure if the order is guaranteed, so in doubt,
+		// wait a bit before granting the new entitlement to make sure the UPDATE doesn't remove it
+		await wait_a_bit();
 		switch(skuId)
 		{
+			case goldSKU:
 			case premiumSKU:
-				premiumGuilds.add(guildId);
+			case chameleonSKU:
+				if(skuId !== premiumSKU)
+					chameleonGuilds.add(guildId);
+				if(skuId !== chameleonSKU)
+					premiumGuilds.add(guildId);
 				const guild = await client.guilds.fetch(guildId);
 				sendToMaster(`New sub! Guild: ${guild} (${guildId}), owner: ${guild.ownerId}, user: ${userId}`);
 				break;
@@ -92,34 +118,27 @@ if(premiumSKU)
 		}
 	});
 
-	client.on("entitlementUpdate", async (_, ent) => {
-		if(ent.isActive())
+
+	function removeEntitlement(skuId, guildId) {
+		if(skuId === premiumSKU || skuId === goldSKU)
+			premiumGuilds.delete(guildId);
+		if(skuId === chameleonSKU || skuId === goldSKU)
+			chameleonGuilds.delete(guildId);
+	}
+
+	client.on("entitlementUpdate", async (_, entitlement) => {
+		if(entitlement.isActive())
 			return;
 
-		if(ent.skuId === premiumSKU)
-		{
-			premiumGuilds.delete(ent.guildId);
-			const guild = await client.guilds.fetch(ent.guildId);
-			sendToMaster(`Sub ended. Guild: ${guild} (${ent.guildId}), user: ${ent.userId}`);
-		}
-		else
-		{
-			const {userId: id} = ent;
-			sendToMaster(`Supporter lost: <@${id}> (${ent.userId})`);
-		}
+		const { skuId, guildId, userId } = entitlement;
+		removeEntitlement(skuId, guildId);
+		const guild = await client.guilds.fetch(guildId);
+		sendToMaster(`Sub ended. Guild: ${guild} (${guildId}), user: ${userId}`);
 	});
 
-	client.on("entitlementDelete", async ent => {
-		if(ent.skuId === premiumSKU)
-		{
-			premiumGuilds.delete(ent.guildId);
-			const guild = await client.guilds.fetch(ent.guildId);
-			sendToMaster(`Sub cancelled. Guild: ${guild} (${ent.guildId}), user: ${ent.userId}`);
-		}
-		else
-		{
-			const {userId: id} = ent;
-			sendToMaster(`Supporter cancelled: <@${id}> (${ent.userId})`);
-		}
+	client.on("entitlementDelete", async ({skuId, guildId, userId}) => {
+		removeEntitlement(skuId, guildId);
+		const guild = await client.guilds.fetch(guildId);
+		sendToMaster(`Sub cancelled. Guild: ${guild} (${guildId}), user: ${userId}`);
 	});
 }
