@@ -33,7 +33,7 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 		"token": "(optional) your bot's Top.gg token",
 		"webhook": {
 			"port": 5050,
-			"password": "your password here"
+			"secret": "whs_abc123"
 		},
 		"voteWatcherBonus": 25
 	},
