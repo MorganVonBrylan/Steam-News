@@ -12,7 +12,7 @@ import importJSON from "../utils/importJSON.function.js";
 import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "../steam_news/limits.js";
 import localesFile from "./locales.js";
 
-import { readdirSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 {
@@ -39,6 +39,19 @@ if(!locales[FALLBACK])
 
 locales["en-GB"] = locales[FALLBACK];
 locales["en-US"] = locales[FALLBACK];
+
+
+const knownIncomplete = importJSON(`${import.meta.dirname}/knownIncompleteTrs.json`, []);
+if(!Array.isArray(knownIncomplete))
+	throw new TypeError("knownIncompleteTrs.json has an invalid format. Expected: array");
+
+console.warn(`Known incomplete translations: ${knownIncomplete.join(", ")}. Missing strings will be ignored.`);
+
+function warnMissing(language, message)
+{
+	if(!knownIncomplete.includes(language))
+		console.warn(message.replace("%l", language));
+}
 
 
 /**
@@ -76,7 +89,7 @@ export const tr = {
 			if(!this.locale)
 			{
 				this.locale = this.fallback;
-				console.warn(`Missing ${group} group in ${lang} translation.`);
+				warnMissing(lang, `Missing ${group} group in %l translation.`);
 			}
 		}
 		else
@@ -238,13 +251,13 @@ export function applyTranslations(cmdName, cmd)
 
 		if(!commands)
 		{
-			console.warn(`Missing ${locale} command translations`);
+			warnMissing(locale, "Missing %l command translations");
 			continue;
 		}
 
 		if(!(cmdName in commands))
 		{
-			console.warn(`Missing ${locale} translation for command ${cmdName}`);
+			warnMissing(locale, `Missing %l translation for command ${cmdName}`);
 			continue;
 		}
 
@@ -252,7 +265,7 @@ export function applyTranslations(cmdName, cmd)
 		const { name, description, options } = commands[cmdName];
 
 		if(!name)
-			console.warn(`Missing ${locale} name translation for command ${cmdName}`);
+			warnMissing(locale, `Missing %l name translation for command ${cmdName}`);
 		else
 		{
 			if(cmd.nameLocalizations) cmd.nameLocalizations[locale] = name;
@@ -260,7 +273,7 @@ export function applyTranslations(cmdName, cmd)
 		}
 
 		if(!description)
-			console.warn(`Missing ${locale} description translation for command ${cmdName}`);
+			warnMissing(locale, `Missing %l description translation for command ${cmdName}`);
 		else
 		{
 			if(cmd.descriptionLocalizations) cmd.descriptionLocalizations[locale] = description;
@@ -271,21 +284,21 @@ export function applyTranslations(cmdName, cmd)
 			continue;
 
 		if(!options)
-			console.warn(`Missing ${locale} option translations for command ${cmdName}`);
+			warnMissing(locale, `Missing %l option translations for command ${cmdName}`);
 		else for(const opt of cmd.options)
 		{
 			const forOption = `translation for option ${opt.name} of command ${cmdName}`;
 			let tr = options[opt.name];
 			if(!tr)
 			{
-				console.warn(`Missing ${locale} ${forOption}`);
+				warnMissing(locale, `Missing %l ${forOption}`);
 				continue;
 			}
 
 			let { name, description, choices } = tr;
 
 			if(!name)
-				console.warn(`Missing ${locale} name ${forOption}`);
+				warnMissing(locale, `Missing %l name ${forOption}`);
 			else
 			{
 				if(opt.nameLocalizations) opt.nameLocalizations[locale] = name;
@@ -293,7 +306,7 @@ export function applyTranslations(cmdName, cmd)
 			}
 
 			if(!description)
-				console.warn(`Missing ${locale} description ${forOption}`);
+				warnMissing(locale, `Missing %l description ${forOption}`);
 			else
 			{
 				if(opt.descriptionLocalizations) opt.descriptionLocalizations[locale] = description;
@@ -310,7 +323,7 @@ export function applyTranslations(cmdName, cmd)
 					choices = opt.choices.map(({value}) => languages[value]);
 				else
 				{
-					console.warn(`Mismatched number of choices in ${locale} ${forOption} (expected ${nChoices}, got ${choices?.length})`);
+					warnMissing(locale, `Mismatched number of choices in %l ${forOption} (expected ${nChoices}, got ${choices?.length})`);
 					continue;
 				}
 			}

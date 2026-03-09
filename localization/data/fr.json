@@ -1,6 +1,5 @@
 {
 	"discovery": "**Steam News** vous permet d'avoir les actus et changement de prix de jeux Steam envoyés directement dans un salon de votre serveur Discord.\n\nIl a aussi une commande pour afficher les infos d'un jeu avec bien plus de détails que juste envoyer son adresse du magasin Steam.",
-
 	"commands": {
 		"help": {
 			"name": "aide",
@@ -45,7 +44,39 @@
 						"what": {
 							"name": "quoi",
 							"description": "Que réinitialiser ?",
-							"choices": ["Avatar", "Bannière", "Les deux"]
+							"choices": [
+								"Avatar",
+								"Bannière",
+								"Les deux"
+							]
+						}
+					}
+				},
+				"chameleon": {
+					"name": "chaméléon",
+					"description": "Commandes pour personnaliser le bot par jeu.",
+					"options": {
+						"help": {
+							"name": "aide",
+							"description": "Affiche une explication sur les fonctionnalités chaméléon."
+						},
+						"list": {
+							"name": "liste",
+							"description": "Voir tous les webhooks utilisés sur ce serveur."
+						},
+						"set": {
+							"name": "configurer",
+							"description": "Utiliser un webhook pour les actus d'un jeu.",
+							"options": {
+								"watcher": {
+									"name": "jeu",
+									"description": "Le jeu qui utilisera le webhook"
+								},
+								"webhook-url": {
+									"name": "url-webhook",
+									"description": "Le webhook à utiliser"
+								}
+							}
 						}
 					}
 				}
@@ -96,7 +127,10 @@
 				"type": {
 					"name": "type",
 					"description": "S’il faut suivre les actus ou les évolutions du prix",
-					"choices": ["Actus", "Prix"]
+					"choices": [
+						"Actus",
+						"Prix"
+					]
 				},
 				"game": {
 					"name": "jeu",
@@ -161,61 +195,47 @@
 			"description": "Affiche des stats sur le bot"
 		}
 	},
-
 	"voting": {
 		"thanks": "Merci d’avoir voté ! Vous pouvez désormais suivre les actus et changements de prix de %s jeux de plus dans chacun de vos serveurs."
 	},
-
 	"help": {
 		"title": "Aide Steam News",
 		"description": "**Steam News** est un bot qui permet de suivre les actus d’un jeu Steam en envoyant les annonces, notes de mises à jour etc directement dans un salon.",
 		"fields": [
-			{ "name": "Comment suivre les actus/le prix d’un jeu ?", "value": "Ajoutez un suivi avec `/suivre`, retirez-le avec `/suivre-stop`." },
-			{ "name": "Combien de jeux puis-je suivre ?", "value": "De base, vous pouvez suivre ${WATCH_LIMIT} fils d’actu, et autant de prix (qui peuvent être de jeux différents). Vous pouvez avoir ${WATCH_VOTE_BONUS} suivis d’actus et de prix de plus si vous votez pour nous sur Top.gg (lien en bas de ce message)." },
-			{ "name": "Le bot n’a pas envoyé une actu à la seconde où elle est sortie !", "value": "C’est normal. Il vérifie les actus une fois pas heure, donc il peut y avoir jusqu’à une heure de retard." },
-			{ "name": "Qu’en est-il des jeux adultes ?", "value": "Le bot n’enverra les infos et actus de jeux adultes que dans les salons soumis à une limite d’âge (NSFW)." },
-			{ "name": "Je peux copier ton bot ?", "value": "Bien sûr ! Il est open source sous licence GNU GPL 3.0.\nVoici le dépôt Git : ${repository}" },
-			{ "name": "J’ai encore besoin d’aide !", "value": "C’est fâcheux. Vous pouvez venir expliquer votre souci sur notre serveur de support : ${SUPPORT_SERVER}" },
-			{ "name": "Une dernière chose", "value": "Vous aimez Steam News? Vous pouvez lui mettre un poce blo sur Top.gg: ${VOTE}" }
+			{
+				"name": "Comment suivre les actus/le prix d’un jeu ?",
+				"value": "Ajoutez un suivi avec `/suivre`, retirez-le avec `/suivre-stop`."
+			},
+			{
+				"name": "Combien de jeux puis-je suivre ?",
+				"value": "De base, vous pouvez suivre ${WATCH_LIMIT} fils d’actu, et autant de prix (qui peuvent être de jeux différents). Vous pouvez avoir ${WATCH_VOTE_BONUS} suivis d’actus et de prix de plus si vous votez pour nous sur Top.gg (lien en bas de ce message)."
+			},
+			{
+				"name": "Le bot n’a pas envoyé une actu à la seconde où elle est sortie !",
+				"value": "C’est normal. Il vérifie les actus une fois pas heure, donc il peut y avoir jusqu’à une heure de retard."
+			},
+			{
+				"name": "Qu’en est-il des jeux adultes ?",
+				"value": "Le bot n’enverra les infos et actus de jeux adultes que dans les salons soumis à une limite d’âge (NSFW)."
+			},
+			{
+				"name": "Je peux copier ton bot ?",
+				"value": "Bien sûr ! Il est open source sous licence GNU GPL 3.0.\nVoici le dépôt Git : ${repository}"
+			},
+			{
+				"name": "J’ai encore besoin d’aide !",
+				"value": "C’est fâcheux. Vous pouvez venir expliquer votre souci sur notre serveur de support : ${SUPPORT_SERVER}"
+			},
+			{
+				"name": "Une dernière chose",
+				"value": "Vous aimez Steam News? Vous pouvez lui mettre un poce blo sur Top.gg: ${VOTE}"
+			}
 		],
-		"footer": { "text": "Steam News v${v} par ${author}." },
+		"footer": {
+			"text": "Steam News v${v} par ${author}."
+		},
 		"donate": "Vous pouvez aussi nous faire un don :"
 	},
-
-	"error": "Une erreur est survenue.",
-	"api-failed": "La connexion à l'API Steam a échoué ; veuillez réessayer dans quelques minutes.",
-	"api-403": "L'accès à ce jeu a été refusé (erreur 403).",
-	"api-err": "La récupération des infos a échoué (erreur %s).",
-	"no-match": "Aucun jeu trouvé correspondant à \"%s\".",
-	"bad-appid": "L’id que vous avez fourni ne correspond à aucune appli Steam.",
-	"no-DLC-news": "Les DLC n’ont pas d’actus.",
-	"no-news": "Cette appli n’a aucune actu.",
-	"NSFW-content-news": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses actus que dans un salon soumis à une limite d’âge (NSFW).",
-	"NSFW-content-price": "Ce jeu a du contenu adulte. Vous ne pouvez afficher son prix que dans un salon soumis à une limite d’âge (NSFW).",
-
-	"table": "tableau",
-
-	"info": {
-		"yes": "Oui", "no": "Non",
-		"invalidAppid": "Cet id ne correspond à aucune appli Steam.",
-		"nsfwForbidden": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon soumis à une limite d’âge (NSFW).",
-		"comingSoon": "*bientôt*",
-		"genre": "Genre", "genres": "Genres", "none": "*aucun*",
-		"metacritic": "Score Metacritic", "unknown": "*Inconnu*",
-		"nsfw": "NSFW",
-		"releaseDate": "Date de publication",
-		"price": "Prix", "free": "Gratuit", "undefined": "non défini",
-		"DLC": "DLC", "game": "Jeu :",
-		"platforms": "Plateformes",
-		"controllerSupport": "Compat. manettes",
-		"controller_no": "Aucune",
-		"controller_partial": "Partielle",
-		"controller_full": "Complète",
-		"multi": "Multi",
-		"languages": "Langues",
-		"openInApp": "Ouvrir dans l’application"
-	},
-
 	"premium": {
 		"rebrand": {
 			"disabled": "Désolé! Le relooking est actuellement désactivé.",
@@ -229,17 +249,92 @@
 			"grace": "Au cas où vous changeriez d'avis ou voudriez faire des ajustements, vous pouvez utiliser cette commande gratuitement pendant une heure.",
 			"resetFailure": "Réinitialiser mon apparence a échoué avec le message '%s'.",
 			"resetSuccess": "Mon apparence a été réinitialisée.\nSi vous ne voyez pas de changement, essayez de recharger Discord."
+		},
+		"chameleon": {
+			"disabled": "Désolé ! Les fonctionnalités chaméléon sont désactivées pour le moment.",
+			"pay": "Il faut un abonnement pour accéder à cette fonctionnalité.",
+			"help": {
+				"title": "Aide pour le chaméléon",
+				"description": "Avant tout, votre serveur doit avoir l'abonnement Chaméléon ou le Gold Plan (voir les boutons ci-dessous).\nUne fois abonné, les fonctionnalités chaméléon seront activées dans votre serveur. Le bot utilise des **webhooks** pour envoyer les actus/soldes avec un nom et avatar différents pour chaque jeu.\nIl y a deux manières de configurer ces webhooks :",
+				"fields": [
+					{
+						"name": "Laisser le bot faire",
+						"description": "D'abord, il faut donner au bot la permission de **gérer les webhooks**.\nCeci fait, vous pouvez utiliser `/premium chaméléon créer` pour créer un nouveau webhook, ou `/premium chaméléon auto` pour automatiquement créer un webhook pour tous vos jeux suivis, en utilisant le nom et logo du jeu.\nLe bot essaye de n'utiliser qu'un webhook par salon pour éviter le fouillis, mais ne vous en faites pas, il peut tout de même changer d'apparence pour chaque jeu !"
+					},
+					{
+						"name": "Configurer les webhooks vous-même",
+						"description": "D'abord, créez un webhook en ouvrant les réglages du salon et en allant dans \"Intégrations\".\nD'ici, vous pouvez changer son nom et avatar.\nEnsuite, copier son URL.\nEnfin, utilisez `/webhook chaméléon configurer` pour assigner ce webhook à un jeu."
+					}
+				]
+			},
+			"price": "Prix",
+			"news": "Actus",
+			"steam": "Steam",
+			"no-webhooks": "Vous n'avez aucun webhook configuré.",
+			"webhooks": "Les webhooks de Steam News sur ce serveur",
+			"webhook-name": "Nom du webhook : %s",
+			"name-used": "Nom utilisé : %s",
+			"avatar-used": "Avatar utilisé : %s",
+			"invalid-url": "Vous n'avez pas fourni un URL de webhook valide.",
+			"wrong-token": "Il semble que je ne peux pas utiliser ce webhook. Êtes-vous sûr·e d'avoir fourni l'URL correcte et complète ?",
+			"not-found": "Je n'ai pas trouvé de webhook avec cette URL. Soit c'était la mauvaise URL, il été supprimé.",
+			"wrong-channel": "Ce webhook appartient à un autre salon que celui utilisée pour les actus de ce jeu.\nLes salons ne partagent leur webhooks qu'avec leurs fils.",
+			"server-error": "Les serveurs Discord ont eu une erreur quand j'ai voulu vérifier cette URL de webhook. Veuillez réessayer plus tard.",
+			"unknown-error": "Erreur %s reçue en essayant de valider l'URL du webhook.",
+			"webhook-set": "Ce webhook a été configuré. Vous pouvez l'essayer en utilisant %s avec ce jeu dans son salon.",
+			"webhook-set-price": "Le webhook a été configuré pour les soldes.",
+			"unknown-watcher": "Je n'ai pas trouvé ce jeu. Veuillez sélectionner une option de la complétion automatique.",
+			"webhook-set-error": "Je n'ai pas pu configurer le webhook. Veuillez réessayer plus tard."
 		}
 	},
-
+	"error": "Une erreur est survenue.",
+	"api-failed": "La connexion à l'API Steam a échoué ; veuillez réessayer dans quelques minutes.",
+	"api-403": "L'accès à ce jeu a été refusé (erreur 403).",
+	"api-err": "La récupération des infos a échoué (erreur %s).",
+	"no-match": "Aucun jeu trouvé correspondant à \"%s\".",
+	"bad-appid": "L’id que vous avez fourni ne correspond à aucune appli Steam.",
+	"no-DLC-news": "Les DLC n’ont pas d’actus.",
+	"no-news": "Cette appli n’a aucune actu.",
+	"NSFW-content-news": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses actus que dans un salon soumis à une limite d’âge (NSFW).",
+	"NSFW-content-price": "Ce jeu a du contenu adulte. Vous ne pouvez afficher son prix que dans un salon soumis à une limite d’âge (NSFW).",
+	"used-command": "${user} a utilisé ${command}",
+	"table": "tableau",
+	"page-display": "${current}/${total}",
+	"choose-page": "Choisissez une page entre 1 et %s",
+	"page-number": "Numéro de page",
+	"info": {
+		"yes": "Oui",
+		"no": "Non",
+		"invalidAppid": "Cet id ne correspond à aucune appli Steam.",
+		"nsfwForbidden": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses infos que dans un salon soumis à une limite d’âge (NSFW).",
+		"comingSoon": "*bientôt*",
+		"genre": "Genre",
+		"genres": "Genres",
+		"none": "*aucun*",
+		"metacritic": "Score Metacritic",
+		"unknown": "*Inconnu*",
+		"nsfw": "NSFW",
+		"releaseDate": "Date de publication",
+		"price": "Prix",
+		"free": "Gratuit",
+		"undefined": "non défini",
+		"DLC": "DLC",
+		"game": "Jeu :",
+		"platforms": "Plateformes",
+		"controllerSupport": "Compat. manettes",
+		"controller_no": "Aucune",
+		"controller_partial": "Partielle",
+		"controller_full": "Complète",
+		"multi": "Multi",
+		"languages": "Langues",
+		"openInApp": "Ouvrir dans l’application"
+	},
 	"locale": {
 		"current": "Votre pays actuel est %s (%s) avec le %s pour langue préférée.",
 		"no-default": "Ce serveur n’a pas de pays par défaut.",
 		"new-default": "Le pays par défaut de ce serveur est désormais %s (%s) avec le %s pour langue préférée.",
-
 		"cc-required": "Vous devez fournir le code à 2 lettres d’un pays.\nVous pouvez en trouver la liste ici : %s",
 		"cc-invalid": "Ceci n’est pas un code Alpha-2 valide.\nVous pouvez en trouver la liste ici : %s",
-
 		"languages": {
 			"ar": "arabe",
 			"br": "bulgare",
@@ -272,37 +367,30 @@
 			"vn": "vietnamien"
 		}
 	},
-
 	"price": {
 		"sale": "En solde !!",
 		"published": "Le jeu est sorti ! Il coûte **%s**",
 		"openInApp": "Ouvrir dans l’application"
 	},
-
 	"watch": {
 		"cannot-see": "Je n'ai pas accès à %s.",
 		"cannot-send": "Je ne peux pas envoyer de messages dans %s.",
 		"cannot-embed": "Je ne peux pas intégrer de liens dans %s.",
-
 		"price-free": "Ce jeu est gratuit !",
 		"price-unknown": "Erreur : impossible de trouver le prix de ce jeu.",
-
 		"error-retrieving-details": "Cependant, une erreur est survenue en tentant de récupérer les détails du jeu. Il est possible qu’il soit appelé “undefined” pendant un temps.",
-
 		"server-limit-reached": "Attention : vous avez atteint la limite de ${LIMIT} jeux par serveur.\nVotez pour moi sur [Top.gg](${vote}) ou achetez le **premium** pour pouvoir en ajouter jusque ${MAX_BONUS} de plus.",
 		"server-limit-reached-voted": "Attention : vous avez atteint la limite de %s jeux par serveur. Achetez le **premium** pour en avoir plus.",
 		"server-max-reached": "Attention : vous avez atteint la limite de %s jeux par serveur.",
-
 		"error-limit-reached": "Vous avez atteint ou dépassé la limite de ${LIMIT} jeux suivis par serveur.\nVotez pour moi sur [Top.gg](${vote}) ou achetez le **premium** pour en avoir jusque ${MAX_BONUS} de plus.",
 		"error-limit-reached-voted": "Désolé, vous avez atteint ou dépassé votre limite de %s jeux suivis par serveur. Achetez le **premium** pour l'augmenter.",
 		"error-max-reached": "Désolé, vous avez atteint ou dépassé la limite de %s jeux suivis par serveur.",
-
 		"confirm-price": "Les changements de prix de %s seront désormais envoyées dans %s.",
 		"confirm-news": "Les actus de %s seront désormais envoyées dans %s.",
 		"already-price": "Le prix de %s était déjà suivi dans ce serveur.",
-		"already-news": "Les actus de %s étaient déjà suivies dans ce serveur."
+		"already-news": "Les actus de %s étaient déjà suivies dans ce serveur.",
+		"webhook-auto-unset": "Comme le salon utilisé a changé, le webhook a été détaché."
 	},
-
 	"watched": {
 		"games-watched": "Jeux suivis dans ce serveur",
 		"prices-watched": "Prix suivis dans ce serveur",
@@ -323,19 +411,16 @@
 		"NSFW-no": "NSFW : Non",
 		"channel": "Salon : %s"
 	},
-
 	"unwatch": {
 		"news-unwatched": "%s n’est plus suivi dans ce serveur.",
 		"news-unchanged": "%s n’était pas suivi dans ce serveur.",
 		"price-unwatched": "Le prix de %s n’est plus suivi dans ce serveur.",
 		"price-unchanged": "Le prix de %s n’était pas suivi dans ce serveur."
 	},
-
 	"steam": {
 		"watched": "Les actus de Steam seront désormais envoyées dans %s.",
 		"unwatched": "Les actus de Steam ne seront plus envoyées dans ce serveur."
 	},
-
 	"stats": {
 		"watchers": "Suivis d’actus",
 		"games-watched": "Jeux suivis",

@@ -11,3 +11,5 @@ TODO.txt
 steam_news/watchers.json
 steam_news/*.db*
 steam_news/*backup*
+
+localization/knownIncompleteTrs.json
