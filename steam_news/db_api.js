@@ -106,12 +106,28 @@ export function setWebhook(type, params)
 export const getWebhook = stmts.getWebhook;
 
 /**
+ * @type {(channelId: string)=>string[]}
+ * Get the webhooks of a given channel.
+ * @returns A list of distinct webhook id/tokens.
+ */
+export const getChannelWebhooks = stmts.getChannelWebhooks;
+
+
+/**
  * @type {(guildId: string)=>({type: "news"|"price", appid: number, appName: string, channelId: string, webhook: WebhookInfo}|{type: "steam", channelId: string, webhook: WebhookInfo})[]}
- * Returns all the webhooks of a given server.
+ * Returns all the whatchers with a webhook of a given server.
  * @param {string} guildId The guild id.
- * @returns A list of webhook infos
+ * @returns A list of watchers
  */
 export const getWebhooks = stmts.getWebhooks;
+
+/**
+ * @type {(guildId: string)=>({type: "news"|"price", appid: number, appName: string, channelId: string}|{type: "steam", channelId: string})[]}
+ * Opposite of getWebhooks: return all the watchers of a server without a webhook.
+ * @param {string} guildId The guild id.
+ * @returns A list of watchers
+ */
+export const getNonWebhooks = stmts.getNonWebhooks;
 
 /**
  * @type {(webhook:string)=>boolean}

@@ -240,10 +240,32 @@ export const stmts = {
 			steam.webhook ? setType("steam")(steam) : [],
 		);
 	}),
+	getChannelWebhooks: makeProxy(watchTables.map(table => `
+		SELECT IIF(INSTR(webhook, '#'), SUBSTR(webhook, 0, INSTR(webhook, '#')), webhook)
+		FROM ${table}
+		WHERE channelId = ? AND webhook IS NOT NULL
+	`), function(channelId) {
+		return Array.from(new Set(this.map(stmt => stmt.all(channelId)).flat()));
+	}, { pluck: true }),
 	purgeWebhook: makeProxy(watchTables.map(table => `UPDATE ${table}
 		SET webhook = NULL WHERE webhook LIKE ? || '%';`
 	), function(webhookIdAndToken) {
 		return !!this.reduce((changes, stmt) => changes + stmt.run(webhookIdAndToken), 0);
+	}),
+
+	getNonWebhooks: makeProxy([
+		...["Watchers", "PriceWatchers"].map(table => `
+			SELECT a.appid, name "appName", channelId
+			FROM ${table} w JOIN Apps a ON w.appid = a.appid
+			WHERE guildId = ? AND webhook IS NULL
+		`),
+		"SELECT channelId FROM SteamWatchers WHERE guildId = ?",
+	], function(guildId) {
+		const steam = this[2].get(guildId);
+		return this[0].all(guildId).map(setType("news")).concat(
+			this[1].all(guildId).map(setType("price")),
+			steam.webhook ? [] : setType("steam")(steam),
+		);
 	}),
 
 	getCC: db.prepare("SELECT cc FROM Guilds WHERE id = ?").pluck(),
@@ -283,10 +305,13 @@ const getAll = [
 	"getWatchers", "getWatchedApps", "findWatchedApps",
 	"getPriceWatchers", "getWatchedPrices", "findWatchedPrices",
 	"getSteamWatchers",
-	"getWebhooks",
+	"getWebhooks", "getNonWebhooks", "getChannelWebhooks",
 	"getAllLocales", "getRecentVoters",
 ];
 
+// Any errors here about reading undefined are most likely caused by the stmt
+// not being in the getAll list above
+// Yes this is a very flimsy system but fixing it is not a priority
 for(const [name, stmt] of Object.entries(stmts))
 	stmts[name] = stmt[stmt.readonly ? (getAll.includes(name) ? "all" : "get") : "run"].bind(stmt);
 
