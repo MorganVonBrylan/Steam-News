@@ -131,19 +131,24 @@ if(currentVersion < DB_VERSION)
  * Makes a proxy, for when just one statement isn't enough.
  * @param {string|string[]} sql SQL statement(s). If this argument is provided, the statement(s) will be prepared, and bound to the run function as thisArg.
  * @param {function} run The function to run. Make sure this is not an arrow function.
+ * @param {boolean} pluck Whether to pluck the stmts
  * @returns {object} Something that looks, swims and quacks like a prepared statement.
  */
-function makeProxy(sql, run) {
+function makeProxy(sql, run, pluck = false) {
 	let readonly;
 	if(sql instanceof Array)
 	{
 		sql = sql.map(db.prepare.bind(db));
 		readonly = sql.every(stmt => stmt.readonly);
+		if(pluck) for(const stmt of sql)
+			stmt.pluck();
 	}
 	else
 	{
 		sql = db.prepare(sql);
 		readonly = sql.readonly;
+		if(pluck)
+			sql.pluck();
 	}
 	return { readonly, [readonly ? "all" : "run"]: run.bind(sql) };
 }
