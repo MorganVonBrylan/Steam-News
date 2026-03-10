@@ -232,7 +232,7 @@ export const stmts = {
 		const steam = this[2].get(guildId);
 		return this[0].all(guildId).map(setType("news")).concat(
 			this[1].all(guildId).map(setType("price")),
-			steam ? setType("steam")(steam) : [],
+			steam.webhook ? setType("steam")(steam) : [],
 		);
 	}),
 	purgeWebhook: makeProxy(watchTables.map(table => `UPDATE ${table}
