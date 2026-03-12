@@ -51,7 +51,7 @@ export async function run(inter)
 			: t("chameleon.webhook-set", latestId
 				? `</latest:${latestId}>`
 				: `\`/${tr.get(inter.locale, "commands.latest.name")}\``))
-		: t("chameleon.webhook-set-fail")
+		: t("chameleon.webhook-set-error")
 	), err => {
 		const key = `chameleon.${err.message}`;
 		if(err.status)
