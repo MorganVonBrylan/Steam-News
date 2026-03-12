@@ -354,7 +354,7 @@
 	"watched": {
 		"games-watched": "Juegos suscritos en este servidor",
 		"prices-watched": "Precios suscritos en este servidor",
-		"steam-watched": "Noticias sobre Steam enviadas en %s",
+		"steam-watched": "Noticias sobre **Steam** enviadas en %s",
 		"games": {
 			"1": "1 juego suscrito",
 			"default": "%n juegos suscritos"
