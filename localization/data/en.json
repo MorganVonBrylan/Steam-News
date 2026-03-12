@@ -68,6 +68,16 @@
 									"description": "URL of the avatar to use for this game specifically"
 								}
 							}
+						},
+						"unset": {
+							"name": "unset",
+							"description": "Decouple a watcher from its webhook. This does not delete the webhook.",
+							"options": {
+								"watcher": {
+									"name": "watcher",
+									"description": "The watcher to unset"
+								}
+							}
 						}
 					}
 				}
@@ -266,7 +276,13 @@
 			"webhook-set": "The webhook was set. You can test it by using %s with that game in its channel.",
 			"webhook-set-price": "The webhook was set for price updates.",
 			"unknown-watcher": "I could not find this watcher. Please make sure to select an option from the autocomplete.",
-			"webhook-set-error": "I could not set the webhook. Please try again later."
+			"webhook-set-error": "I could not set the webhook. Please try again later.",
+
+			"webhook-unset": "The webhook was decoupled.",
+			"webhook-unset-price": "The webhook was decoupled for price updates.",
+			"webhook-unset-error": "I could not decouple the webhook. Please try again later.",
+			"all-decoupled": "All webhooks have been decoupled. Note that this did note delete the webhooks, they simply won't be used for sending news or sales anymore.",
+			"nothing-decoupled": "No changes. It seems this server was not using webhooks."
 		}
 	},
 

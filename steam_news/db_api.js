@@ -125,12 +125,38 @@ export const getChannelWebhooks = stmts.getChannelWebhooks;
 
 
 /**
- * @type {(guildId: string)=>({type: "news"|"price", appid: number, appName: string, channelId: string, webhook: WebhookInfo}|{type: "steam", channelId: string, webhook: WebhookInfo})[]}
+ * 
+ * @type {{
+ * (guildId: string)=>({type:"news"|"price", appid:number, appName:string, channelId: string,webhook: WebhookInfo}|{type:"steam",channelId:string, webhook:WebhookInfo})[];
+ * (guildId: string, merge: false)=>({news: {appid:number, appName:string, channelId:string, webhook:WebhookInfo}[], price: {appid:number, appName:string, channelId:string, webhook:WebhookInfo}[], steam: ?{channelId:string, webhook:WebhookInfo}});
+ * }}
+ * Returns all the whatchers with a webhook of a given server.
+ * @param {string} guildId The guild id.
+ * @param {boolean} [merge] Whether to merge the results into an array. Defaults to true.
+ * @returns A list of watchers
+ */
+export const getWebhooks = stmts.getWebhooks;
+
+
+/**
+ * @template merge
+ * @type {{
+ * (guildId: string, merge: boolean = true)=>({type:"news"|"price", appid:number, appName:string, channelId: string,webhook: WebhookInfo}|{type:"steam",channelId:string, webhook:WebhookInfo})[];
+ * (guildId: string, merge: false)=>({news: {appid:number, appName:string, channelId:string, webhook:WebhookInfo}[], price: {appid:number, appName:string, channelId:string, webhook:WebhookInfo}[], steam: ?{channelId:string, webhook:WebhookInfo}});
+ * }}
  * Returns all the whatchers with a webhook of a given server.
  * @param {string} guildId The guild id.
  * @returns A list of watchers
  */
-export const getWebhooks = stmts.getWebhooks;
+export const petWebhooks = stmts.getWebhooks;
+
+/**
+ * @type {(guildId: string)=>number}
+ * Decouples all webhooks of a guild from their webhooks.
+ * @param {string} guildId The guild id
+ * @returns The number of rows affected
+ */
+export const decoupleWebhooks = stmts.decoupleWebhooks;
 
 /**
  * @type {(guildId: string)=>({type: "news"|"price", appid: number, appName: string, channelId: string}|{type: "steam", channelId: string})[]}

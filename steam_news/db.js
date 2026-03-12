@@ -235,12 +235,17 @@ export const stmts = {
 			WHERE guildId = ? AND webhook IS NOT NULL
 		`),
 		`SELECT ${STEAM_APPID} "appid", channelId, webhook FROM SteamWatchers WHERE guildId = ?`,
-	], function(guildId) {
+	], function(guildId, merge = true) {
 		const steam = this[2].get(guildId);
-		return this[0].all(guildId).map(setType("news")).concat(
-			this[1].all(guildId).map(setType("price")),
-			steam.webhook ? setType("steam")(steam) : [],
-		);
+		const res = {
+			news: this[0].all(guildId),
+			price: this[1].all(guildId),
+			steam: steam?.webhook ? setType("steam")(steam) : null,
+		};
+		return merge ? res.news.map(setType("news")).concat(
+			res.price.map(setType("price")),
+			res.steam || [],
+		) : res;
 	}),
 	getChannelWebhooks: makeProxy(watchTables.map(table => `
 		SELECT IIF(INSTR(webhook, '#'), SUBSTR(webhook, 0, INSTR(webhook, '#')), webhook)
@@ -253,6 +258,11 @@ export const stmts = {
 		SET webhook = NULL WHERE webhook LIKE ? || '%';`
 	), function(webhookIdAndToken) {
 		return !!this.reduce((changes, stmt) => changes + stmt.run(webhookIdAndToken).changes, 0);
+	}),
+	decoupleWebhooks: makeProxy(watchTables.map(table => `UPDATE ${table}
+		SET webhook = NULL WHERE guildId = ? AND webhook IS NOT NULL`
+	), function(guildId) {
+		return this.reduce((changes, stmt) => changes + stmt.run(guildId).changes, 0);
 	}),
 
 	getNonWebhooks: makeProxy([

@@ -1,7 +1,7 @@
 
 import onAutocompleteError from "../../../autocomplete/_errorHandler.js";
 import { STEAM_APPID } from "../../../steam_news/api.js";
-import { getWatchedPrices, getWatchedApps } from "../../../steam_news/db_api.js";
+import { getWatchedPrices, getWatchedApps, getWebhooks } from "../../../steam_news/db_api.js";
 import { gameToOption } from "../../../utils/commands.js";
 
 /** @typedef {import("discord.js").AutocompleteInteraction} AutocompleteInteraction */
@@ -62,4 +62,18 @@ export function autocomplete(inter)
 	const watchedNews = getWatchedApps(inter.guildId, true);
 	const watchedPrices = getWatchedPrices(inter.guildId);
 	respond(inter, watchedNews, watchedPrices, search ? filterName(search) : null);
+}
+
+
+/** @param {AutocompleteInteraction} inter */
+export function autocompleteWebhooks(inter)
+{
+	const search = inter.options.getFocused();
+	const { news, price, steam } = getWebhooks(inter.guildId, false);
+	if(steam)
+	{
+		steam.appid = STEAM_APPID;
+		news.push(steam);
+	}
+	respond(inter, news, price, search ? filterName(search) : null, true);
 }
