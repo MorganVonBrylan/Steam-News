@@ -33,7 +33,7 @@ function respond(inter, news, prices, filter = null, addAll = false)
 		price.appid = "p"+price.appid;
 
 	const results = filteredNews.concat(filteredPrices)
-		.sort((a, b) => a.name - b.name)
+		.sort((a, b) => a.name > b.name ? 1 : -1)
 		.slice(0, addAll ? 24 : 25);
 	const t = tr.set(inter.locale, "premium");
 	const t_news = t("chameleon.news");
