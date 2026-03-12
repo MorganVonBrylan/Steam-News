@@ -376,7 +376,7 @@
 	"watched": {
 		"games-watched": "Games watched in this server",
 		"prices-watched": "Prices watched in this server",
-		"steam-watched": "News about Steam sent in %s",
+		"steam-watched": "News about **Steam** sent in %s",
 		"games": {
 			"1": "1 game watched",
 			"default": "%n games watched"
