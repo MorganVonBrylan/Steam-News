@@ -1,5 +1,6 @@
 
 import db, { stmts } from "./db.js";
+import { STEAM_APPID } from "./api.js";
 
 /**
  * @param {number} appid The app's id
@@ -50,11 +51,21 @@ export const getAppName = stmts.getAppName;
 export const isNSFW = stmts.isAppNSFW;
 
 /**
- * @type {(appid:number)=>{appid:number, name:string, nsfw:?boolean, channelId:string}[]}
  * @param {string} guildId The guild id
- * @returns The apps watched in that guild, in the format {appid, name, nsfw, channelId}
+ * @param {boolean} includeSteam Whether to include the Steam News Hub
+ * @returns {{appid:number, name:string, nsfw:?boolean, channelId:string}[]} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
  */
-export const getWatchedApps = stmts.getWatchedApps;
+export function getWatchedApps(guildId, includeSteam = false)
+{
+	const apps = stmts.getWatchedApps(guildId);
+	if(includeSteam)
+	{
+		const channelId = stmts.getSteamWatcher(guildId);
+		if(channelId)
+			apps.push({appid: STEAM_APPID, name: "Steam News Hub", nsfw: false, channelId});
+	}
+	return apps;
+}
 
 /**
  * @type {(guildId:string)=>{appid:number, name:string, nsfw:?boolean, lastPrice:number, channelId:string}[]}

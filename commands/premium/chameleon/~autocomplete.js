@@ -1,5 +1,6 @@
 
 import onAutocompleteError from "../../../autocomplete/_errorHandler.js";
+import { STEAM_APPID } from "../../../steam_news/api.js";
 import { getWatchedPrices, getWatchedApps } from "../../../steam_news/db_api.js";
 import { gameToOption } from "../../../utils/commands.js";
 
@@ -15,6 +16,7 @@ function filterName(search) {
 	return ({name}) => name.toLowerCase().includes(search);
 }
 
+const STEAM = `n${STEAM_APPID}`;
 /**
  * Do the final processing of search results and respond to the autocomplete with them.
  * @param {AutocompleteInteraction} inter The interaction
@@ -33,7 +35,9 @@ function respond(inter, news, prices, filter = null, addAll = false)
 		price.appid = "p"+price.appid;
 
 	const results = filteredNews.concat(filteredPrices)
-		.sort((a, b) => a.name > b.name ? 1 : -1)
+		.sort((a, b) => a.appid === STEAM ? -1000
+			: b.appid === STEAM ? 1000
+			: a.name > b.name ? 1 : -1)
 		.slice(0, addAll ? 24 : 25);
 	const t = tr.set(inter.locale, "premium");
 	const t_news = t("chameleon.news");
@@ -53,7 +57,7 @@ export default autocomplete;
 export function autocomplete(inter)
 {
 	const search = inter.options.getFocused();
-	const watchedNews = getWatchedApps(inter.guildId);
+	const watchedNews = getWatchedApps(inter.guildId, true);
 	const watchedPrices = getWatchedPrices(inter.guildId);
 	respond(inter, watchedNews, watchedPrices, search ? filterName(search) : null);
 }

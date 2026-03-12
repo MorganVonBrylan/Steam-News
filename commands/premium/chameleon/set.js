@@ -2,6 +2,7 @@
 import checkSKU from "./~checkSKU.js";
 import { webhookInfo } from "./~webhook.js";
 import { getWatcherChannel, setWebhook } from "../../../steam_news/db_api.js";
+import { STEAM_APPID } from "../../../steam_news/api.js";
 
 export const description = "Set a watcher to use the provided webhook.";
 export const options = [{
@@ -32,8 +33,8 @@ export async function run(inter)
 	await inter.deferReply();
 	const { options, guildId } = inter;
 	const watcher = options.getString("watcher");
-	const type = watcher === "steam" ? "steam" : watcher[0] === "n" ? "news" : "price";
-	const appid = watcher.substring(1);
+	const appid = +watcher.substring(1);
+	const type = appid === STEAM_APPID ? "steam" : watcher[0] === "n" ? "news" : "price";
 	const webhook = options.getString("webhook-url");
 	const channelId = getWatcherChannel(type, { appid, guildId });
 	if(!channelId)

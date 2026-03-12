@@ -232,7 +232,7 @@ export const stmts = {
 			FROM ${table} w JOIN Apps a ON w.appid = a.appid
 			WHERE guildId = ? AND webhook IS NOT NULL
 		`),
-		"SELECT channelId, webhook FROM SteamWatchers WHERE guildId = ?",
+		`SELECT ${STEAM_APPID} "appid", channelId, webhook FROM SteamWatchers WHERE guildId = ?`,
 	], function(guildId) {
 		const steam = this[2].get(guildId);
 		return this[0].all(guildId).map(setType("news")).concat(

@@ -16,7 +16,7 @@ export async function run(inter)
 
 	await inter.deferReply();
 	const webhooked = getWebhooks(inter.guildId)
-		.map(({type, appid, appName, channelId, webhook}) =>
+		.map(({type, appid, appName = "Steam News Hub", channelId, webhook}) =>
 		Object.assign(new Webhook(webhook), { type, appid, appName, channelId })
 	);
 	const webhookCache = Object.create(null);
