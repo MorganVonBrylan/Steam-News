@@ -172,6 +172,7 @@ export const stmts = {
 		WHERE guildId = ?
 		ORDER BY name`),
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
+	isWatched: db.prepare("SELECT EXISTS(SELECT 1 FROM Watchers WHERE appid = ?)").pluck(),
 
 	watchSteam: makeProxy([
 		"UPDATE SteamWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId",
@@ -182,6 +183,7 @@ export const stmts = {
 	getSteamWatcher: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
 	unwatchSteam: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
 	getSteamWatchers: db.prepare("SELECT * FROM SteamWatchers"),
+	isSteamWatched: db.prepare("SELECT EXISTS(SELECT 1 FROM SteamWatchers)").pluck(),
 
 	watchPrice: db.prepare("INSERT INTO PriceWatchers (appid, guildId, channelId, roleId, premium) VALUES ($appid, $guildId, $channelId, $roleId, $premium)"),
 	unwatchPrice: db.prepare("DELETE FROM PriceWatchers WHERE appid = ? AND guildid = ?"),

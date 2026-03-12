@@ -1,6 +1,7 @@
 
 import { stmts } from "../../steam_news/db.js";
-const { getSteamWatcher, unwatchSteam } = stmts;
+import { STEAM_APPID } from "../../steam_news/api.js";
+const { getSteamWatcher, unwatchSteam, isSteamWatched, updateLatest } = stmts;
 
 import { guildCommands } from "@brylan/djs-commands";
 
@@ -14,4 +15,6 @@ export async function run(inter)
 	unwatchSteam(inter.guildId);
 	inter.reply({ flags: "Ephemeral", content: tr.get(inter.locale, "steam.unwatched") });
 	deleteCmd(inter.guild);
+	if(!isSteamWatched())
+		updateLatest({ appid: STEAM_APPID, latest: null });
 }

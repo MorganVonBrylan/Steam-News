@@ -6,6 +6,8 @@ import {
 } from "../../steam_news/watchers.js";
 import { guildCommands } from "@brylan/djs-commands";
 import { gameToOption } from "../../utils/commands.js";
+import { stmts } from "../../steam_news/db.js";
+const { isWatched, updateLatest } = stmts;
 
 const MAX_OPTIONS = 25;
 const CMD_NAME = "unwatch";
@@ -90,5 +92,9 @@ export async function run(inter)
 	});
 
 	if(unwatched)
+	{
 		updateCmd(inter.guild);
+		if(!isWatched(appid))
+			updateLatest({ appid, latest: null });
+	}
 }
