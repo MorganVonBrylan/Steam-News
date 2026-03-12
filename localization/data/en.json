@@ -8,7 +8,7 @@
 		},
 		"premium": {
 			"name": "premium",
-			"description": "Premium commands",
+			"description": "(admins only) Premium commands",
 			"options": {
 				"rebrand": {
 					"name": "rebrand",

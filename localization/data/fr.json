@@ -21,7 +21,7 @@
 		},
 		"premium": {
 			"name": "premium",
-			"description": "Commandes premium",
+			"description": "(admins seulement) Commandes premium",
 			"options": {
 				"rebrand": {
 					"name": "relooking",
