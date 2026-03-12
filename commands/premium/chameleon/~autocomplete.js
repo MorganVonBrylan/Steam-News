@@ -6,6 +6,8 @@ import { gameToOption } from "../../../utils/commands.js";
 
 /** @typedef {import("discord.js").AutocompleteInteraction} AutocompleteInteraction */
 
+export const ALL_WEBHOOKS = "#all#";
+
 /**
  * Creates a filter for searching through game watchers.
  * @param {string} search Part of a game name to search for
@@ -47,7 +49,7 @@ function respond(inter, news, prices, filter = null, addAll = false)
 
 	const options = results.map(gameToOption);
 	if(addAll)
-		options.unshift({ name: t("chameleon.all"), value: "#all#" });
+		options.unshift({ name: t("chameleon.all"), value: ALL_WEBHOOKS });
 
 	return inter.respond(options).catch(onAutocompleteError);
 }
