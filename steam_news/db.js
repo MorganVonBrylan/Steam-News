@@ -301,6 +301,10 @@ export const stmts = {
 	}),
 };
 
+if(!stmts.isAppKnown.get(STEAM_APPID))
+	db.run(`INSERT INTO Apps (appid, name, nsfw)
+			VALUES (${STEAM_APPID}, 'Steam News Hub', FALSE)`);
+
 const getAll = [
 	"getWatchers", "getWatchedApps", "findWatchedApps",
 	"getPriceWatchers", "getWatchedPrices", "findWatchedPrices",
