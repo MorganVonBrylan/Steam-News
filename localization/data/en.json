@@ -58,6 +58,14 @@
 								"webhook-url": {
 									"name": "webhook-url",
 									"description": "The webhook to use"
+								},
+								"name": {
+									"name": "name",
+									"description": "Username to use for this game specifically"
+								},
+								"avatar": {
+									"name": "avatar",
+									"description": "URL of the avatar to use for this game specifically"
 								}
 							}
 						}
