@@ -252,7 +252,7 @@ export const stmts = {
 	purgeWebhook: makeProxy(watchTables.map(table => `UPDATE ${table}
 		SET webhook = NULL WHERE webhook LIKE ? || '%';`
 	), function(webhookIdAndToken) {
-		return !!this.reduce((changes, stmt) => changes + stmt.run(webhookIdAndToken), 0);
+		return !!this.reduce((changes, stmt) => changes + stmt.run(webhookIdAndToken).changes, 0);
 	}),
 
 	getNonWebhooks: makeProxy([
