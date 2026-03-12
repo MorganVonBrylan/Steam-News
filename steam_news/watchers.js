@@ -219,34 +219,34 @@ export async function checkForNews(range, reschedule = false)
 
 	if(range === newsRanges.length - 1)
 	{
-		const steamWatchers = stmts.getSteamWatchers();
-		if(steamWatchers.length)
-		{
-			querySteam().then(async ({newsitems, error: err}) => {
-				if(err)
-					return logQueryError("Failed to get news for Steam", err);
+		querySteam().then(async ({newsitems, error: err}) => {
+			if(err)
+				return logQueryError("Failed to get news for Steam", err);
 
-				const { latest } = getAppInfo(STEAM_APPID);
-				const news = [];
-				for(const newsitem of newsitems)
-				{
-					if(timestamp(newsitem.date) <= latest)
-						break;
+			const { latest } = getAppInfo(STEAM_APPID);
+			const news = [];
+			for(const newsitem of newsitems)
+			{
+				if(timestamp(newsitem.date) <= latest)
+					break;
 
-					news.push(newsitem);
-					if(!latest) break;
-				}
+				news.push(newsitem);
+				if(!latest) break;
+			}
 
-				if(!news.length)
-					return;
+			if(!news.length)
+				return;
 
-				total += news.length;
-				const [{date: latestDate}] = news;
-				const baseEmbeds = await newsToEmbeds(news);
-				promises.push(...steamWatchers.map(getNewsSender(baseEmbeds, querySteam)));
-				stmts.updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
-			});
-		}
+			const steamWatchers = stmts.getSteamWatchers();
+			if(!steamWatchers.length)
+				return;
+
+			total += news.length;
+			const [{date: latestDate}] = news;
+			const baseEmbeds = await newsToEmbeds(news);
+			promises.push(...steamWatchers.map(getNewsSender(baseEmbeds, querySteam)));
+			stmts.updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
+		});
 	}
 
 	for(const appid of newsRanges[range]())
