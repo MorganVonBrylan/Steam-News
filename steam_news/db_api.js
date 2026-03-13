@@ -139,18 +139,6 @@ export const getWebhooks = stmts.getWebhooks;
 
 
 /**
- * @template merge
- * @type {{
- * (guildId: string, merge: boolean = true)=>({type:"news"|"price", appid:number, appName:string, channelId: string,webhook: WebhookInfo}|{type:"steam",channelId:string, webhook:WebhookInfo})[];
- * (guildId: string, merge: false)=>({news: {appid:number, appName:string, channelId:string, webhook:WebhookInfo}[], price: {appid:number, appName:string, channelId:string, webhook:WebhookInfo}[], steam: ?{channelId:string, webhook:WebhookInfo}});
- * }}
- * Returns all the whatchers with a webhook of a given server.
- * @param {string} guildId The guild id.
- * @returns A list of watchers
- */
-export const petWebhooks = stmts.getWebhooks;
-
-/**
  * @type {(guildId: string)=>number}
  * Decouples all webhooks of a guild from their webhooks.
  * @param {string} guildId The guild id
