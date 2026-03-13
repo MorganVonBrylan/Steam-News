@@ -73,6 +73,22 @@ export function getWatchedApps(guildId, includeSteam = false)
 	return apps;
 }
 
+const watcherGetters = {
+	news: stmts.getWatcher,
+	price: stmts.getPriceWatcher,
+	steam: ({guildId}) => stmts.getSteamWatcher(guildId),
+};
+/**
+ * Get watcher data for a specific app+guild.
+ * @param {"news"|"price"|"steam"} type The watcher type
+ * @param {{appid:number, guildId:string}} guildAndAppIds An object contraining the guildId and appid (appid not necessary for a Steam watcher)
+ * @returns {NewsWatcher|PriceWatcher|SteamWatcher} The watcher data
+ */
+export function getWatcher(type, guildAndAppIds)
+{
+	return watcherGetters[type](guildAndAppIds);
+}
+
 /**
  * @type {(guildId:string)=>PriceWatcher[]}
  * @param {string} guildId The guild id
@@ -88,7 +104,7 @@ const channelGetters = {
 /**
  * Get the channel of a watcher.
  * @param {"news"|"price"|"steam"} type The watcher type
- * @param {{guildId:string,appid:string}} guildAndAppIds An object containing the guildId and appid
+ * @param {{guildId:string, appid:string}} guildAndAppIds An object containing the guildId and appid (appid not necessary for a Steam watcher)
  * @returns {string} the channel id
  */
 export function getWatcherChannel(type, guildAndAppIds)
