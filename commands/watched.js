@@ -17,7 +17,10 @@ export function run(inter) {
 
 	const steamWatch = getSteamWatcher(guild.id);
 	if(steamWatch)
-		embeds.push({ description: t("steam-watched", `<#${steamWatch.channelId}>`) });
+	{
+		const string = steamWatch.webhook ? "steam-watched-webhook" : "steam-watched";
+		embeds.push({ description: t(string, `<#${steamWatch.channelId}>`) });
+	}
 
 	if(!embeds.length)
 		inter.reply({ flags: "Ephemeral", content: t("none") });
@@ -42,12 +45,13 @@ function split(watched, title, description, blockSize = 25)
 	return embeds;
 }
 
-function gameToField({appid, nsfw, name, channelId, roleId}) {
+function gameToField({appid, nsfw, name, channelId, roleId, webhook}) {
+	webhook = webhook ? ` ${tr.t("webhook")}` : "";
 	return {
 		name,
 		value: `${tr.t("id", appid)}
 			${tr.t(`NSFW-${nsfw ? "yes" : "no"}`)}
-			${tr.t("channel", `<#${channelId}>`)}
+			${tr.t("channel", `<#${channelId}>${webhook}`)}
 			${tr.t("ping")} ${roleId ? `<@&${roleId}>` : `*${tr.t("no-ping")}*`}`,
 		inline: true,
 	};

@@ -401,6 +401,7 @@
 		"games-watched": "Games watched in this server",
 		"prices-watched": "Prices watched in this server",
 		"steam-watched": "News about **Steam** sent in %s",
+		"steam-watched-webhook": "News about **Steam** sent in %s with a webhook",
 		"games": {
 			"1": "1 game watched",
 			"default": "%n games watched"
@@ -415,7 +416,8 @@
 		"id": "Id: %s",
 		"NSFW-yes": "NSFW: Yes",
 		"NSFW-no": "NSFW: No",
-		"channel": "Channel: %s"
+		"channel": "Channel: %s",
+		"webhook": "(with webhook)"
 	},
 
 	"unwatch": {

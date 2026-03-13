@@ -2,7 +2,6 @@
 # Chameleon feature
 
 ## TO DO
-- /watched indique si le watcher utilise un webhook
 - Création automatique des webhooks
     - Global, et par watcher
     - Proposer lors de la création d'un watcher (avec bouton)
@@ -10,6 +9,7 @@
         - Le cas échéant, utiliser l'avatar custom
 
 ## DONE
+- /watched indique si le watcher utilise un webhook
 - Purge du webhook et défaut sur un message normal si le webhook ne marche plus
 - /premium chameleon set
 - /latest utilise les webhooks
