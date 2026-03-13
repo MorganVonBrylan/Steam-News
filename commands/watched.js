@@ -11,8 +11,8 @@ export function run(inter) {
 	const watchedPrices = getWatchedPrices(guild.id);
 
 	const embeds = [
-		...split(watched, t("games-watched"), tr.plural("games", watched.length)),
-		...split(watchedPrices, t("prices-watched"), tr.plural("prices", watchedPrices.length)),
+		...toEmbeds(watched, t("games-watched"), tr.plural("games", watched.length)),
+		...toEmbeds(watchedPrices, t("prices-watched"), tr.plural("prices", watchedPrices.length)),
 	];
 
 	const steamWatch = getSteamWatcher(guild.id);
@@ -34,18 +34,32 @@ export function run(inter) {
 }
 
 
-function split(watched, title, description, blockSize = 25)
+/**
+ * Groups watcher data into embeds.
+ * @param {(import("../steam_news/db.js").NewsWatcher|import("../steam_news/db.js").PriceWatcher)[]} watched Watcher data
+ * @param {string} title The title of the embeds. Will only be given to the first one.
+ * @param {string} description The description of the wembeds. Will only be given to the first one.
+ * @param {number} blockSize How many fields per embed (default and maximum: 25)
+ * @returns One or more embeds
+ */
+function toEmbeds(watched, title, description, blockSize = 25)
 {
 	if(!watched.length) return [];
+	watched = watched.map(watcherToField);
 	const embeds = [];
 	for(let i = 0 ; i < watched.length ; i += blockSize)
-		embeds.push({fields: watched.slice(i, i + blockSize).map(gameToField)});
+		embeds.push({fields: watched.slice(i, i + blockSize)});
 
 	Object.assign(embeds[0], { title, description });
 	return embeds;
 }
 
-function gameToField({appid, nsfw, name, channelId, roleId, webhook}) {
+/**
+ * Turn a watcher's data info an embed field.
+ * @param {import("../steam_news/db.js").NewsWatcher|import("../steam_news/db.js").PriceWatcher} watcher The watcher data 
+ * @returns {{name:string, value:string, inline:true}} Field data
+ */
+function watcherToField({appid, nsfw, name, channelId, roleId, webhook}) {
 	webhook = webhook ? ` ${tr.t("webhook")}` : "";
 	return {
 		name,
