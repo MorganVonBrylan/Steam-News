@@ -1,6 +1,5 @@
 
 import checkSKU from "./~checkSKU.js";
-import { webhookInfo } from "./~webhook.js";
 import { getWatcherChannel, setWebhook, decoupleWebhooks } from "../../../steam_news/db_api.js";
 import { STEAM_APPID } from "../../../steam_news/api.js";
 import { ALL_WEBHOOKS } from "./~autocomplete.js";
