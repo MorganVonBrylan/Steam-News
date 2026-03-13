@@ -206,7 +206,8 @@ export const stmts = {
 	], function(params) {
 		return this[0].run(params).changes || this[1].run(params).changes;
 	}),
-	getSteamWatcher: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
+	getSteamWatcher: db.prepare("SELECT * FROM SteamWatchers WHERE guildId = ?"),
+	getSteamChannel: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
 	unwatchSteam: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
 	getSteamWatchers: db.prepare("SELECT * FROM SteamWatchers"),
 	isSteamWatched: db.prepare("SELECT EXISTS(SELECT 1 FROM SteamWatchers)").pluck(),

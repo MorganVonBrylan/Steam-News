@@ -77,7 +77,7 @@ export const getWatchedPrices = stmts.getWatchedPrices;
 const channelGetters = {
 	news: stmts.getWatcherChannel,
 	price: stmts.getPriceWatcherChannel,
-	steam: ({guildId}) => stmts.getSteamWatcher(guildId),
+	steam: ({guildId}) => stmts.getSteamChannel(guildId),
 };
 /**
  * Get the channel of a watcher.

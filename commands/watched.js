@@ -17,7 +17,7 @@ export function run(inter) {
 
 	const steamWatch = getSteamWatcher(guild.id);
 	if(steamWatch)
-		embeds.push({ description: t("steam-watched", `<#${steamWatch}>`) });
+		embeds.push({ description: t("steam-watched", `<#${steamWatch.channelId}>`) });
 
 	if(!embeds.length)
 		inter.reply({ flags: "Ephemeral", content: t("none") });

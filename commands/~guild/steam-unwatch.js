@@ -1,11 +1,11 @@
 
 import { stmts } from "../../steam_news/db.js";
 import { STEAM_APPID } from "../../steam_news/api.js";
-const { getSteamWatcher, unwatchSteam, isSteamWatched, updateLatest } = stmts;
+const { getSteamChannel, unwatchSteam, isSteamWatched, updateLatest } = stmts;
 
 import { guildCommands } from "@brylan/djs-commands";
 
-export { getSteamWatcher as shouldCreateFor };
+export { getSteamChannel as shouldCreateFor };
 const deleteCmd = guildCommands.deleteCmd.bind(null, "steam-unwatch");
 
 export const defaultMemberPermissions = "0";
