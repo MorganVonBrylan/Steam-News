@@ -13,6 +13,14 @@ const DB_VERSION = 8;
 
 db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
+
+/**
+ * @typedef {{appid:number, name:string, nsfw:?boolean, guildId:string, roleId:?string, premium:boolean, webhook:?string}} Watcher
+ * @typedef {Watcher & {latest:number}} NewsWatcher
+ * @typedef {Watcher & {lastPrice: number}} PriceWatcher
+ * @typedef {Omit<NewsWatcher, "appid"|"nsfw">} SteamWatcher
+ */
+
 /* ***** If there ever is a need to change a column in Apps DO NOT DROP IT ***** */
 /* *****            There are foreigns key here! Back them up!             ***** */
 /* *****        Alternatively, PRAGMA foreign_keys = '0'; is a thing       ***** */
@@ -169,6 +177,7 @@ function setType(type) {
 	};
 }
 
+/** @type {{[sqlStatementName:string]: function}} */
 export const stmts = {
 	getStats: db.prepare(`SELECT
 		(SELECT COUNT('*') FROM Watchers) AS "watchers",

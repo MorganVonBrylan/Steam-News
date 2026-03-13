@@ -3,6 +3,12 @@ import db, { stmts } from "./db.js";
 import { STEAM_APPID } from "./api.js";
 
 /**
+ * @typedef {import("./db.js").NewsWatcher} NewsWatcher
+ * @typedef {import("./db.js").SteamWatcher} SteamWatcher
+ * @typedef {import("./db.js").PriceWatcher} PriceWatcher
+ */
+
+/**
  * @param {number} appid The app's id
  * @returns {boolean} Whether the app is known by the bot or not.
  */
@@ -53,7 +59,7 @@ export const isNSFW = stmts.isAppNSFW;
 /**
  * @param {string} guildId The guild id
  * @param {boolean} includeSteam Whether to include the Steam News Hub
- * @returns {{appid:number, name:string, nsfw:?boolean, channelId:string}[]} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
+ * @returns {NewsWatcher[]} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
  */
 export function getWatchedApps(guildId, includeSteam = false)
 {
@@ -68,7 +74,7 @@ export function getWatchedApps(guildId, includeSteam = false)
 }
 
 /**
- * @type {(guildId:string)=>{appid:number, name:string, nsfw:?boolean, lastPrice:number, channelId:string}[]}
+ * @type {(guildId:string)=>PriceWatcher[]}
  * @param {string} guildId The guild id
  * @returns The app prices watched in that guild, in the format {appid, name, nsfw, lastPrice, channelId}
  */
