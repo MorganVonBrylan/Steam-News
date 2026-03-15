@@ -31,8 +31,8 @@ export const webhookInfoRegex = /^[0-9]+\/\w+(#t)?(#u:[^#]+)?(#a:[^#:]+)?$/;
  * 12345/t0k3n#u:DRG News %23rockandstone#a:https%3A//somesite.net/drg.jpg
  * @param {string} url The webhook's URL, including the token but NOT including the thread_id.
  * @param {import("../../../utils/channels.js").GuildTextChannel} channel The channel or thread of the watcher
- * @param {?string} username The username to use for this watcher
- * @param {?string} avatar The avatar URL to use for this watcher
+ * @param {string} [username] The username to use for this watcher
+ * @param {string} [avatar] The avatar URL to use for this watcher
  * @returns {Promise<WebhookInfo>} Standardised string to save in the database and profice to Webhook's constructor
  * 
  * @throws {TypeError} if the provided url is not a Discord webhook URL
