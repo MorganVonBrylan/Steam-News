@@ -92,6 +92,27 @@ export class Webhook {
 	}
 
 	/**
+	 * @overload
+	 * @param {`${bigint}/${string}`} idAndToken The webhook's id and token
+	 * @returns {Promise<{application_id:?string,avatar:?string,channel_id:string,guild_id:string,id:string,name:string,type:number,token:number,url:number}|{message:string,code:number}>} The webhook's data, or an error.
+	 */
+	/**
+	 * @overload
+	 * @param {`${bigint}/${string}`} idAndToken The webhook's id and token
+	 * @param {true} checkOnly Whether to just check if the webhook exists
+	 * @returns {Promise<boolean>} Whether the webhook exists or not
+	 */
+	/**
+	 * Fetch a webhook's data
+	 * @param {`${bigint}/${string}`} idAndToken The webhook's id and token
+	 * @param {boolean} [checkOnly] Whether to just check if the webhook exists
+	 */
+	static fetch(idAndToken, checkOnly = false) {
+		return fetch(Webhook.url(idAndToken), {method: checkOnly ? "HEAD" : "GET"})
+			.then(res => checkOnly ? res.ok : res.json());
+	}
+
+	/**
 	 * @param {WebhookInfo} webhookInfo The webhook info, in the format returned by webhookInfo
 	 * @param {string} [threadId] The channel id. Only necessary if posting to a thread.
 	 * @see webhookInfo
