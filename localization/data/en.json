@@ -273,7 +273,8 @@
 			"unknown-error": "Got error %s when trying to validate the webhook URL.",
 
 			"all": "All webhooks",
-			"webhook-set": "The webhook was set. You can test it by using ${latest} with that game in ${channel} or one of its threads.",
+			"webhook-set": "The webhook was set.",
+			"webhook-test": "You can test it by using ${latest} with that game in ${channel} or one of its threads.",
 			"webhook-set-price": "The webhook was set for price updates.",
 			"unknown-watcher": "I could not find this watcher. Please make sure to select an option from the autocomplete.",
 			"webhook-set-error": "I could not set the webhook. Please try again later.",
