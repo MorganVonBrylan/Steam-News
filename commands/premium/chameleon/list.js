@@ -10,7 +10,7 @@ export const description = "See all webhooks set up in this server.";
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
-    const t = tr.set(inter.locale, "premium");
+    const t = tr.set(inter.locale, "premium.chameleon");
 	if(!checkSKU(inter, t))
 		return;
 
@@ -29,7 +29,7 @@ export async function run(inter)
 
 	const webhooks = webhooked.filter(({idAndToken}) => idAndToken in webhookCache);
 	if(!webhooks.length)
-		return inter.editReply({embeds: [{description: t("chameleon.no-webhooks")}]});
+		return inter.editReply({embeds: [{description: t("no-webhooks")}]});
 
 	webhooks.sort(({appName, type}, {appName: bppName, type: btype}) => {
 		if(type === "steam")
@@ -44,11 +44,11 @@ export async function run(inter)
 
 	const tTypes = {};
 	for(const type of ["news", "price", "steam"])
-		tTypes[type] = t(`chameleon.${type}`);
-	const tWebhookName = t("chameleon.webhook-name");
-	const tUsername = t("chameleon.name-used");
-	const tAvatar = t("chameleon.avatar-used");
-	const title = t("chameleon.webhooks");
+		tTypes[type] = t(type);
+	const tWebhookName = t("webhook-name");
+	const tUsername = t("name-used");
+	const tAvatar = t("avatar-used");
+	const title = t("webhooks");
 
 	const fields = webhooks.map(({appName, threadId, idAndToken, type, username, avatar}) => {
 		const { name, channel_id } = webhookCache[idAndToken];

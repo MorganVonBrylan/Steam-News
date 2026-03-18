@@ -41,15 +41,15 @@ function respond(inter, news, prices, filter = null, addAll = false)
 			: b.appid === STEAM ? 1000
 			: a.name > b.name ? 1 : -1)
 		.slice(0, addAll ? 24 : 25);
-	const t = tr.set(inter.locale, "premium");
-	const t_news = t("chameleon.news");
-	const t_price = t("chameleon.price");
+	const t = tr.set(inter.locale, "premium.chameleon");
+	const t_news = t("news");
+	const t_price = t("price");
 	for(const result of results)
 		result.name = `[${result.appid[0] === "n" ? t_news : t_price}] ${result.name}`;
 
 	const options = results.map(gameToOption);
 	if(addAll)
-		options.unshift({ name: t("chameleon.all"), value: ALL_WEBHOOKS });
+		options.unshift({ name: t("all"), value: ALL_WEBHOOKS });
 
 	return inter.respond(options).catch(onAutocompleteError);
 }

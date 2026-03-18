@@ -14,27 +14,25 @@ export { autocompleteWebhooks as autocomplete } from "./~autocomplete.js";
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
-	const t = tr.set(inter.locale, "premium");
+	const t = tr.set(inter.locale, "premium.chameleon");
 	if(!checkSKU(inter, t))
 		return;
 
 	const { options, guildId } = inter;
 	const watcher = options.getString("watcher");
 	if(watcher === ALL_WEBHOOKS)
-		return inter.reply(t(decoupleWebhooks(guildId) ? "chameleon.all-decoupled" : "chameleon.nothing-decoupled"));
+		return inter.reply(t(decoupleWebhooks(guildId) ? "all-decoupled" : "nothing-decoupled"));
 
 	await inter.deferReply();
 	const appid = +watcher.substring(1);
 	const type = appid === STEAM_APPID ? "steam" : watcher[0] === "n" ? "news" : "price";
 	const channelId = getWatcherChannel(type, { appid, guildId });
 	if(!channelId)
-		return inter.editReply(t("chameleon.unknown-watcher"));
+		return inter.editReply(t("unknown-watcher"));
 
-	inter.editReply(
+	inter.editReply(t(
 		setWebhook(type, { appid, channelId, webhook: null })
-		? (type === "price"
-			? t("chameleon.webhook-unset-price")
-			: t("chameleon.webhook-unset")
-		) : t("chameleon.webhook-unset-error")
-	);
+		? (type === "price" ? "webhook-unset-price" : "webhook-unset")
+		: "webhook-unset-error"
+	));
 }

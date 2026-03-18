@@ -84,12 +84,26 @@ export const tr = {
 		this.lang = lang;
 		if(group)
 		{
+			let subGroups;
+			[group, ...subGroups] = group.split(".");
 			this.locale = locales[lang][group];
 			this.fallback = locales[FALLBACK][group];
 			if(!this.locale)
 			{
 				this.locale = this.fallback;
 				warnMissing(lang, `Missing ${group} group in %l translation.`);
+			}
+			if(subGroups.length) for(const subGroup of subGroups)
+			{
+				group += `.${subGroup}`;
+				this.fallback = this.fallback[subGroup];
+				if(subGroup in this.locale)
+					this.locale = this.locale[subGroup];
+				else
+				{
+					this.locale = this.fallback;
+					warnMissing(lang, `Missing ${group} subgroup in %l translation.`);
+				}
 			}
 		}
 		else

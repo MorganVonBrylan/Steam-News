@@ -26,7 +26,7 @@ export { autocomplete } from "./~autocomplete.js";
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
-	const t = tr.set(inter.locale, "premium");
+	const t = tr.set(inter.locale, "premium.chameleon");
 	if(!checkSKU(inter, t))
 		return;
 
@@ -38,7 +38,7 @@ export async function run(inter)
 	const webhook = options.getString("webhook-url");
 	const channelId = getWatcherChannel(type, { appid, guildId });
 	if(!channelId)
-		return inter.editReply(t("chameleon.unknown-watcher"));
+		return inter.editReply(t("unknown-watcher"));
 
 	const channel = await inter.guild.channels.fetch(channelId);
 	const latestId = inter.command?.manager.cache.find(({name}) => name === "latest")?.id;
@@ -48,21 +48,20 @@ export async function run(inter)
 	.then(webhook => inter.editReply(
 		setWebhook(type, { appid, channelId, webhook })
 		? (type === "price"
-			? t("chameleon.webhook-set-price")
-			: `${t("chameleon.webhook-set")}\n${t("chameleon.webhook-test", {
+			? t("webhook-set-price")
+			: `${t("webhook-set")}\n${t("webhook-test", {
 				channel: webhookChannel,
 				latest: latestId
 					? `</latest:${latestId}>`
 					: `\`/${tr.get(inter.locale, "commands.latest.name")}\``,
 			})}`)
-		: t("chameleon.webhook-set-error")
+		: t("webhook-set-error")
 	), err => {
-		const key = `chameleon.${err.message}`;
 		if(err.status)
-			inter.editReply(t(key, err.status));
+			inter.editReply(t(err.message, err.status));
 		else
 		{
-			inter.editReply(t(key));
+			inter.editReply(t(err.message));
 			if(!(err instanceof RangeError) && !(err instanceof TypeError))
 				error(err);
 		}

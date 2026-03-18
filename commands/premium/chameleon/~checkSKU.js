@@ -15,13 +15,13 @@ export function checkSKU(inter, t)
 {
 	if(!chameleonSKU && !goldSKU)
 	{
-		if(t) inter.reply({flags: "Ephemeral", content: t("chameleon.disabled")});
+		if(t) inter.reply({flags: "Ephemeral", content: t("disabled")});
 		return null;
 	}
 	else if(!chameleonGuilds.has(inter.guildId))
 	{
 		if(t) inter.reply({flags: "Ephemeral",
-			content: t("chameleon.pay"),
+			content: t("pay"),
 			components: [storeButtons],
 		});
 		return false;
