@@ -11,6 +11,8 @@
  * 
  * Only patch classes whose _patch method does NOT CALL super._patch
  * Otherwise you will get infinite recursion.
+ * 
+ * @see https://discord.js.org/docs/packages/discord.js/main/Caches:Interface
  */
 
 import {
