@@ -55,13 +55,21 @@ function respond(inter, news, prices, filter = null, addAll = false)
 }
 
 export default autocomplete;
-/** @param {AutocompleteInteraction} inter */
-export function autocomplete(inter)
+/**
+ * @param {AutocompleteInteraction} inter
+ * @param {boolean} [withAll] Whether to include an "all watchers" option at the top (default: no)
+ * */
+export function autocomplete(inter, withAll = false)
 {
 	const search = inter.options.getFocused();
 	const watchedNews = getWatchedApps(inter.guildId, true);
 	const watchedPrices = getWatchedPrices(inter.guildId);
-	respond(inter, watchedNews, watchedPrices, search ? filterName(search) : null);
+	respond(inter, watchedNews, watchedPrices, search ? filterName(search) : null, withAll);
+}
+
+export function autocompleteWithAll(inter)
+{
+	return autocomplete(inter, true);
 }
 
 
