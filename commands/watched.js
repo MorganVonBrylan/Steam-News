@@ -2,6 +2,7 @@
 import { getWatchedApps, getWatchedPrices } from "../steam_news/watchers.js";
 import { stmts } from "../steam_news/db.js";
 const { getSteamWatcher } = stmts;
+import { sendEmbeds } from "../utils/embeds.js";
 
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export function run(inter) {
@@ -25,12 +26,7 @@ export function run(inter) {
 	if(!embeds.length)
 		inter.reply({ flags: "Ephemeral", content: t("none") });
 	else
-	{
-		inter.reply({ flags: "Ephemeral", embeds: embeds.slice(0, 10) }).then(() => {
-			for(let i = 10 ; i < embeds.length ; i += 10)
-				inter.followUp({ flags: "Ephemeral", embeds: embeds.slice(i, i+10) });
-		});
-	}
+		sendEmbeds(embeds, inter, "Ephemeral");
 }
 
 

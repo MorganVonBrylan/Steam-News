@@ -5,9 +5,7 @@ import {
 	isNSFW,
 	STEAM_APPID
 } from "./api.js";
-import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
-const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
-const REQUIRED_THREAD_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessagesInThreads | PERMISSIONS.EmbedLinks;
+import { REQUIRED_PERMS, REQUIRED_THREAD_PERMS } from "../utils/embeds.js";
 
 /**
  * Check if the bot can send message to a channel.
