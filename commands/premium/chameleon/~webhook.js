@@ -17,7 +17,7 @@ function decodeComponent(component) {
  * Conforms to the regex /^[0-9]+\/\w+(#t)?(#u:[^#]+)?(#a:[^#:]+)?$/
  * 
  * Which is (webhook id)/(webhook token)(#thread)(#u:username)(#a:avatar url) with each of the last 3 parts optional.
- * @typedef {`${number}/${string}${"#t"|""}${`#u:${string}`|""}${`#a:${string}`|""}`} WebhookInfo
+ * @typedef {`${bigint}/${string}${"#t"|""}${`#u:${string}`|""}${`#a:${string}`|""}`} WebhookInfo
  * */
 export const webhookInfoRegex = /^[0-9]+\/\w+(#t)?(#u:[^#]+)?(#a:[^#:]+)?$/;
 
