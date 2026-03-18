@@ -42,6 +42,7 @@ export async function run(inter)
 
 	const channel = await inter.guild.channels.fetch(channelId);
 	const latestId = inter.command?.manager.cache.find(({name}) => name === "latest")?.id;
+	const webhookChannel = channel.isThread() ? channel.parent : channel;
 
 	webhookInfo(webhook, channel, options.getString("name"), options.getString("avatar"))
 	.then(webhook => inter.editReply(
@@ -49,7 +50,7 @@ export async function run(inter)
 		? (type === "price"
 			? t("chameleon.webhook-set-price")
 			: t("chameleon.webhook-set", {
-				channel,
+				channel: webhookChannel,
 				latest: latestId
 					? `</latest:${latestId}>`
 					: `\`/${tr.get(inter.locale, "commands.latest.name")}\``,

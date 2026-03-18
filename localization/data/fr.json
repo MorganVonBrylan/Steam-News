@@ -281,7 +281,7 @@
 			"wrong-channel": "Ce webhook appartient à un autre salon que celui utilisée pour les actus de ce jeu.\nLes salons ne partagent leur webhooks qu'avec leurs fils.",
 			"server-error": "Les serveurs Discord ont eu une erreur quand j'ai voulu vérifier cette URL de webhook. Veuillez réessayer plus tard.",
 			"unknown-error": "Erreur %s reçue en essayant de valider l'URL du webhook.",
-			"webhook-set": "Ce webhook a été configuré. Vous pouvez l'essayer en utilisant ${latest} avec ce jeu dans ${channel}.",
+			"webhook-set": "Ce webhook a été configuré. Vous pouvez l'essayer en utilisant ${latest} avec ce jeu dans ${channel} ou un de ses fils.",
 			"webhook-set-price": "Le webhook a été configuré pour les soldes.",
 			"unknown-watcher": "Je n'ai pas trouvé ce jeu. Veuillez sélectionner une option de la complétion automatique.",
 			"webhook-set-error": "Je n'ai pas pu configurer le webhook. Veuillez réessayer plus tard."
