@@ -48,9 +48,12 @@ export async function run(inter)
 		setWebhook(type, { appid, channelId, webhook })
 		? (type === "price"
 			? t("chameleon.webhook-set-price")
-			: t("chameleon.webhook-set", latestId
-				? `</latest:${latestId}>`
-				: `\`/${tr.get(inter.locale, "commands.latest.name")}\``))
+			: t("chameleon.webhook-set", {
+				channel,
+				latest: latestId
+					? `</latest:${latestId}>`
+					: `\`/${tr.get(inter.locale, "commands.latest.name")}\``,
+			}))
 		: t("chameleon.webhook-set-error")
 	), err => {
 		const key = `chameleon.${err.message}`;
