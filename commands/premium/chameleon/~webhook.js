@@ -34,6 +34,7 @@ export const webhookInfoRegex = /^[0-9]+\/\w+(#t)?(#u:[^#]+)?(#a:[^#:]+)?$/;
  * @param {string} [username] The username to use for this watcher
  * @param {string} [avatar] The avatar URL to use for this watcher
  * @returns {Promise<WebhookInfo>} Standardised string to save in the database and profice to Webhook's constructor
+ * @see formatWebhookInfo
  * 
  * @throws {TypeError} if the provided url is not a Discord webhook URL
  * @throws {RangeError} if the webhook if for a different channel than the watcher's
@@ -63,25 +64,36 @@ export async function webhookInfo(url, channel, username, avatar)
 		}
 	}
 
-	let webhookInfo = match[1];
+	const idAndToken = match[1];
 	const { channel_id } = await res.json();
-	if(channel_id !== channel.id)
-	{
-		if(channel_id === channel.parentId)
-			webhookInfo += "#t";
-		else
-			throw new RangeError("wrong-channel");
-	}
-	if(username)
-		webhookInfo += `#u:${encodeComponent(username)}`;
+	const isThread = channel_id === channel.parentId;
+	if(!isThread && channel_id !== channel.id)
+		throw new RangeError("wrong-channel");
+
 	if(avatar)
 	{
-		const res = await fetch(avatar, { method: "HEAD" }).catch(() => Object.null);
-		if(res.ok)
-			webhookInfo += `#a:${encodeComponent(avatar)}`;
+		const { ok } = await fetch(avatar, { method: "HEAD" }).catch(() => Object.null);
+		if(!ok)
+			avatar = null;
 	}
 
-	return webhookInfo;
+	return formatWebhookInfo(idAndToken, isThread, username, avatar);
+}
+
+/**
+ * Format webhook data as a string to easily store in the database.
+ * @param {string} idAndToken The id/token of the webhook
+ * @param {boolean} isThread Whether it is to be used in a thread.
+ * @param {string} [username] The username to use for this watcher
+ * @param {string} [avatar] The avatar URL to use for this watcher
+ * @returns {WebhookInfo}
+ */
+export function formatWebhookInfo(webhook, isThread, username, avatar)
+{
+	if(isThread) webhook += "#t";
+	if(username) webhook += `#u:${encodeComponent(username)}`;
+	if(avatar) webhook += `#a:${encodeComponent(avatar)}`;
+	return webhook;
 }
 
 
