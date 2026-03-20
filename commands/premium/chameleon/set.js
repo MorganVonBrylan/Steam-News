@@ -35,15 +35,14 @@ export async function run(inter)
 	const { options, guildId } = inter;
 	const watcher = options.getString("watcher");
 	const appid = +watcher.substring(1);
-	const type = appid === STEAM_APPID ? "steam" : watcher[0] === "n" ? "news" : "price";
+	const steam = appid === STEAM_APPID;
+	const type = steam ? "steam" : watcher[0] === "n" ? "news" : "price";
 	const webhookUrl = options.getString("webhook-url");
 	const channelId = getWatcherChannel(type, { appid, guildId });
 	if(!channelId)
 		return inter.editReply(t("unknown-watcher"));
 
 	const channel = await inter.guild.channels.fetch(channelId);
-	const latest = appid === STEAM_APPID ? "steam-latest" : "latest";
-	const latestId = inter.command?.manager.cache.find(({name}) => name === latest)?.id;
 	const webhookChannel = channel.isThread() ? channel.parent : channel;
 
 	const name = options.getString("name");
@@ -52,10 +51,12 @@ export async function run(inter)
 	webhookInfo(webhookUrl, channel, name, avatar)
 	.then(webhook => {
 		const success = setWebhook(type, { appid, channelId, webhook });
+		const latest = steam ? "steam-latest" : "latest";
+		const latestId = inter.command?.manager.cache.find(({name}) => name === latest)?.id;
 		const baseMessage = success
 			? (type === "price"
 				? t("webhook-set-price")
-				: `${t("webhook-set")}\n${t("webhook-test", {
+				: `${t("webhook-set")}\n${t(steam ? "webhook-test-steam" : "webhook-test", {
 					channel: webhookChannel,
 					latest: latestId
 						? `</${latest}:${latestId}>`

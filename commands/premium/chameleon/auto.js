@@ -36,11 +36,6 @@ export async function run(inter)
 	const { options, guildId, guild: { channels, members } } = inter;
 	const me = await members.fetchMe();
 	const target = options.getString("watcher");
-	const latest = target === `n${STEAM_APPID}` ? "steam-latest" : "latest";
-	const latestId = inter.command?.manager.cache.find(({name}) => name === latest)?.id;
-	const latestMention = latestId
-		? `</${latest}:${latestId}>`
-		: `\`/${tr.get(inter.locale, `commands.${latest}.name`)}\``;
 
 	const webhookCache = new Map();
 
@@ -102,7 +97,8 @@ export async function run(inter)
 	else
 	{
 		const appid = +target.substring(1);
-		const type = appid === STEAM_APPID ? "steam" : target[0] === "n" ? "news" : "price";
+		const steam = appid === STEAM_APPID;
+		const type = steam ? "steam" : target[0] === "n" ? "news" : "price";
 		const watcher = getWatcher(type, { appid, guildId });
 		if(!watcher)
 			return inter.editReply(t("unknown-watcher"));
@@ -114,13 +110,20 @@ export async function run(inter)
 			{
 				const { id, name } = webhookInfo;
 				const { channel, newlyCreated, name: nickname, avatar } = res;
+				const latest = steam ? "steam-latest" : "latest";
+				const latestId = inter.command?.manager.cache.find(({name}) => name === latest)?.id;
+				const latestMention = latestId
+					? `</${latest}:${latestId}>`
+					: `\`/${tr.get(inter.locale, `commands.${latest}.name`)}\``;
+					
 				inter.editReply({embeds: [{
 					thumbnail: { url: avatar },
 					title: t(newlyCreated ? "webhook-auto-created" : "webhook-auto-reused"),
 					description: `${t("webhook-auto-info", { name, id, nickname, avatar })}
 					\n${type === "price"
 						? t("webhook-auto-price")
-						: t("webhook-test", { channel, latest: latestMention })}`
+						: t(steam ? "webhook-test-steam" : "webhook-test",
+							{ channel, latest: latestMention })}`
 				}]});
 			}
 			else

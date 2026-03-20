@@ -275,6 +275,7 @@
 			"all": "All webhooks",
 			"webhook-set": "The webhook was set.",
 			"webhook-test": "You can test it by using ${latest} with that game in ${channel} or one of its threads.",
+			"webhook-test-steam": "You can test it by using ${latest} in ${channel} or one of its threads.",
 			"webhook-set-price": "The webhook was set for price updates.",
 			"webhook-set-suggestAuto": "You have not set a nickname or avatar for this watcher. Would you like to make it use the game's name and logo?\n-# (you don't need to do this if the webhook is already customized)",
 			"webhook-set-auto": "Auto-customize the watcher",
