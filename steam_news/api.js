@@ -253,7 +253,7 @@ function sbdg(path) {
 const iconCache = Object.create(null);
 iconCache[STEAM_APPID] = STEAM_ICON;
 /**
- * Return an icon for the game from Steam Grid DB.
+ * Return the official icon for the game, or if unavailable, one from Steam Grid DB.
  * @param {number} appid That app's id
  * @param {boolean} defaultToBanner Whether to return the small banner or null in case Steam Grid DB does not have that game.
  * @return {Promise<?string>}
