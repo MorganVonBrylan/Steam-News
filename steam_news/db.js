@@ -283,12 +283,12 @@ export const stmts = {
 			FROM ${table} w JOIN Apps a ON w.appid = a.appid
 			WHERE guildId = ? AND webhook IS NULL
 		`),
-		"SELECT channelId FROM SteamWatchers WHERE guildId = ?",
+		"SELECT channelId FROM SteamWatchers WHERE guildId = ? AND webhook IS NULL",
 	], function(guildId) {
 		const steam = this[2].get(guildId);
 		return this[0].all(guildId).map(setType("news")).concat(
 			this[1].all(guildId).map(setType("price")),
-			steam.webhook ? [] : setType("steam")(steam),
+			steam ? setType("steam")(steam) : [],
 		);
 	}),
 
