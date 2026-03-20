@@ -1,8 +1,9 @@
 
 import checkSKU from "./~checkSKU.js";
 import { webhookInfo } from "./~webhook.js";
-import { getWatcherChannel, setWebhook } from "../../../steam_news/db_api.js";
-import { STEAM_APPID } from "../../../steam_news/api.js";
+import { getWatcherChannel, setWebhook, getAppName } from "../../../steam_news/db_api.js";
+import { icon, STEAM_APPID } from "../../../steam_news/api.js";
+import { buttons, register } from "../../../utils/components.js";
 
 export const description = "Set a watcher to use the provided webhook.";
 export const options = [{
@@ -35,7 +36,7 @@ export async function run(inter)
 	const watcher = options.getString("watcher");
 	const appid = +watcher.substring(1);
 	const type = appid === STEAM_APPID ? "steam" : watcher[0] === "n" ? "news" : "price";
-	const webhook = options.getString("webhook-url");
+	const webhookUrl = options.getString("webhook-url");
 	const channelId = getWatcherChannel(type, { appid, guildId });
 	if(!channelId)
 		return inter.editReply(t("unknown-watcher"));
@@ -45,19 +46,45 @@ export async function run(inter)
 	const latestId = inter.command?.manager.cache.find(({name}) => name === latest)?.id;
 	const webhookChannel = channel.isThread() ? channel.parent : channel;
 
-	webhookInfo(webhook, channel, options.getString("name"), options.getString("avatar"))
-	.then(webhook => inter.editReply(
-		setWebhook(type, { appid, channelId, webhook })
-		? (type === "price"
-			? t("webhook-set-price")
-			: `${t("webhook-set")}\n${t("webhook-test", {
-				channel: webhookChannel,
-				latest: latestId
-					? `</${latest}:${latestId}>`
-					: `\`/${tr.get(inter.locale, `commands.${latest}.name`)}\``,
-			})}`)
-		: t("webhook-set-error")
-	), err => {
+	const name = options.getString("name");
+	const avatar = options.getString("avatar");
+
+	webhookInfo(webhookUrl, channel, name, avatar)
+	.then(webhook => {
+		const success = setWebhook(type, { appid, channelId, webhook });
+		const baseMessage = success
+			? (type === "price"
+				? t("webhook-set-price")
+				: `${t("webhook-set")}\n${t("webhook-test", {
+					channel: webhookChannel,
+					latest: latestId
+						? `</${latest}:${latestId}>`
+						: `\`/${tr.get(inter.locale, `commands.${latest}.name`)}\``,
+				})}`)
+			: t("webhook-set-error");
+		const message = { embeds: [{ description: baseMessage }]};
+
+		if(success && !name && !avatar)
+		{
+			const customId = inter.id;
+			message.embeds[0].description += `\n\n${t("webhook-set-suggestAuto")}`;
+			message.components = [buttons({customId, label: t("webhook-set-auto")})];
+			register(customId, async () => {
+				const name = getAppName(appid);
+				const avatar = await icon(appid);
+				const webhook = await webhookInfo(webhookUrl, channel, name, avatar);
+				const success = setWebhook(type, { appid, channelId, webhook });
+				inter.editReply({ embeds: [{
+					description: baseMessage,
+					footer: { text: t(success ? "webhook-set-autoset" : "webhook-autoset-error") },
+				}], components: []});
+			}, { singleUse: true, timeoutCallback() {
+				inter.editReply({ embeds: [{description: baseMessage}], components: [] });
+			} });
+		}
+		
+		inter.editReply(message);
+	}, err => {
 		if(err.status)
 			inter.editReply(t(err.message, err.status));
 		else
