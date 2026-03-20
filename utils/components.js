@@ -50,11 +50,12 @@ const components = new Map();
  * @param {object} options 
  * @param {boolean} options.singleUse Whether this component is single-use or not. Defaults to false.
  * @param {number} options.timeout The amount of time (in seconds) after which the component will be un-registered. Defaults to 180.
+ * @param {function} options.timeoutCallback Function to run when the timeout runs out. Will not trigger if the component is unregistered.
  *
  * @returns {boolean} true if the component was registered, false if there was already one with that id
  * @throws {TypeError}
  */
-export function register(customId, callback, { singleUse = false, timeout = 180} = {})
+export function register(customId, callback, { singleUse = false, timeout = 180, timeoutCallback } = {})
 {
 	if(customId.customId)
 		customId = customId.customId;
@@ -63,13 +64,15 @@ export function register(customId, callback, { singleUse = false, timeout = 180}
 		throw new TypeError("'callback' must be a function");
 	if(!Number.isInteger(timeout) || timeout <= 0)
 		throw new TypeError("'timeout' must be a positive integer");
+	if(timeoutCallback && typeof timeoutCallback !== "function")
+		throw new TypeError("'timeoutCallback' must be a function");
 
 	if(components.has(customId))
 		clearTimeout(components.get(customId).clear);
 	components.set(customId, {
 		callback,
 		singleUse,
-		clear: setTimeout(() => components.delete(customId), timeout*1000),
+		clear: setTimeout(() => components.delete(customId) && timeoutCallback?.(), timeout*1000),
 	});
 	return true;
 }
