@@ -9,6 +9,11 @@ const {
 const { Primary: PRIMARY } = ButtonStyle;
 
 
+/**
+ * Create a select menu
+ * @param {{label?:string, customId:string, options:{label:string, value:string, description?:string, emoji?:any, default?:boolean}[], placeholder?:string, minValues?:number, maxValues?:number, required?:boolean, disabled?: boolean}} selectMenu String select data 
+ * @returns An action row or label with the select menu
+ */
 export function selectMenu(selectMenu)
 {
 	selectMenu.type = STRING_SELECT;
@@ -22,6 +27,11 @@ export function selectMenu(selectMenu)
 	};
 }
 
+/**
+ * Create a row of buttons
+ * @param  {...{ customId:string, type?:number=BUTTON, skuId?:string, label?:string, style?:number=PRIMARY, url?:string, disabled?:boolean = false }} buttons 
+ * @returns An action row
+ */
 export function buttons(...buttons)
 {
 	if(buttons[0] instanceof Array)
