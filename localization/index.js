@@ -67,6 +67,8 @@ function warnMissing(language, message)
  */
 export function trReplace(str, replaces)
 {
+	if(replaces.length === 1 && typeof replaces[0] === "object")
+		replaces = replaces[0];
 	return replaces instanceof Array
 		? replaces.reduce((str, r) => str.replace("%s", r), str)
 		: Object.entries(replaces).reduce((str, [key, r]) => str.replaceAll(`\${${key}}`, r), str);
@@ -142,9 +144,6 @@ export const tr = {
 	t(key, ...replaces) {
 		if(typeof key !== "string")
 			throw new TypeError("'key' must be a string");
-
-		if(replaces.length === 1 && typeof replaces[0] === "object")
-			replaces = replaces[0];
 
 		const logError = (message) => {
 			error(Object.assign(new Error(message)), {
