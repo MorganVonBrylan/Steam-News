@@ -41,7 +41,8 @@ export async function run(inter)
 		return inter.editReply(t("unknown-watcher"));
 
 	const channel = await inter.guild.channels.fetch(channelId);
-	const latestId = inter.command?.manager.cache.find(({name}) => name === "latest")?.id;
+	const latest = appid === STEAM_APPID ? "steam-latest" : "latest";
+	const latestId = inter.command?.manager.cache.find(({name}) => name === latest)?.id;
 	const webhookChannel = channel.isThread() ? channel.parent : channel;
 
 	webhookInfo(webhook, channel, options.getString("name"), options.getString("avatar"))
@@ -52,8 +53,8 @@ export async function run(inter)
 			: `${t("webhook-set")}\n${t("webhook-test", {
 				channel: webhookChannel,
 				latest: latestId
-					? `</latest:${latestId}>`
-					: `\`/${tr.get(inter.locale, "commands.latest.name")}\``,
+					? `</${latest}:${latestId}>`
+					: `\`/${tr.get(inter.locale, `commands.${latest}.name`)}\``,
 			})}`)
 		: t("webhook-set-error")
 	), err => {

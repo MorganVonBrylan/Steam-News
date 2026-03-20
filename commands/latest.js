@@ -99,7 +99,7 @@ export async function run(inter)
 					return;
 				} catch(err) {
 					if(!err.webhookPurged)
-						res.json().then(console.warn);
+						console.warn(err);
 				}
 			}
 		}
