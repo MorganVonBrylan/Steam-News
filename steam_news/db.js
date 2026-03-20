@@ -242,17 +242,18 @@ export const stmts = {
 	getWebhook: db.prepare("SELECT webhook FROM Watchers WHERE guildId = $guildId AND appid = $appid").pluck(),
 	getWebhooks: makeProxy([
 		...["Watchers", "PriceWatchers"].map(table => `
-			SELECT a.appid, name "appName", channelId, webhook
+			SELECT a.appid, name, channelId, webhook
 			FROM ${table} w JOIN Apps a ON w.appid = a.appid
 			WHERE guildId = ? AND webhook IS NOT NULL
 		`),
-		`SELECT ${STEAM_APPID} "appid", channelId, webhook FROM SteamWatchers WHERE guildId = ?`,
+		`SELECT ${STEAM_APPID} "appid", 'Steam News Hub' "name", channelId, webhook
+		FROM SteamWatchers WHERE guildId = ? AND webhook IS NOT NULL`,
 	], function(guildId, merge = true) {
 		const steam = this[2].get(guildId);
 		const res = {
 			news: this[0].all(guildId),
 			price: this[1].all(guildId),
-			steam: steam?.webhook ? setType("steam")(steam) : null,
+			steam: steam ? setType("steam")(steam) : null,
 		};
 		return merge ? res.news.map(setType("news")).concat(
 			res.price.map(setType("price")),
@@ -279,7 +280,7 @@ export const stmts = {
 
 	getNonWebhooks: makeProxy([
 		...["Watchers", "PriceWatchers"].map(table => `
-			SELECT a.appid, name "appName", channelId
+			SELECT a.appid, name, channelId
 			FROM ${table} w JOIN Apps a ON w.appid = a.appid
 			WHERE guildId = ? AND webhook IS NULL
 		`),

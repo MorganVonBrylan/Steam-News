@@ -79,9 +79,6 @@ export function autocompleteWebhooks(inter)
 	const search = inter.options.getFocused();
 	const { news, price, steam } = getWebhooks(inter.guildId, false);
 	if(steam)
-	{
-		steam.appid = STEAM_APPID;
 		news.push(steam);
-	}
 	respond(inter, news, price, search ? filterName(search) : null, true);
 }
