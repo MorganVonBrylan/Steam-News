@@ -3,10 +3,10 @@
 
 ## TO DO
 - Création automatique des webhooks
-    - Global, et par watcher
+    - ✔️ Global, et par watcher
     - Proposer lors de la création d'un watcher (avec bouton)
-    - Choix entre icône du jeu et avatar du bot
-        - Le cas échéant, utiliser l'avatar custom
+- Limite de taille pour les avatars ?
+- Cache pour fetchImage ?
 
 ## DONE
 - /watched indique si le watcher utilise un webhook
