@@ -46,7 +46,7 @@ const components = new Map();
  * Registers a component for interaction handling.
  * If a component with the same custom id is already registered, it will be overwritten.
  * @param {string|MessageComponent} customId The component's custom id, or the component itself
- * @param {function} callback The Callback, which will be passed the interaction
+ * @param {(interaction:import("discord.js").MessageComponentInteraction)=>*} callback The Callback, which will be passed the interaction
  * @param {object} options 
  * @param {boolean} options.singleUse Whether this component is single-use or not. Defaults to false.
  * @param {number} options.timeout The amount of time (in seconds) after which the component will be un-registered. Defaults to 180.
