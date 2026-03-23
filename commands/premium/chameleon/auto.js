@@ -18,7 +18,7 @@ import { FieldList, sendEmbeds } from "../../../utils/embeds.js";
 let STEAMNEWS_ICON;
 const ERROR = 0xAA0000;
 
-export const description = "Set a watcher to use the provided webhook.";
+export const description = "Automatically customize a watcher's webhook.";
 export const options = [{
 	type: STRING, name: "watcher", required: true,
 	description: "The watcher to customize",

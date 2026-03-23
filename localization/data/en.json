@@ -78,6 +78,16 @@
 									"description": "The watcher to unset"
 								}
 							}
+						},
+						"auto": {
+							"name": "auto",
+							"description": "Automatically customize a watcher's webhook",
+							"options": {
+								"watcher": {
+									"name": "watcher",
+									"description": "The watcher to customize"
+								}
+							}
 						}
 					}
 				}
@@ -307,7 +317,7 @@
 			"database-fail": "Failed to update the database. This is a major error, please report it in the support server.",
 			"database-fail-short": "failed to update the database",
 			"error-bundle": "“${error}” error for those channels: ${channels}",
-			"unknown-error-bundle": "Other errors for thos channels: ${channels}",
+			"unknown-error-bundle": "Other errors for those channels: ${channels}",
 			"auto-create-error": "Got this error trying to set the webhook: %s",
 
 			"webhook-unset": "The webhook was decoupled.",
