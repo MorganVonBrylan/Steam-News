@@ -264,6 +264,9 @@
 			"webhook-name": "Webhook name: %s",
 			"name-used": "Name used: %s",
 			"avatar-used": "Avatar used: %s",
+			"invalid-avatar-url": "Could not get avatar data. Are you sure you provided a valid URL?",
+			"not-an-image": "The URL you provided does not point to an image.",
+			"too-large": "This avatar is too large. The maximum is 3 MB.",
 
 			"invalid-url": "You did not provide a valid webhook URL.",
 			"wrong-token": "I seem to be unable to use this webhook. Are you sure you provided the full, correct URL?",

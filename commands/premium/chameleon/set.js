@@ -5,6 +5,8 @@ import { getWatcherChannel, setWebhook, getAppName } from "../../../steam_news/d
 import { icon, STEAM_APPID } from "../../../steam_news/api.js";
 import { buttons, register } from "../../../utils/components.js";
 
+const MAX_SIZE = 3_000_000;
+
 export const description = "Set a watcher to use the provided webhook.";
 export const options = [{
 	type: STRING, name: "watcher", required: true,
@@ -47,6 +49,17 @@ export async function run(inter)
 
 	const name = options.getString("name");
 	const avatar = options.getString("avatar");
+	if(avatar)
+	{
+		const res = await fetch(avatar, { method: "HEAD" }).catch(() => null);
+		if(!res?.ok)
+			return inter.editReply(t("invalid-avatar-url"));
+		const { headers } = res;
+		if(!headers.get("content-type")?.startsWith("image/"))
+			return inter.editReply(t("not-an-image"));
+		if(!(headers.get("content-length") <= MAX_SIZE))
+			return inter.editReply(t("too-large"));
+	}
 
 	webhookInfo(webhookUrl, channel, name, avatar)
 	.then(webhook => {
