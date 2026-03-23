@@ -8,6 +8,9 @@ import { NAME_REGEX } from "@brylan/djs-commands/lib/commands/check.function.js"
 const DESC_MAX_LENGTH = 100;
 
 const dataFolder = `${import.meta.dirname}/data`;
+const knownIncomplete = importJSON(`${import.meta.dirname}/knownIncompleteTrs.json`, []);
+if(!Array.isArray(knownIncomplete))
+	throw new TypeError("knownIncompleteTrs.json has an invalid format. Expected: array");
 
 const EMBED_MAX_LENGTH = Object.freeze({
 	TITLE: 256,
@@ -33,6 +36,8 @@ for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 
 for(const [locale, trData] of locales)
 {
+	if(knownIncomplete.includes(locale))
+		continue;
 	console.log("\n => Checking", locale);
 	Object.entries(trData.commands).forEach(checkCommand);
 	checkGroup(mainLocale, trData);
