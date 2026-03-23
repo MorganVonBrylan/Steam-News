@@ -6,7 +6,7 @@ export const description = "Get explanation on how to use the chameleon features
 export async function run(inter)
 {
     const t = tr.set(inter.locale, "premium.chameleon");
-	const chameleonAccess = checkSKU(inter);
+	const chameleonAccess = checkSKU(inter, false);
 	if(chameleonAccess === null)
 		return inter.reply({flags: "Ephemeral", content: t("disabled")});
 

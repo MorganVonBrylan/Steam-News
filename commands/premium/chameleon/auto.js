@@ -28,9 +28,9 @@ export { autocompleteWithAll as autocomplete } from "./~autocomplete.js";
 /** @param {import("discord.js").ChatInputCommandInteraction<"cached">} inter */
 export async function run(inter)
 {
-	const t = tr.set(inter.locale, "premium.chameleon");
-	if(!checkSKU(inter, t))
+	if(!checkSKU(inter))
 		return;
+	const t = tr.set(inter.locale, "premium.chameleon");
 
 	await inter.deferReply();
 	const { options, guildId, guild: { channels, members } } = inter;
