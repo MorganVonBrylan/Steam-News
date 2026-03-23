@@ -101,7 +101,7 @@ client.once("clientReady", () => {
 
 	if(auth.debug instanceof Array)
 	{
-		import("./commands/~debug/add-entitlements.js")
+		import("./commands/owner/grant-entitlements.js")
 		.then(({entitlements, setEntitlements}) => {
 			const testitlements = Array.from(auth.debug, testitlement => {
 				if(testitlement in entitlements)

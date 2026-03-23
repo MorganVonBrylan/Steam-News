@@ -51,6 +51,30 @@ export const rebrandSKU = premium?.rebrand;
 export const chameleonSKU = premium?.chameleon;
 export const goldSKU = premium?.gold;
 
+if(premium.freeGoldPlans)
+{
+	let { freeGoldPlans } = premium;
+	if(!Array.isArray(freeGoldPlans))
+		freeGoldPlans = Object.values(freeGoldPlans);
+
+	for(const guildId of freeGoldPlans)
+	{
+		premiumGuilds.add(guildId);
+		chameleonGuilds.add(guildId);
+	}
+	console.log("Enabled", freeGoldPlans.length, "free gold plans.");
+}
+if(premium.freeWatchers)
+{
+	let { freeWatchers } = premium;
+	if(!Array.isArray(freeWatchers))
+		freeWatchers = Object.values(freeWatchers);
+
+	for(const guildId of freeWatchers)
+		premiumGuilds.add(guildId);
+	console.log("Enabled", freeWatchers.length, "free watchers plans.");
+}
+
 export function button(sku_id) {
 	return { type: ComponentType.Button, style: ButtonStyle.Premium, sku_id };
 }
