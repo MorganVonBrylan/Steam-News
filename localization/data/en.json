@@ -324,7 +324,7 @@
 			"webhook-unset-price": "The webhook was decoupled for price updates.",
 			"webhook-unset-error": "I could not decouple the webhook. Please try again later.",
 			"all-decoupled": "All webhooks have been decoupled. Note that this did note delete the webhooks, they simply won't be used for sending news or sales anymore.",
-			"nothing-decoupled": "No changes. It seems this server was not using webhooks."
+			"nothing-decoupled": "No changes. It seems I was not using webhooks in this server."
 		}
 	},
 
