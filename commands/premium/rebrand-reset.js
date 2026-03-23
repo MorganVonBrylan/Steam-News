@@ -16,7 +16,7 @@ export const options = [{
 export async function run(inter)
 {
     const what = inter.options.getNumber("what");
-	const t = tr.set(inter.locale, "premium");
+	const t = tr.set(inter.locale, "premium.rebrand");
 
     const options = {};
     if(what & AVATAR)
@@ -25,9 +25,9 @@ export async function run(inter)
         options.banner = null;
 
     inter.guild.members.editMe(options).then(() => {
-        inter.reply(t("rebrand.resetSuccess"));
+        inter.reply(t("resetSuccess"));
     }, (err) => {
         console.warn(err);
-        inter.reply(t("rebrand.resetFailure", err.message));
+        inter.reply(t("resetFailure", err.message));
     });
 }
