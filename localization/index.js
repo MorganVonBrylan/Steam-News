@@ -1,4 +1,3 @@
-
 // ref: https://discord.com/developers/docs/reference#locales
 
 const dataFolder = `${import.meta.dirname}/data`;
@@ -12,7 +11,7 @@ import importJSON from "../utils/importJSON.function.js";
 import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "../steam_news/limits.js";
 import localesFile from "./locales.js";
 
-import { existsSync, readdirSync } from "node:fs";
+import { readdirSync } from "node:fs";
 
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 {
