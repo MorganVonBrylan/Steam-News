@@ -242,7 +242,7 @@
 			"disabled": "¡Lo sentimos! Los cambios de aspecto están deshabilitados en estos momentos.",
 			"pay": "Lo siento, esto es una característica de pago. Por favor, compre una ficha de aspecto en la tienda.",
 			"missing-args": "No especificó un avatar o banner. Para eliminar el aspecto personalizado, use reiniciar-aspecto.",
-			"too-large": "Este archivo es demasiado grande. El tamaño máximo es de 1 MB.",
+			"too-large": "Este archivo es demasiado grande. El tamaño máximo es de 5 MB.",
 			"avatar-rate-limit": "Me hizo cambiar mi avatar demasiado y Discord me está limitando. Por favor, inténtelo de nuevo más tarde.",
 			"banner-rate-limit": "Me hizo cambiar mi banner demasiado y Discord me está limitando. Por favor, inténtelo de nuevo más tarde.",
 			"failure": "El cambio de aspecto falló con el mensaje '%s'.\nSu ficha de aspecto no se ha consumido.",

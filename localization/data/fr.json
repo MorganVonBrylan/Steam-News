@@ -241,7 +241,7 @@
 			"disabled": "Désolé! Le relooking est actuellement désactivé.",
 			"pay": "Désolé, cette fonctionnalité est payante. Veuillez acheter un ticket de relooking dans la boutique.",
 			"missing-args": "Vous n'avez pas indiqué d'avatar ni de bannière. Si vous voulez retirer votre relooking, utilisez relooking-annule.",
-			"too-large": "Ce fichier est trop lourd. Le maximum est 1 Mo.",
+			"too-large": "Ce fichier est trop lourd. Le maximum est 5 Mo.",
 			"avatar-rate-limit": "Vous m'avez trop fait changer d'avatar et Discord me bloque. Veuillez réessayer plus tard.",
 			"banner-rate-limit": "Vous m'avez trop fait changer de bannière et Discord me bloque. Veuillez réessayer plus tard.",
 			"failure": "Le relooking a échoué avec le message '%s'.\nVotre ticket de relooking n'a pas été utilisé.",

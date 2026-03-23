@@ -221,7 +221,7 @@
 			"disabled": "Entschuldigung! Die Fähigkeit, die Darstellung zu ändern, ist momentan deaktiviert.",
 			"pay": "Entschuldigung, Dies ist eine Premium-Funktion. Bitte kaufe einen Rebrand-Token im Laden.",
 			"missing-args": "Du hast weder ein Profilbild noch ein Banner angegeben. Falls du die Darstellung zurücksetzen möchtest, benutze darstellung-zurücksetzen.",
-			"too-large": "Diese Datei ist zu groß. Die Maximale Größe ist 1MB.",
+			"too-large": "Diese Datei ist zu groß. Die Maximale Größe ist 5MB.",
 			"avatar-rate-limit": "Du hast mich zu oft aufgefordert, mein Profilbild zu ändern und Discord begrenzt mich. Bitte versuche es später nochmal.",
 			"banner-rate-limit": "Du hast mich zu oft aufgefordert, mein Banner zu ändern und Discord begrenzt mich. Bitte versuche es später nochmal.",
 			"failure": "Die Änderung der Darstellung ist mit der Nachricht '%s' fehlgeschlagen.\nDein Rebrand-Token wurde nicht verbraucht.",

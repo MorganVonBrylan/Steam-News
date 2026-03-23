@@ -213,7 +213,7 @@
 			"disabled": "Przepraszamy! Rebranding jest obecnie wyłączony.",
 			"pay": "Przepraszamy, ta funkcja jest płatna. Proszę kupić token rebrandingu w sklepie.",
 			"missing-args": "Nie określono awatara ani baneru. Jeśli chcesz usunąć niestandardowy branding, użyj polecenia rebrand-reset.",
-			"too-large": "Ten plik jest za duży. Maksymalny rozmiar to 1 MB.",
+			"too-large": "Ten plik jest za duży. Maksymalny rozmiar to 5 MB.",
 			"avatar-rate-limit": "Zmusiłeś mnie do zbyt częstej zmiany awatara, a Discord ogranicza mi prędkość. Spróbuj ponownie później.",
 			"banner-rate-limit": "Zmusiłeś mnie do zbyt zmiany awatara, a Discord ogranicza mi prędkość. najpierw ponownie później.",
 			"failure": "Rebranding nie powiódł się, pojawił się komunikat „%s”.\nTwój token rebrandingu nie został wykorzystany.",

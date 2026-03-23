@@ -2,7 +2,7 @@
 import { rebrandSKU, buttons } from "../../steam_news/VIPs.js";
 const rebrandButton = buttons(rebrandSKU);
 
-const MAX_SIZE = 1_000_000;
+const MAX_SIZE = 5_000_000;
 const gracePeriod = new Set();
 
 export const description = "Change the bot's appearance in this server";
