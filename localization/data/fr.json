@@ -66,15 +66,43 @@
 						},
 						"set": {
 							"name": "configurer",
-							"description": "Utiliser un webhook pour les actus d'un jeu.",
+							"description": "Utiliser un webhook pour le suivi d'un jeu.",
 							"options": {
 								"watcher": {
-									"name": "jeu",
-									"description": "Le jeu qui utilisera le webhook"
+									"name": "suivi",
+									"description": "Le suivi qui utilisera le webhook"
 								},
 								"webhook-url": {
 									"name": "url-webhook",
 									"description": "Le webhook à utiliser"
+								},
+								"name": {
+									"name": "nom",
+									"description": "Nom d'utilisateur à utiliser pour ce jeu spécifiquement"
+								},
+								"avatar": {
+									"name": "avatar",
+									"description": "URL de l'avatar à utiliser pour ce jeu spécifiquement"
+								}
+							}
+						},
+						"unset": {
+							"name": "détacher",
+							"description": "Détache un suivi de son webhook. Cette commande ne supprime pas le webhook.",
+							"options": {
+								"watcher": {
+									"name": "suivi",
+									"description": "Le suivi à détacher"
+								}
+							}
+						},
+						"auto": {
+							"name": "auto",
+							"description": "Personnaliser automatiquement le webhook d'un suivi",
+							"options": {
+								"watcher": {
+									"name": "suivi",
+									"description": "Le suivi à personnaliser"
 								}
 							}
 						}
@@ -285,7 +313,42 @@
 			"webhook-test": "Vous pouvez l'essayer en utilisant ${latest} avec ce jeu dans ${channel} ou un de ses fils.",
 			"webhook-set-price": "Le webhook a été configuré pour les soldes.",
 			"unknown-watcher": "Je n'ai pas trouvé ce jeu. Veuillez sélectionner une option de la complétion automatique.",
-			"webhook-set-error": "Je n'ai pas pu configurer le webhook. Veuillez réessayer plus tard."
+			"webhook-set-error": "Je n'ai pas pu configurer le webhook. Veuillez réessayer plus tard.",
+			"invalid-avatar-url": "Impossible d'obtenir les données de l'avatar. Avez-vous fourni une URL valide ?",
+			"not-an-image": "L'URL que vous avez fournie n'est pas celle d'une image.",
+			"too-large": "Cet avatar est trop grand. Le maximum est 3 Mo.",
+			"all": "Tous les webhooks",
+			"webhook-test-steam": "Vous pouvez l'essayer en utilisant ${latest} dans ${channel} ou un de ses fils.",
+			"webhook-set-suggestAuto": "Vous n'avez pas indiqué de surnom ni d'avatar pour ce suivi. Voulez-vous utiliser le nom et logo du jeu ?\n-# (vous n'avez pas besoin de faire ça si le webhook est déjà personnalisé)",
+			"webhook-set-auto": "Auto-personnaliser le suivi",
+			"webhook-set-autoset": "Le suivi a été automatiquement personnalisé avec le nom et logo du jeu.",
+			"webhook-set-autoset-error": "❌ Le suivi n'a pas pu être personnalisé automatiquement avec le nom et logo du jeu.",
+			"webhook-auto-create": "Créé par %s avec /premium chaméléon auto",
+			"webhook-auto-created": "Webhook créé :",
+			"webhook-auto-reused": "Webhook utilisé :",
+			"webhook-auto-info": "${name} (${id})\n\nIl utilisera ce nom pour ce jeu : **${nickname}**\net cet avatar : ${avatar}",
+			"webhook-auto-price": "Il sera utilisé pour les soldes.",
+			"webhook-auto-successes": "Webhooks configurés",
+			"webhook-auto-failures": "Erreurs de configuration de webhooks",
+			"webhook-auto-errors": "Erreurs diverses",
+			"webhook-auto-explain": "Les jeux d'un même salon utilisent le même webhook, mais utiliseront tout de même un avatar et surnom différents. En outre, le salons partagent leurs webhooks avec leurs fils.",
+			"webhook-auto-for": "pour ${games}",
+			"webhook-auto-forMany": "pour ${someGames}, et ${number} de plus.",
+			"webhook-auto-nothing": "Aucun webhook configuré. Vous n'avez aucun suivi qui n'utilise pas déjà un webhook. Si vous voulez détacher tous les webhooks, utilisez %s",
+			"channel-not-found": "Je n'ai pas pas pu trouver le salon pour ce jeu. Il a probablement été supprimé, ou je n'y ai plus accès.",
+			"channel-not-found-short": "salon non trouvé ou privé",
+			"missing-permissions": "Je ne peux pas créer de webhooks dans ce salon.",
+			"missing-permissions-short": "permissions manquantes",
+			"database-fail": "Mise à jour de la base de données échouée. C'est une erreur majeure, merci de la signaler dans le serveur de support.",
+			"database-fail-short": "mise à jour de la base de données échouée",
+			"error-bundle": "Erreur \"${error}\" dans ces salons : ${channels}",
+			"unknown-error-bundle": "Autres erreurs pour ces salons : ${channels}",
+			"auto-create-error": "Reçu cette erreur en tentant de configurer le webhook : %s",
+			"webhook-unset": "Le webhook a été détaché.",
+			"webhook-unset-price": "Le webhook a été détaché pour les soldes.",
+			"webhook-unset-error": "Je n'ai pas pu détacher le webhook. Veuillez réessayer plus tard.",
+			"all-decoupled": "Tous les webhooks ont été détachés. Notez que cela n'a supprime aucun webhook, il ne seront juste plus utilisés pour envoyer des actus et soldes.",
+			"nothing-decoupled": "Aucun changement. Il semble que je n'utilisais pas de webhook dans ce serveur."
 		}
 	},
 	"error": "Une erreur est survenue.",
@@ -410,7 +473,9 @@
 		"id": "Id : %s",
 		"NSFW-yes": "NSFW : Oui",
 		"NSFW-no": "NSFW : Non",
-		"channel": "Salon : %s"
+		"channel": "Salon : %s",
+		"steam-watched-webhook": "Actus de **Steam** envoyées dans %s avec un webhook",
+		"webhook": "(avec un webhook)"
 	},
 	"unwatch": {
 		"news-unwatched": "%s n’est plus suivi dans ce serveur.",
