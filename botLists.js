@@ -16,7 +16,7 @@ const voteURLs = { default: "*oops, it seems I am actually not on Top.gg*" };
 const topggLanguages = ["fr", "de", "hi", "tr"];
 
 import { clientLoggedIn as client } from "./bot.js";
-const topggApi = topGG?.token ? new Api(dbl.token) : null;
+const topggApi = topGG?.token ? new Api(topGG.token) : null;
 const dblApi = dbl?.token ? new DblApi(await client, dbl.token) : null;
 
 export const voteURL = locale => voteURLs[locale] || voteURLs.default;
