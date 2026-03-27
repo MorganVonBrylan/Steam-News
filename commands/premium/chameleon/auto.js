@@ -186,7 +186,7 @@ export class WebhookAutoSetter
 		const webhook = idAndToken || this.webhookCache.get(channelId);
 		const { appid = STEAM_APPID } = watcher;
 		const name = getAppName(appid);
-		const avatar = await icon(appid);
+		const avatar = await icon(appid, { officialFirst: false });
 		watcher.webhook = formatWebhookInfo(webhook, isThread, name, avatar);
 		if(!setWebhook(watcher.type, watcher))
 			throw { key: "database-fail", channel: webhookChannel };

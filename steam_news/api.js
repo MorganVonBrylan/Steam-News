@@ -255,18 +255,23 @@ iconCache[STEAM_APPID] = STEAM_ICON;
 /**
  * Return the official icon for the game, or if unavailable, one from Steam Grid DB.
  * @param {number} appid That app's id
- * @param {boolean} defaultToBanner Whether to return the small banner or null in case Steam Grid DB does not have that game.
+ * @param {object} [options]
+ * @param {boolean} [options.officialFirst] Defaults to true. Whether to first try to get the official icon a fallback to the SGDB one, or the other way around. The SGDB one are rarely quite like the official one, but they are higher-res.
+ * @param {boolean} [options.defaultToBanner] Defaults to true. Whether to return the small banner or null in case Steam Grid DB does not have that game.
  * @return {Promise<?string>}
  */
-export async function icon(appid, defaultToBanner = true)
+export async function icon(appid, { officialFirst = true, defaultToBanner = true } = {})
 {
 	if(appid in iconCache)
 		return iconCache[appid];
 
 	let icon = null;
 	if(sgdbAuth)
-		icon = await getOfficialIcon(appid)
-			|| await getUnofficialIcon(appid);
+	{
+		icon = officialFirst
+			? (await getOfficialIcon(appid) || await getUnofficialIcon(appid))
+			: (await getUnofficialIcon(appid) || await getOfficialIcon(appid));
+	}
 
 	if(defaultToBanner)
 		icon ??= await banner(appid, banner.SMALL);

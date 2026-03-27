@@ -31,7 +31,7 @@ export default async function toEmbed({ appid, url, title, thumbnail, contents, 
 	thumbnail ??= contents.match(/<img src="(https[^"]+)"/)?.[1];
 	const yt = contents.match(YT_REGEX)?.map(m => `https://youtu.be/${m.slice(14, -1)}`).join("\n");
 	const name = getAppName(appid);
-	const iconURL = await icon(appid, false);
+	const iconURL = await icon(appid, { defaultToBanner: false });
 	const steamLink = `url/EventAnnouncementPage/${appid}/${eventId}`;
 	return {
 		url,
