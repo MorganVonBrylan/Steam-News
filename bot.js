@@ -73,10 +73,12 @@ export async function sendToMaster(msg, onError = error)
 	}
 }
 
+export const clientLoggedIn = new Promise(r => client.once("shardReady", () => r(client)));
 
 client.login(auth.token);
 
-client.once("shardReady", () => {
+
+client.once("shardReady", async () => {
 	myself = client.user;
 	initCommands(client, {
 		debug: auth.debug,
@@ -84,7 +86,9 @@ client.once("shardReady", () => {
 		makeEnumsGlobal: true,
 		middleware: applyTranslations,
 	}).then((cmds) => console.log(cmds.size, "commands loaded"))
-	.catch(commandRegisterError);
+	.catch(commandRegisterError)
+	.then(() => import("./botLists.js"))
+	.then(({postCommands}) => postCommands());
 });
 
 client.on("clientReady", async () => {
@@ -96,8 +100,8 @@ client.on("clientReady", async () => {
 client.once("clientReady", () => {
 	import("./steam_news/watchers.js").then(({scheduleChecks}) => scheduleChecks());
 
-	if(auth.topGG)
-		import("./topGG.js").then(({setup}) => setup(client, auth.topGG));
+	if(auth.topGG || auth.dbl)
+		import("./botLists.js").then(({setup}) => setup());
 
 	if(auth.debug instanceof Array)
 	{

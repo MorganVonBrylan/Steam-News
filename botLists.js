@@ -1,6 +1,9 @@
 
-import { addVoter } from "./steam_news/VIPs.js";
+import importJSON from "./utils/importJSON.function.js";
+export const { topGG, dbl } = importJSON("auth.json");
+
 import { Api } from "@top-gg/sdk";
+import { DblApi } from "./dblApi.js";
 import { exec } from "node:child_process";
 import { createServer } from "node:http";
 import { createHmac } from "node:crypto";
@@ -12,34 +15,40 @@ const excludeCommands = ["owner", "unwatch", "steam-unwatch"];
 const voteURLs = { default: "*oops, it seems I am actually not on Top.gg*" };
 const topggLanguages = ["fr", "de", "hi", "tr"];
 
+import { clientLoggedIn as client } from "./bot.js";
+const topggApi = topGG?.token ? new Api(dbl.token) : null;
+const dblApi = dbl?.token ? new DblApi(await client, dbl.token) : null;
+
 export const voteURL = locale => voteURLs[locale] || voteURLs.default;
 
-export function setup(client, {token, webhook})
+export async function postCommands()
+{
+	const dblCommands = Object.values(commands)
+		.filter(({name}) => !excludeCommands.includes(name));
+	
+	dblApi?.postCommands(dblCommands)
+		.then(() => console.log("DiscordBotList command list updated"))
+		.catch(error);
+	
+	topggApi?._request("POST", "/v1/projects/@me/commands", dblCommands)
+		.then(() => console.log("Top.GG command list updated"))
+		.catch(error);
+}
+
+export async function setup()
 {
 	process.on("uncaughtException", error);
+	
+	dblApi?.postStats(client, 1).catch(error);
+
+	if(!topGG)
+		return;
+
+	const { webhook } = topGG;
 	const clientReady = client.ws.status === 0;
-	const api = new Api(token);
-
-	if(token.startsWith("Bearer")) // v1 token
-	{
-		// timeout to make sure the commands were loaded
-		if(clientReady)
-			setTimeout(postCommands, 3000);
-		else
-			client.once("clientReady", () => setTimeout(postCommands, 3000));
-
-		function postCommands() {
-			const topggCommands = Object.values(commands)
-				.filter(({name}) => !excludeCommands.includes(name));
-				
-			api._request("POST", "/v1/projects/@me/commands", topggCommands)
-			.then(() => console.log("Top.GG command list updated"))
-			.catch(error);
-		}
-	}
 
 	function postStats() {
-		return api.postStats({
+		return topggApi.postStats({
 			serverCount: client.guilds.cache.size,
 			shardId: client.shard?.ids[0],
 			shardCount: client.options.shardCount || 1,
@@ -60,6 +69,7 @@ export function setup(client, {token, webhook})
 
 	if(webhook)
 	{
+		const { addVoter } = await import("./steam_news/VIPs.js");
 		let webhookServer;
 		const {
 			port = process.env.SERVER_PORT,

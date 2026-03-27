@@ -190,5 +190,6 @@ Price updates now show a banner for the game.
 The bot can now update its command list on Top.GG upon startup.
 Switched to the new Top.gg webhooks, which a way more secure.
 
-2.18
+2.18 (27/03/2026)
 Added premium features: rebrand, chameleon, and the "gold plan" that combines the new chameleon subscription with the old "more watchers" one.
+Added support for uploading the stats and command list to discordbotlist.com

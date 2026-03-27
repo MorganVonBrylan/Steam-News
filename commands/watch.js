@@ -11,7 +11,7 @@ import {
 } from "../steam_news/VIPs.js";
 const premiumButton = buttons(premiumSKU, goldSKU);
 const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
-import { voteURL } from "../topGG.js";
+import { voteURL } from "../botLists.js";
 
 import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js";
 import { HTTPError } from "../steam_news/api.js";

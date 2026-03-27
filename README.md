@@ -37,6 +37,9 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 		},
 		"voteWatcherBonus": 25
 	},
+	"dbl": {
+		"token": "(optional) your bot's discordbotlist token",
+	},
 	"debug": false,
 	"logLevel": "warn",
 	"backups": false,
