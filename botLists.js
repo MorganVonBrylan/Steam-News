@@ -39,13 +39,15 @@ export async function setup()
 {
 	process.on("uncaughtException", error);
 	
-	dblApi?.postStats(client, 1).catch(error);
+	if(dblApi)
+	{
+		dblApi.postStats()
+			.then(() => console.log("DBL stat posting enabled"))
+			.catch(error);
+	}
 
 	if(!topGG)
 		return;
-
-	const { webhook } = topGG;
-	const clientReady = client.ws.status === 0;
 
 	function postStats() {
 		return topggApi.postStats({
@@ -54,10 +56,7 @@ export async function setup()
 			shardCount: client.options.shardCount || 1,
 		});
 	}
-	if(clientReady)
-		postStats();
-	else
-		client.once("clientReady", postStats);
+	postStats();
 	setInterval(postStats, 3600_000);
 	console.log("Top.gg stat posting enabled");
 
@@ -67,6 +66,7 @@ export async function setup()
 		voteURLs[lang] = `https://top.gg/${topggLanguages.includes(lang) ? `${lang}/` : ""}bot/${id}/vote?lang=${lang}`;
 
 
+	const { webhook } = topGG;
 	if(webhook)
 	{
 		const { addVoter } = await import("./steam_news/VIPs.js");
