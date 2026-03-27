@@ -260,10 +260,10 @@
 				"description": "First of all, your server needs to have either the Chameleon of the Gold Plan subscription (see the buttons below).\nOnce your are subscribed, the chameleon features will be enabled in your server. The bot uses **webhooks** to send news/sales with a different name and avatar for each game.\nThere are two ways to set those webhooks up:",
 				"fields": [{
 					"name": "Letting the bot do it",
-					"description": "First, you need to grand the bot the **manage webhooks** permissions.\nOnce this is done, you can use `/premium chameleon create` to make a new webhook, or `/premium chameleon auto` to automatically create a webhook for all your watched games, using each game's name and logo.\nThe bot tries to only use one webhook per channel to avoid clutter, but don't worry, it can still change its appearance for every game!"
+					"value": "First, you need to grand the bot the **manage webhooks** permissions.\nOnce this is done, you can use `/premium chameleon create` to make a new webhook, or `/premium chameleon auto` to automatically create a webhook for all your watched games, using each game's name and logo.\nThe bot tries to only use one webhook per channel to avoid clutter, but don't worry, it can still change its appearance for every game!"
 				}, {
 					"name": "Setting up the webhooks yourself",
-					"description": "First, create a webhook by opening the channel settings and going into “Integrations”. There you can customize its name and avatar.\nThen, copy its URL.\nFinally, use the `/webhook chameleon set` to assign that webhook to a given watcher. "
+					"value": "First, create a webhook by opening the channel settings and going into “Integrations”. There you can customize its name and avatar.\nThen, copy its URL.\nFinally, use the `/webhook chameleon set` to assign that webhook to a given watcher. "
 				}]
 			},
 			"price": "Price",
@@ -327,6 +327,8 @@
 			"nothing-decoupled": "No changes. It seems I was not using webhooks in this server."
 		}
 	},
+
+	"no-subscription": "This server has no subscription.",
 
 	"error": "An error occurred.",
 	"api-failed": "Connection to the Steam API failed; please try again in a few minutes.",

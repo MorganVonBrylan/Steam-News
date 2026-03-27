@@ -287,11 +287,11 @@
 				"fields": [
 					{
 						"name": "Laisser le bot faire",
-						"description": "D'abord, il faut donner au bot la permission de **gérer les webhooks**.\nCeci fait, vous pouvez utiliser `/premium chaméléon créer` pour créer un nouveau webhook, ou `/premium chaméléon auto` pour automatiquement créer un webhook pour tous vos jeux suivis, en utilisant le nom et logo du jeu.\nLe bot essaye de n'utiliser qu'un webhook par salon pour éviter le fouillis, mais ne vous en faites pas, il peut tout de même changer d'apparence pour chaque jeu !"
+						"value": "D'abord, il faut donner au bot la permission de **gérer les webhooks**.\nCeci fait, vous pouvez utiliser `/premium chaméléon créer` pour créer un nouveau webhook, ou `/premium chaméléon auto` pour automatiquement créer un webhook pour tous vos jeux suivis, en utilisant le nom et logo du jeu.\nLe bot essaye de n'utiliser qu'un webhook par salon pour éviter le fouillis, mais ne vous en faites pas, il peut tout de même changer d'apparence pour chaque jeu !"
 					},
 					{
 						"name": "Configurer les webhooks vous-même",
-						"description": "D'abord, créez un webhook en ouvrant les réglages du salon et en allant dans \"Intégrations\".\nD'ici, vous pouvez changer son nom et avatar.\nEnsuite, copier son URL.\nEnfin, utilisez `/webhook chaméléon configurer` pour assigner ce webhook à un jeu."
+						"value": "D'abord, créez un webhook en ouvrant les réglages du salon et en allant dans \"Intégrations\".\nD'ici, vous pouvez changer son nom et avatar.\nEnsuite, copier son URL.\nEnfin, utilisez `/webhook chaméléon configurer` pour assigner ce webhook à un jeu."
 					}
 				]
 			},
