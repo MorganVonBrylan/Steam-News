@@ -300,7 +300,11 @@ async function getUnofficialIcon(appid)
 		return null;
 
 	const { data } = await res.json();
-	const { url, thumb = url } = data.reduce((prevBest, current) => current.score > prevBest.score ? current : prevBest, { score: -1 });
+	const { url, thumb = url } = data.reduce(
+		(prevBest, current) => current.score > prevBest.score ? current : prevBest,
+		{ score: -1 },
+	);
+	let icon;
 	if(url === thumb)
 		icon = url;
 	else if(url.endsWith(".ico"))
@@ -325,4 +329,5 @@ async function getUnofficialIcon(appid)
 				icon = urlSize < thumbSize ? url : thumb;
 		}
 	}
+	return icon;
 }
