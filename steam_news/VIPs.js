@@ -103,7 +103,8 @@ if(premiumSKU)
 
 	client.once("clientReady", async () => {
 		const start = Date.now();
-		for(const entitlement of await client.application.entitlements.fetch({cache: false}))
+		const entitlements = await client.application.entitlements.fetch({cache: false});
+		for(const entitlement of entitlements.values())
 		{
 			if(!entitlement.isActive())
 				continue;
