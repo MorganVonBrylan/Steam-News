@@ -107,6 +107,10 @@
 							}
 						}
 					}
+				},
+				"check": {
+					"name": "vérifier",
+					"description": "Vérifie de quels avantages premium vous et le serveur bénéficiez."
 				}
 			}
 		},
@@ -349,7 +353,15 @@
 			"webhook-unset-error": "Je n'ai pas pu détacher le webhook. Veuillez réessayer plus tard.",
 			"all-decoupled": "Tous les webhooks ont été détachés. Notez que cela n'a supprime aucun webhook, il ne seront juste plus utilisés pour envoyer des actus et soldes.",
 			"nothing-decoupled": "Aucun changement. Il semble que je n'utilisais pas de webhook dans ce serveur."
-		}
+		},
+		"server-subscription": "Abonnement du serveur",
+		"no-subscription": "Ce serveur n'a aucun abonnement.",
+		"sub-watchers": "Ce serveur a l'abonnement 👁plus de serveurs👁️",
+		"sub-chameleon": "Ce serveur a l'abonnement 🎭chaméléon🎭",
+		"sub-gold": "Ce serveur a le ✨plan or✨",
+		"user-entitlements": "Avantages personnels",
+		"has-rebrand": "Vous avez un jeton de relooking.",
+		"has-rebrand-not-admin": "Vous avez un jeton de relooking, cependant vous ne pouvez pas l'utiliser dans ce serveur car vous n'êtes pas admin (à moins qu'un admin n'ait changé les permissions de la commande `/premium`)."
 	},
 	"error": "Une erreur est survenue.",
 	"api-failed": "La connexion à l'API Steam a échoué ; veuillez réessayer dans quelques minutes.",

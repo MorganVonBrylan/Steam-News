@@ -10,6 +10,10 @@
 			"name": "premium",
 			"description": "(admins only) Premium commands",
 			"options": {
+				"check": {
+					"name": "check",
+					"description": "Check what premium entitlement you and this server have."
+				},
 				"rebrand": {
 					"name": "rebrand",
 					"description": "Change the bot's profile picture and/or banner in this server.",
@@ -325,10 +329,17 @@
 			"webhook-unset-error": "I could not decouple the webhook. Please try again later.",
 			"all-decoupled": "All webhooks have been decoupled. Note that this did note delete the webhooks, they simply won't be used for sending news or sales anymore.",
 			"nothing-decoupled": "No changes. It seems I was not using webhooks in this server."
-		}
-	},
+		},
 
-	"no-subscription": "This server has no subscription.",
+		"server-subscription": "Server subscription",
+		"no-subscription": "This server has no subscription.",
+		"sub-watchers": "This server has the 👁️more watchers👁️ subscription.",
+		"sub-chameleon": "This server has the 🎭chameleon🎭 subscription.",
+		"sub-gold": "This server has the ✨gold plan✨",
+		"user-entitlements": "Personal entitlements",
+		"has-rebrand": "You have a rebrand token.",
+		"has-rebrand-not-admin": "You have a rebrand token, however you cannot use it in this server as you are not admin (unless an admin changed the permissions for the `premium` command)."
+	},
 
 	"error": "An error occurred.",
 	"api-failed": "Connection to the Steam API failed; please try again in a few minutes.",

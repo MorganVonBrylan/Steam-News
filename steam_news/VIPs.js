@@ -42,6 +42,8 @@ export function addVoter(id, lang, forceNotif = false)
 
 export const premiumGuilds = new Set();
 export const chameleonGuilds = new Set();
+export let STORE_LINK = "See the store in the bot's profile";
+client.once("shardReady", () => STORE_LINK = `https://discord.com/application-directory/${client.user.id}/store`);
 
 const { premium } = auth;
 import { ComponentType, ButtonStyle } from "discord.js";
