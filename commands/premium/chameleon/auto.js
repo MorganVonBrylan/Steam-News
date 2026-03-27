@@ -177,7 +177,9 @@ export class WebhookAutoSetter
 			else
 			{
 				const existingWebhook = getChannelWebhooks(channelId)?.[0];
-				this.webhookCache.set(channelId, existingWebhook || await this.create(channel));
+				this.webhookCache.set(channelId,
+					existingWebhook || await this.create(webhookChannel)
+				);
 				if(!existingWebhook)
 					newlyCreated = true;
 			}
