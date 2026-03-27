@@ -2,6 +2,7 @@
 export class DblApi
 {
 	static BASE_URL = "https://discordbotlist.com/api/v1/bots/";
+	
 	/**
 	 * @param {import("discord.js").Client} client Your bot's Discord.js client
 	 * @param {string} token Your discordbotlist token
@@ -25,7 +26,12 @@ export class DblApi
 		});
 	}
 
-	async votes() {
+	/**
+	 * Returns the most recent 500 votes from the past 12 hours.
+	 * @returns {Promise<{total:number, upvotes:{user_id:string, timestamp:string, username:string, discriminator:string, avatar:string}[]}>} 'timestamp' is an ISO 8601 timestamp. The avatar is a Discord avatar hash.
+	 * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format
+	 */
+	async getVotes() {
 		const res = await this._request("/upvotes");
 		const data = await res.json();
 		if(res.ok) return data;
@@ -63,3 +69,5 @@ export class DblApi
 		}
 	}
 }
+
+export default DblApi;

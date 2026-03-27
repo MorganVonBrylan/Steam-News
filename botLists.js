@@ -3,7 +3,7 @@ import importJSON from "./utils/importJSON.function.js";
 export const { topGG, dbl } = importJSON("auth.json");
 
 import { Api } from "@top-gg/sdk";
-import { DblApi } from "./dblApi.js";
+import DblApi from "./dblApi.js";
 import { exec } from "node:child_process";
 import { createServer } from "node:http";
 import { createHmac } from "node:crypto";
