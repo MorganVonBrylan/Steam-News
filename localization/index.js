@@ -40,15 +40,18 @@ locales["en-GB"] = locales[FALLBACK];
 locales["en-US"] = locales[FALLBACK];
 
 
-const knownIncomplete = importJSON(`${import.meta.dirname}/knownIncompleteTrs.json`, []);
-if(!Array.isArray(knownIncomplete))
+const incompleteTrs = importJSON(`${import.meta.dirname}/knownIncompleteTrs.json`, []);
+if(!Array.isArray(incompleteTrs))
 	throw new TypeError("knownIncompleteTrs.json has an invalid format. Expected: array");
 
-console.warn(`Known incomplete translations: ${knownIncomplete.join(", ")}. Missing strings will be ignored.`);
+if(incompleteTrs.length)
+	console.warn(`Known incomplete translations: ${incompleteTrs.join(", ")}. Missing strings will be ignored.`);
+
+const knownIncomplete = incompleteTrs.length ? incompleteTrs.includes.bind(incompleteTrs) : Function.noop;
 
 function warnMissing(language, message)
 {
-	if(!knownIncomplete.includes(language))
+	if(!knownIncomplete(language))
 		console.warn(message.replace("%l", language));
 }
 
@@ -131,11 +134,13 @@ export const tr = {
 		if(typeof key !== "string")
 			throw new TypeError("'key' must be a string");
 
-		const logError = (message) => {
-			error(Object.assign(new Error(message)), {
-				locale: this.locale, key, replaces
-			});
-		}
+		const logError = knownIncomplete(this.lang)
+			? Function.noop
+			: (message) => error(Object.assign(
+				new Error(message),
+				{ locale: this.locale, key, replaces },
+			));
+		
 		const path = key.split(".");
 		let obj = this.locale;
 		for(const part of path)
