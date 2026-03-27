@@ -47,11 +47,12 @@ export async function run(inter)
 		if(successes.size)
 		{
 			const fields = [];
-			for(const [channelId, {webhook, newlyCreated, games}] of successes.entries())
+			for(const [channelId, {webhook, newlyCreated, games: gameList}] of successes.entries())
 			{
 				const { name, id } = await Webhook.fetch(webhook);
 				let text = `${t(newlyCreated ? "webhook-auto-created" : "webhook-auto-reused")} **${name}** (${id})`;
 
+				const games = Array.from(gameList);
 				if(games.length < 6)
 					text += `\n${t("webhook-auto-for", {games: games.join(", ")})}`;
 				else
@@ -224,7 +225,7 @@ export class WebhookAutoSetter
 		/** @typedef {string} ChannelId */
 		/** @typedef {string} ErrorMessage */
 
-		/** @type {Map<ChannelId, Omit<Awaited<ReturnType<setupWebhook>>, "name"|"avatar"> & { games:string[] }>} */
+		/** @type {Map<ChannelId, Omit<Awaited<ReturnType<setupWebhook>>, "name"|"avatar"> & { games:Set<string> }>} */
 		const successes = new Map();
 
 		/** @type {Map<ErrorMessage, Set<ChannelId>>} */
@@ -242,11 +243,11 @@ export class WebhookAutoSetter
 			const success = successes.get(channel.id);
 			if(success)
 			{
-				success.games.push(name);
+				success.games.add(name);
 				success.newlyCreated ||= newlyCreated;
 			}
 			else
-				successes.set(channel.id, { channel, webhook, newlyCreated, games: [name] });
+				successes.set(channel.id, { channel, webhook, newlyCreated, games: new Set([name]) });
 		}
 		catch(error)
 		{
