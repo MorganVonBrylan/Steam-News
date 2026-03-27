@@ -4,13 +4,15 @@ import { interpretAppidOption } from "../utils/commands.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../steam_news/limits.js";
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
-import { voted, premiumSKU, buttons } from "../steam_news/VIPs.js";
-const premiumButton = buttons(premiumSKU);
+import { voted, premiumSKU, goldSKU, buttons, premiumGuilds } from "../steam_news/VIPs.js";
+const premiumButton = buttons(premiumSKU, goldSKU);
 const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
 import { voteURL } from "../topGG.js";
 
 import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js";
 import { HTTPError } from "../steam_news/api.js";
+import { setWebhook } from "../steam_news/db_api.js";
+import { fetchThreads } from "../utils/channels.js";
 
 import { PermissionFlagsBits } from "discord.js";
 const {
@@ -26,6 +28,7 @@ const updateUnwatch = guildCommands.updateCmd.bind(null, "unwatch");
 
 export async function checkPerms(channel)
 {
+	
 	const perms = channel.permissionsFor(await channel.guild.members.fetchMe());
 	if(!perms.has(VIEW_CHANNEL))
 		return "cannot-see";
@@ -71,7 +74,7 @@ export async function run(inter)
 		return defer.then(() => inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "no-match", appid)}));
 
 	const LIMIT = (voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT)
-		+ (inter.entitlements.find(({skuId}) => skuId === premiumSKU) ? WATCH_PREMIUM_BONUS : 0);
+		+ (premiumGuilds.has(inter.guildId) ? WATCH_PREMIUM_BONUS : 0);
 	const role = inter.options.getRole("role")?.id;
 	const type = inter.options.getString("type");
 	const watchPrice = type === "price";
@@ -126,6 +129,9 @@ export async function run(inter)
 			if(premiumButton)
 				reply = { content: reply, components: [premiumButton] };
 		}
+		else if(typeof success === "object" && success.webhook)
+			if(await updateWebhook(success, channel, type) === null)
+				reply += `\n${t("webhook-auto-unset")}`;
 
 		updateUnwatch(inter.guild);
 		inter.editReply(reply);
@@ -156,4 +162,44 @@ export async function run(inter)
 			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "error")});
 		}
 	});
+}
+
+
+/**
+ * Update the webhook after
+ * @param {{appid:string, channelId:string, webhook:string}} oldWatcher The previous watcher data
+ * @param {import("../utils/channels.js").GuildTextChannel} channel The current watcher channel
+ * @param {"news"|"price"|"steam"} type The watcher type
+ * @returns {?boolean} flase if no update was needed (the channel is the same, or there is no webhook), true if the webhook was updated, null if it had to be removed
+ */
+export async function updateWebhook({appid, channelId: oldChannel, webhook}, channel, type = "news")
+{
+	const { id: channelId } = channel;
+	if(!webhook || oldChannel === channelId)
+		return false;
+
+	if(channel.isThread())
+	{
+		if(channel.parentId === oldChannel)
+		{
+			const separator = webhook.indexOf("#", 50);
+			if(separator === -1)
+				webhook += "#t";
+			else
+				webhook = `${webhook.slice(0, separator)}#t${webhook.slice(separator)}`;
+		}
+		else
+		{
+			const siblings = await fetchThreads(channel);
+			if(!siblings.includes(oldChannel))
+				webhook = null;
+		}
+	}
+	else if((await fetchThreads(channel)).includes(oldChannel))
+		webhook = webhook.replace("#t", "");
+	else
+		webhook = null;
+
+	setWebhook(type, { appid, channelId, webhook });
+	return webhook ? true : null;
 }

@@ -9,6 +9,11 @@ const {
 const { Primary: PRIMARY } = ButtonStyle;
 
 
+/**
+ * Create a select menu
+ * @param {{label?:string, customId:string, options:{label:string, value:string, description?:string, emoji?:any, default?:boolean}[], placeholder?:string, minValues?:number, maxValues?:number, required?:boolean, disabled?: boolean}} selectMenu String select data 
+ * @returns An action row or label with the select menu
+ */
 export function selectMenu(selectMenu)
 {
 	selectMenu.type = STRING_SELECT;
@@ -22,6 +27,11 @@ export function selectMenu(selectMenu)
 	};
 }
 
+/**
+ * Create a row of buttons
+ * @param  {...{ customId:string, type?:number=BUTTON, skuId?:string, label?:string, style?:number=PRIMARY, url?:string, disabled?:boolean = false }} buttons 
+ * @returns An action row
+ */
 export function buttons(...buttons)
 {
 	if(buttons[0] instanceof Array)
@@ -36,15 +46,16 @@ const components = new Map();
  * Registers a component for interaction handling.
  * If a component with the same custom id is already registered, it will be overwritten.
  * @param {string|MessageComponent} customId The component's custom id, or the component itself
- * @param {function} callback The Callback, which will be passed the interaction
+ * @param {(interaction:import("discord.js").MessageComponentInteraction)=>*} callback The Callback, which will be passed the interaction
  * @param {object} options 
  * @param {boolean} options.singleUse Whether this component is single-use or not. Defaults to false.
  * @param {number} options.timeout The amount of time (in seconds) after which the component will be un-registered. Defaults to 180.
+ * @param {function} options.timeoutCallback Function to run when the timeout runs out. Will not trigger if the component is unregistered.
  *
  * @returns {boolean} true if the component was registered, false if there was already one with that id
  * @throws {TypeError}
  */
-export function register(customId, callback, { singleUse = false, timeout = 180} = {})
+export function register(customId, callback, { singleUse = false, timeout = 180, timeoutCallback } = {})
 {
 	if(customId.customId)
 		customId = customId.customId;
@@ -53,13 +64,15 @@ export function register(customId, callback, { singleUse = false, timeout = 180}
 		throw new TypeError("'callback' must be a function");
 	if(!Number.isInteger(timeout) || timeout <= 0)
 		throw new TypeError("'timeout' must be a positive integer");
+	if(timeoutCallback && typeof timeoutCallback !== "function")
+		throw new TypeError("'timeoutCallback' must be a function");
 
 	if(components.has(customId))
 		clearTimeout(components.get(customId).clear);
 	components.set(customId, {
 		callback,
 		singleUse,
-		clear: setTimeout(() => components.delete(customId), timeout*1000),
+		clear: setTimeout(() => components.delete(customId) && timeoutCallback?.(), timeout*1000),
 	});
 	return true;
 }

@@ -47,7 +47,9 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 		"bonus": 250,
 		"rebrand": "the 'rebrand' SKU id",
 		"chameleon": "the 'chameleon' SKU id",
-		"gold": "the 'gold plan' SKU id"
+		"gold": "the 'gold plan' SKU id",
+		"freeGoldPlans": {},
+		"freeWatchers": {}
     },
 	"donate": "(optional) The URL for donations"
 }
@@ -61,6 +63,7 @@ The `logLevel` can be "silent", "error", "warn", "log" or "verbose". If not set,
 `backups` assigns the backup schedule. Possible values are `false`, `"daily"` and `"weekly"`. Weekly is every Sunday at midnight. If omitted or null, defaults to "weekly". If the `BACKUP_SCHEDULE` environment variable is set, it will have priority.
 
 The `premium` category is optional.
+`freeGoldPlans` must be either an array of server ids or an object whose values are server ids. The object option is so you can label those ids. `freeWatchers` works the same.
 
 To start the bot, run `node bot.js`
 

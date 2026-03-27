@@ -1,5 +1,12 @@
 
 import db, { stmts } from "./db.js";
+import { STEAM_APPID } from "./api.js";
+
+/**
+ * @typedef {import("./db.js").NewsWatcher} NewsWatcher
+ * @typedef {import("./db.js").SteamWatcher} SteamWatcher
+ * @typedef {import("./db.js").PriceWatcher} PriceWatcher
+ */
 
 /**
  * @param {number} appid The app's id
@@ -50,18 +57,132 @@ export const getAppName = stmts.getAppName;
 export const isNSFW = stmts.isAppNSFW;
 
 /**
- * @type {(appid:number)=>{appid:number, name:string, nsfw:?boolean, channelId:string}[]}
  * @param {string} guildId The guild id
- * @returns The apps watched in that guild, in the format {appid, name, nsfw, channelId}
+ * @param {boolean} includeSteam Whether to include the Steam News Hub
+ * @returns {NewsWatcher[]} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
  */
-export const getWatchedApps = stmts.getWatchedApps;
+export function getWatchedApps(guildId, includeSteam = false)
+{
+	const apps = stmts.getWatchedApps(guildId);
+	if(includeSteam)
+	{
+		const channelId = stmts.getSteamWatcher(guildId);
+		if(channelId)
+			apps.push({appid: STEAM_APPID, name: "Steam News Hub", nsfw: false, channelId});
+	}
+	return apps;
+}
+
+const watcherGetters = {
+	news: stmts.getWatcher,
+	price: stmts.getPriceWatcher,
+	steam: ({guildId}) => stmts.getSteamWatcher(guildId),
+};
+/**
+ * Get watcher data for a specific app+guild.
+ * @param {"news"|"price"|"steam"} type The watcher type
+ * @param {{appid:number, guildId:string}} guildAndAppIds An object contraining the guildId and appid (appid not necessary for a Steam watcher)
+ * @returns {NewsWatcher|PriceWatcher|SteamWatcher} The watcher data
+ */
+export function getWatcher(type, guildAndAppIds)
+{
+	return watcherGetters[type](guildAndAppIds);
+}
 
 /**
- * @type {(guildId:string)=>{appid:number, name:string, nsfw:?boolean, lastPrice:number, channelId:string}[]}
+ * @type {(guildId:string)=>PriceWatcher[]}
  * @param {string} guildId The guild id
  * @returns The app prices watched in that guild, in the format {appid, name, nsfw, lastPrice, channelId}
  */
 export const getWatchedPrices = stmts.getWatchedPrices;
+
+const channelGetters = {
+	news: stmts.getWatcherChannel,
+	price: stmts.getPriceWatcherChannel,
+	steam: ({guildId}) => stmts.getSteamChannel(guildId),
+};
+/**
+ * Get the channel of a watcher.
+ * @param {"news"|"price"|"steam"} type The watcher type
+ * @param {{guildId:string, appid:string}} guildAndAppIds An object containing the guildId and appid (appid not necessary for a Steam watcher)
+ * @returns {string} the channel id
+ */
+export function getWatcherChannel(type, guildAndAppIds)
+{
+	return channelGetters[type](guildAndAppIds);
+}
+
+
+/** @typedef {import("../commands/premium/chameleon/~webhook.js").WebhookInfo} WebhookInfo */
+
+const webhookSetters = { news: stmts.setWebhook, price: stmts.setPriceWebhook, steam: stmts.setSteamWebhook};
+/**
+ * @param {"news"|"price"|"steam"} type The watcher type
+ * @param {{appid: number, channelId: string, webhook: string}} params
+ * @param {number} params.appid The appid
+ * @param {string} params.channelId The channel id
+ * @param {WebhookInfo} params.webhook The webhook info
+ * @returns {boolean} true if the watcher was updated, false if it couldn't be found
+ */
+export function setWebhook(type, params)
+{
+	return !!webhookSetters[type](params);
+}
+
+/**
+ * @type {(params: {guildId: string, appid: string})=>?WebhookInfo}
+ * Returns the webhooks for a given app in a given server.
+ * @param params.guildId The guild id.
+ * @param params.appid The app id.
+ * @returns The webhook info, or null is none was set for that app
+ */
+export const getWebhook = stmts.getWebhook;
+
+/**
+ * @type {(channelId: string)=>string[]}
+ * Get the webhooks of a given channel.
+ * @returns A list of distinct webhook id/tokens.
+ */
+export const getChannelWebhooks = stmts.getChannelWebhooks;
+
+
+/**
+ * 
+ * @type {{
+ * (guildId: string)=>({type:"news"|"price", appid:number, name:string, channelId: string,webhook: WebhookInfo}|{type:"steam",channelId:string, webhook:WebhookInfo})[];
+ * (guildId: string, merge: false)=>({news: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], price: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], steam: ?{channelId:string, webhook:WebhookInfo}});
+ * }}
+ * Returns all the whatchers with a webhook of a given server.
+ * @param {string} guildId The guild id.
+ * @param {boolean} [merge] Whether to merge the results into an array. Defaults to true.
+ * @returns A list of watchers
+ */
+export const getWebhooks = stmts.getWebhooks;
+
+
+/**
+ * @type {(guildId: string)=>number}
+ * Decouples all webhooks of a guild from their webhooks.
+ * @param {string} guildId The guild id
+ * @returns The number of rows affected
+ */
+export const decoupleWebhooks = stmts.decoupleWebhooks;
+
+/**
+ * @type {(guildId: string)=>({type: "news"|"price", appid: number, name: string, channelId: string}|{type: "steam", channelId: string})[]}
+ * Opposite of getWebhooks: return all the watchers of a server without a webhook.
+ * @param {string} guildId The guild id.
+ * @returns A list of watchers
+ */
+export const getNonWebhooks = stmts.getNonWebhooks;
+
+/**
+ * @type {(webhook:string)=>boolean}
+ * Sets all watchers using the provided webhook to use the channel instead.
+ * @param {string} webhook The webhook id or id/token.
+ * @returns true if the server was purged, false if there was nothing to purge.
+ */
+export const purgeWebhook = stmts.purgeWebhook;
 
 
 

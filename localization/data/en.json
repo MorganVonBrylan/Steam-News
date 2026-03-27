@@ -8,7 +8,7 @@
 		},
 		"premium": {
 			"name": "premium",
-			"description": "Premium commands",
+			"description": "(admins only) Premium commands",
 			"options": {
 				"rebrand": {
 					"name": "rebrand",
@@ -32,6 +32,62 @@
 							"name": "what",
 							"description": "Choose what to reset",
 							"choices": ["Avatar", "Banner", "Both"]
+						}
+					}
+				},
+				"chameleon": {
+					"name": "chameleon",
+					"description": "Commands for customizing the bot per-game.",
+					"options": {
+						"help": {
+							"name": "help",
+							"description": "Get explanation on how to use the chameleon features."
+						},
+						"list": {
+							"name": "list",
+							"description": "See all webhooks set up in this server."
+						},
+						"set": {
+							"name": "set",
+							"description": "Set a watcher to use the provided webhook.",
+							"options": {
+								"watcher": {
+									"name": "watcher",
+									"description": "The watcher to customize"
+								},
+								"webhook-url": {
+									"name": "webhook-url",
+									"description": "The webhook to use"
+								},
+								"name": {
+									"name": "name",
+									"description": "Username to use for this game specifically"
+								},
+								"avatar": {
+									"name": "avatar",
+									"description": "URL of the avatar to use for this game specifically"
+								}
+							}
+						},
+						"unset": {
+							"name": "unset",
+							"description": "Decouple a watcher from its webhook. This does not delete the webhook.",
+							"options": {
+								"watcher": {
+									"name": "watcher",
+									"description": "The watcher to unset"
+								}
+							}
+						},
+						"auto": {
+							"name": "auto",
+							"description": "Automatically customize a watcher's webhook",
+							"options": {
+								"watcher": {
+									"name": "watcher",
+									"description": "The watcher to customize"
+								}
+							}
 						}
 					}
 				}
@@ -187,7 +243,7 @@
 			"disabled": "Sorry! The rebranding is currently disabled.",
 			"pay": "Sorry, this is a paid feature. Please buy a rebrand token in the store.",
 			"missing-args": "You did not specify an avatar or banner. If you want to remove the custom branding, use rebrand-reset.",
-			"too-large": "This file is too large. The maximum is 1 MB.",
+			"too-large": "This file is too large. The maximum is 5 MB.",
 			"avatar-rate-limit": "You made me change my avatar too much and Discord is rate-limiting me. Please try again later.",
 			"banner-rate-limit": "You made me change my banner too much and Discord is rate-limiting me. Please try again later.",
 			"failure": "The rebranding failed with the message '%s'.\nYour rebrand token has not been consumed.",
@@ -195,6 +251,80 @@
 			"grace": "In case you change your mind or want to make adjustments, you can use this command again for free within the next hour.",
 			"resetFailure": "The appearance reset failed with the message '%s'.",
 			"resetSuccess": "My appearance has been reset.\nIf you do not see the change, try reloading Discord."
+		},
+		"chameleon": {
+			"disabled": "Sorry! Chameleon features are currently disabled.",
+			"pay": "You need a subscription to access this feature.",
+			"help": {
+				"title": "Chameleon help",
+				"description": "First of all, your server needs to have either the Chameleon of the Gold Plan subscription (see the buttons below).\nOnce your are subscribed, the chameleon features will be enabled in your server. The bot uses **webhooks** to send news/sales with a different name and avatar for each game.\nThere are two ways to set those webhooks up:",
+				"fields": [{
+					"name": "Letting the bot do it",
+					"description": "First, you need to grand the bot the **manage webhooks** permissions.\nOnce this is done, you can use `/premium chameleon create` to make a new webhook, or `/premium chameleon auto` to automatically create a webhook for all your watched games, using each game's name and logo.\nThe bot tries to only use one webhook per channel to avoid clutter, but don't worry, it can still change its appearance for every game!"
+				}, {
+					"name": "Setting up the webhooks yourself",
+					"description": "First, create a webhook by opening the channel settings and going into “Integrations”. There you can customize its name and avatar.\nThen, copy its URL.\nFinally, use the `/webhook chameleon set` to assign that webhook to a given watcher. "
+				}]
+			},
+			"price": "Price",
+			"news": "News",
+			"steam": "Steam",
+			"no-webhooks": "You have no webhooks set up.",
+			"webhooks": "This server's Steam News webhooks",
+			"webhook-name": "Webhook name: %s",
+			"name-used": "Name used: %s",
+			"avatar-used": "Avatar used: %s",
+			"invalid-avatar-url": "Could not get avatar data. Are you sure you provided a valid URL?",
+			"not-an-image": "The URL you provided does not point to an image.",
+			"too-large": "This avatar is too large. The maximum is 3 MB.",
+
+			"invalid-url": "You did not provide a valid webhook URL.",
+			"wrong-token": "I seem to be unable to use this webhook. Are you sure you provided the full, correct URL?",
+			"not-found": "I could not find any webhook with that URL. Either it was the wrong URL, or the webhook was deleted.",
+			"wrong-channel": "That webhook belongs to a different channel than the one where that game's news are sent.\nChannels only share their webhooks with their threads.",
+			"server-error": "The Discord servers errorred when I tried checking that webhook URL. Please try again later.",
+			"unknown-error": "Got error %s when trying to validate the webhook URL.",
+
+			"all": "All webhooks",
+			"webhook-set": "The webhook was set.",
+			"webhook-test": "You can test it by using ${latest} with that game in ${channel} or one of its threads.",
+			"webhook-test-steam": "You can test it by using ${latest} in ${channel} or one of its threads.",
+			"webhook-set-price": "The webhook was set for price updates.",
+			"webhook-set-suggestAuto": "You have not set a nickname or avatar for this watcher. Would you like to make it use the game's name and logo?\n-# (you don't need to do this if the webhook is already customized)",
+			"webhook-set-auto": "Auto-customize the watcher",
+			"webhook-set-autoset": "The watcher was automatically customized with the game's name and logo.",
+			"webhook-set-autoset-error": "❌ The watcher could not be automatically customized with the game's name and logo.",
+			"unknown-watcher": "I could not find this watcher. Please make sure to select an option from the autocomplete.",
+			"webhook-set-error": "I could not set the webhook. Please try again later.",
+
+			"webhook-auto-create": "Created by %s with /premium chameleon auto",
+			"webhook-auto-created": "Webhook created:",
+			"webhook-auto-reused": "Webhook used:",
+			"webhook-auto-info": "${name} (${id})\n\nIt will use this name for this game: **${nickname}**\nand this avatar: ${avatar}",
+			"webhook-auto-price": "It will be used for price updates.",
+			"webhook-auto-successes": "Webhooks set up",
+			"webhook-auto-failures": "Webhook setup errors",
+			"webhook-auto-errors": "Miscellaneous errors",
+			"webhook-auto-explain": "Games in the same channel use the same webhook, but will still use a different avatar and nickname. Also, channels share their webhooks with their threads.",
+			"webhook-auto-for": "for ${games}",
+			"webhook-auto-forMany": "for ${someGames}, and ${number} more.",
+			"webhook-auto-nothing": "No webhook was set. You do not have any watcher that isn't already using a webhook. If you want to unset all webhooks, use %s",
+
+			"channel-not-found": "I could not find the channel for that watcher. It was probably deleted, or I no longer have access to it.",
+			"channel-not-found-short": "channel not found or private",
+			"missing-permissions": "I cannot create webhooks in that channel.",
+			"missing-permissions-short": "missing permissions",
+			"database-fail": "Failed to update the database. This is a major error, please report it in the support server.",
+			"database-fail-short": "failed to update the database",
+			"error-bundle": "“${error}” error for those channels: ${channels}",
+			"unknown-error-bundle": "Other errors for those channels: ${channels}",
+			"auto-create-error": "Got this error trying to set the webhook: %s",
+
+			"webhook-unset": "The webhook was decoupled.",
+			"webhook-unset-price": "The webhook was decoupled for price updates.",
+			"webhook-unset-error": "I could not decouple the webhook. Please try again later.",
+			"all-decoupled": "All webhooks have been decoupled. Note that this did note delete the webhooks, they simply won't be used for sending news or sales anymore.",
+			"nothing-decoupled": "No changes. It seems I was not using webhooks in this server."
 		}
 	},
 
@@ -208,6 +338,8 @@
 	"no-news": "This app has no news.",
 	"NSFW-content-news": "This game has adult content. You can only display its news in a NSFW channel.",
 	"NSFW-content-price": "This game has adult content. You can only display its price in a NSFW channel.",
+
+	"used-command": "${user} used ${command}",
 
 	"table": "table",
 	"page-display": "${current}/${total}",
@@ -303,13 +435,15 @@
 		"confirm-price": "%s’s price updates will now be sent into %s.",
 		"confirm-news": "%s’s news will now be sent into %s.",
 		"already-price": "%s’s price was already watched in this server.",
-		"already-news": "%s’s news feed was already watched in this server."
+		"already-news": "%s’s news feed was already watched in this server.",
+		"webhook-auto-unset": "Since the watcher channel changed, the webhook has been unset."
 	},
 
 	"watched": {
 		"games-watched": "Games watched in this server",
 		"prices-watched": "Prices watched in this server",
 		"steam-watched": "News about **Steam** sent in %s",
+		"steam-watched-webhook": "News about **Steam** sent in %s with a webhook",
 		"games": {
 			"1": "1 game watched",
 			"default": "%n games watched"
@@ -324,7 +458,8 @@
 		"id": "Id: %s",
 		"NSFW-yes": "NSFW: Yes",
 		"NSFW-no": "NSFW: No",
-		"channel": "Channel: %s"
+		"channel": "Channel: %s",
+		"webhook": "(with webhook)"
 	},
 
 	"unwatch": {

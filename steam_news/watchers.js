@@ -5,12 +5,16 @@ import {
 	isNSFW,
 	STEAM_APPID
 } from "./api.js";
-import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
-const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
-const REQUIRED_THREAD_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessagesInThreads | PERMISSIONS.EmbedLinks;
+import { REQUIRED_PERMS, REQUIRED_THREAD_PERMS } from "../utils/embeds.js";
 
+/**
+ * Check if the bot can send message to a channel.
+ * @param {?Webhook|import("../utils/channels.js").GuildTextChannel} channel 
+ * @returns {Promise<boolean>}
+ */
 async function canWriteIn(channel) {
-	return channel?.permissionsFor(await channel.guild.members.fetchMe())
+	return channel instanceof Webhook
+		|| channel?.permissionsFor(await channel.guild.members.fetchMe())
 		.has(channel.isThread() ? REQUIRED_THREAD_PERMS : REQUIRED_PERMS);
 }
 
@@ -20,7 +24,8 @@ import db, { stmts } from "./db.js";
 import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "./limits.js";
-import { premiumGuilds } from "./VIPs.js";
+import { premiumGuilds, chameleonGuilds } from "./VIPs.js";
+import { Webhook } from "../commands/premium/chameleon/~webhook.js";
 
 import { client, sendToMaster } from "../bot.js";
 const { channels } = client;
@@ -45,6 +50,25 @@ function handleDeletedChannel({status, url}) {
     const channelId = url.substring(url.lastIndexOf("/")+1);
     purgeChannel(channelId);
 	return true;
+}
+
+/**
+ * If trying to post to a webhook ended with a 4** error, purge it from the database and try sending the news again to the channel.
+ * @param {Error} err The Error received when trying to send news/prices.
+ * @param {Webhook} webhook The webhook object
+ * @param {object} watcher The watcher info
+ * @param {(watcher:object)=>*} sendNews The sendNews function, to try again with the channel
+ * @returns {boolean} true if the error was handled, false if it wasn't a 4**
+ */
+function handleDeletedWebhook(err, {webhookPurged}, watcher, sendNews) {
+	if(webhookPurged)
+	{
+		watcher.webhook = null;
+		sendNews(watcher);
+		return true;
+	}
+	error(err);
+	return false;
 }
 
 
@@ -127,7 +151,14 @@ export async function checkForNews(range, reschedule = false)
 		const embeds = { english: baseEmbeds };
 		const loggedErrors = new Set();
 
-		return ({channelId, roleId}) => channels.fetch(channelId).then(async channel => {
+		return sendNews;
+		function sendNews(watcher) {
+			const { guildId, channelId, roleId } = watcher;
+			return (
+			watcher.webhook && chameleonGuilds.has(guildId)
+			? Promise.resolve(new Webhook(watcher.webhook, channelId))
+			: channels.fetch(channelId)
+		).then(async channel => {
 			if(channel.locked)
 				return purgeChannel(channelId);
 
@@ -135,7 +166,7 @@ export async function checkForNews(range, reschedule = false)
 			if(!await canWriteIn(channel))
 				return;
 
-			const lang = serverToLang[channel.guild.id] || "english";
+			const lang = serverToLang[guildId] || "english";
 			if(!Object.hasOwn(embeds, lang))
 			{
 				const { appid, newsitems, error: err } = await query(lang);
@@ -168,7 +199,10 @@ export async function checkForNews(range, reschedule = false)
 							channelId: err.url.match(/channels\/([0-9]+)/)?.[1],
 							embeds, targetLang: lang,
 						});
-					else if(!handleDeletedChannel(err) && !loggedErrors.has(err.message))
+					else if((channel instanceof Webhook
+						? !handleDeletedWebhook(err, channel, watcher, sendNews)
+						: !handleDeletedChannel(err))
+						&& !loggedErrors.has(err.message))
 					{
 						loggedErrors.add(err.message);
 						error(Object.assign(err, { embeds, targetLang: lang }));
@@ -176,41 +210,41 @@ export async function checkForNews(range, reschedule = false)
 				});
 			}));
 		})
-		.catch(handleDeletedChannel);
+		.catch(handleDeletedChannel)};
 	}
 
 	let promises = [];
 
 	if(range === newsRanges.length - 1)
 	{
-		const steamWatchers = stmts.getSteamWatchers();
-		if(steamWatchers.length)
-		{
-			querySteam().then(async ({newsitems, error: err}) => {
-				if(err)
-					return logQueryError("Failed to get news for Steam", err);
+		querySteam().then(async ({newsitems, error: err}) => {
+			if(err)
+				return logQueryError("Failed to get news for Steam", err);
 
-				const { latest } = getAppInfo(STEAM_APPID);
-				const news = [];
-				for(const newsitem of newsitems)
-				{
-					if(timestamp(newsitem.date) <= latest)
-						break;
+			const { latest } = getAppInfo(STEAM_APPID);
+			const news = [];
+			for(const newsitem of newsitems)
+			{
+				if(timestamp(newsitem.date) <= latest)
+					break;
 
-					news.push(newsitem);
-					if(!latest) break;
-				}
+				news.push(newsitem);
+				if(!latest) break;
+			}
 
-				if(!news.length)
-					return;
+			if(!news.length)
+				return;
 
-				total += news.length;
-				const [{date: latestDate}] = news;
-				const baseEmbeds = await newsToEmbeds(news);
-				promises.push(...steamWatchers.map(getNewsSender(baseEmbeds, querySteam)));
-				stmts.updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
-			});
-		}
+			const steamWatchers = stmts.getSteamWatchers();
+			if(!steamWatchers.length)
+				return;
+
+			total += news.length;
+			const [{date: latestDate}] = news;
+			const baseEmbeds = await newsToEmbeds(news);
+			promises.push(...steamWatchers.map(getNewsSender(baseEmbeds, querySteam)));
+			stmts.updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
+		});
 	}
 
 	for(const appid of newsRanges[range]())
@@ -286,16 +320,24 @@ export async function checkPrices(reschedule = false)
 	const newPricesByCC = new Map();
 	for(const appid of appsWithUpdatedPrices)
 	{
-		for(const {channelId, cc} of stmts.getPriceWatchers(appid))
+		for(const {channelId, webhook, cc} of stmts.getPriceWatchers(appid))
 		{
+			const sender = webhook
+				? new Webhook(webhook, channelId)
+				: await channels.fetch(channelId).catch(handleDeletedChannel)
+			
+			if(typeof sender !== "object")
+				continue;
+
 			if(!newPricesByCC.has(cc))
 				newPricesByCC.set(cc, new Map());
 
 			const appsForThisCC = newPricesByCC.get(cc);
-			if(appsForThisCC.has(appid))
-				appsForThisCC.get(appid).push(channelId);
+			const appWatchers = appsForThisCC.get(appid);
+			if(appWatchers)
+				appWatchers.push(sender);
 			else
-				appsForThisCC.set(appid, [channelId]);
+				appsForThisCC.set(appid, [sender]);
 		}
 	}
 
@@ -309,13 +351,19 @@ export async function checkPrices(reschedule = false)
 			price.cc = cc;
 			const { name, nsfw } = watchedPrices[appid];
 			const embed = { embeds: [await toPriceEmbed(appid, name, price)] };
-			for(const channelId of appsForThisCC.get(appid))
+			for(const sender of appsForThisCC.get(appid))
 			{
-				await channels.fetch(channelId).then(async channel => {
-					if(await canWriteIn(channel) && (!nsfw || channel.nsfw))
-						return channel.send(embed);
-				})
-				.catch(handleDeletedChannel);
+				if(sender instanceof Webhook)
+				{
+					sender.send(embed).catch(err => handleDeletedWebhook(
+						err, sender, {},
+						() => channels.fetch(sender.channelId)
+							.then(channel => postToChannel(channel, embed, nsfw),
+							handleDeletedChannel),
+					));
+				}
+				else
+					postToChannel(sender, embed, nsfw);
 			}
 		}
 	}
@@ -338,6 +386,20 @@ async function updatePriceDatabase(watchedPrices)
 			appsWithUpdatedPrices.push(appid);
 	}
 	return appsWithUpdatedPrices;
+}
+
+/**
+ * Send a message to a provided channel. Checks for permissions and nsfw status beforehand.
+ * @param {import("../utils/channels.js").GuildTextChannel} channel 
+ * @param {string|object} message Message data
+ * @param {boolean} nsfw Whether the message is NSFW
+ * @returns {Promise<?import("discord.js").Message>} The message, or undefined the permissions are missing or the message is NSFW but the channel isn't.
+ */
+async function postToChannel(channel, message, nsfw)
+{
+	return await canWriteIn(channel) && (!nsfw || channel.nsfw)
+		? channel.send(message)
+		: null;
 }
 
 

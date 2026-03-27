@@ -1,4 +1,3 @@
-
 // ref: https://discord.com/developers/docs/reference#locales
 
 const dataFolder = `${import.meta.dirname}/data`;
@@ -41,6 +40,19 @@ locales["en-GB"] = locales[FALLBACK];
 locales["en-US"] = locales[FALLBACK];
 
 
+const knownIncomplete = importJSON(`${import.meta.dirname}/knownIncompleteTrs.json`, []);
+if(!Array.isArray(knownIncomplete))
+	throw new TypeError("knownIncompleteTrs.json has an invalid format. Expected: array");
+
+console.warn(`Known incomplete translations: ${knownIncomplete.join(", ")}. Missing strings will be ignored.`);
+
+function warnMissing(language, message)
+{
+	if(!knownIncomplete.includes(language))
+		console.warn(message.replace("%l", language));
+}
+
+
 /**
  * Replaces elements in a string for dynamic translation purposes.
  * @example
@@ -54,6 +66,8 @@ locales["en-US"] = locales[FALLBACK];
  */
 export function trReplace(str, replaces)
 {
+	if(replaces.length === 1 && typeof replaces[0] === "object")
+		replaces = replaces[0];
 	return replaces instanceof Array
 		? replaces.reduce((str, r) => str.replace("%s", r), str)
 		: Object.entries(replaces).reduce((str, [key, r]) => str.replaceAll(`\${${key}}`, r), str);
@@ -71,12 +85,26 @@ export const tr = {
 		this.lang = lang;
 		if(group)
 		{
+			let subGroups;
+			[group, ...subGroups] = group.split(".");
 			this.locale = locales[lang][group];
 			this.fallback = locales[FALLBACK][group];
 			if(!this.locale)
 			{
 				this.locale = this.fallback;
-				console.warn(`Missing ${group} group in ${lang} translation.`);
+				warnMissing(lang, `Missing ${group} group in %l translation.`);
+			}
+			if(subGroups.length) for(const subGroup of subGroups)
+			{
+				group += `.${subGroup}`;
+				this.fallback = this.fallback[subGroup];
+				if(subGroup in this.locale)
+					this.locale = this.locale[subGroup];
+				else
+				{
+					this.locale = this.fallback;
+					warnMissing(lang, `Missing ${group} subgroup in %l translation.`);
+				}
 			}
 		}
 		else
@@ -115,9 +143,6 @@ export const tr = {
 	t(key, ...replaces) {
 		if(typeof key !== "string")
 			throw new TypeError("'key' must be a string");
-
-		if(replaces.length === 1 && typeof replaces[0] === "object")
-			replaces = replaces[0];
 
 		const logError = (message) => {
 			error(Object.assign(new Error(message)), {
@@ -238,13 +263,13 @@ export function applyTranslations(cmdName, cmd)
 
 		if(!commands)
 		{
-			console.warn(`Missing ${locale} command translations`);
+			warnMissing(locale, "Missing %l command translations");
 			continue;
 		}
 
 		if(!(cmdName in commands))
 		{
-			console.warn(`Missing ${locale} translation for command ${cmdName}`);
+			warnMissing(locale, `Missing %l translation for command ${cmdName}`);
 			continue;
 		}
 
@@ -252,7 +277,7 @@ export function applyTranslations(cmdName, cmd)
 		const { name, description, options } = commands[cmdName];
 
 		if(!name)
-			console.warn(`Missing ${locale} name translation for command ${cmdName}`);
+			warnMissing(locale, `Missing %l name translation for command ${cmdName}`);
 		else
 		{
 			if(cmd.nameLocalizations) cmd.nameLocalizations[locale] = name;
@@ -260,7 +285,7 @@ export function applyTranslations(cmdName, cmd)
 		}
 
 		if(!description)
-			console.warn(`Missing ${locale} description translation for command ${cmdName}`);
+			warnMissing(locale, `Missing %l description translation for command ${cmdName}`);
 		else
 		{
 			if(cmd.descriptionLocalizations) cmd.descriptionLocalizations[locale] = description;
@@ -271,21 +296,21 @@ export function applyTranslations(cmdName, cmd)
 			continue;
 
 		if(!options)
-			console.warn(`Missing ${locale} option translations for command ${cmdName}`);
+			warnMissing(locale, `Missing %l option translations for command ${cmdName}`);
 		else for(const opt of cmd.options)
 		{
 			const forOption = `translation for option ${opt.name} of command ${cmdName}`;
 			let tr = options[opt.name];
 			if(!tr)
 			{
-				console.warn(`Missing ${locale} ${forOption}`);
+				warnMissing(locale, `Missing %l ${forOption}`);
 				continue;
 			}
 
 			let { name, description, choices } = tr;
 
 			if(!name)
-				console.warn(`Missing ${locale} name ${forOption}`);
+				warnMissing(locale, `Missing %l name ${forOption}`);
 			else
 			{
 				if(opt.nameLocalizations) opt.nameLocalizations[locale] = name;
@@ -293,7 +318,7 @@ export function applyTranslations(cmdName, cmd)
 			}
 
 			if(!description)
-				console.warn(`Missing ${locale} description ${forOption}`);
+				warnMissing(locale, `Missing %l description ${forOption}`);
 			else
 			{
 				if(opt.descriptionLocalizations) opt.descriptionLocalizations[locale] = description;
@@ -310,7 +335,7 @@ export function applyTranslations(cmdName, cmd)
 					choices = opt.choices.map(({value}) => languages[value]);
 				else
 				{
-					console.warn(`Mismatched number of choices in ${locale} ${forOption} (expected ${nChoices}, got ${choices?.length})`);
+					warnMissing(locale, `Mismatched number of choices in %l ${forOption} (expected ${nChoices}, got ${choices?.length})`);
 					continue;
 				}
 			}

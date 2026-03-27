@@ -66,6 +66,62 @@
 							]
 						}
 					}
+				},
+				"chameleon": {
+					"name": "camaleon",
+					"description": "Comandos para personalizar el bot por juego.",
+					"options": {
+						"help": {
+							"name": "ayuda",
+							"description": "Muestra información sobre como usar las funcionalidades de camaleon"
+						},
+						"list": {
+							"name": "listar",
+							"description": "Muestra todos los webhooks configurados en el servidor."
+						},
+						"set": {
+							"name": "set",
+							"description": "Establece una suscripcion al webhook proporcionado.",
+							"options": {
+								"watcher": {
+									"name": "suscripcion",
+									"description": "La suscripcion a personalizar"
+								},
+								"webhook-url": {
+									"name": "webhook-url",
+									"description": "El webhook a usar"
+								},
+								"name": {
+									"name": "nombre",
+									"description": "Nombre de usuario para usar para este juego específico"
+								},
+								"avatar": {
+									"name": "avatar",
+									"description": "URL de la foto de perfil para usar para este juego específico."
+								}
+							}
+						},
+						"unset": {
+							"name": "unset",
+							"description": "Desconecta una suscripción de su webhook. Esto no elimina el webhook.",
+							"options": {
+								"watcher": {
+									"name": "suscripcion",
+									"description": "La suscripción a desconectar"
+								}
+							}
+						},
+						"auto": {
+							"name": "auto",
+							"description": "Personaliza automáticamente el webhook de una suscripción",
+							"options": {
+								"watcher": {
+									"name": "suscripción",
+									"description": "La suscripción a personalizar"
+								}
+							}
+						}
+					}
 				}
 			}
 		},
@@ -242,7 +298,7 @@
 			"disabled": "¡Lo sentimos! Los cambios de aspecto están deshabilitados en estos momentos.",
 			"pay": "Lo siento, esto es una característica de pago. Por favor, compre una ficha de aspecto en la tienda.",
 			"missing-args": "No especificó un avatar o banner. Para eliminar el aspecto personalizado, use reiniciar-aspecto.",
-			"too-large": "Este archivo es demasiado grande. El tamaño máximo es de 1 MB.",
+			"too-large": "Este archivo es demasiado grande. El tamaño máximo es de 5 MB.",
 			"avatar-rate-limit": "Me hizo cambiar mi avatar demasiado y Discord me está limitando. Por favor, inténtelo de nuevo más tarde.",
 			"banner-rate-limit": "Me hizo cambiar mi banner demasiado y Discord me está limitando. Por favor, inténtelo de nuevo más tarde.",
 			"failure": "El cambio de aspecto falló con el mensaje '%s'.\nSu ficha de aspecto no se ha consumido.",
@@ -250,6 +306,78 @@
 			"grace": "En caso de que cambie de opinión o desee reajustar, puede volver a utilizar este comando de forma gratuita durante la siguiente hora.",
 			"resetFailure": "El reinicio de apariencia falló con el mensaje '%s'.",
 			"resetSuccess": "Mi apariencia ha sido reiniciada.\nSi no ve el cambio, pruebe a reiniciar Discord."
+		},
+		"chameleon": {
+			"disabled": "Lo siento! Las características camaleon se encuentran desactivadas en este momento.",
+			"pay": "Necesitas una membresía para acceder a esta funcionalidad.",
+			"help": {
+				"title": "Ayuda sobre camaleon",
+				"description": "En primer lugar, el servidor debe tener la suscripción Camaleón o el Plan de Oro (consulta los botones a continuación).\n\nUna vez suscrito, las funciones de Cameleón se activarán en tu servidor. El bot utiliza **webhooks** para enviar noticias y ofertas con un nombre y foto de perfil diferentes para cada juego.\n\nHay dos maneras de configurar estos webhooks:",
+				"fields": [
+					{
+						"name": "Dejar que el bot lo haga automáticamente",
+						"description": "Primero, debes otorgarle al bot los permisos de **administrar webhooks**.\nTras esto, puedes usar `/premium chameleon create` para crear un nuevo webhook, o `/premium chameleon auto` para crear automáticamente un webhook para todos los juegos que sigues, usando el nombre y el logo de cada juego.\nEl bot intenta usar solo un webhook por canal para no saturar, pero no te preocupes, sigue pudiendo cambiar su apariencia para cada juego!"
+					},
+					{
+						"name": "Configurar los webhooks manualmente",
+						"description": "Primero, crea un webhook abriendo la configuración del canal y accediendo a «Integraciones». Allí podrás personalizar su nombre y avatar.\nLuego, copia su URL.\nFinalmente, usa el comando `/webhook chameleon set` para asignar ese webhook a una suscripción en concreto."
+					}
+				]
+			},
+			"price": "Precio",
+			"news": "Noticias",
+			"steam": "Steam",
+			"no-webhooks": "No tienes webhooks configurados.",
+			"webhooks": "Los webhooks de noticias de Steam de este servidor.",
+			"webhook-name": "Nombre del webhook: %s",
+			"name-used": "Nombre usado: %s",
+			"avatar-used": "Foto de perfil usada: %s",
+			"invalid-avatar-url": "No se pudo obtener la foto de perfil. ¿Estás seguro de que has proporcionado una URL válida?",
+			"not-an-image": "La URL proporcionada no apunta a una imagen.",
+			"too-large": "La foto de perfil es demasiado grande. El tamaño máximo son 3MB.",
+			"invalid-url": "No has proporcionado una URL de webhook válida.",
+			"wrong-token": "Parece que no puedo usar este webhook. ¿Estás seguro de que has proporcionado la URL completa, correcta?",
+			"not-found": "No he podido encontrar un webhook con esa URL. O bien la URL es incorrecta, o el webhook se ha eliminado.",
+			"wrong-channel": "Ese webhook pertenece a un canal diferente que el que envía las noticias de ese juego.\nLos canales solo comparten sus webhooks con sus hilos.",
+			"server-error": "Los servidores de Discord lanzaron un error cuando intenté comprobar la URL del webhook. Inténtalo de nuevo más tarde.",
+			"unknown-error": "Se produjo el error %s al intentar validar la URL del webhook.",
+			"all": "Todos los webhooks",
+			"webhook-set": "El webhook ha sido establecido.",
+			"webhook-test": "Puedes probarlo usando ${latest} con ese juego en ${channel} o uno de sus hilos.",
+			"webhook-test-steam": "Puedes probarlo usando ${latest} en ${channel} o uno de sus hilos.",
+			"webhook-set-price": "El webhook se estableció para actualizaciones de precio.",
+			"webhook-set-suggestAuto": "No has configurado un apodo ni una foto de perfil para esta suscripción. ¿Te gustaría que utilizara el nombre y el logotipo del juego?\n-# (No es necesario hacer esto si el webhook ya está personalizado)",
+			"webhook-set-auto": "Personaliza la suscripción automáticamente.",
+			"webhook-set-autoset": "La suscripción se ha personalizado automáticamente con el nombre y logo del juego.",
+			"webhook-set-autoset-error": "❌ La suscripción no se pudo personalizar automáticamente con el nombre y logo del juego.",
+			"unknown-watcher": "No puedo encontrar está suscripción. Por favor, asegurate de usar una opción de la lista.",
+			"webhook-set-error": "No pude establecer el webhook. Por favor, inténtalo de nuevo más tarde.",
+			"webhook-auto-create": "Creado por %s con /premium cameleon auto",
+			"webhook-auto-created": "Webhook creado:",
+			"webhook-auto-reused": "Webhook usado:",
+			"webhook-auto-info": "${name} (${id})\n\nUsará este nombre para este juego: **${nickname}**\ny esta foto de perfil: ${avatar}",
+			"webhook-auto-price": "Se usará para actualizaciones de precio.",
+			"webhook-auto-successes": "Webhooks establecidos",
+			"webhook-auto-failures": "Errores al establecer webhooks",
+			"webhook-auto-errors": "Errores misceláneos",
+			"webhook-auto-explain": "Los juegos del mismo canal usan el mismo webhook, pero tendrán un avatar y un apodo diferentes. Además, los canales comparten sus webhooks con sus hilos.",
+			"webhook-auto-for": "para ${games}",
+			"webhook-auto-forMany": "para ${someGames}, y ${number} más.",
+			"webhook-auto-nothing": "No se ha establecido un webhook. No tienes ninguna suscripción que no esté usando un webhook. Si quieres desconectar todos los webhooks, usa %s",
+			"channel-not-found": "No pude encontrar el canal para esa suscripción. Probablemente se ha eliminado, o ya no tengo acceso.",
+			"channel-not-found-short": "canal no encontrado o privado",
+			"missing-permissions": "No puedo crear webhooks en ese canal.",
+			"missing-permissions-short": "faltan permisos",
+			"database-fail": "Error al actualizar la base de datos. Esto es un error importante, por favor, repórtalo en el servidor de soporte.",
+			"database-fail-short": "error al actualizar la base de datos",
+			"error-bundle": "“${error}” error para estos canales: ${channels}",
+			"unknown-error-bundle": "Otros errores para otros canales: ${channels}",
+			"auto-create-error": "He obtenido este error al intentar establecer el webhook: %s",
+			"webhook-unset": "El webhook fue desconectado.",
+			"webhook-unset-price": "El webhook se ha desconectado para actualizaciones de precio.",
+			"webhook-unset-error": "No pude desconectar el webhook. Por favor, inténtalo más tarde.",
+			"all-decoupled": "Todos los webhooks han sido desconectados. Esto no elimina los webhooks, simplemente no serán usados para enviar noticias o rebajas.",
+			"nothing-decoupled": "Sin cambios. Parece que no estaba usando webhooks en este servidor."
 		}
 	},
 	"error": "Se produjo un error.",
@@ -262,7 +390,11 @@
 	"no-news": "Esta aplicación no tiene noticias.",
 	"NSFW-content-news": "Este juego tiene contenido para adultos. Sólo puede mostrar sus noticias en un canal marcado como NSFW.",
 	"NSFW-content-price": "Este juego tiene contenido para adultos. Sólo puede mostrar su precio en un canal marcado como NSFW.",
+	"used-command": "${user} ha usado ${command}",
 	"table": "tabla",
+	"page-display": "${current}/${total}",
+	"choose-page": "Elige una página entre 1 y %s",
+	"page-number": "Número de página",
 	"info": {
 		"yes": "Sí",
 		"no": "No",
@@ -349,7 +481,8 @@
 		"confirm-price": "Las actualizaciones de precios de %s se enviarán ahora en %s.",
 		"confirm-news": "Las noticias de %s serán enviadas ahora en %s.",
 		"already-price": "Ya existe una suscripcion para el precio de %s en este servidor.",
-		"already-news": "Ya existe una suscripcion para el feed de noticias de %s en este servidor."
+		"already-news": "Ya existe una suscripcion para el feed de noticias de %s en este servidor.",
+		"webhook-auto-unset": "Como el canal de la suscripción ha cambiado, el webhook se ha desconectado."
 	},
 	"watched": {
 		"games-watched": "Juegos suscritos en este servidor",
@@ -369,7 +502,9 @@
 		"id": "Id: %s",
 		"NSFW-yes": "NSFW: Sí",
 		"NSFW-no": "NSFW: No",
-		"channel": "Canal: %s"
+		"channel": "Canal: %s",
+		"steam-watched-webhook": "Noticias sobre **Steam** enviadas en %s mediante un webhook",
+		"webhook": "(mediante webhook)"
 	},
 	"unwatch": {
 		"news-unwatched": "Se ha eliminado la suscripción a %s en este servidor.",

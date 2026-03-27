@@ -2,7 +2,7 @@
 import { rebrandSKU, buttons } from "../../steam_news/VIPs.js";
 const rebrandButton = buttons(rebrandSKU);
 
-const MAX_SIZE = 1_000_000;
+const MAX_SIZE = 5_000_000;
 const gracePeriod = new Set();
 
 export const description = "Change the bot's appearance in this server";
@@ -16,10 +16,10 @@ export const options = [{
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
-	const t = tr.set(inter.locale, "premium");
+	const t = tr.set(inter.locale, "premium.rebrand");
     if(!rebrandSKU)
     {
-        inter.reply({flags: "Ephemeral", content: t("rebrand.disabled")});
+        inter.reply({flags: "Ephemeral", content: t("disabled")});
         return;
     }
 
@@ -28,7 +28,7 @@ export async function run(inter)
     if((!entitlement || entitlement.consumed) && !gracePeriod.has(id))
     {
         inter.reply({flags: "Ephemeral",
-            content: t("rebrand.pay"),
+            content: t("pay"),
             components: [rebrandButton],
         });
         return;
@@ -38,19 +38,19 @@ export async function run(inter)
     const banner = inter.options.getAttachment("banner");
 
     if(!avatar && !banner)
-        inter.reply({flags: "Ephemeral", content: t("rebrand.missing-args")});
+        inter.reply({flags: "Ephemeral", content: t("missing-args")});
     else if(avatar?.size > MAX_SIZE || banner?.size > MAX_SIZE)
-        inter.reply({flags: "Ephemeral", content: t("rebrand.too-large")});
+        inter.reply({flags: "Ephemeral", content: t("too-large")});
     else
     {
         await inter.deferReply();
         try {
             await members.editMe({ avatar: avatar?.url, banner: banner?.url });
-            let msg = t("rebrand.success");
+            let msg = t("success");
             if(!gracePeriod.has(id))
             {
                 entitlement.consume();
-                msg += `\n${t("rebrand.grace")}`;
+                msg += `\n${t("grace")}`;
                 gracePeriod.add(id);
                 setTimeout(gracePeriod.delete.bind(gracePeriod, id), 3600_000);
             }
@@ -58,13 +58,13 @@ export async function run(inter)
         }
         catch(err) {
             if(err.message.includes("AVATAR_RATE_LIMIT"))
-                inter.editReply({content: t("rebrand.avatar-rate-limit")});
+                inter.editReply({content: t("avatar-rate-limit")});
             else if(err.message.includes("BANNER_RATE_LIMIT"))
-                inter.editReply({content: t("rebrand.banner-rate-limit")});
+                inter.editReply({content: t("banner-rate-limit")});
             else
             {
                 console.error(err);
-                inter.editReply({content: t("rebrand.failure", err.message)});
+                inter.editReply({content: t("failure", err.message)});
             }
         }
     }

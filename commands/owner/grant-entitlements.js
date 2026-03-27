@@ -1,25 +1,38 @@
 
 import {
 	premiumSKU, premiumGuilds,
+	chameleonSKU, chameleonGuilds,
 } from "../../steam_news/VIPs.js";
 
 export const entitlements = {
 	Watchers:  { bit: 1<<0, sku: premiumSKU, list: premiumGuilds },
+	Chameleon: { bit: 1<<1, sku: chameleonSKU, list: chameleonGuilds },
 };
 
-export const description = "Enable entitlements on the test server.";
+export const description = "Enable entitlements on a server. This only lasts until reboot; see README for permanent changes.";
 export const options = [{
 	type: INTEGER, name: "subscription", required: true,
-	description: "Which subscription to emulate?",
+	description: "Which subscription to grant?",
 	choices: [
+		{ name: "Chameleon", value: entitlements.Chameleon.bit },
 		{ name: "More watchers", value: entitlements.Watchers.bit },
+		{ name: "Gold plan", value: entitlements.Chameleon.bit | entitlements.Watchers.bit },
 		{ name: "NOTHING!", value: 0 },
 	],
+}, {
+	type: STRING, name: "server-id",
+	description: "The server to which grant/change the free subscription. Defaults to current guild if omitted.",
 }];
+/** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export function run(inter)
 {
 	const subscription = inter.options.getInteger("subscription");
-	inter.reply({flags: "Ephemeral", content: setEntitlements(inter.guildId, subscription)});
+	const guildId = inter.options.getString("server-id") || inter.guildId;
+	const known = inter.client.guilds.cache.has(guildId);
+	let message = setEntitlements(guildId, subscription);
+	if(!known)
+		message += "\n*Note: I don't seem to actually be in that server*";
+	inter.reply({flags: "Ephemeral", content: message});
 }
 
 /**

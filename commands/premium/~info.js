@@ -1,3 +1,3 @@
 
 export const defaultMemberPermissions = "0";
-export const description = "Premium commands";
+export const description = "(admin only) Premium commands";

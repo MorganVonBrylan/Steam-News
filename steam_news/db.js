@@ -9,9 +9,17 @@ const db = new SQLite3(`${import.meta.dirname}/watchers.db`);
 export default db;
 db.pragma("journal_mode = WAL");
 
-const DB_VERSION = 7;
+const DB_VERSION = 8;
 
 db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
+
+
+/**
+ * @typedef {{appid:number, name:string, nsfw:?boolean, guildId:string, channelId:string, roleId:?string, premium:boolean, webhook:?string}} Watcher
+ * @typedef {Watcher & {latest:number}} NewsWatcher
+ * @typedef {Watcher & {lastPrice: number}} PriceWatcher
+ * @typedef {Omit<NewsWatcher, "appid"|"nsfw">} SteamWatcher
+ */
 
 /* ***** If there ever is a need to change a column in Apps DO NOT DROP IT ***** */
 /* *****            There are foreigns key here! Back them up!             ***** */
@@ -31,6 +39,7 @@ CREATE TABLE IF NOT EXISTS Watchers (
 	channelId TEXT NOT NULL,
 	roleId TEXT DEFAULT NULL,
 	premium BOOLEAN DEFAULT FALSE,
+	webhook TEXT DEFAULT NULL,
 	PRIMARY KEY (appId, guildId),
 	CONSTRAINT fk_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
 );
@@ -41,6 +50,7 @@ CREATE TABLE IF NOT EXISTS PriceWatchers (
 	channelId TEXT NOT NULL,
 	roleId TEXT DEFAULT NULL,
 	premium BOOLEAN DEFAULT FALSE,
+	webhook TEXT DEFAULT NULL,
 	PRIMARY KEY (appId, guildId),
 	CONSTRAINT fk_price_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
 );
@@ -48,7 +58,8 @@ CREATE TABLE IF NOT EXISTS PriceWatchers (
 CREATE TABLE IF NOT EXISTS SteamWatchers (
 	guildId TEXT PRIMARY KEY,
 	channelId TEXT NOT NULL,
-	roleId TEXT DEFAULT NULL
+	roleId TEXT DEFAULT NULL,
+	webhook TEXT DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Guilds (
@@ -115,6 +126,9 @@ if(currentVersion < DB_VERSION)
 	case 6:
 		db.exec(`ALTER TABLE Watchers ADD premium BOOLEAN DEFAULT FALSE;
 			ALTER TABLE PriceWatchers ADD premium BOOLEAN DEFAULT FALSE;`);
+	case 7:
+		db.exec(["Watchers", "PriceWatchers", "SteamWatchers"]
+			.map(table => `ALTER TABLE ${table} ADD webhook TEXT DEFAULT NULL;`).join(""));
 	}
 
 	db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
@@ -125,25 +139,45 @@ if(currentVersion < DB_VERSION)
  * Makes a proxy, for when just one statement isn't enough.
  * @param {string|string[]} sql SQL statement(s). If this argument is provided, the statement(s) will be prepared, and bound to the run function as thisArg.
  * @param {function} run The function to run. Make sure this is not an arrow function.
+ * @param {boolean} pluck Whether to pluck the stmts
  * @returns {object} Something that looks, swims and quacks like a prepared statement.
  */
-function makeProxy(sql, run) {
+function makeProxy(sql, run, pluck = false) {
 	let readonly;
 	if(sql instanceof Array)
 	{
 		sql = sql.map(db.prepare.bind(db));
 		readonly = sql.every(stmt => stmt.readonly);
+		if(pluck) for(const stmt of sql)
+			stmt.pluck();
 	}
 	else
 	{
 		sql = db.prepare(sql);
 		readonly = sql.readonly;
+		if(pluck)
+			sql.pluck();
 	}
 	return { readonly, [readonly ? "all" : "run"]: run.bind(sql) };
 }
 
 const watchTables = ["Watchers", "PriceWatchers", "SteamWatchers"];
+/**
+ * Returns a callback that sets an object's "type" property to the provided type.
+ * Meant for use with .forEach() and .map()
+ * @example priceWatchers.forEach(setType("price"));
+ * console.log(priceWatchers[0].type); // "price"
+ * @param {string} type The type
+ * @returns {function} The callback
+ */
+function setType(type) {
+	return watcher => {
+		watcher.type = type;
+		return watcher;
+	};
+}
 
+/** @type {{[sqlStatementName:string]: function}} */
 export const stmts = {
 	getStats: db.prepare(`SELECT
 		(SELECT COUNT('*') FROM Watchers) AS "watchers",
@@ -166,12 +200,14 @@ export const stmts = {
 	unwatch: db.prepare("DELETE FROM Watchers WHERE appid = ? AND guildid = ?"),
 	updateWatcher: db.prepare("UPDATE Watchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId AND appid = $appid"),
 	findWatchedApps: db.prepare("SELECT DISTINCT appid FROM Watchers").pluck(),
+	getWatcher: db.prepare("SELECT * FROM Watchers WHERE appid = $appid AND guildId = $guildId"),
 	getWatchers: db.prepare("SELECT * FROM Watchers WHERE appid = ?"),
 	getWatchedApps: db.prepare(`SELECT name, nsfw, latest, w.*
 		FROM Apps a JOIN Watchers w ON (a.appid = w.appid)
 		WHERE guildId = ?
 		ORDER BY name`),
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
+	getWatcherChannel: db.prepare("SELECT channelId from Watchers WHERE appid = $appid AND guildId = $guildId").pluck(),
 	isWatched: db.prepare("SELECT EXISTS(SELECT 1 FROM Watchers WHERE appid = ?)").pluck(),
 
 	watchSteam: makeProxy([
@@ -180,7 +216,8 @@ export const stmts = {
 	], function(params) {
 		return this[0].run(params).changes || this[1].run(params).changes;
 	}),
-	getSteamWatcher: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
+	getSteamWatcher: db.prepare("SELECT * FROM SteamWatchers WHERE guildId = ?"),
+	getSteamChannel: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
 	unwatchSteam: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
 	getSteamWatchers: db.prepare("SELECT * FROM SteamWatchers"),
 	isSteamWatched: db.prepare("SELECT EXISTS(SELECT 1 FROM SteamWatchers)").pluck(),
@@ -189,6 +226,7 @@ export const stmts = {
 	unwatchPrice: db.prepare("DELETE FROM PriceWatchers WHERE appid = ? AND guildid = ?"),
 	updatePriceWatcher: db.prepare("UPDATE PriceWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId AND appid = $appid"),
 	findWatchedPrices: db.prepare("SELECT appid, name, nsfw, lastPrice FROM Apps a WHERE EXISTS (SELECT '*' FROM PriceWatchers WHERE appid = a.appid)"),
+	getPriceWatcher: db.prepare("SELECT * FROM PriceWatchers WHERE appid = $appid AND guildId = $guildId"),
 	getPriceWatchers: db.prepare(`SELECT PriceWatchers.*, lang, COALESCE(cc, 'US') "cc"
 		FROM PriceWatchers LEFT JOIN Guilds ON id = guildId WHERE appid = ?`),
 	getWatchedPrices: db.prepare(`SELECT name, lastPrice, nsfw, w.*
@@ -196,6 +234,64 @@ export const stmts = {
 		WHERE guildId = ?
 		ORDER BY name`),
 	updateLastPrice: db.prepare("UPDATE Apps SET lastPrice = $lastPrice WHERE appid = $appid"),
+	getPriceWatcherChannel: db.prepare("SELECT channelId from PriceWatchers WHERE appid = $appid AND guildId = $guildId").pluck(),
+
+	setWebhook: db.prepare("UPDATE Watchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
+	setPriceWebhook: db.prepare("UPDATE PriceWatchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
+	setSteamWebhook: db.prepare("UPDATE SteamWatchers SET webhook = $webhook WHERE channelId = $channelId"),
+	getWebhook: db.prepare("SELECT webhook FROM Watchers WHERE guildId = $guildId AND appid = $appid").pluck(),
+	getWebhooks: makeProxy([
+		...["Watchers", "PriceWatchers"].map(table => `
+			SELECT a.appid, name, channelId, webhook
+			FROM ${table} w JOIN Apps a ON w.appid = a.appid
+			WHERE guildId = ? AND webhook IS NOT NULL
+		`),
+		`SELECT ${STEAM_APPID} "appid", 'Steam News Hub' "name", channelId, webhook
+		FROM SteamWatchers WHERE guildId = ? AND webhook IS NOT NULL`,
+	], function(guildId, merge = true) {
+		const steam = this[2].get(guildId);
+		const res = {
+			news: this[0].all(guildId),
+			price: this[1].all(guildId),
+			steam: steam ? setType("steam")(steam) : null,
+		};
+		return merge ? res.news.map(setType("news")).concat(
+			res.price.map(setType("price")),
+			res.steam || [],
+		) : res;
+	}),
+	getChannelWebhooks: makeProxy(watchTables.map(table => `
+		SELECT IIF(INSTR(webhook, '#'), SUBSTR(webhook, 0, INSTR(webhook, '#')), webhook)
+		FROM ${table}
+		WHERE channelId = ? AND webhook IS NOT NULL
+	`), function(channelId) {
+		return Array.from(new Set(this.map(stmt => stmt.all(channelId)).flat()));
+	}, { pluck: true }),
+	purgeWebhook: makeProxy(watchTables.map(table => `UPDATE ${table}
+		SET webhook = NULL WHERE webhook LIKE ? || '%';`
+	), function(webhookIdAndToken) {
+		return !!this.reduce((changes, stmt) => changes + stmt.run(webhookIdAndToken).changes, 0);
+	}),
+	decoupleWebhooks: makeProxy(watchTables.map(table => `UPDATE ${table}
+		SET webhook = NULL WHERE guildId = ? AND webhook IS NOT NULL`
+	), function(guildId) {
+		return this.reduce((changes, stmt) => changes + stmt.run(guildId).changes, 0);
+	}),
+
+	getNonWebhooks: makeProxy([
+		...["Watchers", "PriceWatchers"].map(table => `
+			SELECT a.appid, name, channelId
+			FROM ${table} w JOIN Apps a ON w.appid = a.appid
+			WHERE guildId = ? AND webhook IS NULL
+		`),
+		"SELECT channelId FROM SteamWatchers WHERE guildId = ? AND webhook IS NULL",
+	], function(guildId) {
+		const steam = this[2].get(guildId);
+		return this[0].all(guildId).map(setType("news")).concat(
+			this[1].all(guildId).map(setType("price")),
+			steam ? setType("steam")(steam) : [],
+		);
+	}),
 
 	getCC: db.prepare("SELECT cc FROM Guilds WHERE id = ?").pluck(),
 	getLocale: db.prepare("SELECT cc, lang FROM Guilds WHERE id = ?"),
@@ -230,13 +326,21 @@ export const stmts = {
 	}),
 };
 
+if(!stmts.isAppKnown.get(STEAM_APPID))
+	db.run(`INSERT INTO Apps (appid, name, nsfw)
+			VALUES (${STEAM_APPID}, 'Steam News Hub', FALSE)`);
+
 const getAll = [
 	"getWatchers", "getWatchedApps", "findWatchedApps",
 	"getPriceWatchers", "getWatchedPrices", "findWatchedPrices",
 	"getSteamWatchers",
+	"getWebhooks", "getNonWebhooks", "getChannelWebhooks",
 	"getAllLocales", "getRecentVoters",
 ];
 
+// Any errors here about reading undefined are most likely caused by the stmt
+// not being in the getAll list above
+// Yes this is a very flimsy system but fixing it is not a priority
 for(const [name, stmt] of Object.entries(stmts))
 	stmts[name] = stmt[stmt.readonly ? (getAll.includes(name) ? "all" : "get") : "run"].bind(stmt);
 

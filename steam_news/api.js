@@ -246,14 +246,14 @@ async function fetchBanner(appid)
 // But it is (probably) better than nothing in the absence of an official API for game icons
 const { steamGridDB } = importJSON("auth.json");
 const sgdbAuth = steamGridDB ? `Bearer ${steamGridDB}` : null;
-function sbdg(path) {
+function sgdb(path) {
 	return fetch(`https://www.steamgriddb.com/api/v2/${path}`, { headers: { Authorization: sgdbAuth } });
 }
 
 const iconCache = Object.create(null);
 iconCache[STEAM_APPID] = STEAM_ICON;
 /**
- * Return an icon for the game from Steam Grid DB.
+ * Return the official icon for the game, or if unavailable, one from Steam Grid DB.
  * @param {number} appid That app's id
  * @param {boolean} defaultToBanner Whether to return the small banner or null in case Steam Grid DB does not have that game.
  * @return {Promise<?string>}
@@ -276,7 +276,7 @@ export async function icon(appid, defaultToBanner = true)
 
 async function getOfficialIcon(appid)
 {
-	const idRes = await sbdg(`games/steam/${appid}`);
+	const idRes = await sgdb(`games/steam/${appid}`);
 	if(!idRes.ok)
 		return null;
 
@@ -295,7 +295,7 @@ async function getOfficialIcon(appid)
 
 async function getUnofficialIcon(appid)
 {
-	const res = await sbdg(`icons/steam/${appid}?styles=official&types=static`);
+	const res = await sgdb(`icons/steam/${appid}?styles=official&types=static`);
 	if(!res.ok)
 		return null;
 
