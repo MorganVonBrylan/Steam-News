@@ -12,12 +12,13 @@ function decodeComponent(component) {
 	return decodes.reduce((string, [char, code]) => string.replaceAll(code, char), component);
 }
 
+/** @typedef {`${bigint}/${string}`} idAndToken */
 /** Standardised string representing webhook data, as stored in the database.
  * 
  * Conforms to the regex /^[0-9]+\/\w+(#t)?(#u:[^#]+)?(#a:[^#:]+)?$/
  * 
  * Which is (webhook id)/(webhook token)(#thread)(#u:username)(#a:avatar url) with each of the last 3 parts optional.
- * @typedef {`${bigint}/${string}${"#t"|""}${`#u:${string}`|""}${`#a:${string}`|""}`} WebhookInfo
+ * @typedef {`${idAndToken}${"#t"|""}${`#u:${string}`|""}${`#a:${string}`|""}`} WebhookInfo
  * */
 export const webhookInfoRegex = /^[0-9]+\/\w+(#t)?(#u:[^#]+)?(#a:[^#:]+)?$/;
 
@@ -82,7 +83,7 @@ export async function webhookInfo(url, channel, username, avatar)
 
 /**
  * Format webhook data as a string to easily store in the database.
- * @param {string} idAndToken The id/token of the webhook
+ * @param {idAndToken} idAndToken The id/token of the webhook
  * @param {boolean} isThread Whether it is to be used in a thread.
  * @param {string} [username] The username to use for this watcher
  * @param {string} [avatar] The avatar URL to use for this watcher
@@ -105,18 +106,18 @@ export class Webhook {
 
 	/**
 	 * @overload
-	 * @param {`${bigint}/${string}`} idAndToken The webhook's id and token
+	 * @param {idAndToken} idAndToken The webhook's id and token
 	 * @returns {Promise<{application_id:?string,avatar:?string,channel_id:string,guild_id:string,id:string,name:string,type:number,token:number,url:number}|{message:string,code:number}>} The webhook's data, or an error.
 	 */
 	/**
 	 * @overload
-	 * @param {`${bigint}/${string}`} idAndToken The webhook's id and token
+	 * @param {idAndToken} idAndToken The webhook's id and token
 	 * @param {true} checkOnly Whether to just check if the webhook exists
 	 * @returns {Promise<boolean>} Whether the webhook exists or not
 	 */
 	/**
 	 * Fetch a webhook's data
-	 * @param {`${bigint}/${string}`} idAndToken The webhook's id and token
+	 * @param {idAndToken} idAndToken The webhook's id and token
 	 * @param {boolean} [checkOnly] Whether to just check if the webhook exists
 	 */
 	static fetch(idAndToken, checkOnly = false) {
