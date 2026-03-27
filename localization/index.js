@@ -77,63 +77,50 @@ export function trReplace(str, replaces)
 export const tr = {
 	locales: Object.keys(locales),
 	fallbackLocale: FALLBACK,
+	locale: FALLBACK,
 
 	set(lang, group) {
-		this.group = group;
 		if(!(lang in locales))
 			lang = FALLBACK;
-		this.lang = lang;
+
+		let fallback = locales[FALLBACK];
+		let locale = locales[lang] || fallback;
 		if(group)
 		{
-			let subGroups;
-			[group, ...subGroups] = group.split(".");
-			this.locale = locales[lang][group];
-			this.fallback = locales[FALLBACK][group];
-			if(!this.locale)
-			{
-				this.locale = this.fallback;
-				warnMissing(lang, `Missing ${group} group in %l translation.`);
-			}
-			if(subGroups.length) for(const subGroup of subGroups)
+			const subGroups = group.split(".");
+			group = "";
+			for(const subGroup of subGroups)
 			{
 				group += `.${subGroup}`;
-				this.fallback = this.fallback[subGroup];
-				if(subGroup in this.locale)
-					this.locale = this.locale[subGroup];
+				fallback = fallback[subGroup];
+				if(subGroup in locale)
+					locale = locale[subGroup];
 				else
 				{
-					this.locale = this.fallback;
+					locale = fallback;
 					warnMissing(lang, `Missing ${group} subgroup in %l translation.`);
 				}
 			}
 		}
-		else
-		{
-			this.locale = locales[lang];
-			this.fallback = locales[FALLBACK];
-		}
-		return this.t;
+		const t = this.t.bind({ lang, locale, fallback });
+		t.plural = tr.plural.bind(t);
+		return t;
 	},
 
-	get(lng, key, ...replaces) {
-		const {lang, group} = tr;
-		const translation = trReplace(tr.set(lng)(key), replaces);
-		tr.set(lang, group);
-		return translation;
+	get(lang, key, ...replaces) {
+		return trReplace(tr.set(lang)(key), replaces);
 	},
 	getAll(key, skipFallback = false, ...replaces) {
-		const {lang, group} = tr;
 		const translations = {};
 		for(const locale of tr.locales)
 			if(!skipFallback || locale !== FALLBACK)
 				translations[locale] = trReplace(tr.set(locale)(key), replaces);
 
-		tr.set(lang, group);
 		return translations;
 	},
 
 	plural(keyOrPlurals, n, ...replaces) {
-		const plurals = typeof keyOrPlurals === "object" ? keyOrPlurals : tr.t(keyOrPlurals);
+		const plurals = typeof keyOrPlurals === "object" ? keyOrPlurals : this(keyOrPlurals);
 		let str = plurals[n] || plurals.default.replace("%n", n);
 		for(const replace of replaces)
 			str = str.replace("%s", replace);
@@ -182,16 +169,11 @@ export const tr = {
 
 		return obj ? trReplace(obj, replaces) : key;
 	},
-}
+};
 
+Object.freeze(tr);
 export default tr;
 global.tr = tr;
-
-for(const prop in tr)
-	if(typeof tr[prop] === "function")
-		tr[prop] = tr[prop].bind(tr);
-
-tr.set(FALLBACK);
 
 
 

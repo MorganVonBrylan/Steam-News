@@ -148,7 +148,7 @@ export class WebhookAutoSetter
 	constructor(guild, author, me) {
 		const { username, globalName } = author;
 		const authorName = globalName ? `${globalName} (${username})` : username;
-		this.reason = tr.t("webhook-auto-create", authorName);
+		this.reason = tr.get(guild.preferredLocale, "premium.chameleon.webhook-auto-create", authorName);
 		this.channels = guild.channels;
 		this.me = me || guild.members.me;
 	}
