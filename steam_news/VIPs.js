@@ -45,7 +45,7 @@ export const chameleonGuilds = new Set();
 
 const { premium } = auth;
 import { ComponentType, ButtonStyle } from "discord.js";
-export const premiumSKU = premium?.sku;
+export const premiumSKU = premium?.moreWatchers;
 export const bonus = premium?.bonus || 0;
 export const rebrandSKU = premium?.rebrand;
 export const chameleonSKU = premium?.chameleon;

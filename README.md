@@ -43,8 +43,8 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 
 	"supportServer": "(optional) The invite to your support server",
     "premium": {
-		"sku": "the 'more watchers' SKU id",
 		"bonus": 250,
+		"moreWatchers": "the 'more watchers' SKU id",
 		"rebrand": "the 'rebrand' SKU id",
 		"chameleon": "the 'chameleon' SKU id",
 		"gold": "the 'gold plan' SKU id",
