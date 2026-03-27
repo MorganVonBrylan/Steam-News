@@ -352,7 +352,8 @@
 			"webhook-unset-price": "Le webhook a été détaché pour les soldes.",
 			"webhook-unset-error": "Je n'ai pas pu détacher le webhook. Veuillez réessayer plus tard.",
 			"all-decoupled": "Tous les webhooks ont été détachés. Notez que cela n'a supprime aucun webhook, il ne seront juste plus utilisés pour envoyer des actus et soldes.",
-			"nothing-decoupled": "Aucun changement. Il semble que je n'utilisais pas de webhook dans ce serveur."
+			"nothing-decoupled": "Aucun changement. Il semble que je n'utilisais pas de webhook dans ce serveur.",
+			"watch-suggestAuto": "Les avantages Chaméléon sont activés sur ce serveur. Voulez-vous personnaliser automatiquement ce suivi avec le titre et logo du jeu ?"
 		},
 		"server-subscription": "Abonnement du serveur",
 		"no-subscription": "Ce serveur n'a aucun abonnement.",

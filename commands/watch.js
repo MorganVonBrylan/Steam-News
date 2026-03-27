@@ -4,7 +4,11 @@ import { interpretAppidOption } from "../utils/commands.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../steam_news/limits.js";
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
-import { voted, premiumSKU, goldSKU, buttons, premiumGuilds } from "../steam_news/VIPs.js";
+import {
+	voted,
+	premiumSKU, goldSKU, buttons,
+	premiumGuilds, chameleonGuilds,
+} from "../steam_news/VIPs.js";
 const premiumButton = buttons(premiumSKU, goldSKU);
 const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
 import { voteURL } from "../topGG.js";
@@ -13,6 +17,7 @@ import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js"
 import { HTTPError } from "../steam_news/api.js";
 import { setWebhook } from "../steam_news/db_api.js";
 import { fetchThreads } from "../utils/channels.js";
+import { autoSuggestButton } from "./premium/chameleon/set.js";
 
 import { PermissionFlagsBits } from "discord.js";
 const {
@@ -134,6 +139,22 @@ export async function run(inter)
 				reply += `\n${t("webhook-auto-unset")}`;
 
 		updateUnwatch(inter.guild);
+		if(!success.webhook && chameleonGuilds.has(inter.guildId))
+		{
+			const t = tr.set(inter.locale, "premium.chameleon");
+			const baseReply = reply;
+			reply = {
+				content: `${reply}\n\n${t("watch-suggestAuto")}`,
+				components: autoSuggestButton(t,
+					{ type, appid, channelId: channel.id },
+					inter,
+					result => inter.editReply({
+						content: result ? `${baseReply}\n-# ${result}` : baseReply,
+						components: [],
+					}),
+				),
+			}
+		}
 		inter.editReply(reply);
 	}, async err => {
 		await defer;
@@ -170,7 +191,7 @@ export async function run(inter)
  * @param {{appid:string, channelId:string, webhook:string}} oldWatcher The previous watcher data
  * @param {import("../utils/channels.js").GuildTextChannel} channel The current watcher channel
  * @param {"news"|"price"|"steam"} type The watcher type
- * @returns {?boolean} flase if no update was needed (the channel is the same, or there is no webhook), true if the webhook was updated, null if it had to be removed
+ * @returns {Promise<?boolean>} flase if no update was needed (the channel is the same, or there is no webhook), true if the webhook was updated, null if it had to be removed
  */
 export async function updateWebhook({appid, channelId: oldChannel, webhook}, channel, type = "news")
 {

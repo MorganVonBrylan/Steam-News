@@ -289,6 +289,8 @@
 			"server-error": "The Discord servers errorred when I tried checking that webhook URL. Please try again later.",
 			"unknown-error": "Got error %s when trying to validate the webhook URL.",
 
+			"watch-suggestAuto": "Chameleon perks are enabled on this server. Do you want to automatically customize this new watcher with the game's name and logo?",
+
 			"all": "All webhooks",
 			"webhook-set": "The webhook was set.",
 			"webhook-test": "You can test it by using ${latest} with that game in ${channel} or one of its threads.",

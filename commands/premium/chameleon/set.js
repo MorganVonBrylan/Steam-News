@@ -4,6 +4,7 @@ import { webhookInfo } from "./~webhook.js";
 import { getWatcherChannel, setWebhook, getAppName } from "../../../steam_news/db_api.js";
 import { icon, STEAM_APPID } from "../../../steam_news/api.js";
 import { buttons, register } from "../../../utils/components.js";
+import { WebhookAutoSetter } from "./auto.js";
 
 const MAX_SIZE = 3_000_000;
 
@@ -63,7 +64,8 @@ export async function run(inter)
 
 	webhookInfo(webhookUrl, channel, name, avatar)
 	.then(webhook => {
-		const success = setWebhook(type, { appid, channelId, webhook });
+		const watcher = { type, appid, channelId, webhook };
+		const success = setWebhook(type, watcher);
 		const latest = steam ? "steam-latest" : "latest";
 		const latestId = inter.command?.manager.cache.find(({name}) => name === latest)?.id;
 		const baseMessage = success
@@ -80,21 +82,18 @@ export async function run(inter)
 
 		if(success && !name && !avatar)
 		{
-			const customId = inter.id;
 			message.embeds[0].description += `\n\n${t("webhook-set-suggestAuto")}`;
-			message.components = [buttons({customId, label: t("webhook-set-auto")})];
-			register(customId, async () => {
-				const name = getAppName(appid);
-				const avatar = await icon(appid);
-				const webhook = await webhookInfo(webhookUrl, channel, name, avatar);
-				const success = setWebhook(type, { appid, channelId, webhook });
-				inter.editReply({ embeds: [{
-					description: baseMessage,
-					footer: { text: t(success ? "webhook-set-autoset" : "webhook-autoset-error") },
-				}], components: []});
-			}, { singleUse: true, timeoutCallback() {
-				inter.editReply({ embeds: [{description: baseMessage}], components: [] });
-			} });
+			message.components = autoSuggestButton(t, watcher, inter, result => {
+				inter.editReply({
+					embeds: [result ? {
+						description: baseMessage,
+						footer: { text: result },
+					} : {
+						description: baseMessage,
+					}],
+					components: [],
+				});
+			}, webhook.split("#", 1)[0]);
 		}
 		
 		inter.editReply(message);
@@ -108,4 +107,35 @@ export async function run(inter)
 				error(err);
 		}
 	});
+}
+
+/**
+ * Get a button that allows auto-customizing a watchers.
+ * @param {(key:string)=>string} t A translation function set to the premium.chameleon group
+ * @param {{type:"news"|"price"|"steam", appid:number, channelId:string, webhook?:string }} watcher The watcher data
+ * @param {import("discord.js").ChatInputCommandInteraction} inter The interaction
+ * @param {(result:string)=>*} callback A function to execute on button action. Will include a result message if the button is clicked, undefined if the button times out.
+ * @param {import("./~webhook.js").idAndToken} [idAndToken] The id/token of the webhook to use. If unset, one will be reused or created.
+ * @returns A component list.
+ */
+export function autoSuggestButton(t, watcher, inter, callback, idAndToken)
+{
+	const customId = inter.id;
+	const button = buttons({customId, label: t("webhook-set-auto")});
+	register(customId, async () => {
+		const { guild } = inter;
+		const me = await guild.members.fetchMe();
+		const webhookSetter = new WebhookAutoSetter(guild, inter.user, me);
+		try {
+			await webhookSetter.setup(watcher, idAndToken);
+			callback(t("webhook-set-autoset"));
+		} catch(err) {
+			console.error(err instanceof Error ? err : err.key);
+			callback(t("webhook-set-autoset-error"));
+		}
+	}, {
+		singleUse: true,
+		timeoutCallback: callback,
+	});
+	return [button];
 }
