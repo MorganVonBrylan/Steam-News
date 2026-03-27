@@ -15,7 +15,9 @@ import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
 const MANAGE_WEBHOOKS = PERMISSIONS.ManageWebhooks;
 import { FieldList, sendEmbeds } from "../../../utils/embeds.js";
 
-let STEAMNEWS_ICON;
+import { client } from "../../../bot.js";
+
+const STEAMNEWS_ICON = await fetchImage(client.user.avatarURL()).catch(error);
 const ERROR = 0xAA0000;
 
 export const description = "Automatically customize a watcher's webhook.";
@@ -33,26 +35,13 @@ export async function run(inter)
 	const t = tr.set(inter.locale, "premium.chameleon");
 
 	await inter.deferReply();
-	const { options, guildId, guild: { channels, members } } = inter;
-	const me = await members.fetchMe();
+	const { options, guildId, guild } = inter;
 	const target = options.getString("watcher");
-
-	const webhookCache = new Map();
-
-	const { user: { username, globalName } } = inter;
-	const authorName = globalName ? `${globalName} (${username})` : username;
-	const autoCreateReason = t("webhook-auto-create", authorName);
-	STEAMNEWS_ICON ??= await fetchImage(inter.client.user.avatarURL()).catch(error);
+	const webhooks = new WebhookAutoSetter(guild, inter.user, await guild.members.fetchMe());
 
 	if(target === ALL_WEBHOOKS)
 	{
-		// It is tempting to use .map and Promise.allSettled,
-		// However this can cause the creation of several webhooks for the same channel,
-		// as one watcher can be processed while another's createWebhook() is being awaited.
-		const results = [];
-		for(const watcher of getNonWebhooks(guildId))
-			results.push(await setupWebhook(watcher).then(success=>({success}), error=>({error})));
-		const { successes, errors, miscErrors } = parseMassCreateResults(results);
+		const { successes, errors, miscErrors } = await webhooks.bulkSetup(getNonWebhooks(guildId));
 		const fieldList = new FieldList();
 
 		if(successes.size)
@@ -104,7 +93,7 @@ export async function run(inter)
 			return inter.editReply(t("unknown-watcher"));
 
 		watcher.type = type;
-		setupWebhook(watcher).then(async res => {
+		webhooks.setup(watcher).then(async res => {
 			const webhookInfo = await Webhook.fetch(res.webhook);
 			if("name" in webhookInfo)
 			{
@@ -141,33 +130,60 @@ export async function run(inter)
 			}]});
 		});
 	}
+}
 
 
-	/** @typedef {import("../../../utils/channels.js").GuildTextChannel} GuildTextChannel */
+/** @typedef {import("../../../utils/channels.js").GuildTextChannel} GuildTextChannel */
+/** @typedef {import("./~webhook.js").idAndToken} idAndToken */
+
+export class WebhookAutoSetter
+{
+	webhookCache = new Map();
+	
 	/**
-	 * @param {ReturnType<getWatcher>} watcher The watcher to setup a webhook for
-	 * @returns {Promise<{webhook:`${bigint}/${string}`, channel:GuildTextChannel, name:string, avatar:?string,newlyCreated:boolean}>}
+	 * @param {import("discord.js").Guild} guild The guild 
+	 * @param {import("discord.js").User} author The author
+	 * @param {import("discord.js").GuildMember} me The bot's member object
 	 */
-	async function setupWebhook(watcher) {
-		const channel = await channels.fetch(watcher.channelId);
+	constructor(guild, author, me) {
+		const { username, globalName } = author;
+		const authorName = globalName ? `${globalName} (${username})` : username;
+		this.reason = tr.t("webhook-auto-create", authorName);
+		this.channels = guild.channels;
+		this.me = me || guild.members.me;
+	}
+	
+	/**
+	 * Setup a customized webhook for the provided watcher.
+	 * @param {ReturnType<getWatcher>} watcher The watcher to setup a webhook for
+	 * @param {idAndToken} [idAndToken] The webhook to use. If not provided, it will either reuse one this watcher's channel already has, or create a new one.
+	 * @returns {Promise<{webhook:idAndToken, channel:GuildTextChannel, name:string, avatar:?string,newlyCreated:boolean}>}
+	 */
+	async setup(watcher, idAndToken) {
+		const channel = await this.channels.fetch(watcher.channelId);
 		const isThread = channel?.isThread();
 		const webhookChannel = isThread
-			? channel.parent || await channels.fetch(channel.parentId)
+			? channel.parent || await this.channels.fetch(channel.parentId)
 			: channel;
 		if(!webhookChannel)
 			throw { key: "channel-not-found", channel: channel || watcher.channelId };
 
 		const { id: channelId } = webhookChannel;
 		let newlyCreated = false;
-		if(!webhookCache.has(channelId))
+		if(!this.webhookCache.has(channelId))
 		{
-			const existingWebhook = getChannelWebhooks(channelId)?.[0];
-			webhookCache.set(channelId, existingWebhook || await createWebhook(channel));
-			if(!existingWebhook)
-				newlyCreated = true;
+			if(idAndToken)
+				this.webhookCache.set(channelId, idAndToken);
+			else
+			{
+				const existingWebhook = getChannelWebhooks(channelId)?.[0];
+				this.webhookCache.set(channelId, existingWebhook || await this.create(channel));
+				if(!existingWebhook)
+					newlyCreated = true;
+			}
 		}
 
-		const webhook = webhookCache.get(channelId);
+		const webhook = idAndToken || this.webhookCache.get(channelId);
 		const { appid = STEAM_APPID } = watcher;
 		const name = getAppName(appid);
 		const avatar = await icon(appid);
@@ -178,24 +194,31 @@ export async function run(inter)
 		return { webhook, channel: webhookChannel, name, avatar, newlyCreated };
 	}
 
-	/** @param {GuildTextChannel} channel The channel */
-	async function createWebhook(channel) {
-		if(!channel.permissionsFor(me).has(MANAGE_WEBHOOKS))
+	/**
+	 * Create a new webhook.
+	 * @param {GuildTextChannel} channel The channel
+	 * @returns The new webhook's id/token
+	 * @throws {{key:string,channel:GuildTextChannel}} If the bot's permissions are insufficient
+	 */
+	async create(channel) {
+		if(!channel.permissionsFor(this.me).has(MANAGE_WEBHOOKS))
 			throw { key: "missing-permissions", channel };
 
-		const { id, token } = await channels.createWebhook({
-			channel: channel.id, reason: autoCreateReason,
+		const { id, token } = await this.channels.createWebhook({
+			channel: channel.id, reason: this.reason,
 			avatar: STEAMNEWS_ICON, name: "Steam News",
 		});
 		const idAndToken = `${id}/${token}`;
-		webhookCache.set(channel, idAndToken);
+		this.webhookCache.set(channel, idAndToken);
 		return idAndToken;
 	}
 
-
-	/** @param {({success:Awaited<ReturnType<setupWebhook>>}|{error: Error|{key:string,channel:string[GuildTextChannel]}})[]} results */
-	function parseMassCreateResults(results)
-	{
+	/**
+	 * Sets up webhooks for many watchers.
+	 * @param {ReturnType<getWatcher>[]} watchers 
+	 * @returns 
+	 */
+	async bulkSetup(watchers) {
 		/** @typedef {string} ChannelId */
 		/** @typedef {string} ErrorMessage */
 
@@ -208,28 +231,31 @@ export async function run(inter)
 		/** @type {Set<ErrorMessage>} */
 		const miscErrors = new Set();
 		
-		for(const res of results)
+		// It is tempting to use .map and Promise.allSettled,
+		// However this can cause the creation of several webhooks for the same channel,
+		// as one watcher can be processed while another's createWebhook() is being awaited.
+		for(const watcher of watchers) try
 		{
-			if(res.success)
+			const { webhook, channel, name, newlyCreated } = await this.setup(watcher);
+			const success = successes.get(channel.id);
+			if(success)
 			{
-				const { webhook, channel, name, newlyCreated } = res.success;
-				const success = successes.get(channel.id);
-				if(success)
-				{
-					success.games.push(name);
-					success.newlyCreated ||= newlyCreated;
-				}
-				else
-					successes.set(channel.id, { channel, webhook, newlyCreated, games: [name] });
+				success.games.push(name);
+				success.newlyCreated ||= newlyCreated;
 			}
-			else if(res.error instanceof Error)
+			else
+				successes.set(channel.id, { channel, webhook, newlyCreated, games: [name] });
+		}
+		catch(error)
+		{
+			if(error instanceof Error)
 			{
-				console.error(res.error);
-				miscErrors.add(res.error.message);
+				console.error(error);
+				miscErrors.add(error.message);
 			}
 			else
 			{
-				const { key, channel } = res.error;
+				const { key, channel } = error;
 				const channelId = channel?.id || channel;
 				const channels = errors.get(key);
 				if(channels)
