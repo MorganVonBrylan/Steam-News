@@ -54,10 +54,11 @@ export class DblApi
 	 */
 	async postStats(recurrent = true) {
 		const { application, guilds } = this.client;
+		await application.fetch(); // otherwise approximateUserInstallCount is null
 		const res = await this._request("/stats", {
 			voice_connections: 0,
 			users: application.approximateUserInstallCount || 0,
-			guilds: guilds.cache.size,
+			guilds: guilds.cache.size || application.approximateGuildCount || 0,
 		});
 		if(!res.ok)
 			throw new Error((await res.json()).message);
