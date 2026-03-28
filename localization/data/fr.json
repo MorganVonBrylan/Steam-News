@@ -225,6 +225,16 @@
 		"stats": {
 			"name": "stats",
 			"description": "Affiche des stats sur le bot"
+		},
+		"branding": {
+			"name": "visuels",
+			"description": "Affiche le logo et la bannière d'un jeu",
+			"options": {
+				"game": {
+					"name": "jeu",
+					"description": "Le nom ou l'id du jeu"
+				}
+			}
 		}
 	},
 	"voting": {
@@ -405,6 +415,13 @@
 		"multi": "Multi",
 		"languages": "Langues",
 		"openInApp": "Ouvrir dans l’application"
+	},
+	"branding": {
+		"official": "Visuels officiels de %s",
+		"official-fail": "La récupération des visuels officiels a échoué.",
+		"dlc": "C'est un DLC de %s",
+		"sgdb": "Logo non officiel",
+		"sgdb-explain": "Le logo le mieux noté pour ce jeu sur SteamGridDB, utilisé quand il me faut un logo haute résolution (ceux officiels sont en 32×32)."
 	},
 	"locale": {
 		"current": "Votre pays actuel est %s (%s) avec le %s pour langue préférée.",

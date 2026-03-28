@@ -111,6 +111,16 @@
 				}
 			}
 		},
+		"branding": {
+			"name": "branding",
+			"description": "Get a game's logo and banner",
+			"options": {
+				"game": {
+					"name": "game",
+					"description": "The game’s name or id"
+				}
+			}
+		},
 		"latest": {
 			"name": "latest",
 			"description": "See a game’s latest news.",
@@ -380,6 +390,14 @@
 		"multi": "Multiplayer",
 		"languages": "Languages",
 		"openInApp": "Open in app"
+	},
+
+	"branding": {
+		"official": "Official %s branding",
+		"official-fail": "Failed to get the official branding.",
+		"dlc": "This is a DLC of %s",
+		"sgdb": "Unofficial logo",
+		"sgdb-explain": "The top-rated logo for this game on SteamGridDB, used when I need a high-res logo (the official ones are 32×32)."
 	},
 
 	"locale": {
