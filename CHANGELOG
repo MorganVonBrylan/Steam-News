@@ -194,3 +194,6 @@ Switched to the new Top.gg webhooks, which a way more secure.
 Added /branding, that shows a game's logo and banner.
 Added premium features: rebrand, chameleon, and the "gold plan" that combines the new chameleon subscription with the old "more watchers" one.
 Added support for uploading the stats and command list to discordbotlist.com
+
+	2.18.1 (28/03/2026)
+	Various bugfixes after the somewhat hectic deployment of 2.18.
