@@ -268,9 +268,10 @@ export async function icon(appid, { officialFirst = true, defaultToBanner = true
 	let icon = null;
 	if(sgdbAuth)
 	{
+		const e = Function.noop;
 		icon = officialFirst
-			? (await getOfficialIcon(appid) || await getUnofficialIcon(appid))
-			: (await getUnofficialIcon(appid) || await getOfficialIcon(appid));
+			? (await getOfficialIcon(appid).catch(e) || await getUnofficialIcon(appid).catch(e))
+			: (await getUnofficialIcon(appid).catch(e) || await getOfficialIcon(appid).catch(e));
 	}
 
 	if(defaultToBanner)
