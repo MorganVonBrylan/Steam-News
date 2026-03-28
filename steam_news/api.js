@@ -250,8 +250,10 @@ function sgdb(path) {
 	return fetch(`https://www.steamgriddb.com/api/v2/${path}`, { headers: { Authorization: sgdbAuth } });
 }
 
-const iconCache = Object.create(null);
-iconCache[STEAM_APPID] = STEAM_ICON;
+const officialIconCache = Object.create(null);
+officialIconCache[STEAM_APPID] = STEAM_ICON;
+const sgdbCache = Object.create(null);
+sgdbCache[STEAM_APPID] = "https://steamcommunity.com/favicon.ico";
 /**
  * Return the official icon for the game, or if unavailable, one from Steam Grid DB.
  * @param {number} appid That app's id
@@ -262,11 +264,8 @@ iconCache[STEAM_APPID] = STEAM_ICON;
  */
 export async function icon(appid, { officialFirst = true, defaultToBanner = true } = {})
 {
-	if(appid in iconCache)
-		return iconCache[appid];
-
 	let icon = null;
-	if(sgdbAuth)
+	if(sgdbAuth || appid === STEAM_APPID)
 	{
 		const e = Function.noop;
 		icon = officialFirst
@@ -277,11 +276,19 @@ export async function icon(appid, { officialFirst = true, defaultToBanner = true
 	if(defaultToBanner)
 		icon ??= await banner(appid, banner.SMALL);
 
-	return iconCache[appid] = icon;
+	return icon;
 }
 
-async function getOfficialIcon(appid)
+/**
+ * Get the official icon for a game. These are low-res (32×32).
+ * @param {number} appid The game's Steam id
+ * @returns {Promise<?string>} The icon URL
+ */
+export async function getOfficialIcon(appid)
 {
+	if(appid in officialIconCache)
+		return officialIconCache[appid];
+
 	const idRes = await sgdb(`games/steam/${appid}`);
 	if(!idRes.ok)
 		return null;
@@ -296,11 +303,20 @@ async function getOfficialIcon(appid)
 
 	const { data } = await res.json();
 	const iconId = data.platforms.steam.metadata.icon;
-	return `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${appid}/${iconId}.jpg`;
+	const icon = `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${appid}/${iconId}.jpg`;
+	return officialIconCache[appid] = icon;
 }
 
-async function getUnofficialIcon(appid)
+/**
+ * Get the SteamGridDB icon for a game. These are higher-res than official ones but might not actually look like the official logo.
+ * @param {number} appid The game's Steam id
+ * @returns {Promise<?string>} The icon URL
+ */
+export async function getUnofficialIcon(appid)
 {
+	if(appid in sgdbCache)
+		return sgdbCache[appid];
+
 	const res = await sgdb(`icons/steam/${appid}?styles=official&types=static`);
 	if(!res.ok)
 		return null;
@@ -335,5 +351,6 @@ async function getUnofficialIcon(appid)
 				icon = urlSize < thumbSize ? url : thumb;
 		}
 	}
-	return icon;
+	
+	return sgdbCache[appid] = icon;
 }
