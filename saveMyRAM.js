@@ -28,7 +28,6 @@ export const cacheLimits = Options.cacheWithLimits({
 	...Options.DefaultMakeCacheSettings,
 	UserManager: 0,
 	GuildMemberManager: 0,
-	VoiceStateManager: 0,
 	ThreadMemberManager: 0,
 	StageInstanceManager: 0,
 	GuildForumThreadManager: 0,
@@ -45,6 +44,11 @@ export const cacheLimits = Options.cacheWithLimits({
 	GuildInviteManager: 0,
 	GuildScheduledEventManager: 0,
 	AutoModerationRuleManager: 0,
+	// These ones should be empty anyway but better safe than sorry
+	PresenceManager: 0,
+	ReactionManager: 0,
+	ReactionUserManager: 0,
+	VoiceStateManager: 0,
 });
 
 
