@@ -316,7 +316,7 @@
 				"fields": [
 					{
 						"name": "Dejar que el bot lo haga automáticamente",
-						"value": "Primero, debes otorgarle al bot los permisos de **administrar webhooks**.\nTras esto, puedes usar `/premium chameleon create` para crear un nuevo webhook, o `/premium chameleon auto` para crear automáticamente un webhook para todos los juegos que sigues, usando el nombre y el logo de cada juego.\nEl bot intenta usar solo un webhook por canal para no saturar, pero no te preocupes, sigue pudiendo cambiar su apariencia para cada juego!"
+						"value": "Primero, debes otorgarle al bot los permisos de **administrar webhooks**.\nTras esto, puedes usar `/premium chameleon auto` para crear automáticamente un webhook para todos los juegos que sigues, usando el nombre y el logo de cada juego.\nEl bot intenta usar solo un webhook por canal para no saturar, pero no te preocupes, sigue pudiendo cambiar su apariencia para cada juego!"
 					},
 					{
 						"name": "Configurar los webhooks manualmente",
