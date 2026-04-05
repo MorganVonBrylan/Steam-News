@@ -54,7 +54,7 @@ export async function run(inter)
 		getUnofficialIcon(appid),
 	])).map(({value, reason}) => {
 		if(value) return value;
-		console.warn("/branding error for app", appid, reason);
+		if(reason) console.warn("/branding error for app", appid, reason);
 		return null;
 	});
 	
