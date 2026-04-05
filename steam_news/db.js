@@ -354,66 +354,64 @@ Object.freeze(stmts);
 /* ********* BACKUPS ********* */
 /* *************************** */
 
-import AdmZip from "adm-zip";
 import { existsSync, mkdirSync } from "node:fs";
 import { rm } from "node:fs/promises";
 import { basename } from "node:path";
-import "../utils/prototypes.js";
 
 const { BACKUP_SCHEDULE } = process.env;
 console.log("Database backup schedule:", BACKUP_SCHEDULE);
 
 if(BACKUP_SCHEDULE)
 {
+	const { default: AdmZip } = await import("adm-zip");
 
-function padNum(number) {
-	return number.toString().padStart(2, 0);
-}
+	const backupsDir = `${import.meta.dirname}/_backups`;
+	if(!existsSync(backupsDir))
+		mkdirSync(backupsDir);
 
-const backupsDir = `${import.meta.dirname}/_backups`;
-if(!existsSync(backupsDir))
-	mkdirSync(backupsDir);
-
-function backupZipName(date = new Date()) {
-	if(date === "nextMonth") {
-		date = new Date();
-		date.setMonth(date.getMonth() + 1, 1);
+	function padNum(number) {
+		return number.toString().padStart(2, 0);
 	}
-	return `${backupsDir}/${date.getFullYear()}-${padNum(date.getMonth()+1)}.zip`;
-}
-function backupFileName(date = new Date()) {
-	return backupZipName(date).replace(".zip", `-${padNum(date.getDate())}.db`);
-}
+	function backupZipName(date = new Date()) {
+		if(date === "nextMonth") {
+			date = new Date();
+			date.setMonth(date.getMonth() + 1, 1);
+		}
+		return `${backupsDir}/${date.getFullYear()}-${padNum(date.getMonth()+1)}.zip`;
+	}
+	function backupFileName(date = new Date()) {
+		return backupZipName(date).replace(".zip", `-${padNum(date.getDate())}.db`);
+	}
 
-let backupZip = new AdmZip(existsSync(backupZipName()) ? backupZipName() : null);
-const backupDb = db.prepare("VACUUM INTO ?");
-scheduleBackup();
-
-function scheduleBackup()
-{
-	let next = new Date();
-	const currentMonth = next.getMonth();
-	next.setHours(0, 1, 0);
-	if(BACKUP_SCHEDULE === "daily")
-		next.setDate(next.getDate() + 1);
-	else
-		next.setDate(next.getDate() + 7 - next.getDay());
-
-	if(next.getMonth() !== currentMonth)
-		backupZip = new AdmZip();
-	setTimeout(backup, next.getTime() - Date.now());
-}
-async function backup()
-{
-	const fileName = backupFileName();
-	const zipName = backupZipName();
-	backupDb.run(fileName);
-	backupZip.addLocalFile(fileName);
-	backupZip.writeZip(zipName);
-	rm(fileName);
-
-	console.info("Database backed up:", basename(fileName), "into", basename(zipName));
+	const currentZip = backupZipName();
+	let backupZip = new AdmZip(existsSync(currentZip) ? currentZip : null);
+	const backupDb = db.prepare("VACUUM INTO ?");
 	scheduleBackup();
-}
 
+	function scheduleBackup()
+	{
+		const next = new Date();
+		const currentMonth = next.getMonth();
+		next.setHours(0, 1, 0);
+		if(BACKUP_SCHEDULE === "daily")
+			next.setDate(next.getDate() + 1);
+		else
+			next.setDate(next.getDate() + 7 - next.getDay());
+
+		if(next.getMonth() !== currentMonth)
+			backupZip = new AdmZip();
+		setTimeout(backup, next.getTime() - Date.now());
+	}
+	async function backup()
+	{
+		const fileName = backupFileName();
+		const zipName = backupZipName();
+		backupDb.run(fileName);
+		backupZip.addLocalFile(fileName);
+		backupZip.writeZip(zipName);
+		rm(fileName);
+
+		console.info("Database backed up:", basename(fileName), "into", basename(zipName));
+		scheduleBackup();
+	}
 } // if(BACKUP_SCHEDULE)
