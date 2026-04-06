@@ -122,6 +122,10 @@
 							}
 						}
 					}
+				},
+				"check": {
+					"name": "comprobar",
+					"description": "Comprueba de que caracteristicas premimum dispone usted y el este servidor."
 				}
 			}
 		},
@@ -250,6 +254,16 @@
 		"stats": {
 			"name": "estadisticas",
 			"description": "Muestra las estadísticas sobre el bot"
+		},
+		"branding": {
+			"name": "marca",
+			"description": "Obtiene el logo y banner de un juego.",
+			"options": {
+				"game": {
+					"name": "juego",
+					"description": "El nombre o id del juego"
+				}
+			}
 		}
 	},
 	"voting": {
@@ -377,8 +391,17 @@
 			"webhook-unset-price": "El webhook se ha desconectado para actualizaciones de precio.",
 			"webhook-unset-error": "No pude desconectar el webhook. Por favor, inténtalo más tarde.",
 			"all-decoupled": "Todos los webhooks han sido desconectados. Esto no elimina los webhooks, simplemente no serán usados para enviar noticias o rebajas.",
-			"nothing-decoupled": "Sin cambios. Parece que no estaba usando webhooks en este servidor."
-		}
+			"nothing-decoupled": "Sin cambios. Parece que no estaba usando webhooks en este servidor.",
+			"watch-suggestAuto": "La funcionalidad camaleon está activa en este servidor. Quiere personalizar automáticamente la suscripcion con el nombre y logo del juego?"
+		},
+		"server-subscription": "Membresía del servidor",
+		"no-subscription": "Este servidor carece de ninguna membresía.",
+		"sub-watchers": "Este servidor tiene la membresía de 👁️ más suscripciones 👁️",
+		"sub-chameleon": "Este servidor tiene la membresía de 🎭cameleón🎭.",
+		"sub-gold": "Este servidor tiene la membresía ✨oro✨",
+		"user-entitlements": "Membresías personales",
+		"has-rebrand": "Tiene un token de rebranding",
+		"has-rebrand-not-admin": "Tiene un token de rebranding, pero no puede usarlo en este servidor ya que no tiene permisos de administrador (A no ser que un administrador haya cambiado los permisos del comando `premium`)"
 	},
 	"error": "Se produjo un error.",
 	"api-failed": "La conexión a la API de Steam falló; por favor inténtelo de nuevo en unos minutos.",
@@ -421,6 +444,13 @@
 		"multi": "Multijugador",
 		"languages": "Idiomas",
 		"openInApp": "Abrir en aplicación"
+	},
+	"branding": {
+		"official": "Logo oficial para %s",
+		"official-fail": "Error al obtener el branding oficial.",
+		"dlc": "Esto es un DLC de %s",
+		"sgdb": "Logo no oficial",
+		"sgdb-explain": "El logo mejor valorado para este juego en SteamGridDB, usado cuando necesito un logo en alta resolución (los oficiales son 32×32)."
 	},
 	"locale": {
 		"current": "Su localización actual es %s (%s), con %s como el idioma preferido.",
