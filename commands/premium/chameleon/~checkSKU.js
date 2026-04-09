@@ -22,7 +22,7 @@ export function checkSKU(inter, reply = true)
 	else if(!chameleonGuilds.has(inter.guildId))
 	{
 		if(reply) inter.reply({flags: "Ephemeral",
-			content: tr.get(inter.locale, "premium.pay"),
+			content: tr.get(inter.locale, "premium.chameleon.pay"),
 			components: [storeButtons],
 		});
 		return false;
