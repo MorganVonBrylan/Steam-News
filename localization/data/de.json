@@ -1,6 +1,5 @@
 {
 	"discovery": "**Steam News** erlaubt dir, Neuigkeiten über Steam-Spiele und Preisänderungen direkt in einen Kanal deiner Wahl in deinem Discord-Server zu senden.\n\nEs hat außerdem ein Befehl, mit dem du Informationen über ein Spiel mit viel mehr Details anzeigen kannst, als wenn du einfach die Steam-URL in den Kanal schickst.",
-	
 	"commands": {
 		"help": {
 			"name": "hilfe",
@@ -45,7 +44,71 @@
 						"what": {
 							"name": "was",
 							"description": "Wähle aus, was zurückgesetzt werden soll",
-							"choices": ["Profilbild", "Banner", "Beide"]
+							"choices": [
+								"Profilbild",
+								"Banner",
+								"Beide"
+							]
+						}
+					}
+				},
+				"check": {
+					"name": "verifizieren",
+					"description": "Prüfe, welchen Premiumanspruch du und dein Server haben."
+				},
+				"chameleon": {
+					"name": "chamäleon",
+					"description": "Kommandos, um den Bot pro Spiel anzupassen.",
+					"options": {
+						"help": {
+							"name": "hilfe",
+							"description": "Erhalte eine Erklärung, wie man die Chamäleon-Features benutzt"
+						},
+						"list": {
+							"name": "auflisten",
+							"description": "Sehe alle Webhooks, die auf diesem Server aufgesetzt sind."
+						},
+						"set": {
+							"name": "konfigurieren",
+							"description": "Setze einen Beobachter auf, um den gegebenen Webhook zu benutzen",
+							"options": {
+								"watcher": {
+									"name": "beobachter",
+									"description": "Der Beobachter, der angepasst wird"
+								},
+								"webhook-url": {
+									"name": "webhook-url",
+									"description": "Der Webhook, der benuzt wird"
+								},
+								"name": {
+									"name": "name",
+									"description": "Benutzername, der für dieses spezifische Spiel benutzt wird"
+								},
+								"avatar": {
+									"name": "avatar",
+									"description": "URL des Avatars, der für dieses spezifische Spiel verwendet wird"
+								}
+							}
+						},
+						"unset": {
+							"name": "aufheben",
+							"description": "Entferne einen Beobachter von seinem Webhook. Dies löscht den Webhook nicht.",
+							"options": {
+								"watcher": {
+									"name": "beobachter",
+									"description": "Der aufzuhebende Beobachter"
+								}
+							}
+						},
+						"auto": {
+							"name": "auto",
+							"description": "Konfiguriere den Webhook eines Beobachters automatisch.",
+							"options": {
+								"watcher": {
+									"name": "beobachter",
+									"description": "Der anzupassende Beobachter."
+								}
+							}
 						}
 					}
 				}
@@ -96,7 +159,10 @@
 				"type": {
 					"name": "typ",
 					"description": "Sollen Nachrichten oder Preise beobachtet werden?",
-					"choices": ["Nachrichten", "Preis"]
+					"choices": [
+						"Nachrichten",
+						"Preis"
+					]
 				},
 				"game": {
 					"name": "spiel",
@@ -158,64 +224,60 @@
 		},
 		"stats": {
 			"name": "statistiken",
-    		"description": "Zeige Statistiken des Bots an"
+			"description": "Zeige Statistiken des Bots an"
+		},
+		"branding": {
+			"name": "branding",
+			"description": "Erhalte das Logo und Banner eines Spiels.",
+			"options": {
+				"game": {
+					"name": "spiel",
+					"description": "Der Name oder die ID des Spiels"
+				}
+			}
 		}
 	},
-
 	"voting": {
 		"thanks": "Danke fürs Abstimmen! Du kannst jetzt %s mehr Beobachter jedes Typs in jedem deiner Server hinzufügen."
 	},
-
 	"help": {
 		"title": "Steam News Hilfe",
 		"description": "**Steam News** ist ein Bot, der dir die Möglichkeit gibt, Nachrichten eines Stem-Spiels zu folgen, indem es Community-Ankündigungen, Patch Notes etc direkt in einen Kanal sendet.",
 		"fields": [
-			{ "name": "Wie folge ich Nachrichten/Preisen eines Spiels?", "value": "Füge einen Beobachter mit `/watch` hinzu, entferne ihn mit `/unwatch`." },
-			{ "name": "Wie vielen Spielen kann ich folgen?", "value": "Standardmäßig kannst du ${WATCH_LIMIT} Nachrichten und genauso vielen Preisen (Die zu verschiedenen Spielen gehören können) folgen. Du kannst ${WATCH_VOTE_BONUS} zusätzlichen Nachrichten und preisen folgen, wenn du auf Top.gg für uns stimmst (folge dem Link am Ende dieser Nachricht)." },
-			{ "name": "Der Bot hat die letzten Nachrichten nicht in der Sekunde geschickt, in der sie veröffentlicht wurden!", "value": "Das ist normal. Er prüft die Nachrichten einmal pro Stunde, also kann es bis zu einer Stunde Verzögerung geben." },
-			{ "name": "was ist mit NSFW Spielen?", "value": "Der Bot wird Informationen und Nachrichten über NSFW Spiele nur in NSFW Kanälen senden." },
-			{ "name": "Kann ich deinen Bot kopieren?", "value": "Gerne! Er ist open source unter der GNU GPL 3.0 Lizenz.\nHier ist das Git repository: ${repository}" },
-			{ "name": "Ich brauche immer noch Hilfe!", "value": "Das ist Schade. Du kannst dein Problem auf unserem Support-Server erklären: ${SUPPORT_SERVER}" },
-			{ "name": "Noch etwas", "value": "Magst du Steam News? Denk dran, auf Top.gg dafür abzustimmen: ${VOTE}" }
+			{
+				"name": "Wie folge ich Nachrichten/Preisen eines Spiels?",
+				"value": "Füge einen Beobachter mit `/watch` hinzu, entferne ihn mit `/unwatch`."
+			},
+			{
+				"name": "Wie vielen Spielen kann ich folgen?",
+				"value": "Standardmäßig kannst du ${WATCH_LIMIT} Nachrichten und genauso vielen Preisen (Die zu verschiedenen Spielen gehören können) folgen. Du kannst ${WATCH_VOTE_BONUS} zusätzlichen Nachrichten und preisen folgen, wenn du auf Top.gg für uns stimmst (folge dem Link am Ende dieser Nachricht)."
+			},
+			{
+				"name": "Der Bot hat die letzten Nachrichten nicht in der Sekunde geschickt, in der sie veröffentlicht wurden!",
+				"value": "Das ist normal. Er prüft die Nachrichten einmal pro Stunde, also kann es bis zu einer Stunde Verzögerung geben."
+			},
+			{
+				"name": "was ist mit NSFW Spielen?",
+				"value": "Der Bot wird Informationen und Nachrichten über NSFW Spiele nur in NSFW Kanälen senden."
+			},
+			{
+				"name": "Kann ich deinen Bot kopieren?",
+				"value": "Gerne! Er ist open source unter der GNU GPL 3.0 Lizenz.\nHier ist das Git repository: ${repository}"
+			},
+			{
+				"name": "Ich brauche immer noch Hilfe!",
+				"value": "Das ist Schade. Du kannst dein Problem auf unserem Support-Server erklären: ${SUPPORT_SERVER}"
+			},
+			{
+				"name": "Noch etwas",
+				"value": "Magst du Steam News? Denk dran, auf Top.gg dafür abzustimmen: ${VOTE}"
+			}
 		],
-		"footer": { "text": "Steam News v${v} von ${author}.\nIns Deutsche übersetzt von jemand2001" },
+		"footer": {
+			"text": "Steam News v${v} von ${author}.\nIns Deutsche übersetzt von jemand2001"
+		},
 		"donate": "Du kannst auch eine Spende machen:"
 	},
-
-	"error": "Ein Fehler ist aufgetreten.",
-	"api-failed": "Die Verbindung zur Steam API ist fehlgeschlagen. Bitte versuchen Sie es in einigen Minuten erneut.",
-	"api-403": "Zugriff auf dieses Spiel wurde verweigert (Fehler 403).",
-	"api-err": "Datenabruf ist fehlgeschlagen (Fehler %s).",
-	"no-match": "Kein Spiel gefunden, das zu \"%s\" passt.",
-	"bad-appid": "Die angegebene ID gehört nicht zu einer Steam-App.",
-	"no-DLC-news": "DLCs haben keine Nachrichten.",
-	"no-news": "Diese App hat keine Nachrichten.",
-	"NSFW-content-news": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seine Nachrichten nur in einem NSFW-Kanal anzeigen.",
-	"NSFW-content-price": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seinen Preis nur in einem NSFW-Kanal anzeigen.",
-
-	"table": "Tabelle",
-
-	"info": {
-		"yes": "Ja", "no": "Nein",
-		"invalidAppid": "Die angegebene ID gehört nicht zu einer Steam-App.",
-		"nsfwForbidden": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seine Informationen nur in einem NSFW-Kanal anzeigen.",
-		"comingSoon": "*kommt bald*",
-		"genre": "Genre", "genres": "Genres", "none": "*nichts*",
-		"metacritic": "Metacritic Punkte", "unknown": "*Unbekannt*",
-		"nsfw": "NSFW",
-		"releaseDate": "Veröffentlichungsdatum",
-		"price": "Preis", "free": "Kostenlos", "undefined": "unbestimmt",
-		"DLC": "DLC", "game": "Spiel:",
-		"platforms": "Plattformen",
-		"controllerSupport": "Controllerunterstützung",
-		"controller_no": "Keine",
-		"controller_partial": "Teilweise",
-		"controller_full": "Volle",
-		"multi": "Multiplayer",
-		"languages": "Sprachen",
-		"openInApp": "In der App öffnen"
-	},
-
 	"premium": {
 		"rebrand": {
 			"disabled": "Entschuldigung! Die Fähigkeit, die Darstellung zu ändern, ist momentan deaktiviert.",
@@ -229,18 +291,145 @@
 			"grace": "Falls du deine Meinung änderst oder Änderungen vornehmen möchtest, kannst du dieses Kommando innerhalb der nächsten Stunde kostenlos nochmal benutzen.",
 			"resetFailure": "Das Zurücksetzen des Aussehens ist mit der Nachricht '%s' fehlgeschlagen.",
 			"resetSuccess": "Mein Aussehen wurde zurückgesetzt.\nFalls du keine Änderung siehst, lade Discord neu."
-		}
+		},
+		"chameleon": {
+			"disabled": "Entschuldigung! Chamäleon-Features sind momentan deaktiviert.",
+			"pay": "Du brauchst ein Abonnement, um auf dieses Feature zuzugreifen.",
+			"help": {
+				"title": "Hilfe für Chamäleon",
+				"description": "Zuerst braucht dein Server ein Abonnement für entweder Chamäleon oder den Gold-Plan (siehe Knöpfe unten).\nWenn du abonniert bist, werden Chamäleon-Features in deinem Server aktiviert. Der Bot verwendet **Webhooks**, um Nachrichten/Ausverkaufe für jedes Spiel unterschiedlich abzuschicken.\nEs gibt zwei Arten, diese Webhooks aufzusetzen:",
+				"fields": [
+					{
+						"name": "Dem Bot überlassen",
+						"value": "Zuerst musst du dem Bot die Berechtigung **Webhooks verwalten** geben.\nWenn dies getan ist, kannst du `/premium chameleon auto` verwenden, um automatisch einen Webhook für jedes deiner beobachteten Spiele zu erstellen, wobei jeweils der Name und das Logo des Spiels verwendet wird.\nDer Bot versucht, für jeden Kanal nur einen Webhook anzulegen, um Unordnung zu vermeiden, aber keine Sorge, er kann trotzdem sein Aussehen für jedes Spiel ändern!"
+					},
+					{
+						"name": "Die Webhooks selbst einrichten",
+						"value": "Zuerst erstellst du einen Webhook, indem du die Kanaleinstellungen öffnest und dort in \"Integrationen\" gehst. Da kannst du seinen Namen und Avatar anpassen.\nDann kopierst du seine URL.\nBenutze zuletzt `/webhook chameleon set`, um diesen Webhook einem gegebenen Beobachter zuzuweisen."
+					}
+				]
+			},
+			"price": "Preis",
+			"news": "Nachrichten",
+			"steam": "Steam",
+			"no-webhooks": "Du hast keine Webhooks aufgesetzt.",
+			"webhooks": "Die Webhooks von Steam News auf diesem Server",
+			"webhook-name": "Name des Webhooks: %s",
+			"name-used": "Verwendeter Name: %s",
+			"avatar-used": "Verwendeter Avatar: %s",
+			"invalid-avatar-url": "Konnte die Daten des Avatars nicht erhalten. Bist du sicher, dass du eine valide URL angegeben hast?",
+			"not-an-image": "Die URL, die du übergeben hast, zeigt nicht auf ein Bild.",
+			"too-large": "Dieser Avatar ist zu groß. Das Maximum ist 3 MB.",
+			"invalid-url": "Du hast keine valide Webhook-URL angegeben.",
+			"wrong-token": "Ich scheine unfähig zu sein, diesen Webhook zu benutzen. Bist du sicher, dass du die volle, korrekte URL angegeben hast?",
+			"not-found": "Ich konnte keinen Webhook mit dieser URL finden. Entweder war das die falsche URL oder der Webhook wurde gelöscht.",
+			"wrong-channel": "Dieser Webhook gehört zu einem anderen Kanal als dem, in welchem die Nachrichten dieses Spiels gesendet werden.\nKanäle teilen ihre Webhooks nur mit ihren Threads.",
+			"server-error": "Die Discord-Server hatten einen Fehler, während ich versuchte, diese Webhook-URL zu überprüfen. Bitte versuche es später nochmal.",
+			"unknown-error": "Erhielt den Fehler %s, während ich versuchte, die Webhook-URL zu validieren.",
+			"watch-suggestAuto": "Chamäleon-Vorteile sind auf diesem Server aktiviert. Möchtest du diesen neuen Beobachter automatisch mit dem Namen und Logo des Spiels anpassen?",
+			"all": "Alle Webhooks",
+			"webhook-set": "Der Webhook wurde gesetzt.",
+			"webhook-test": "Du kannst ihn testen, indem du ${latest} mit diesem Spiel in ${channel} oder einem seiner Threads verwendest.",
+			"webhook-test-steam": "Du kannst ihn testen, indem du ${latest} in ${channel} oder einem seiner Threads verwendest.",
+			"webhook-set-price": "Der Webhook wurde für Anpassungen am Preis gesetzt.",
+			"webhook-set-suggestAuto": "Du hast keinen Spitznamen oder Avatar für diesen Beobachter gesetzt. Möchtest du, dass er den Namen und das Logo des Spiels verwendet?\n-# (du musst dies nicht tun, wenn der Webhook bereits angepasst wurde)",
+			"webhook-set-auto": "Passe den Beobachter automatisch an",
+			"webhook-set-autoset": "Der Beobachter wurde automatisch mit dem Namen und Logo des Spiels angepasst.",
+			"webhook-set-autoset-error": "❌ Der Beobachter konnte nicht automatisch mit dem Namen und Logo des Spiels angepasst werden.",
+			"unknown-watcher": "Ich konnte diesen Beobachter nicht finden. Bitte stelle sicher, dass du eine Option von der automatischen Vervollständigung verwendest.",
+			"webhook-set-error": "Ich konnte den Webhook nicht setzen. Bitte versuche es später erneut.",
+			"webhook-auto-create": "Erstellt von %s mit /premium chameleon auto",
+			"webhook-auto-created": "Webhook erstellt:",
+			"webhook-auto-reused": "Webhook benutzt:",
+			"webhook-auto-info": "${name} (${id})\n\nEr wird diesen Namen für dieses Spiel verwenden **${nickname}**\nund diesen Avatar: ${avatar}",
+			"webhook-auto-price": "Er wird für Preis-Anpassungen verwendet.",
+			"webhook-auto-successes": "Webhooks aufgesetzt.",
+			"webhook-auto-failures": "Fehler beim Aufsetzten von Webhooks",
+			"webhook-auto-errors": "Verschiedene Fehler",
+			"webhook-auto-explain": "Spiele im selben Kanal verwenden denselben Webhook, werden aber trotzdem unterschiedliche Avatare und Spitznamen haben. Außerdem teilen Kanäle ihre Webhooks mit ihren Threads.",
+			"webhook-auto-for": "für ${games}",
+			"webhook-auto-forMany": "für ${someGames} und ${number} more",
+			"webhook-auto-nothing": "Kein Webhook wurde gesetzt. Du hast keine Beobachter, die noch keinen Webhook verwenden. Wenn du alle Webhooks entfernen möchtest, verwende %s",
+			"channel-not-found": "Ich konnte den Kanal für diesen Beobachter nicht finden. Er wurde wahrscheinlich gelöscht oder ich habe darauf keinen Zugriff mehr.",
+			"channel-not-found-short": "Kanal nicht gefunden oder privat",
+			"missing-permissions": "Ich kann in diesem Kanal keine Webhooks erstellen.",
+			"missing-permissions-short": "fehlende Berechtigungen",
+			"database-fail": "Konnte die Datenbank nicht verändern. Dies ist ein schwerwiegender Fehler, bitte zeige ihn im Support-Server an.",
+			"database-fail-short": "konnte die Datenbank nicht ändern",
+			"error-bundle": "Fehler \"${error}\" in diesen Kanälen: ${channels}",
+			"unknown-error-bundle": "Andere Fehler für diese Kanäle: ${channels}",
+			"auto-create-error": "Erhielt diesen Fehler beim Versuch, den Webhook zu setzen: %s",
+			"webhook-unset": "Der Webhook wurde abgehängt.",
+			"webhook-unset-price": "Der Webhook wurde für Preis-Updates abgehängt.",
+			"webhook-unset-error": "Ich konnte den Webhook nicht abhängen. Bitte versuche es später noch einmal.",
+			"all-decoupled": "Alle Webhooks wurden abgehängt. Bitte beachte, dass dies die Webhooks nicht gelöscht hat, sie werden nur nicht mehr verwendet, um Nachrichten oder Verkäufe zu schicken.",
+			"nothing-decoupled": "Keine Änderungen. Es scheint, als hätte ich in diesem Server keine Webhooks verwendet."
+		},
+		"server-subscription": "Server-Abonnement",
+		"no-subscription": "Dieser Server hat kein Abonnement.",
+		"sub-watchers": "Dieser Server hat das Abonnement 👁️mehr Beobachter👁️.",
+		"sub-chameleon": "Dieser server hat das Abonnement 🎭Chamäleon🎭.",
+		"sub-gold": "Dieser Server hat den ✨Gold-Plan✨",
+		"user-entitlements": "Persönliche Ansprüche",
+		"has-rebrand": "Du hast einen Rebrand-Token.",
+		"has-rebrand-not-admin": "Du hast einen Rebrand-Token, kannst ihn in diesem Server aber nicht verwenden, da du kein Admin bist (außer, ein Admin hat die Berechtigungen für das Kommando `premium` geändert)."
 	},
-
+	"error": "Ein Fehler ist aufgetreten.",
+	"api-failed": "Die Verbindung zur Steam API ist fehlgeschlagen. Bitte versuchen Sie es in einigen Minuten erneut.",
+	"api-403": "Zugriff auf dieses Spiel wurde verweigert (Fehler 403).",
+	"api-err": "Datenabruf ist fehlgeschlagen (Fehler %s).",
+	"no-match": "Kein Spiel gefunden, das zu \"%s\" passt.",
+	"bad-appid": "Die angegebene ID gehört nicht zu einer Steam-App.",
+	"no-DLC-news": "DLCs haben keine Nachrichten.",
+	"no-news": "Diese App hat keine Nachrichten.",
+	"NSFW-content-news": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seine Nachrichten nur in einem NSFW-Kanal anzeigen.",
+	"NSFW-content-price": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seinen Preis nur in einem NSFW-Kanal anzeigen.",
+	"used-command": "${user} ha usado ${command}",
+	"table": "Tabelle",
+	"page-display": "${current}/${total}",
+	"choose-page": "Elige una página entre 1 y %s",
+	"page-number": "Número de página",
+	"info": {
+		"yes": "Ja",
+		"no": "Nein",
+		"invalidAppid": "Die angegebene ID gehört nicht zu einer Steam-App.",
+		"nsfwForbidden": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seine Informationen nur in einem NSFW-Kanal anzeigen.",
+		"comingSoon": "*kommt bald*",
+		"genre": "Genre",
+		"genres": "Genres",
+		"none": "*nichts*",
+		"metacritic": "Metacritic Punkte",
+		"unknown": "*Unbekannt*",
+		"nsfw": "NSFW",
+		"releaseDate": "Veröffentlichungsdatum",
+		"price": "Preis",
+		"free": "Kostenlos",
+		"undefined": "unbestimmt",
+		"DLC": "DLC",
+		"game": "Spiel:",
+		"platforms": "Plattformen",
+		"controllerSupport": "Controllerunterstützung",
+		"controller_no": "Keine",
+		"controller_partial": "Teilweise",
+		"controller_full": "Volle",
+		"multi": "Multiplayer",
+		"languages": "Sprachen",
+		"openInApp": "In der App öffnen"
+	},
+	"branding": {
+		"official": "Offizielles %s-Branding",
+		"official-fail": "Konnte das offizielle Branding nicht holen.",
+		"dlc": "Dies ist ein DLC von %s",
+		"sgdb": "Inoffizielles Logo",
+		"sgdb-explain": "Das höchstbewertete Logo für dieses Spiel auf SteamGridDB, verwendet wenn ich ein hochaufgelöstes Logo brauche (die offiziellen sind 32×32)."
+	},
 	"locale": {
 		"current": "Deine momentane Region ist %s (%s), mit %s als bevorzugte Sprache.",
 		"no-default": "Dieser Server hat keine Standardlokalisierung.",
 		"new-default": "Die Standardregion dieses Servers ist nun %s (%s), mit %s als bevorzugte Sprache.",
-
 		"cc-required": "Du musst den zweibuchstabigen Ländercode eines Landes angeben.\nDie Liste kannst du hier finden: %s",
 		"cc-invalid": "Das ist kein gültiger Ländercode.\nDie Liste kannst du hier finden: %s",
-
-		 "languages": {
+		"languages": {
 			"ar": "Arabisch",
 			"br": "Bulgarisch",
 			"zh-CN": "vereinfachtes Chinesisch",
@@ -272,37 +461,30 @@
 			"vn": "Vietnamesisch"
 		}
 	},
-
 	"price": {
 		"sale": "Heruntergesetzt!",
 		"published": "Das Spiel wurde veröffentlicht! Es kostet **%s**",
 		"openInApp": "In der App öffnen"
 	},
-
 	"watch": {
 		"cannot-see": "Ich kann nicht auf %s zugreifen.",
 		"cannot-send": "Ich kann in %s keine Nachrichten senden.",
 		"cannot-embed": "Ich kann in %s keine Embeds senden.",
-
 		"price-free": "Dieses Spiel ist kostenlos!",
 		"price-unknown": "Fehler: Konnte keinen Preis für dieses Spiel finden.",
-
 		"error-retrieving-details": "Allerdings ist beim Versuch, die Details der App zu bekommen, ein Fehler aufgetreten. Sie könnte eine Weile lang “undefined” heißen.",
-
 		"server-limit-reached": "Warnung: Du hast deine Grenze von ${LIMIT} Spielen pro Server erreicht.\nStimme für mich auf [Top.gg](${vote}) oder kaufe **Premium**, um bis zu ${MAX_BONUS} weitere zu beobachten.",
 		"server-limit-reached-voted": "Warnung: Du hast deine Grenze von %s Spielen pro Server erreicht. Kaufe **Premium**, um sie zu erhöhen.",
 		"server-max-reached": "Warnung: Du hast die Grenze von %s Spielen pro Server erreicht.",
-
 		"error-limit-reached": "Du hast die Basisgrenze von ${LIMIT} Beobachtern pro Server erreicht oder überschritten.\nStimme für mich auf [Top.gg](${vote}) oder kaufe **Premium**, um bis zu ${MAX_BONUS} weitere zu beobachten.",
 		"error-limit-reached-voted": "Entschuldigung, du hast deine Grenze von %s Beobachtern pro Server erreicht. Kaufe **Premium**, um es zu erhöhen.",
 		"error-max-reached": "Entschuldigung, du hast die Grenze von %s Beobachtern pro Server erreicht.",
-
 		"confirm-price": "Änderungen im Preis von %s werden nun in %s gesendet.",
 		"confirm-news": "Nachrichten zu %s werden nun in %s gesendet.",
 		"already-price": "Änderungen im Preis von %s werden in diesem Server schon beobachtet.",
-		"already-news": "Nachrichten zu %s werden in diesem Server schon beobachtet."
+		"already-news": "Nachrichten zu %s werden in diesem Server schon beobachtet.",
+		"webhook-auto-unset": "Da der Kanal des Beobachters geändert wurde, wurde der Webhook entfernt."
 	},
-
 	"watched": {
 		"games-watched": "In diesem Server beobachtete Spiele",
 		"prices-watched": "In diesem Server beobachtete Preise",
@@ -321,28 +503,27 @@
 		"id": "ID: %s",
 		"NSFW-yes": "NSFW: Ja",
 		"NSFW-no": "NSFW: Nein",
-		"channel": "Kanal: %s"
+		"channel": "Kanal: %s",
+		"steam-watched-webhook": "Nachrichten über **Steam** gesendet in %s mit einem Webhook",
+		"webhook": "(mit Webhook)"
 	},
-
 	"unwatch": {
 		"news-unwatched": "%s wird in diesem Server nicht mehr beobachtet.",
 		"news-unchanged": "%s wurde in diesem Server noch nicht beobachtet.",
 		"price-unwatched": "Der Preis von %s wird in diesem Server nicht mehr beobachtet.",
 		"price-unchanged": "Der Preis von %s wurde in diesem Server noch nicht beobachtet."
 	},
-
 	"steam": {
-	    "watched": "Nachrichten über Steam werden nun in %s geschickt.",
-	    "unwatched": "Nachrichten über Steam werden in diesem Server nicht mehr beobachtet."
+		"watched": "Nachrichten über Steam werden nun in %s geschickt.",
+		"unwatched": "Nachrichten über Steam werden in diesem Server nicht mehr beobachtet."
 	},
-
 	"stats": {
 		"watchers": "Nachrichtenbeobachter",
-	    "games-watched": "Anzahl an beobachteten Spielen",
-	    "most-watched": "Am meisten beobachtetes Spiel",
-	    "n-watchers": "%s Beobachter",
-	    "price-watchers": "Preisbeobachter",
-	    "prices-watched": "Beobachtete Preise",
-	    "active-since": "Aktiv seit"
+		"games-watched": "Anzahl an beobachteten Spielen",
+		"most-watched": "Am meisten beobachtetes Spiel",
+		"n-watchers": "%s Beobachter",
+		"price-watchers": "Preisbeobachter",
+		"prices-watched": "Beobachtete Preise",
+		"active-since": "Aktiv seit"
 	}
 }

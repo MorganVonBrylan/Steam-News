@@ -469,7 +469,7 @@
 		"confirm-news": "%s’s news will now be sent into %s.",
 		"already-price": "%s’s price was already watched in this server.",
 		"already-news": "%s’s news feed was already watched in this server.",
-		"webhook-auto-unset": "Since the watcher channel changed, the webhook has been unset."
+		"webhook-auto-unset": "Because the watcher channel changed, the webhook has been unset."
 	},
 
 	"watched": {
