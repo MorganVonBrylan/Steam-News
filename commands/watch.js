@@ -158,7 +158,7 @@ export async function run(inter)
 		inter.editReply(reply);
 	}, async err => {
 		await defer;
-		if(err instanceof TypeError && err.message.includes("appid"))
+		if(err instanceof TypeError && err.message.includes("appid") || err.message.includes(appid))
 			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "bad-appid")});
 		else if(err instanceof RangeError)
 		{
