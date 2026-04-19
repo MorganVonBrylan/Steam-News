@@ -120,9 +120,9 @@ export class Webhook {
 	 * @param {idAndToken} idAndToken The webhook's id and token
 	 * @param {boolean} [checkOnly] Whether to just check if the webhook exists
 	 */
-	static fetch(idAndToken, checkOnly = false) {
-		return fetch(Webhook.url(idAndToken), {method: checkOnly ? "HEAD" : "GET"})
-			.then(res => checkOnly ? res.ok : res.json());
+	static async fetch(idAndToken, checkOnly = false) {
+		const res = await fetch(Webhook.url(idAndToken), {method: checkOnly ? "HEAD" : "GET"})
+		return checkOnly ? res.ok : res.json();
 	}
 
 	/**
