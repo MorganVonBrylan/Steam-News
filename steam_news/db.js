@@ -354,6 +354,15 @@ Object.freeze(stmts);
 
 
 
+/****** TEMPORARY FIX, REMOVE IN NEXT VERSION ****/
+for(const app of db.prepare("SELECT appid, latest FROM Apps WHERE typeof(latest) = 'text'").all())
+{
+	app.latest = new Date(app.latest).getTime() / 1000;
+	stmts.updateLatest(app);
+}
+
+
+
 /* *************************** */
 /* ********* BACKUPS ********* */
 /* *************************** */

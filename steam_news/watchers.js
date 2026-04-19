@@ -453,7 +453,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 		{
 			stmts.insertApp(appid, details.name,
 				+isNSFW(details),
-				appnews.newsitems[0]?.date,
+				timestamp(appnews.newsitems[0]?.date),
 				knownPrice = details.is_free ? "free" : details.price_overview?.final,
 			);
 		}
