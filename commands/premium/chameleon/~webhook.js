@@ -152,7 +152,8 @@ export class Webhook {
 	 */
 	constructor(webhookInfo, threadId) {
 		Object.assign(this, parseWebhookInfo(webhookInfo));
-		this.url = `${Webhook.BASE_URL}${path}${this.thread ? `?thread_id=${threadId}` : ""}`;
+		const threadParam = this.thread ? `?thread_id=${threadId}` : "";
+		this.url = `${Webhook.BASE_URL}${this.idAndToken}${threadParam}`;
 	}
 
 	/**
