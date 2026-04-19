@@ -10,7 +10,7 @@ import {
 import { icon, STEAM_APPID } from "../../../steam_news/api.js";
 import { formatWebhookInfo, Webhook } from "./~webhook.js";
 import { ALL_WEBHOOKS } from "./~autocomplete.js";
-import fetchImage from "../../../utils/fetchImage.js";
+import fetchImage from "../../../utils/fetchImage.function.js";
 import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
 const MANAGE_WEBHOOKS = PERMISSIONS.ManageWebhooks;
 import { FieldList, sendEmbeds } from "../../../utils/embeds.js";
