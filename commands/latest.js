@@ -12,7 +12,7 @@ const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages;
 
 import { chameleonGuilds } from "../steam_news/VIPs.js";
 import { Webhook } from "./premium/chameleon/~webhook.js";
-import { getWebhook } from "../steam_news/db_api.js";
+import { getWebhook, getLocale } from "../steam_news/db_api.js";
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
@@ -88,9 +88,10 @@ export async function run(inter)
 					webhookInfo += "#t";
 				const webhook = new Webhook(webhookInfo, channel.id);
 				const command = cmdMention(inter);
+				const locale = getLocale(guildId)?.lang || lang;
 				try {
 					await webhook.send({embeds: [
-						{ description: t("used-command", { user: inter.user, command }) },
+						{ description: tr.get(locale, "used-command", { user: inter.user, command }) },
 						news,
 					]});
 					if(news.yt)

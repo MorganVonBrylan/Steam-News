@@ -1,7 +1,7 @@
 
 import { querySteam } from "../steam_news/api.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
-import { getWebhook } from "../steam_news/db_api.js";
+import { getWebhook, getLocale } from "../steam_news/db_api.js";
 import { Webhook } from "./premium/chameleon/~webhook.js";
 import { mention as cmdMention } from "../utils/commands.js";
 import { chameleonGuilds } from "../steam_news/VIPs.js";
@@ -32,6 +32,7 @@ export async function run(inter) {
 			webhookInfo += "#t";
 		const webhook = new Webhook(webhookInfo, channel.id);
 		const command = cmdMention(inter);
+		const locale = getLocale(guildId)?.lang || lang;
 		try {
 			await webhook.send({embeds: [
 				{ description: tr.get(locale, "used-command", { user, command }) },

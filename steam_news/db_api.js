@@ -56,6 +56,14 @@ export const getAppName = stmts.getAppName;
  */
 export const isNSFW = stmts.isAppNSFW;
 
+
+/**
+ * @type {(guildId:string)=>?{cc:string, lang:string}}
+ * Get a server's locale
+ */
+export const getLocale = stmts.getLocale;
+
+
 /**
  * @param {string} guildId The guild id
  * @param {boolean} includeSteam Whether to include the Steam News Hub
