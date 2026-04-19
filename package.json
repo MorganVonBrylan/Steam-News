@@ -1,6 +1,6 @@
 {
   "name": "steam-news",
-  "version": "2.18.1",
+  "version": "2.19.0",
   "description": "Discord bot to follow game news",
   "main": "bot.js",
   "type": "module",

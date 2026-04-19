@@ -197,3 +197,7 @@ Added support for uploading the stats and command list to discordbotlist.com
 
 	2.18.1 (28/03/2026)
 	Various bugfixes after the somewhat hectic deployment of 2.18.
+
+2.19 (19/04/2026)
+Added /premium chameleon customize.
+Fixed some bugs, including a big one regarding the format of App.latest.
