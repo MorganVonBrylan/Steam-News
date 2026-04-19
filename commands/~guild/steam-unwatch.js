@@ -1,11 +1,9 @@
 
-import { stmts } from "../../steam_news/db.js";
-import { STEAM_APPID } from "../../steam_news/api.js";
-const { getSteamChannel, unwatchSteam, isSteamWatched, updateLatest } = stmts;
+import { unwatchSteam } from "../../steam_news/db_api.js";
 
 import { guildCommands } from "@brylan/djs-commands";
 
-export { getSteamChannel as shouldCreateFor };
+export { getSteamChannel as shouldCreateFor } from "../../steam_news/db_api.js";
 const deleteCmd = guildCommands.deleteCmd.bind(null, "steam-unwatch");
 
 export const defaultMemberPermissions = "0";
@@ -15,6 +13,4 @@ export async function run(inter)
 	unwatchSteam(inter.guildId);
 	inter.reply({ flags: "Ephemeral", content: tr.get(inter.locale, "steam.unwatched") });
 	deleteCmd(inter.guild);
-	if(!isSteamWatched())
-		updateLatest({ appid: STEAM_APPID, latest: null });
 }

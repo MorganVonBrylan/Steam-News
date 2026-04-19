@@ -1,8 +1,7 @@
 
 import { getDetails, isNSFW, steamAppLink, HTTPError } from "../steam_news/api.js";
 import { interpretAppidOption } from "../utils/commands.js";
-import { stmts } from "../steam_news/db.js";
-const { getLocale } = stmts;
+import { getLocale } from "../steam_news/db_api.js";
 import locales from "../localization/locales.js";
 const { langToCountry, languageCodes } = locales;
 

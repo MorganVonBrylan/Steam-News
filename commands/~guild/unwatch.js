@@ -6,8 +6,7 @@ import {
 } from "../../steam_news/watchers.js";
 import { guildCommands } from "@brylan/djs-commands";
 import { gameToOption } from "../../utils/commands.js";
-import { stmts } from "../../steam_news/db.js";
-const { isWatched, updateLatest } = stmts;
+import { isWatched, updateLatest } from "../../steam_news/db_api.js";
 
 const MAX_OPTIONS = 25;
 const CMD_NAME = "unwatch";

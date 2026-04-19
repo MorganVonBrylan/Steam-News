@@ -186,7 +186,7 @@ export const stmts = dictionary({
 		(SELECT COUNT(DISTINCT appid) FROM Watchers) AS "watchedApps",
 		(SELECT COUNT('*') FROM PriceWatchers) AS "priceWatchers",
 		(SELECT COUNT(DISTINCT appid) FROM PriceWatchers) AS "watchedPrices",
-		name as "maxName", MAX((SELECT COUNT(channelId) FROM Watchers w WHERE a.appid = w.appid)) AS "maxWatchers"
+		name as "mostWatchedName", MAX((SELECT COUNT(channelId) FROM Watchers w WHERE a.appid = w.appid)) AS "mostWatchedTotal"
 		FROM Apps a;
 	`),
 

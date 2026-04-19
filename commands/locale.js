@@ -1,7 +1,6 @@
 
 import onAutocompleteError from "../autocomplete/_errorHandler.js";
-import { stmts } from "../steam_news/db.js";
-const { getCC, getLocale, setLocale } = stmts;
+import { getCC, getLocale, setLocale } from "../steam_news/db_api.js";
 import locales from "../localization/locales.js";
 const {
 	codeToCountry,

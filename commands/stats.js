@@ -1,6 +1,5 @@
 
-import { stmts } from "../steam_news/db.js";
-const { getStats } = stmts;
+import { getStats } from "../steam_news/db_api.js";
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
@@ -15,7 +14,7 @@ export async function run(inter)
 		fields: [
 			{ name: t("watchers"), value: ""+stats.watchers, inline: true },
 			{ name: t("games-watched"), value: ""+stats.watchedApps, inline: true },
-			{ name: t("most-watched"), value: `${stats.maxName} *(${t("n-watchers", stats.maxWatchers)})*` },
+			{ name: t("most-watched"), value: `${stats.mostWatchedName} *(${t("n-watchers", stats.mostWatchedTotal)})*` },
 			{ name: t("price-watchers"), value: ""+stats.priceWatchers, inline: true },
 			{ name: t("prices-watched"), value: ""+stats.watchedPrices, inline: true },
 		],

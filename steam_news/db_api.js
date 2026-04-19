@@ -59,15 +59,65 @@ export const isNSFW = stmts.isAppNSFW;
 
 
 /**
+ * @type {(guildId:string)=>?string}
+ * Get a server's country code
+ */
+export const getCC = stmts.getCC;
+/**
  * @type {(guildId:string)=>?{cc:string, lang:string}}
  * Get a server's locale
  */
 export const getLocale = stmts.getLocale;
+/**
+ * @type {(guildId:string, cc:string, lang:string)=>boolean}
+ * Change a server's locale
+ * @param guildId The guild id
+ * @param cc The 2-letter country code
+ * @param lang The language code (e.g fr or en-US)
+ * @returns Whether the locale was set
+ */
+export const setLocale = stmts.setLocale;
 
 
 /**
+ * @type {(params: {guildId:string, channelId:string, roleId:?string})=>boolean}
+ * Set or update a Steam watcher.
+ * @param params The watcher info
+ * @returns Whether the watcher was sucessfully set/updated
+ */
+export const watchSteam = stmts.watchSteam;
+
+/**
+ * @type {(guildId:string)=>?string}
+ * Get the channel where Steam news are sent.
+ * @param guildId The guild id
+ * @returns The channel id, or null if Steam is not watched in this server.
+ */
+export const getSteamChannel = stmts.getSteamChannel;
+
+/**
+ * Stop watching the Steam News Hub in a given server.
  * @param {string} guildId The guild id
- * @param {boolean} includeSteam Whether to include the Steam News Hub
+ */
+export function unwatchSteam(guildId)
+{
+	stmts.unwatchSteam(guildId);
+	if(!stmts.isSteamWatched())
+		updateLatest({ appid: STEAM_APPID, latest: null });
+}
+
+
+/**
+ * @type {(params: {appid:number, latest:?number})=>*}
+ * Update the latest known news date for an app.
+ * @param params.appid The app id
+ * @param params.latest A UNIX timestamp in seconds
+ */
+export const updateLatest = stmts.updateLatest;
+
+/**
+ * @param {string} guildId The guild id
+ * @param {boolean} includeSteam Whether to include the Steam News Hub. It will always be the last element.
  * @returns {NewsWatcher[]} The apps watched in that guild, in the format {appid, name, nsfw, channelId}
  */
 export function getWatchedApps(guildId, includeSteam = false)
@@ -81,6 +131,12 @@ export function getWatchedApps(guildId, includeSteam = false)
 	}
 	return apps;
 }
+
+/**
+ * @type {(appid:number)=>boolean}
+ * Get whether an app is watched in at least one server.
+ */
+export const isWatched = stmts.isWatched;
 
 const watcherGetters = fixedDictionary({
 	news: stmts.getWatcher,
@@ -239,3 +295,10 @@ export const purgeChannel = channelId => !!stmts.purgeChannel(channelId.id || ch
  */
 export const purgeApp = appid => !!db.run("DELETE FROM Apps WHERE appid = ?", appid).changes;
 // Not prepared because it is rare
+
+
+/**
+ * @type {()=>{watchers:number, watchedApps:number, priceWatchers:number, watchedPrices:number, mostWatchedName:string, mostWatchedTotal:number}}
+ * Get the bot's watcher statistics.
+ */
+export const getStats = stmts.getStats;

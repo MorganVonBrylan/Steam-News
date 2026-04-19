@@ -1,14 +1,14 @@
 
 import { getWatchedApps, getWatchedPrices } from "../steam_news/watchers.js";
-import { stmts } from "../steam_news/db.js";
-const { getSteamWatcher } = stmts;
+import { STEAM_APPID } from "../steam_news/api.js";
 import { sendEmbeds } from "../utils/embeds.js";
 
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export function run(inter) {
 	const t = tr.set(inter.locale, "watched");
 	const { guild } = inter;
-	const watched = getWatchedApps(guild.id);
+	const watched = getWatchedApps(guild.id, true);
+	const steamWatch = watched.at(-1).appid === STEAM_APPID ? watched.pop() : null;
 	const watchedPrices = getWatchedPrices(guild.id);
 
 	const embeds = [
@@ -16,7 +16,6 @@ export function run(inter) {
 		...toEmbeds(watchedPrices, t, "prices"),
 	];
 
-	const steamWatch = getSteamWatcher(guild.id);
 	if(steamWatch)
 	{
 		const string = steamWatch.webhook ? "steam-watched-webhook" : "steam-watched";
