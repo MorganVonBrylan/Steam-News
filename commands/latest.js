@@ -81,7 +81,7 @@ export async function run(inter)
 
 		if(guildId && chameleonGuilds.has(guildId))
 		{
-			let webhookInfo = getWebhook({guildId, appid});
+			let webhookInfo = getWebhook("news", { guildId, appid });
 			if(webhookInfo)
 			{
 				if(channel.isThread() && !webhookInfo.includes("#t"))

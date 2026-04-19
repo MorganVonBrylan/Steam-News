@@ -1,7 +1,7 @@
 
 import { querySteam } from "../steam_news/api.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
-import { getWatcher } from "../steam_news/db_api.js";
+import { getWebhook } from "../steam_news/db_api.js";
 import { Webhook } from "./premium/chameleon/~webhook.js";
 import { mention as cmdMention } from "../utils/commands.js";
 
@@ -22,10 +22,9 @@ export async function run(inter) {
 	const appnews = await querySteam(steamLanguages[lang]);
 	const news = await toEmbed(appnews.newsitems[0], inter.locale);
 
-	const watcher = getWatcher("steam", inter);
-	if(watcher?.webhook)
+	const webhookInfo = getWebhook("steam", inter.guildId);
+	if(webhookInfo)
 	{
-		let { webhook: webhookInfo } = watcher;
 		const { channel, user } = inter;
 		if(channel.isThread() && !webhookInfo.includes("#t"))
 			webhookInfo += "#t";

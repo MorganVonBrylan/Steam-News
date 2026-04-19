@@ -129,14 +129,29 @@ export function setWebhook(type, params)
 	return !!webhookSetters[type](params);
 }
 
+const webhookGetters = { news: stmts.getWebhook, price: stmts.getPriceWebhook, steam: stmts.getSteamWebhook};
 /**
- * @type {(params: {guildId: string, appid: string})=>?WebhookInfo}
- * Returns the webhooks for a given app in a given server.
- * @param params.guildId The guild id.
- * @param params.appid The app id.
- * @returns The webhook info, or null is none was set for that app
+ * @overload
+ * @param {"steam"} type
+ * @param {"string"|{guildId:string}} params
+ * @returns {?WebhookInfo} The webhook info, or null is none was set for that type and app
  */
-export const getWebhook = stmts.getWebhook;
+/**
+ * @overload
+ * @param {"news"|"price"} type
+ * @param {{guildId:string, appid:string}} params
+ * @returns {?WebhookInfo} The webhook info, or null is none was set for that type and app
+ */
+/**
+ * Returns the webhook for a given app in a given server.
+ * @param {string} type
+ * @param {string|{guildId: string, ?appid:string}} params
+ */
+export function getWebhook(type, params)
+{
+	if(type === "steam" && params.guildId) params = params.guildId;
+	return webhookGetters[type](params);
+}
 
 /**
  * @type {(channelId: string)=>string[]}
@@ -147,7 +162,6 @@ export const getChannelWebhooks = stmts.getChannelWebhooks;
 
 
 /**
- * 
  * @type {{
  * (guildId: string)=>({type:"news"|"price", appid:number, name:string, channelId: string,webhook: WebhookInfo}|{type:"steam",channelId:string, webhook:WebhookInfo})[];
  * (guildId: string, merge: false)=>({news: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], price: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], steam: ?{channelId:string, webhook:WebhookInfo}});

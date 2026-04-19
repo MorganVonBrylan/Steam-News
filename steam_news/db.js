@@ -240,6 +240,8 @@ export const stmts = {
 	setPriceWebhook: db.prepare("UPDATE PriceWatchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
 	setSteamWebhook: db.prepare("UPDATE SteamWatchers SET webhook = $webhook WHERE channelId = $channelId"),
 	getWebhook: db.prepare("SELECT webhook FROM Watchers WHERE guildId = $guildId AND appid = $appid").pluck(),
+	getPriceWebhook: db.prepare("SELECT webhook FROM PriceWatchers WHERE guildId = $guildId AND appid = $appid").pluck(),
+	getSteamWebhook: db.prepare("SELECT webhook FROM SteamWatchers WHERE guildId = ?").pluck(),
 	getWebhooks: makeProxy([
 		...["Watchers", "PriceWatchers"].map(table => `
 			SELECT a.appid, name, channelId, webhook
