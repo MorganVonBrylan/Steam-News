@@ -2,6 +2,8 @@
 import { STEAM_APPID } from "./api.js";
 import SQLite3 from "better-sqlite3";
 
+import { dictionary } from "../utils/dictionaries.js";
+
 import locales from "../localization/locales.js";
 const { langCountries } = locales;
 
@@ -178,7 +180,7 @@ function setType(type) {
 }
 
 /** @type {{[sqlStatementName:string]: function}} */
-export const stmts = {
+export const stmts = dictionary({
 	getStats: db.prepare(`SELECT
 		(SELECT COUNT('*') FROM Watchers) AS "watchers",
 		(SELECT COUNT(DISTINCT appid) FROM Watchers) AS "watchedApps",
@@ -326,7 +328,7 @@ export const stmts = {
 	function(id) {
 		return { changes: this.reduce((changes, stmt) => changes + stmt.run(id), 0) };
 	}),
-};
+});
 
 if(!stmts.isAppKnown.get(STEAM_APPID))
 	db.run(`INSERT INTO Apps (appid, name, nsfw)

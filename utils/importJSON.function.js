@@ -18,7 +18,13 @@ export default function importJSON(path, defaultValue)
 
 	let value;
 	if(existsSync(path))
-		value = JSON.parse(readFileSync(path));
+	{
+		value = JSON.parse(readFileSync(path), (_, value) => {
+			if(value?.constructor === Object)
+				value.__proto__ = null;
+			return value;
+		});
+	}
 	else
 	{
 		if(defaultValue !== undefined)

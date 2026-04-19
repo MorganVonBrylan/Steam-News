@@ -1,6 +1,7 @@
 
 import db, { stmts } from "./db.js";
 import { STEAM_APPID } from "./api.js";
+import { fixedDictionary } from "../utils/dictionaries.js";
 
 /**
  * @typedef {import("./db.js").NewsWatcher} NewsWatcher
@@ -81,11 +82,11 @@ export function getWatchedApps(guildId, includeSteam = false)
 	return apps;
 }
 
-const watcherGetters = {
+const watcherGetters = fixedDictionary({
 	news: stmts.getWatcher,
 	price: stmts.getPriceWatcher,
 	steam: ({guildId}) => stmts.getSteamWatcher(guildId),
-};
+});
 /**
  * Get watcher data for a specific app+guild.
  * @param {"news"|"price"|"steam"} type The watcher type
@@ -104,11 +105,11 @@ export function getWatcher(type, guildAndAppIds)
  */
 export const getWatchedPrices = stmts.getWatchedPrices;
 
-const channelGetters = {
+const channelGetters = fixedDictionary({
 	news: stmts.getWatcherChannel,
 	price: stmts.getPriceWatcherChannel,
 	steam: ({guildId}) => stmts.getSteamChannel(guildId),
-};
+});
 /**
  * Get the channel of a watcher.
  * @param {"news"|"price"|"steam"} type The watcher type
@@ -123,7 +124,11 @@ export function getWatcherChannel(type, guildAndAppIds)
 
 /** @typedef {import("../commands/premium/chameleon/~webhook.js").WebhookInfo} WebhookInfo */
 
-const webhookSetters = { news: stmts.setWebhook, price: stmts.setPriceWebhook, steam: stmts.setSteamWebhook};
+const webhookSetters = fixedDictionary({
+	news: stmts.setWebhook,
+	price: stmts.setPriceWebhook,
+	steam: stmts.setSteamWebhook,
+});
 /**
  * @param {"news"|"price"|"steam"} type The watcher type
  * @param {{appid: number, channelId: string, webhook: string}} params
@@ -137,7 +142,11 @@ export function setWebhook(type, params)
 	return !!webhookSetters[type](params);
 }
 
-const webhookGetters = { news: stmts.getWebhook, price: stmts.getPriceWebhook, steam: stmts.getSteamWebhook};
+const webhookGetters = fixedDictionary({
+	news: stmts.getWebhook,
+	price: stmts.getPriceWebhook,
+	steam: stmts.getSteamWebhook,
+});
 /**
  * @overload
  * @param {"steam"} type
@@ -153,7 +162,7 @@ const webhookGetters = { news: stmts.getWebhook, price: stmts.getPriceWebhook, s
 /**
  * Returns the webhook for a given app in a given server.
  * @param {string} type
- * @param {string|{guildId: string, ?appid:string}} params
+ * @param {string|{guildId: string, appid?:string}} params
  */
 export function getWebhook(type, params)
 {

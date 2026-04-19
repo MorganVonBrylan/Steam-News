@@ -1,9 +1,7 @@
 // ref: https://discord.com/developers/docs/reference#locales
 
 const dataFolder = `${import.meta.dirname}/data`;
-
 const FALLBACK = "en";
-const locales = {};
 
 export { FALLBACK as fallbackLocale };
 
@@ -12,6 +10,9 @@ import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "../steam_news/limits.js";
 import localesFile from "./locales.js";
 
 import { readdirSync } from "node:fs";
+import { dictionary, deepFreeze } from "../utils/dictionaries.js";
+
+const locales = dictionary();
 
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 {
@@ -38,6 +39,7 @@ if(!locales[FALLBACK])
 
 locales["en-GB"] = locales[FALLBACK];
 locales["en-US"] = locales[FALLBACK];
+deepFreeze(locales);
 
 
 const incompleteTrs = importJSON(`${import.meta.dirname}/knownIncompleteTrs.json`, []);
