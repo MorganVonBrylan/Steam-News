@@ -296,55 +296,60 @@ export function applyTranslations(cmdName, cmd)
 
 		if(!options)
 			warnMissing(locale, `Missing %l option translations for command ${cmdName}`);
-		else for(const opt of cmd.options)
-		{
-			const forOption = `translation for option ${opt.name} of command ${cmdName}`;
-			let tr = options[opt.name];
-			if(!tr)
-			{
-				warnMissing(locale, `Missing %l ${forOption}`);
-				continue;
-			}
-
-			let { name, description, choices } = tr;
-
-			if(!name)
-				warnMissing(locale, `Missing %l name ${forOption}`);
-			else
-			{
-				if(opt.nameLocalizations) opt.nameLocalizations[locale] = name;
-				else opt.nameLocalizations = { [locale]: name };
-			}
-
-			if(!description)
-				warnMissing(locale, `Missing %l description ${forOption}`);
-			else
-			{
-				if(opt.descriptionLocalizations) opt.descriptionLocalizations[locale] = description;
-				else opt.descriptionLocalizations = { [locale]: description };
-			}
-
-			const nChoices = opt.choices?.length;
-			if(!nChoices)
-				continue;
-
-			if(nChoices !== choices?.length && opt.name === "language")
-			{
-				if(opt.name === "language")
-					choices = opt.choices.map(({value}) => languages[value]);
-				else
-				{
-					warnMissing(locale, `Mismatched number of choices in %l ${forOption} (expected ${nChoices}, got ${choices?.length})`);
-					continue;
-				}
-			}
-
-			for(let i = 0 ; i < nChoices ; ++i)
-			{
-				const choice = opt.choices[i];
-				if(choice.nameLocalizations) choice.nameLocalizations[locale] = choices[i];
-				else choice.nameLocalizations = { [locale]: choices[i] };
-			}
-		}
+		else
+			cmd.options.forEach(applyOptionTranslation.bind({locale, languages, cmdName}, options));
 	} // for(const [locale, {commands}] of Object.entries(locales))
+}
+
+function applyOptionTranslation(tr, opt)
+{
+	const { locale } = this;
+	const forOption = `translation for option ${opt.name} of command ${this.cmdName}`;
+	tr = tr[opt.name];
+	if(!tr)
+	{
+		warnMissing(locale, `Missing %l ${forOption}`);
+		return;
+	}
+
+	const { name, description } = tr;
+
+	if(!name)
+		warnMissing(locale, `Missing %l name ${forOption}`);
+	else
+	{
+		if(opt.nameLocalizations) opt.nameLocalizations[locale] = name;
+		else opt.nameLocalizations = { [locale]: name };
+	}
+
+	if(!description)
+		warnMissing(locale, `Missing %l description ${forOption}`);
+	else
+	{
+		if(opt.descriptionLocalizations) opt.descriptionLocalizations[locale] = description;
+		else opt.descriptionLocalizations = { [locale]: description };
+	}
+
+	opt.options?.forEach(applyOptionTranslation.bind(this, tr.options));
+
+	const nChoices = opt.choices?.length;
+	if(!nChoices)
+		return;
+
+	const choices = opt.name === "language"
+		? opt.choices.map(({value}) => this.languages[value])
+		: tr.choices;
+	
+	if(nChoices !== choices?.length)
+	{
+		warnMissing(locale, `Mismatched number of choices in %l ${forOption} (expected ${nChoices}, got ${choices?.length})`);
+		return;
+	}
+
+	for(let i = 0 ; i < nChoices ; ++i)
+	{
+		const choice = opt.choices[i];
+		if(choice.nameLocalizations) choice.nameLocalizations[locale] = choices[i];
+		else choice.nameLocalizations = { [locale]: choices[i] };
+	}
 }
