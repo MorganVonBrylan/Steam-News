@@ -4,6 +4,7 @@ import toEmbed from "../steam_news/toEmbed.function.js";
 import { getWebhook } from "../steam_news/db_api.js";
 import { Webhook } from "./premium/chameleon/~webhook.js";
 import { mention as cmdMention } from "../utils/commands.js";
+import { chameleonGuilds } from "../steam_news/VIPs.js";
 
 import { PermissionFlagsBits } from "discord.js";
 const { SendMessages: SEND_MESSAGES } = PermissionFlagsBits;
@@ -18,12 +19,13 @@ export const options = [languageOption];
 export async function run(inter) {
 	await inter.deferReply().catch(error);
 	
-	const lang = inter.options.getString("language") || inter.locale;
+	const { locale, guildId } = inter;
+	const lang = inter.options.getString("language") || locale;
 	const appnews = await querySteam(steamLanguages[lang]);
-	const news = await toEmbed(appnews.newsitems[0], inter.locale);
+	const news = await toEmbed(appnews.newsitems[0], locale);
 
-	const webhookInfo = getWebhook("steam", inter.guildId);
-	if(webhookInfo)
+	let webhookInfo;
+	if(guildId && chameleonGuilds.has(guildId) && (webhookInfo = getWebhook("steam", guildId)))
 	{
 		const { channel, user } = inter;
 		if(channel.isThread() && !webhookInfo.includes("#t"))
@@ -32,7 +34,7 @@ export async function run(inter) {
 		const command = cmdMention(inter);
 		try {
 			await webhook.send({embeds: [
-				{ description: tr.get(inter.locale, "used-command", { user, command }) },
+				{ description: tr.get(locale, "used-command", { user, command }) },
 				news,
 			]});
 			if(news.yt)
