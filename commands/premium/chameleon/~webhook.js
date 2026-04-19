@@ -25,7 +25,7 @@ export const webhookInfoRegex = /^[0-9]+\/\w+(#t)?(#u:[^#]+)?(#a:[^#:]+)?$/;
 
 /**
  * Get a standardised string containing all the info for a watcher's webhook.
- * The returned format is as follows: id/token(?thread_id=id)?#u:username#a:avatarURL
+ * The returned format is a {@link WebhookInfo}
  * For the username and avatar URL, the percent, sharp and colon characters are encoded as with encodeURIComponent.
  * 
  * For example:
@@ -35,7 +35,6 @@ export const webhookInfoRegex = /^[0-9]+\/\w+(#t)?(#u:[^#]+)?(#a:[^#:]+)?$/;
  * @param {string} [username] The username to use for this watcher
  * @param {string} [avatar] The avatar URL to use for this watcher
  * @returns {Promise<WebhookInfo>} Standardised string to save in the database and profice to Webhook's constructor
- * @see formatWebhookInfo
  * 
  * @throws {TypeError} if the provided url is not a Discord webhook URL
  * @throws {RangeError} if the webhook if for a different channel than the watcher's
@@ -97,6 +96,27 @@ export function formatWebhookInfo(webhook, isThread, username, avatar)
 	return webhook;
 }
 
+/**
+ * Get the individual components of a webhookInfo string.
+ * @param {WebhookInfo} webhookInfo 
+ * @returns {{idAndToken:string, thread:boolean, username?:string, avatar?:string}} The info
+ */
+export function parseWebhookInfo(webhookInfo)
+{
+	const [idAndToken, ...params] = webhookInfo.split("#");
+	const infos = { idAndToken, thread: false };
+	for(const param of params)
+	{
+		if(param === "t")
+			infos.thread = true;
+		else if(param.startsWith("u:"))
+			infos.username = decodeComponent(param.substring(2));
+		else if(param.startsWith("a:"))
+			infos.avatar = decodeComponent(param.substring(2));
+	}
+	return infos;
+}
+
 
 export class Webhook {
 	static BASE_URL = "https://discord.com/api/webhooks/";
@@ -131,18 +151,8 @@ export class Webhook {
 	 * @see webhookInfo
 	 */
 	constructor(webhookInfo, threadId) {
-		const [path, ...infos] = webhookInfo.split("#");
-		[this.idAndToken, this.threadId] = path.split("?thread_id=");
-		this.url = Webhook.BASE_URL + path;
-		for(const info of infos)
-		{
-			if(info === "t")
-				this.url += `?thread_id=${threadId}`;
-			else if(info.startsWith("u:"))
-				this.username = decodeComponent(info.substring(2));
-			else if(info.startsWith("a:"))
-				this.avatar = decodeComponent(info.substring(2));
-		}
+		Object.assign(this, parseWebhookInfo(webhookInfo));
+		this.url = `${Webhook.BASE_URL}${path}${this.thread ? `?thread_id=${threadId}` : ""}`;
 	}
 
 	/**
@@ -156,7 +166,7 @@ export class Webhook {
 			data = { ...data, username: this.username, avatar_url: this.avatar };
 		
 		const url =
-			wait ? `${this.url}${this.threadId ? "&" : "?"}wait=true`
+			wait ? `${this.url}${this.thread ? "&" : "?"}wait=true`
 			: this.url;
 		const res = await fetch(url, {
 			method:"POST",
