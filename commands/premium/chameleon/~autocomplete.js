@@ -74,11 +74,11 @@ export function autocompleteWithAll(inter)
 
 
 /** @param {AutocompleteInteraction} inter */
-export function autocompleteWebhooks(inter)
+export function autocompleteWebhooks(inter, withAll = true)
 {
 	const search = inter.options.getFocused();
 	const { news, price, steam } = getWebhooks(inter.guildId, false);
 	if(steam)
 		news.push(steam);
-	respond(inter, news, price, search ? filterName(search) : null, true);
+	respond(inter, news, price, search ? filterName(search) : null, withAll);
 }

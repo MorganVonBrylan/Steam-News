@@ -19,9 +19,19 @@ for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 	const locale = importJSON(`${dataFolder}/${file}`);
 	const localeName = file.substring(0, file.length - 5);
 	locales[localeName] = locale;
-	const { commands: { watch, latest }, voting } = locale;
+
+	const { commands: { watch, latest, premium }, voting } = locale;
 	watch.description = watch.description.replace("%s", WATCH_LIMIT);
 	voting.thanks = voting.thanks.replace("%s", WATCH_VOTE_BONUS);
+	if(premium?.options?.chameleon?.options?.set?.options)
+	{
+		const chameleon = premium.options.chameleon.options;
+		const { set: {options}, customize } = chameleon;
+		if(customize)
+			customize.options = options;
+		else
+			chameleon.customize = { options };
+	}
 
 	const steamLatest = locale.commands["steam-latest"];
 	steamLatest.options ??= {};

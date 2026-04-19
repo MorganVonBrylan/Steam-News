@@ -83,6 +83,10 @@
 								}
 							}
 						},
+						"customize": {
+							"name": "customize",
+							"description": "Customize a webhook."
+						},
 						"auto": {
 							"name": "auto",
 							"description": "Automatically customize a watcher's webhook",
@@ -312,6 +316,9 @@
 			"webhook-set-autoset-error": "❌ The watcher could not be automatically customized with the game's name and logo.",
 			"unknown-watcher": "I could not find this watcher. Please make sure to select an option from the autocomplete.",
 			"webhook-set-error": "I could not set the webhook. Please try again later.",
+
+			"webhook-customized": "The watcher has been customized.",
+			"webhook-customize-error": "I could not customize the watcher. Please try again later.",
 
 			"webhook-auto-create": "Created by %s with /premium chameleon auto",
 			"webhook-auto-created": "Webhook created:",
