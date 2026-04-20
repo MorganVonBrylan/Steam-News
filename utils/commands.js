@@ -1,6 +1,7 @@
 
 import { search } from "../steam_news/api.js";
 import { ApplicationCommand, ChatInputCommandInteraction } from "discord.js";
+import { getLocale } from "../steam_news/db_api.js";
 
 /**
  * Defers an interaction and returns the defer promise and app id.
@@ -28,6 +29,36 @@ export async function interpretAppidOption(inter, ephemeral = false, optionName 
 		defer.then(() => inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "api-failed")}));
 	}
 	return { defer };
+}
+
+
+/**
+ * Determines what language to use for a command interaction.
+ * The priority is, in order:
+ * 1. The language option, if any
+ * 2. If in a server:
+ * 2.a. The set language for this server (with /locale)
+ * 2.b. If a community server, the preferredLocale
+ * 3. The interaction's locale
+ * @param {ChatInputCommandInteraction} inter the interaction
+ * @param {string} [languageOption] A language option the command has, if any.
+ * @returns {Promise<{appid: ?string, defer: Promise}>}
+ */
+export function determineLanguage(inter, languageOption)
+{
+	if(languageOption)
+	{
+		const langOption = inter.options.getString(languageOption);
+		if(langOption) return langOption;
+	}
+	if(inter.guildId)
+	{
+		const { guildId, guild } = inter;
+		const locale = getLocale(guildId);
+		if(locale) return locale.lang;
+		if(guild?.features.includes("COMMUNITY")) return guild.preferredLocale;
+	}
+	return inter.locale;
 }
 
 

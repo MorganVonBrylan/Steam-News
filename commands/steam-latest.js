@@ -3,7 +3,7 @@ import { querySteam } from "../steam_news/api.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
 import { getWebhook, getLocale } from "../steam_news/db_api.js";
 import { Webhook } from "./premium/chameleon/~webhook.js";
-import { mention as cmdMention } from "../utils/commands.js";
+import { mention as cmdMention, determineLanguage } from "../utils/commands.js";
 import { chameleonGuilds } from "../steam_news/VIPs.js";
 
 import { PermissionFlagsBits } from "discord.js";
@@ -19,12 +19,12 @@ export const options = [languageOption];
 export async function run(inter) {
 	await inter.deferReply().catch(error);
 	
-	const { locale, guildId } = inter;
-	const lang = inter.options.getString("language") || locale;
+	const lang = determineLanguage(inter, "language");
 	const appnews = await querySteam(steamLanguages[lang]);
-	const news = await toEmbed(appnews.newsitems[0], locale);
+	const news = await toEmbed(appnews.newsitems[0], lang);
 
 	let webhookInfo;
+	const { guildId } = inter;
 	if(guildId && chameleonGuilds.has(guildId) && (webhookInfo = getWebhook("steam", guildId)))
 	{
 		const { channel, user } = inter;
@@ -32,10 +32,10 @@ export async function run(inter) {
 			webhookInfo += "#t";
 		const webhook = new Webhook(webhookInfo, channel.id);
 		const command = cmdMention(inter);
-		const locale = getLocale(guildId)?.lang || lang;
+		const guildLocale = determineLanguage(inter) || lang;
 		try {
 			await webhook.send({embeds: [
-				{ description: tr.get(locale, "used-command", { user, command }) },
+				{ description: tr.get(guildLocale, "used-command", { user, command }) },
 				news,
 			]});
 			if(news.yt)

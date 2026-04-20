@@ -29,7 +29,7 @@ import { premiumGuilds, chameleonGuilds } from "./VIPs.js";
 import { Webhook } from "../commands/premium/chameleon/~webhook.js";
 
 import { client, sendToMaster } from "../bot.js";
-const { channels } = client;
+const { channels, guilds: { cache: guilds } } = client;
 
 
 const CHECK_INTERVAL = 3600_000;
@@ -74,6 +74,8 @@ function handleDeletedWebhook(err, {webhookPurged}, watcher, sendNews) {
 
 
 import toEmbed, { price as toPriceEmbed } from "./toEmbed.function.js";
+import localesFile from "../localization/locales.js";
+const { steamLanguages } = localesFile;
 
 
 /**
@@ -167,7 +169,9 @@ export async function checkForNews(range, reschedule = false)
 			if(!await canWriteIn(channel))
 				return;
 
-			const lang = serverToLang[guildId] || "english";
+			const lang = serverToLang[guildId]
+				|| steamLanguages[guilds.get(guildId)?.preferredLocale]
+				|| "english";
 			if(!Object.hasOwn(embeds, lang))
 			{
 				const { appid, newsitems, error: err } = await query(lang);

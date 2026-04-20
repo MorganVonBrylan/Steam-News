@@ -1,6 +1,6 @@
 
 import { query, getDetails, isNSFW, HTTPError } from "../steam_news/api.js";
-import { interpretAppidOption, mention as cmdMention } from "../utils/commands.js";
+import { interpretAppidOption, mention as cmdMention, determineLanguage } from "../utils/commands.js";
 import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
 
@@ -12,7 +12,7 @@ const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages;
 
 import { chameleonGuilds } from "../steam_news/VIPs.js";
 import { Webhook } from "./premium/chameleon/~webhook.js";
-import { getWebhook, getLocale } from "../steam_news/db_api.js";
+import { getWebhook } from "../steam_news/db_api.js";
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
@@ -31,8 +31,7 @@ export async function run(inter)
 	if(!appid)
 		return;
 
-	const { guildId, locale } = inter;
-	const lang = inter.options.getString("language") || locale;
+	const lang = determineLanguage(inter, "language");
 	const t = tr.set(lang);
 	const fetchInfo = isKnown(appid) ? null : getDetails(appid);
 	await defer;
@@ -77,8 +76,8 @@ export async function run(inter)
 		inter.editReply({flags: "Ephemeral", content: t("NSFW-content-news")});
 	else
 	{
-		const news = await toEmbed(appnews.newsitems[0], locale);
-
+		const news = await toEmbed(appnews.newsitems[0], lang);
+		const { guildId } = inter;
 		if(guildId && chameleonGuilds.has(guildId))
 		{
 			let webhookInfo = getWebhook("news", { guildId, appid });
@@ -88,10 +87,10 @@ export async function run(inter)
 					webhookInfo += "#t";
 				const webhook = new Webhook(webhookInfo, channel.id);
 				const command = cmdMention(inter);
-				const locale = getLocale(guildId)?.lang || lang;
+				const guildLocale = determineLanguage(inter) || lang;
 				try {
 					await webhook.send({embeds: [
-						{ description: tr.get(locale, "used-command", { user: inter.user, command }) },
+						{ description: tr.get(guildLocale, "used-command", { user: inter.user, command }) },
 						news,
 					]});
 					if(news.yt)
