@@ -8,7 +8,7 @@ export function run(inter) {
 	const t = tr.set(inter.locale, "watched");
 	const { guild } = inter;
 	const watched = getWatchedApps(guild.id, true);
-	const steamWatch = watched.at(-1).appid === STEAM_APPID ? watched.pop() : null;
+	const steamWatch = watched.at(-1)?.appid === STEAM_APPID ? watched.pop() : null;
 	const watchedPrices = getWatchedPrices(guild.id);
 
 	const embeds = [
