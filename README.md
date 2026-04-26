@@ -1,7 +1,6 @@
 
 # Steam News
 
-[![Discord Bots](https://top.gg/api/widget/status/929757212841226292.svg)](https://top.gg/bot/929757212841226292)
 [![Discord Bots](https://top.gg/api/widget/servers/929757212841226292.svg)](https://top.gg/bot/929757212841226292)
 [![Discord Bots](https://top.gg/api/widget/upvotes/929757212841226292.svg)](https://top.gg/bot/929757212841226292)
 
@@ -11,10 +10,11 @@ Do check out [Steam Watch](https://github.com/dukeofsussex/SteamWatch) by DukeOf
 
 ### Translation credits
 
-- French: Morgân von Brylân
-- German: jemand2001
-- Russian: B1ngell
-- Spanish: ajuanjojjj
+- 🇫🇷 French: Morgân von Brylân
+- 🇩🇪 German: jemand2001
+- 🇷🇺 Russian: B1ngell
+- 🇵🇱 Polish : jakubex
+- 🇪🇸 Spanish: ajuanjojjj
 
 # Usage
 This bot requires Node.JS 16 or higher.
