@@ -122,9 +122,16 @@ Example: ignore server errors, connection errors and timeouts, truncate "forbidd
 See the `const settings = ...` part in `utils/error.js` to see the default behavior.
 
 ## Database schema
-Just read steam_news/db.js, there is a bunch of CREATE TABLE at the beginning.
+Just read `steam_news/db.js`, there is a bunch of CREATE TABLE at the beginning.
+
+# Contributing
+
+I accept pull requests.
+
+You can also make donations on [LiberaPay](https://liberapay.com/Brylan/).
+[![patrons](https://img.shields.io/liberapay/patrons/Brylan.svg?logo=liberapay)]((https://liberapay.com/Brylan/))
 
 # License
-**Steam News** is published under GNU General Public Licence v3 (GPL-3.0). See COPYING.txt, or this link: [https://www.gnu.org/licenses/gpl-3.0.en.html](https://www.gnu.org/licenses/gpl-3.0.en.html)
+**Steam News** is published under GNU General Public Licence v3 (GPL-3.0). See [COPYING.txt](./COPYING.txt)
 
-![GPL](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/GPLv3_Logo.svg/240px-GPLv3_Logo.svg.png)
+![GPL](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/GPLv3_Logo.svg/330px-GPLv3_Logo.svg.png)
