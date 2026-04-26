@@ -129,7 +129,7 @@ Just read `steam_news/db.js`, there is a bunch of CREATE TABLE at the beginning.
 I accept pull requests.
 
 You can also make donations on [LiberaPay](https://liberapay.com/Brylan/).
-[![patrons](https://img.shields.io/liberapay/patrons/Brylan.svg?logo=liberapay)]((https://liberapay.com/Brylan/))
+[![patrons](https://img.shields.io/liberapay/patrons/Brylan.svg?logo=liberapay)](https://liberapay.com/Brylan/)
 
 # License
 **Steam News** is published under GNU General Public Licence v3 (GPL-3.0). See [COPYING.txt](./COPYING.txt)
