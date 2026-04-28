@@ -111,6 +111,10 @@
 								}
 							}
 						},
+						"customize": {
+							"name": "personalizar",
+							"description": "Personalice un webhook."
+						},
 						"auto": {
 							"name": "auto",
 							"description": "Personaliza automáticamente el webhook de una suscripción",
@@ -366,6 +370,8 @@
 			"webhook-set-autoset-error": "❌ La suscripción no se pudo personalizar automáticamente con el nombre y logo del juego.",
 			"unknown-watcher": "No puedo encontrar está suscripción. Por favor, asegurate de usar una opción de la lista.",
 			"webhook-set-error": "No pude establecer el webhook. Por favor, inténtalo de nuevo más tarde.",
+			"webhook-customized": "La suscripción ha sido personalizada.",
+			"webhook-customize-error": "No pude personalizar la suscripción. Inténtelo de nuevo más tarde.",
 			"webhook-auto-create": "Creado por %s con /premium cameleon auto",
 			"webhook-auto-created": "Webhook creado:",
 			"webhook-auto-reused": "Webhook usado:",
