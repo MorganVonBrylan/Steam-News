@@ -199,11 +199,10 @@ export async function checkForNews(range, reschedule = false)
 				.then(() => successes++)
 				.catch(err => {
 					if(err.status === 403)
-						console.error(new Date(), {
-							message: "Error sending news: missing access",
-							channelId: err.url.match(/channels\/([0-9]+)/)?.[1],
-							embeds, targetLang: lang,
-						});
+					{
+						err.isWebhook = channel instanceof Webhook;
+						error(err);
+					}
 					else if((channel instanceof Webhook
 						? !handleDeletedWebhook(err, channel, watcher, sendNews)
 						: !handleDeletedChannel(err))
