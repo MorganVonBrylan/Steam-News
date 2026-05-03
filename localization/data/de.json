@@ -100,6 +100,10 @@
 								}
 							}
 						},
+						"customize": {
+							"name": "anpassen",
+							"description": "Passe einen webhook an."
+						},
 						"auto": {
 							"name": "auto",
 							"description": "Konfiguriere den Webhook eines Beobachters automatisch.",
@@ -338,6 +342,8 @@
 			"webhook-set-autoset-error": "❌ Der Beobachter konnte nicht automatisch mit dem Namen und Logo des Spiels angepasst werden.",
 			"unknown-watcher": "Ich konnte diesen Beobachter nicht finden. Bitte stelle sicher, dass du eine Option von der automatischen Vervollständigung verwendest.",
 			"webhook-set-error": "Ich konnte den Webhook nicht setzen. Bitte versuche es später erneut.",
+			"webhook-customized": "Der Beobachter wurde angepasst.",
+			"webhook-customize-error": "Der Beobachter konnte nicht angepasst werden. Bitte versuche es später erneut.",
 			"webhook-auto-create": "Erstellt von %s mit /premium chameleon auto",
 			"webhook-auto-created": "Webhook erstellt:",
 			"webhook-auto-reused": "Webhook benutzt:",
