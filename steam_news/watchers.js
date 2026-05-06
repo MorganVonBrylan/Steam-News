@@ -68,7 +68,14 @@ function handleDeletedWebhook(err, {webhookPurged}, watcher, sendNews) {
 		sendNews(watcher);
 		return true;
 	}
-	error(err);
+	if(err.status === 400 && !err.bodyUsed)
+	{
+		err.body.then(body => {
+			err.body = body;
+			error(err);
+		});
+		return true;
+	}
 	return false;
 }
 
