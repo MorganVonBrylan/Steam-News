@@ -110,5 +110,19 @@ patch(ApplicationCommand, (data) => {
 	delete data.description;
 	delete data.description_localizations;
 	delete data.description_localized;
-	delete data.options;
+	// we need to be able to compare guild commands to update them when and only when necessary
+	if(!data.guild_id)
+		delete data.options;
+	else if(data.options)
+		purgeOptions(data.options);
 });
+
+function purgeOptions(options)
+{
+	delete options.name_localizations;
+	delete options.description_localizations;
+	if(options.choices) for(const choice of options.choices)
+		delete choice.name_localizations;
+	if(options.options)
+		purgeOptions(options.options);
+}
