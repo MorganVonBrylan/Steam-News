@@ -6,6 +6,8 @@
 
 This bot allows you to watch Steam game news. My friend Damn3d had the idea.
 
+Support server: [![member count](https://discord.com/api/guilds/931619848612626474/embed.png)](https://discord.com/invite/dsYQzACdzr)
+
 Do check out [Steam Watch](https://github.com/dukeofsussex/SteamWatch) by DukeOfSussex as well.
 
 ### Translation credits
