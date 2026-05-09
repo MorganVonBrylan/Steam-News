@@ -1,46 +1,27 @@
 
-import { STEAM_APPID } from "../steam_news/api.js";
-import { interpretAppidOption } from "../utils/commands.js";
+import { STEAM_APPID } from "../../steam_news/api.js";
+import { interpretAppidOption } from "../../utils/commands.js";
 
-import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../steam_news/limits.js";
+import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../../steam_news/limits.js";
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
 import {
 	voted,
 	premiumSKU, goldSKU, buttons,
 	premiumGuilds, chameleonGuilds,
-} from "../steam_news/VIPs.js";
+} from "../../steam_news/VIPs.js";
 const premiumButton = buttons(premiumSKU, goldSKU);
 const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
-import { voteURL } from "../botLists.js";
+import { voteURL } from "../../botLists.js";
 
-import { watch, unwatch, getAppInfo, purgeApp } from "../steam_news/watchers.js";
-import { HTTPError } from "../steam_news/api.js";
-import { setWebhook } from "../steam_news/db_api.js";
-import { fetchThreads } from "../utils/channels.js";
-import { autoSuggestButton } from "./premium/chameleon/set.js";
+import { watch, unwatch, getAppInfo, purgeApp } from "../../steam_news/watchers.js";
+import { HTTPError } from "../../steam_news/api.js";
+import { setWebhook } from "../../steam_news/db_api.js";
+import { fetchThreads } from "../../utils/channels.js";
+import { autoSuggestButton } from "../premium/chameleon/set.js";
 
-import { PermissionFlagsBits } from "discord.js";
-const {
-	ViewChannel: VIEW_CHANNEL,
-	SendMessages: SEND_MESSAGES,
-	SendMessagesInThreads: SEND_MESSAGES_IN_THREADS,
-	EmbedLinks: EMBED_LINKS,
-} = PermissionFlagsBits;
+import { options as baseOptions, checkPerms } from "./~commons.js"
 
-import { updateCmd as updateUnwatch } from "./~guild/unwatch.js";
-
-
-export async function checkPerms(channel)
-{
-	
-	const perms = channel.permissionsFor(await channel.guild.members.fetchMe());
-	if(!perms.has(VIEW_CHANNEL))
-		return "cannot-see";
-	else if(!perms?.has(channel.isThread() ? SEND_MESSAGES_IN_THREADS : SEND_MESSAGES))
-		return "cannot-send";
-	else if(!perms.has(EMBED_LINKS))
-		return "cannot-embed";
-}
+import { updateCmd as updateUnwatch } from "../~guild/unwatch.js";
 
 export const defaultMemberPermissions = "0";
 export const options = [{
@@ -51,15 +32,10 @@ export const options = [{
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	autocomplete: true,
-}, {
-	type: ROLE, name: "role",
-	description: "A role to ping when news are posted",
-}, {
-	type: CHANNEL, name: "channel",
-	channelTypes: ALL_TEXT_CHANNEL_TYPES,
-	description: "The channel where to send the news (defaults to current channel if not provided)"
-}];
-export { appsOnly as autocomplete } from "../autocomplete/search.js";
+},
+	...baseOptions,
+];
+export { appsOnly as autocomplete } from "../../autocomplete/search.js";
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
@@ -188,7 +164,7 @@ export async function run(inter)
 /**
  * Update the webhook after
  * @param {{appid:string, channelId:string, webhook:string}} oldWatcher The previous watcher data
- * @param {import("../utils/channels.js").GuildTextChannel} channel The current watcher channel
+ * @param {import("../../utils/channels.js").GuildTextChannel} channel The current watcher channel
  * @param {"news"|"price"|"steam"} type The watcher type
  * @returns {Promise<?boolean>} flase if no update was needed (the channel is the same, or there is no webhook), true if the webhook was updated, null if it had to be removed
  */

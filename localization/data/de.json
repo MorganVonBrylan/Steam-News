@@ -158,27 +158,39 @@
 		},
 		"watch": {
 			"name": "beobachten",
-			"description": "(nur für Admins) Folge den Nachrichten und Preise eines Spiels (Maximal %s von jedem pro Server)",
+			"description": "(nur für Admins) Folge Nachrichten und Preise",
 			"options": {
-				"type": {
-					"name": "typ",
-					"description": "Sollen Nachrichten oder Preise beobachtet werden?",
-					"choices": [
-						"Nachrichten",
-						"Preis"
-					]
-				},
 				"game": {
 					"name": "spiel",
-					"description": "Der Name oder die ID des Spiels"
+					"description": "(nur für Admins) Folge den Nachrichten und Preise eines Spiels (Maximal %s von jedem pro Server)",
+					"options": {
+						"type": {
+							"name": "typ",
+							"description": "Sollen Nachrichten oder Preise beobachtet werden?",
+							"choices": [
+								"Nachrichten",
+								"Preis"
+							]
+						},
+						"game": {
+							"name": "spiel",
+							"description": "Der Name oder die ID des Spiels"
+						}
+					}
 				},
-				"role": {
-					"name": "rolle",
-					"description": "Eine Rolle, die anpingt, wenn Neuigkeiten veröffentlicht werden"
-				},
-				"channel": {
-					"name": "kanal",
-					"description": "Kanal, in dem die Nachrichten gesendet werden sollen (der momentane Kanal, falls nicht angegeben)"
+				"steam": {
+					"name": "steam",
+					"description": "(nur für Admins) Nachrichten über Steam beobachten.",
+					"options": {
+						"channel": {
+							"name": "kanal",
+							"description": "Kanal, in dem die Nachrichten gesendet werden sollen (der momentane Kanal, falls nicht angegeben)"
+						},
+						"role": {
+							"name": "rolle",
+							"description": "Eine Rolle, die anpingt, wenn Neuigkeiten veröffentlicht werden"
+						}
+					}
 				}
 			}
 		},
@@ -201,30 +213,16 @@
 				"game": {
 					"name": "spiel",
 					"description": "Der Name oder die ID des Spiels"
+				},
+				"steam": {
+					"name": "steam",
+					"description": "(nur für Admins) Aufhören, Nachrichten über Steam zu beobachten."
 				}
 			}
 		},
 		"steam-latest": {
 			"name": "steam-neuste",
 			"description": "Zeige die letzten Neuigkeiten über Steam an."
-		},
-		"steam-watch": {
-			"name": "steam-beobachten",
-			"description": "(nur für Admins) Nachrichten über Steam beobachten.",
-			"options": {
-				"channel": {
-					"name": "kanal",
-					"description": "The channel where to send the news (defaults to current channel if not provided)"
-				},
-				"role": {
-					"name": "rolle",
-					"description": "Eine Rolle, die anpingt, wenn Neuigkeiten veröffentlicht werden"
-				}
-			}
-		},
-		"steam-unwatch": {
-			"name": "steam-beobachter-entfernen",
-			"description": "(nur für Admins) Aufhören, Nachrichten über Steam zu beobachten."
 		},
 		"stats": {
 			"name": "statistiken",

@@ -1,20 +1,12 @@
 
-import { watchSteam } from "../steam_news/watchers.js";
+import { watchSteam } from "../../steam_news/watchers.js";
 
-import { guildCommands } from "@brylan/djs-commands";
-const createCmd = guildCommands.createCmd.bind(null, "steam-unwatch");
+import { updateCmd as updateUnwatch } from "../~guild/unwatch.js";
 
-import { checkPerms } from "./watch.js";
+import { checkPerms } from "./~commons.js";
 
 export const defaultMemberPermissions = "0";
-export const options = [{
-	type: ROLE, name: "role",
-	description: "A role to ping when news are posted",
-}, {
-	type: CHANNEL, name: "channel",
-	channelTypes: ALL_TEXT_CHANNEL_TYPES,
-	description: "The channel where to send the news (defaults to current channel if not provided)"
-}];
+export { options } from "./~commons.js";
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
@@ -29,5 +21,5 @@ export async function run(inter)
 		roleId: inter.options.getRole("role")?.id,
 	});
 	inter.reply(tr.get(inter.locale, "steam.watched", channel.toString()));
-	createCmd(inter.guild, true);
+	updateUnwatch(inter.guild);
 }

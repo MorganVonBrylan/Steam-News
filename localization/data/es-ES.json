@@ -187,27 +187,39 @@
 		},
 		"watch": {
 			"name": "suscribir",
-			"description": "(Sólo admins) Se suscribe a las noticias o cambios de precio de un juego (Máximo %s por servidor)",
+			"description": "(Sólo admins) Se suscribe a las noticias o cambios de precio",
 			"options": {
-				"type": {
-					"name": "tipo",
-					"description": "Elige si muestra noticias o cambios de precio",
-					"choices": [
-						"Noticias",
-						"Precio"
-					]
-				},
 				"game": {
 					"name": "juego",
-					"description": "El nombre o id del juego"
+					"description": "(Sólo admins) Se suscribe a las noticias o cambios de precio de un juego (Máximo %s por servidor)",
+					"options": {
+						"type": {
+							"name": "tipo",
+							"description": "Elige si muestra noticias o cambios de precio",
+							"choices": [
+								"Noticias",
+								"Precio"
+							]
+						},
+						"game": {
+							"name": "juego",
+							"description": "El nombre o id del juego"
+						}
+					}
 				},
-				"role": {
-					"name": "rol",
-					"description": "Un rol a notificar cuando se publiquen noticias"
-				},
-				"channel": {
-					"name": "canal",
-					"description": "El canal donde se enviarán las noticias (Por defecto, el canal actual)"
+				"steam": {
+					"name": "steam",
+					"description": "(Sólo admins) Se suscribe a las noticias sobre Steam.",
+					"options": {
+						"channel": {
+							"name": "canal",
+							"description": "El canal donde se enviarán las noticias (Por defecto, el canal actual)"
+						},
+						"role": {
+							"name": "rol",
+							"description": "Un rol a notificar cuando se publiquen noticias"
+						}
+					}
 				}
 			}
 		},
@@ -230,30 +242,16 @@
 				"game": {
 					"name": "juego",
 					"description": "El nombre o id del juego"
+				},
+				"steam": {
+					"name": "steam",
+					"description": "(Sólo admins) Se desuscribe de las noticias sobre Steam."
 				}
 			}
 		},
 		"steam-latest": {
 			"name": "recientes-steam",
 			"description": "Muestra las últimas noticias sobre Steam."
-		},
-		"steam-watch": {
-			"name": "suscribir-steam",
-			"description": "(Sólo admins) Se suscribe a las noticias sobre Steam.",
-			"options": {
-				"channel": {
-					"name": "canal",
-					"description": "El canal donde se enviarán las noticias (Por defecto, el canal actual)"
-				},
-				"role": {
-					"name": "rol",
-					"description": "Un rol a notificar cuando se publiquen noticias"
-				}
-			}
-		},
-		"steam-unwatch": {
-			"name": "desuscribir-steam",
-			"description": "(Sólo admins) Se desuscribe de las noticias sobre Steam."
 		},
 		"stats": {
 			"name": "estadisticas",

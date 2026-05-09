@@ -21,8 +21,11 @@ for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 	locales[localeName] = locale;
 
 	const { commands: { watch, latest, premium }, voting } = locale;
-	watch.description = watch.description.replace("%s", WATCH_LIMIT);
 	voting.thanks = voting.thanks.replace("%s", WATCH_VOTE_BONUS);
+	const { options: { game, steam } } = watch;
+	game.description = game.description.replace("%s", WATCH_LIMIT);
+	Object.assign(game.options, steam.options);
+
 	if(premium?.options?.chameleon?.options?.set?.options)
 	{
 		const chameleon = premium.options.chameleon.options;

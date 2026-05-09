@@ -158,27 +158,39 @@
 		},
 		"watch": {
 			"name": "suivre",
-			"description": "(admins seulement) Suivre les actus d’un jeu (maximum %s de chaque par serveur)",
+			"description": "(admins seulement) Suivre des actus et soldes",
 			"options": {
-				"type": {
-					"name": "type",
-					"description": "S’il faut suivre les actus ou les évolutions du prix",
-					"choices": [
-						"Actus",
-						"Prix"
-					]
-				},
 				"game": {
 					"name": "jeu",
-					"description": "Le nom ou l’id du jeu"
+					"description": "(admins seulement) Suivre les actus ou soldes d’un jeu (maximum %s de chaque par serveur)",
+					"options": {
+						"type": {
+							"name": "type",
+							"description": "S’il faut suivre les actus ou les évolutions du prix",
+							"choices": [
+								"Actus",
+								"Prix"
+							]
+						},
+						"game": {
+							"name": "jeu",
+							"description": "Le nom ou l’id du jeu"
+						}
+					}
 				},
-				"role": {
-					"name": "rôle",
-					"description": "Un rôle à mentionner quand des actus sont publiées"
-				},
-				"channel": {
-					"name": "salon",
-					"description": "Le salon où envoyer les actus (par défaut le salon où vous envoyez cette commande)"
+				"steam": {
+					"name": "steam",
+					"description": "(admins seulement) Suivre les actus à propos de Steam.",
+					"options": {
+						"channel": {
+							"name": "salon",
+							"description": "Le salon où envoyer les actus (par défaut le salon où vous envoyez cette commande)"
+						},
+						"role": {
+							"name": "rôle",
+							"description": "Un rôle à mentionner quand des actus sont publiées"
+						}
+					}
 				}
 			}
 		},
@@ -201,30 +213,16 @@
 				"game": {
 					"name": "jeu",
 					"description": "Le nom ou l’id du jeu"
+				},
+				"steam": {
+					"name": "steam",
+					"description": "(admins seulement) Ne plus suivre les actus à propos de Steam."
 				}
 			}
 		},
 		"steam-latest": {
 			"name": "steam-dernière",
 			"description": "Voir les dernières actus à propos de Steam."
-		},
-		"steam-watch": {
-			"name": "steam-suivre",
-			"description": "(admins seulement) Suivre les actus à propos de Steam.",
-			"options": {
-				"channel": {
-					"name": "salon",
-					"description": "Le salon où envoyer les actus (par défaut le salon où vous envoyez cette commande)"
-				},
-				"role": {
-					"name": "rôle",
-					"description": "Un rôle à mentionner quand des actus sont publiées"
-				}
-			}
-		},
-		"steam-unwatch": {
-			"name": "steam-ne-plus-suivre",
-			"description": "(admins seulement) Ne plus suivre les actus à propos de Steam."
 		},
 		"stats": {
 			"name": "stats",

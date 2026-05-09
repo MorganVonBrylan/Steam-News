@@ -5,9 +5,17 @@
  */
 export default function(cmdName)
 {
+	const localizations = tr.getAll(`commands.${cmdName}`);
+	const { options } = localizations[tr.fallbackLocale];
+	const descriptions = Object.create(null);
+	for(const option in options)
+		descriptions[option] = options[option].description;
+	delete localizations[tr.fallbackLocale];
+
 	return Object.assign(
-		Object.entries(tr.getAll(`commands.${cmdName}`, true)),
-		LocalizationHelper
+		Object.entries(localizations),
+		LocalizationHelper,
+		{ descriptions },
 	);
 }
 
@@ -41,6 +49,7 @@ const LocalizationHelper = {
 			optLocalization.descriptionLocalizations[locale] = description;
 			return optLocalization;
 		}, {
+			description: this.descriptions[optionName],
 			nameLocalizations: {},
 			descriptionLocalizations: {},
 		});

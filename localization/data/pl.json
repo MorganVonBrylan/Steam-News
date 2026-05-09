@@ -94,27 +94,39 @@
 		},
 		"watch": {
 			"name": "oglądać",
-			"description": "(tylko dla administratorów) Śledź aktualności gry lub zmiany cen (maksymalnie %s każdego na serwer)",
+			"description": "(tylko dla administratorów) Śledź aktualności lub zmiany cen",
 			"options": {
-				"type": {
-					"name": "typ",
-					"description": "Czy oglądać wiadomości czy zmiany cen",
-					"choices": [
-						"Aktualności",
-						"cena"
-					]
-				},
 				"game": {
 					"name": "gra",
-					"description": "nazwa gry lub id"
+					"description": "(tylko dla administratorów) Śledź aktualności gry lub zmiany cen (maksymalnie %s każdego na serwer)",
+					"options": {
+						"type": {
+							"name": "typ",
+							"description": "Czy oglądać wiadomości czy zmiany cen",
+							"choices": [
+								"Aktualności",
+								"cena"
+							]
+						},
+						"game": {
+							"name": "gra",
+							"description": "nazwa gry lub id"
+						}
+					}
 				},
-				"role": {
-					"name": "rola",
-					"description": "Rola polegająca na wysyłaniu sygnałów dźwiękowych w przypadku opublikowania wiadomości"
-				},
-				"channel": {
-					"name": "kanał",
-					"description": "Kanał, na który mają zostać wysłane wiadomości (jeśli nie podano, domyślnie jest to kanał bieżący)"
+				"steam": {
+					"name": "steam",
+					"description": "(tylko dla administratorów) Oglądaj aktualności na Steamie.",
+					"options": {
+						"channel": {
+							"name": "kanał",
+							"description": "Kanał, na który mają zostać wysłane wiadomości (jeśli nie podano, domyślnie jest to kanał bieżący)"
+						},
+						"role": {
+							"name": "rola",
+							"description": "Rola polegająca na wysyłaniu sygnałów dźwiękowych w przypadku opublikowania wiadomości"
+						}
+					}
 				}
 			}
 		},
@@ -137,30 +149,16 @@
 				"game": {
 					"name": "gra",
 					"description": "nazwa gry lub id"
+				},
+				"steam": {
+					"name": "steam",
+					"description": "(tylko dla administratorów) Przestań oglądać wiadomości o Steamie."
 				}
 			}
 		},
 		"steam-latest": {
 			"name": "najnowsze_na_steamie",
 			"description": "Zobacz najnowsze wiadomości o Steam."
-		},
-		"steam-watch": {
-			"name": "oglądanie-steam",
-			"description": "(tylko dla administratorów) Oglądaj aktualności na Steamie.",
-			"options": {
-				"channel": {
-					"name": "kanał",
-					"description": "Kanał, na który mają zostać wysłane wiadomości (jeśli nie podano, domyślnie jest to kanał bieżący)"
-				},
-				"role": {
-					"name": "rola",
-					"description": "Rola polegająca na wysyłaniu sygnałów dźwiękowych w przypadku opublikowania wiadomości"
-				}
-			}
-		},
-		"steam-unwatch": {
-			"name": "steam-unwatch",
-			"description": "(tylko dla administratorów) Przestań oglądać wiadomości o Steamie."
 		},
 		"stats": {
 			"name": "statystyki",

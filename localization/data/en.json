@@ -165,24 +165,36 @@
 		},
 		"watch": {
 			"name": "watch",
-			"description": "(admins only) Follow a game’s news feed or price changes (maximum %s of each per server)",
+			"description": "(admins only) Follow news or price changes",
 			"options": {
-				"type": {
-					"name": "type",
-					"description": "Whether to watch news or price changes",
-					"choices": ["News", "Price"]
-				},
 				"game": {
 					"name": "game",
-					"description": "The game’s name or id"
+					"description": "(admins only) Follow a game’s news feed or price changes (maximum %s of each per server)",
+					"options": {
+						"type": {
+							"name": "type",
+							"description": "Whether to watch news or price changes",
+							"choices": ["News", "Price"]
+						},
+						"game": {
+							"name": "game",
+							"description": "The game’s name or id"
+						}
+					}
 				},
-				"role": {
-					"name": "role",
-					"description": "A role to ping when news are posted"
-				},
-				"channel": {
-					"name": "channel",
-					"description": "The channel where to send the news (defaults to current channel if not provided)"
+				"steam": {
+					"name": "steam",
+					"description": "(admins only) Watch news about Steam.",
+					"options": {
+						"channel": {
+							"name": "channel",
+							"description": "The channel where to send the news (defaults to current channel if not provided)"
+						},
+						"role": {
+							"name": "role",
+							"description": "A role to ping when news are posted"
+						}
+					}
 				}
 			}
 		},
@@ -205,30 +217,16 @@
 				"game": {
 					"name": "game",
 					"description": "The game’s name or id"
+				},
+				"steam": {
+					"name": "steam",
+					"description": "(admins only) Stop watching news about Steam."
 				}
 			}
 		},
 		"steam-latest": {
 			"name": "steam-latest",
 			"description": "See the latest news about Steam."
-		},
-		"steam-watch": {
-			"name": "steam-watch",
-			"description": "(admins only) Watch news about Steam.",
-			"options": {
-				"channel": {
-					"name": "channel",
-					"description": "The channel where to send the news (defaults to current channel if not provided)"
-				},
-				"role": {
-					"name": "role",
-					"description": "A role to ping when news are posted"
-				}
-			}
-		},
-		"steam-unwatch": {
-			"name": "steam-unwatch",
-			"description": "(admins only) Stop watching news about Steam."
 		},
 		"stats": {
 			"name": "stats",

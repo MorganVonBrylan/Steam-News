@@ -1,8 +1,8 @@
 
 import onAutocompleteError from "../../autocomplete/_errorHandler.js";
 import {
-	unwatch,
-	getAppName, getWatchedApps, getWatchedPrices
+	unwatch, unwatchSteam,
+	getAppName, getWatchedApps, getWatchedPrices, isWatchingSteam,
 } from "../../steam_news/watchers.js";
 import { guildCommands } from "@brylan/djs-commands";
 import { gameToOption } from "../../utils/commands.js";
@@ -12,30 +12,24 @@ const CMD_NAME = import.meta.filename.match(/([^\\/]+).js$/)[1];
 
 export const updateCmd = guildCommands.updateCmd.bind(null, CMD_NAME);
 
+export const defaultMemberPermissions = "0";
+
 export function shouldCreateFor(id) {
-	return getWatchedApps(id).length || getWatchedPrices(id).length;
+	return isWatchingSteam(id) || getWatchedApps(id).length || getWatchedPrices(id).length;
 }
 
 
 import getLocalizationHelper from "./~localizationHelper.js";
+import { generateDictionary as generateSubcommands } from "../../utils/dictionaries.js";
 const localizations = getLocalizationHelper(CMD_NAME);
 
-export const defaultMemberPermissions = "0";
-const unwatchNews = {
-	type: SUBCOMMAND, name: "news",
-	description: "(admins only) Stop watching a game’s news feed.",
-	...localizations.optionLocalizations("news"),
-};
-const unwatchPrice = {
-	type: SUBCOMMAND, name: "price",
-	description: "(admins only) Stop watching a game’s price.",
-	...localizations.optionLocalizations("price"),
-}
+const subcommands = generateSubcommands(["news", "price", "steam"],
+	name => ({ type: SUBCOMMAND, name, ...localizations.optionLocalizations(name) }));
+
 const appidOption = {
 	type: STRING, name: "game", required: true,
 	description: "The game’s name or id",
 	// middleware takes care of translating this
-	choices: [],
 };
 export const options = [appidOption];
 export function getOptions(guildId)
@@ -47,7 +41,7 @@ export function getOptions(guildId)
 	const options = [];
 	if(nApps)
 		options.push({
-			...unwatchNews,
+			...subcommands.news,
 			options: [{
 				...appidOption,
 				...(nApps > MAX_OPTIONS ? {autocomplete: true} : {choices: watchedApps.sort()}),
@@ -56,12 +50,15 @@ export function getOptions(guildId)
 
 	if(nPrices)
 		options.push({
-			...unwatchPrice,
+			...subcommands.price,
 			options: [{
 				...appidOption,
 				...(nPrices > MAX_OPTIONS ? {autocomplete: true} : {choices: watchedPrices.sort()}),
 			}],
 		});
+	
+	if(isWatchingSteam(guildId)) // déplace les traductions
+		options.push(subcommands.steam);
 
 	return options;
 }
@@ -79,6 +76,15 @@ export function autocomplete(inter)
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
+	const subcommand = inter.options.getSubcommand();
+	if(subcommand === "steam")
+	{
+		unwatchSteam(inter.guildId);
+		inter.reply({ flags: "Ephemeral", content: tr.get(inter.locale, "steam.unwatched") });
+		updateCmd(inter.guild);
+		return;
+	}
+
 	const price = inter.options.getSubcommand() === "price";
 	const appid = inter.options.getString("game");
 	const name = getAppName(appid) || "This game";
