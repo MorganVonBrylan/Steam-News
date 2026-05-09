@@ -125,7 +125,8 @@ export function error(err)
 
 export function commandRegistrationError(err)
 {
-	const message = `Command registration error: ${err.constructor.name}: ${err.message}`;
+	const cmd = err.commandName;
+	const message = `${cmd ? `\`${cmd}\`` : "Command"} registration error: ${err.constructor.name}: ${err.message}`;
 	console.error(message);
 	if(err.message.startsWith("Invalid Form Body"))
 	{
