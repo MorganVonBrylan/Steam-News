@@ -549,3 +549,9 @@ export function unwatchSteam(guildId)
 	if(!stmts.isSteamWatched())
 		updateLatest({ appid: STEAM_APPID, latest: null });
 }
+
+/**
+ * Get whether a guild is watching the Steam News Hub.
+ * @param {string} guildId The guild id
+ */
+export const isWatchingSteam = guildId => !!stmts.isWatchingSteam(guildId);

@@ -219,6 +219,7 @@ export const stmts = dictionary({
 		return this[0].run(params).changes || this[1].run(params).changes;
 	}),
 	getSteamWatcher: db.prepare("SELECT * FROM SteamWatchers WHERE guildId = ?"),
+	isWatchingSteam: db.prepare("SELECT 1 FROM SteamWatchers WHERE guildId = ?").pluck(),
 	getSteamChannel: db.prepare("SELECT channelId FROM SteamWatchers WHERE guildId = ?").pluck(),
 	unwatchSteam: db.prepare("DELETE FROM SteamWatchers WHERE guildId = ?"),
 	getSteamWatchers: db.prepare("SELECT * FROM SteamWatchers"),

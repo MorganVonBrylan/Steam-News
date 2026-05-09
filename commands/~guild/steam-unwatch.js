@@ -3,7 +3,7 @@ import { unwatchSteam } from "../../steam_news/watchers.js";
 
 import { guildCommands } from "@brylan/djs-commands";
 
-export { getSteamChannel as shouldCreateFor } from "../../steam_news/db_api.js";
+export { isWatchingSteam as shouldCreateFor } from "../../steam_news/watchers.js";
 const deleteCmd = guildCommands.deleteCmd.bind(null, "steam-unwatch");
 
 export const defaultMemberPermissions = "0";
