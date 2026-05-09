@@ -8,9 +8,9 @@ import { guildCommands } from "@brylan/djs-commands";
 import { gameToOption } from "../../utils/commands.js";
 
 const MAX_OPTIONS = 25;
-const CMD_NAME = "unwatch";
+const CMD_NAME = import.meta.filename.match(/([^\\/]+).js$/)[1];
 
-const updateCmd = guildCommands.updateCmd.bind(null, CMD_NAME);
+export const updateCmd = guildCommands.updateCmd.bind(null, CMD_NAME);
 
 export function shouldCreateFor(id) {
 	return getWatchedApps(id).length || getWatchedPrices(id).length;

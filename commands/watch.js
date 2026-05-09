@@ -27,8 +27,7 @@ const {
 	EmbedLinks: EMBED_LINKS,
 } = PermissionFlagsBits;
 
-import { guildCommands } from "@brylan/djs-commands";
-const updateUnwatch = guildCommands.updateCmd.bind(null, "unwatch");
+import { updateCmd as updateUnwatch } from "./~guild/unwatch.js";
 
 
 export async function checkPerms(channel)
