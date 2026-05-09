@@ -6,7 +6,6 @@ import {
 } from "../../steam_news/watchers.js";
 import { guildCommands } from "@brylan/djs-commands";
 import { gameToOption } from "../../utils/commands.js";
-import { isWatched, updateLatest } from "../../steam_news/db_api.js";
 
 const MAX_OPTIONS = 25;
 const CMD_NAME = "unwatch";
@@ -83,7 +82,7 @@ export async function run(inter)
 	const price = inter.options.getSubcommand() === "price";
 	const appid = inter.options.getString("game");
 	const name = getAppName(appid) || "This game";
-	const unwatched = unwatch(appid, inter.guild, price) !== false;
+	const unwatched = unwatch(appid, inter.guild, price);
 	const trKey = `unwatch.${price ? "price" : "news"}-${unwatched ? "unwatched" : "unchanged"}`;
 	inter.reply({
 		flags: "Ephemeral",
@@ -91,9 +90,5 @@ export async function run(inter)
 	});
 
 	if(unwatched)
-	{
 		updateCmd(inter.guild);
-		if(!isWatched(appid))
-			updateLatest({ appid, latest: null });
-	}
 }

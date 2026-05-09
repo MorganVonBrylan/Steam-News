@@ -20,9 +20,9 @@ async function canWriteIn(channel) {
 
 export * from "./db_api.js";
 
-import { purgeApp } from "./db_api.js";
+import { purgeApp, updateLatest } from "./db_api.js";
 import db, { stmts } from "./db.js";
-import { getAppInfo, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
+import { getAppInfo, isWatched, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "./limits.js";
 import { premiumGuilds, chameleonGuilds } from "./VIPs.js";
@@ -254,7 +254,7 @@ export async function checkForNews(range, reschedule = false)
 			const [{date: latestDate}] = news;
 			const baseEmbeds = await newsToEmbeds(news);
 			promises.push(...steamWatchers.map(getNewsSender(baseEmbeds, querySteam)));
-			stmts.updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
+			updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
 		});
 	}
 
@@ -292,7 +292,7 @@ export async function checkForNews(range, reschedule = false)
 			.filter(({premium, guildId}) => !premium || premiumGuilds.has(guildId));
 		promises.push(...watchers.map(getNewsSender(baseEmbeds, queryNews)));
 
-		stmts.updateLatest({ appid, latest: timestamp(latestDate) });
+		updateLatest({ appid, latest: timestamp(latestDate) });
 	};
 
 	const time = ~~((Date.now() - start) / 1000);
@@ -517,7 +517,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
  * @param {Guild} guild The guild or guild id.
  * @param {boolean} price Whether to unwatch for price changes instead of news. Default: false
  *
- * @returns {int|false} false if that guild was not watching that app, or the new number or apps watched by the guild.
+ * @returns {boolean} false if that guild was not watching that app, true otherwise.
  */
 export function unwatch(appid, guild, price = false)
 {
@@ -526,8 +526,7 @@ export function unwatch(appid, guild, price = false)
 	if(!success)
 		return false;
 
-	const remaining = (price ? getWatchedPrices : getWatchedApps)(guildId).length;
-	if(price && !remaining)
-		stmts.updateLastPrice({appid, lastPrice: null});
-	return remaining;
+	if(!price && !isWatched(appid))
+		updateLatest({ appid, latest: null });
+	return true;
 }
