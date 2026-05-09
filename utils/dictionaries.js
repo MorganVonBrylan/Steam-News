@@ -41,3 +41,19 @@ export function fixedDictionary(props)
 {
 	return deepFreeze(assign(create(null), props));
 }
+
+/**
+ * Generate a dictionary with a list of entries with a mapping function.
+ * @param {string[]} entryNames The entry names.
+ * @param {(entryName:string)=>*} map A function that will map an entry name to its value.
+ * @param {boolean} [freeze] Default: true. Whether to deep-freeze the dictionary.
+ * @returns {{[entryName:string]: *}} A dictionary
+ * @see deepFreeze
+ */
+export function generateDictionary(entryNames, map, freeze = true)
+{
+	const dictionary = create(null);
+	for(const entry of entryNames)
+		dictionary[entry] = map(entry);
+	return freeze ? deepFreeze(dictionary) : dictionary;
+}
