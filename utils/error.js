@@ -123,9 +123,10 @@ export function error(err)
 }
 
 
-export function commandRegisterError(err)
+export function commandRegistrationError(err)
 {
-	console.error(err.message);
+	const message = `Command registration error: ${err.constructor.name}: ${err.message}`;
+	console.error(message);
 	if(err.message.startsWith("Invalid Form Body"))
 	{
 		const path = err.message.substring("Invalid Form Body".length+1).split(".");
@@ -142,5 +143,5 @@ export function commandRegisterError(err)
 		}
 		console.error("Offender:", offenderName, "->", offender);
 	}
-	sendToMaster(err.message);
+	sendToMaster(message);
 }
