@@ -1,5 +1,5 @@
 
-import { unwatchSteam } from "../../steam_news/db_api.js";
+import { unwatchSteam } from "../../steam_news/watchers.js";
 
 import { guildCommands } from "@brylan/djs-commands";
 

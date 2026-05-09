@@ -1,5 +1,5 @@
 
-import { watchSteam } from "../steam_news/db_api.js";
+import { watchSteam } from "../steam_news/watchers.js";
 
 import { guildCommands } from "@brylan/djs-commands";
 const createCmd = guildCommands.createCmd.bind(null, "steam-unwatch");

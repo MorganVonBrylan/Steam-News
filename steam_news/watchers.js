@@ -530,3 +530,22 @@ export function unwatch(appid, guild, price = false)
 		updateLatest({ appid, latest: null });
 	return true;
 }
+
+/**
+ * @type {(params: {guildId:string, channelId:string, roleId:?string})=>boolean}
+ * Set or update a Steam watcher.
+ * @param params The watcher info
+ * @returns Whether the watcher was sucessfully set/updated
+ */
+export const watchSteam = stmts.watchSteam;
+
+/**
+ * Stop watching the Steam News Hub in a given server.
+ * @param {string} guildId The guild id
+ */
+export function unwatchSteam(guildId)
+{
+	stmts.unwatchSteam(guildId);
+	if(!stmts.isSteamWatched())
+		updateLatest({ appid: STEAM_APPID, latest: null });
+}

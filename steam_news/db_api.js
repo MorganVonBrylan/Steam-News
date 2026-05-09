@@ -78,15 +78,6 @@ export const getLocale = stmts.getLocale;
  */
 export const setLocale = stmts.setLocale;
 
-
-/**
- * @type {(params: {guildId:string, channelId:string, roleId:?string})=>boolean}
- * Set or update a Steam watcher.
- * @param params The watcher info
- * @returns Whether the watcher was sucessfully set/updated
- */
-export const watchSteam = stmts.watchSteam;
-
 /**
  * @type {(guildId:string)=>?string}
  * Get the channel where Steam news are sent.
@@ -94,17 +85,6 @@ export const watchSteam = stmts.watchSteam;
  * @returns The channel id, or null if Steam is not watched in this server.
  */
 export const getSteamChannel = stmts.getSteamChannel;
-
-/**
- * Stop watching the Steam News Hub in a given server.
- * @param {string} guildId The guild id
- */
-export function unwatchSteam(guildId)
-{
-	stmts.unwatchSteam(guildId);
-	if(!stmts.isSteamWatched())
-		updateLatest({ appid: STEAM_APPID, latest: null });
-}
 
 
 /**
@@ -132,11 +112,10 @@ export function getWatchedApps(guildId, includeSteam = false)
 	return apps;
 }
 
-/**
- * @type {(appid:number)=>boolean}
- * Get whether an app is watched in at least one server.
- */
+/** @type {(appid:number)=>boolean} Get whether an app is watched in at least one server. */
 export const isWatched = stmts.isWatched;
+/** @type {()=>boolean} Check whether Steam is watched in at least one server. */
+export const isSteamWatched = stmts.isSteamWatched;
 
 const watcherGetters = fixedDictionary({
 	news: stmts.getWatcher,
