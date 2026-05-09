@@ -92,7 +92,6 @@ export function trReplace(str, replaces)
 export const tr = {
 	locales: Object.keys(locales),
 	fallbackLocale: FALLBACK,
-	locale: FALLBACK,
 
 	set(lang, group) {
 		if(!(lang in locales))
