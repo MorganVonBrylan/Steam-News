@@ -52,7 +52,7 @@ export default async function toEmbed({ appid, url, title, thumbnail, contents, 
  * @param {number} limit Maximum character limit for the result. Set to Infinity for no limit.
  * @returns {string} Discord Markdown
  */
-function toMarkdown(contents, limit = 2000)
+export function toMarkdown(contents, limit = 2045)
 {
 	contents = contents
 		.replaceAll(/<div class="bb_h([0-9])">(.+?)<\/div>/g, "<h$1>$2</h$1>")
