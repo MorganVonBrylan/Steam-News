@@ -127,15 +127,31 @@
 		},
 		"latest": {
 			"name": "latest",
-			"description": "See a game’s latest news.",
+			"description": "See the latest news.",
 			"options": {
-				"game": {
-					"name": "game",
-					"description": "The game’s name or id"
+				"game-news": {
+					"name": "game-news",
+					"description": "See a game's latest news.",
+					"options": {
+						"game": {
+							"name": "game",
+							"description": "The game’s name or id"
+						},
+						"language": {
+							"name": "language",
+							"description": "The news' language. Availability depends on the game's developers."
+						}
+					}
 				},
-				"language": {
-					"name": "language",
-					"description": "The news' language. Availability depends on the game's developers."
+				"steam-news": {
+					"name": "steam-news",
+					"description": "See the latest news about Steam.",
+					"options": {
+						"language": {
+							"name": "language",
+							"description": "The news' language."
+						}
+					}
 				}
 			}
 		},
@@ -223,10 +239,6 @@
 					"description": "(admins only) Stop watching news about Steam."
 				}
 			}
-		},
-		"steam-latest": {
-			"name": "steam-latest",
-			"description": "See the latest news about Steam."
 		},
 		"stats": {
 			"name": "stats",

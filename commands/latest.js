@@ -1,5 +1,5 @@
 
-import { query, getDetails, isNSFW, HTTPError } from "../steam_news/api.js";
+import { query, querySteam, getDetails, isNSFW, HTTPError } from "../steam_news/api.js";
 import { interpretAppidOption, mention as cmdMention, determineLanguage } from "../utils/commands.js";
 import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
@@ -16,48 +16,33 @@ import { getWebhook } from "../steam_news/db_api.js";
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
+import autocompleteGame from "../autocomplete/search.js";
+
+export { commandGroupAutocomplete as autocomplete } from "@brylan/djs-commands";
+
 export const options = [{
-	type: STRING, name: "game", required: true,
-	description: "The game’s name or id",
-	autocomplete: true,
-}, 
-	languageOption,
-];
-export { default as autocomplete } from "../autocomplete/search.js";
+	type: SUBCOMMAND, name: "game-news",
+	autocomplete: autocompleteGame,
+	options: [{
+		type: STRING, name: "game", required: true,
+		description: "The game’s name or id",
+		autocomplete: true,
+	}, {
+		...languageOption,
+		description: "The news' language. Availability depends on the game's developers."
+	}],
+}, {
+	type: SUBCOMMAND, name: "steam-news",
+	options: [{
+		...languageOption,
+		description: "The news' language.",
+	}],
+}];
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
-	const { appid, defer } = await interpretAppidOption(inter);
-	if(!appid)
-		return;
-
 	const lang = determineLanguage(inter, "language");
 	const t = tr.set(lang);
-	const fetchInfo = isKnown(appid) ? null : getDetails(appid);
-	await defer;
-	let info;
-	try	{
-		info = await query(appid, steamLanguages[lang]);
-	}
-	catch(err) {
-		inter.editReply(err instanceof HTTPError
-			? (err.code === 403 ? t("api-403") : t("api-err", err.code))
-			: "Error while fetching data from the Steam API. Please retry later.");
-		return;
-	}
-
-	const appnews = info;
-	if(!appnews)
-		return inter.editReply({content: t("bad-appid")});
-
-	if(fetchInfo)
-	{
-		const details = await fetchInfo;
-		if(details.type === "dlc")
-			return inter.editReply({flags: "Ephemeral", content: t("no-DLC-news")});
-
-		saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
-	}
 
 	const channel = inter.channel
 		|| await inter.client.channels.fetch(inter.channelId).catch(err => 
@@ -68,19 +53,62 @@ export async function run(inter)
 		);
 
 	if(!channel)
-		return inter.editReply({flags: "Ephemeral", content: t("error")});;
+		return inter.editReply({flags: "Ephemeral", content: t("error")});
+
+	let type = inter.options.getSubcommand();
+	let appnews;
+
+	if(type === "game-news")
+	{
+		type = "news";
+		const { appid, defer } = await interpretAppidOption(inter);
+		if(!appid)
+			return;
+		
+		const fetchInfo = isKnown(appid) ? null : getDetails(appid);
+		await defer;
+		try	{
+			appnews = await query(appid, steamLanguages[lang]);
+		}
+		catch(err) {
+			inter.editReply(err instanceof HTTPError
+				? (err.code === 403 ? t("api-403") : t("api-err", err.code))
+				: "Error while fetching data from the Steam API. Please retry later.");
+			return;
+		}
+
+		if(!appnews)
+			return inter.editReply({content: t("bad-appid")});
+
+		if(fetchInfo)
+		{
+			const details = await fetchInfo;
+			if(details.type === "dlc")
+				return inter.editReply({flags: "Ephemeral", content: t("no-DLC-news")});
+
+			saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
+		}
+
+		if(isAppNSFW(appid) && !(channel.nsfw || channel.isDMBased()))
+			return inter.editReply({flags: "Ephemeral", content: t("NSFW-content-news")});
+	}
+	else if(type === "steam-news")
+	{
+		type = "steam";
+		await inter.deferReply();
+		appnews = await querySteam(steamLanguages[lang]);
+	}
 
 	if(!appnews.newsitems.length)
 		inter.editReply({flags: "Ephemeral", content: t("no-news")});
-	else if(isAppNSFW(appid) && !(channel.nsfw || channel.isDMBased()))
-		inter.editReply({flags: "Ephemeral", content: t("NSFW-content-news")});
 	else
 	{
-		const news = await toEmbed(appnews.newsitems[0], lang);
+		const { appid, newsitems } = appnews;
+		const news = await toEmbed(newsitems[0], lang);
 		const { guildId } = inter;
 		if(guildId && chameleonGuilds.has(guildId))
 		{
-			let webhookInfo = getWebhook("news", { guildId, appid });
+			const webhookInfo = getWebhook(type, { guildId, appid });
 			if(webhookInfo)
 			{
 				if(channel.isThread() && !webhookInfo.includes("#t"))

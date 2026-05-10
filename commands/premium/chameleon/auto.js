@@ -136,11 +136,11 @@ export async function run(inter)
  */
 export function mentionLatest({command, locale}, type)
 {
-	const latest = type === "steam" ? "steam-latest" : "latest";
+	const latest = type === "steam" ? "steam-news" : "game-news";
 	const latestId = command?.manager.cache.find(({name}) => name === latest)?.id;
 	return latestId
-		? `</${latest}:${latestId}>`
-		: `\`/${tr.get(locale, `commands.${latest}.name`)}\``;
+		? `</latest ${latest}:${latestId}>`
+		: `\`/latest ${tr.get(locale, `commands.latest.options.${latest}.name`)}\``;
 }
 
 

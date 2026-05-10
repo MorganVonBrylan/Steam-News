@@ -65,7 +65,7 @@ export function determineLanguage(inter, languageOption)
 /**
  * Format a command or interaction into a command mention.
  * @param {ApplicationCommand|ChatInputCommandInteraction} cmdOrInter An application command or a command interaction
- * @returns {`</${string}:${string}>`} a command mention
+ * @returns {`</${string}:${biging}>`} a command mention
  */
 export function mention(cmdOrInter)
 {

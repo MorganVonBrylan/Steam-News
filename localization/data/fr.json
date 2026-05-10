@@ -120,15 +120,25 @@
 		},
 		"latest": {
 			"name": "dernière",
-			"description": "Voir la dernière actu d’un jeu.",
+			"description": "Voir les dernières actus.",
 			"options": {
-				"game": {
-					"name": "jeu",
-					"description": "Le nom ou l’id du jeu"
+				"game-news": {
+					"name": "actu-de-jeu",
+					"description": "Voir la dernière actu d’un jeu.",
+					"options": {
+						"game": {
+							"name": "jeu",
+							"description": "Le nom ou l’id du jeu"
+						},
+						"language": {
+							"name": "langue",
+							"description": "La langue de l'actu. La disponibilité dépend des dévelopeurs du jeu."
+						}
+					}
 				},
-				"language": {
-					"name": "langue",
-					"description": "La langue de l'actu. La disponibilité dépend des dévelopeurs du jeu."
+				"steam-news": {
+					"name": "actu-steam",
+					"description": "Voir les dernières actus à propos de Steam."
 				}
 			}
 		},
@@ -219,10 +229,6 @@
 					"description": "(admins seulement) Ne plus suivre les actus à propos de Steam."
 				}
 			}
-		},
-		"steam-latest": {
-			"name": "steam-dernière",
-			"description": "Voir les dernières actus à propos de Steam."
 		},
 		"stats": {
 			"name": "stats",

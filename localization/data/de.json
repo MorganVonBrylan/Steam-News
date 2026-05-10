@@ -120,15 +120,31 @@
 		},
 		"latest": {
 			"name": "neuste",
-			"description": "Zeige die letzten Neuigkeiten über ein Spiel an",
+			"description": "Zeige die letzten Neuigkeiten an.",
 			"options": {
-				"game": {
-					"name": "spiel",
-					"description": "Der Name oder die ID des Spiels"
+				"game-news": {
+					"name": "spielneuigkeiten",
+					"description": "Zeige die letzten Neuigkeiten über ein Spiel an",
+					"options": {
+						"game": {
+							"name": "spiel",
+							"description": "Der Name oder die ID des Spiels"
+						},
+						"language": {
+							"name": "sprache",
+							"description": "Die Sprache der Nachrichten. Verfügbarkeit hängt von den Entwicklern des Spiels ab."
+						}
+					}
 				},
-				"language": {
-					"name": "sprache",
-					"description": "Die Sprache der Nachrichten. Verfügbarkeit hängt von den Entwicklern des Spiels ab."
+				"steam-news": {
+					"name": "steam-nachrichten",
+					"description": "Zeige die letzten Neuigkeiten über Steam an.",
+					"options": {
+						"language": {
+							"name": "sprache",
+							"description": "Die Sprache der Nachrichten."
+						}
+					}
 				}
 			}
 		},
@@ -219,10 +235,6 @@
 					"description": "(nur für Admins) Aufhören, Nachrichten über Steam zu beobachten."
 				}
 			}
-		},
-		"steam-latest": {
-			"name": "steam-neuste",
-			"description": "Zeige die letzten Neuigkeiten über Steam an."
 		},
 		"stats": {
 			"name": "statistiken",

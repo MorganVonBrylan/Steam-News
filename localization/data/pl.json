@@ -56,15 +56,22 @@
 		},
 		"latest": {
 			"name": "najnowszy",
-			"description": "Zobacz najnowsze wiadomości na temat gry.",
 			"options": {
-				"game": {
-					"name": "gra",
-					"description": "nazwa gry lub id"
+				"game-news": {
+					"description": "Zobacz najnowsze wiadomości na temat gry.",
+					"options": {
+						"game": {
+							"name": "gra",
+							"description": "nazwa gry lub id"
+						},
+						"language": {
+							"name": "język",
+							"description": "Język wiadomości. Dostępność zależy od twórców gry."
+						}
+					}
 				},
-				"language": {
-					"name": "język",
-					"description": "Język wiadomości. Dostępność zależy od twórców gry."
+				"steam-news": {
+					"description": "Zobacz najnowsze wiadomości o Steam."
 				}
 			}
 		},
@@ -155,10 +162,6 @@
 					"description": "(tylko dla administratorów) Przestań oglądać wiadomości o Steamie."
 				}
 			}
-		},
-		"steam-latest": {
-			"name": "najnowsze_na_steamie",
-			"description": "Zobacz najnowsze wiadomości o Steam."
 		},
 		"stats": {
 			"name": "statystyki",

@@ -36,9 +36,9 @@ for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 			chameleon.customize = { options };
 	}
 
-	const steamLatest = locale.commands["steam-latest"];
+	const { "game-news": gameLatest, "steam-news": steamLatest } = latest.options;
 	steamLatest.options ??= {};
-	steamLatest.options.language = latest.options.language;
+	steamLatest.options.language = gameLatest.options.language;
 
 	const { locale: { languages } } = locale;
 	if(!languages)

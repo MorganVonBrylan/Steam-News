@@ -149,15 +149,22 @@
 		},
 		"latest": {
 			"name": "recientes",
-			"description": "Muestra las últimas noticias de un juego.",
 			"options": {
-				"game": {
-					"name": "juego",
-					"description": "El nombre o id del juego"
+				"game-news": {
+					"description": "Muestra las últimas noticias de un juego.",
+					"options": {
+						"game": {
+							"name": "juego",
+							"description": "El nombre o id del juego"
+						},
+						"language": {
+							"name": "idioma",
+							"description": "El idioma de las noticias. La disponibilidad depende de los desarrolladores del juego."
+						}
+					}
 				},
-				"language": {
-					"name": "idioma",
-					"description": "El idioma de las noticias. La disponibilidad depende de los desarrolladores del juego."
+				"steam-news": {
+					"description": "Muestra las últimas noticias sobre Steam."
 				}
 			}
 		},
@@ -248,10 +255,6 @@
 					"description": "(Sólo admins) Se desuscribe de las noticias sobre Steam."
 				}
 			}
-		},
-		"steam-latest": {
-			"name": "recientes-steam",
-			"description": "Muestra las últimas noticias sobre Steam."
 		},
 		"stats": {
 			"name": "estadisticas",
