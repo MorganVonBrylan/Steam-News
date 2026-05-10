@@ -4,7 +4,7 @@ import { webhookInfo } from "./~webhook.js";
 import { getWatcherChannel, setWebhook } from "../../../steam_news/db_api.js";
 import { STEAM_APPID } from "../../../steam_news/api.js";
 import { buttons, register } from "../../../utils/components.js";
-import { WebhookAutoSetter } from "./auto.js";
+import { WebhookAutoSetter, mentionLatest } from "./auto.js";
 
 const MAX_SIZE = 3_000_000;
 
@@ -66,16 +66,12 @@ export async function run(inter)
 	.then(webhook => {
 		const watcher = { type, appid, channelId, webhook };
 		const success = setWebhook(type, watcher);
-		const latest = steam ? "steam-latest" : "latest";
-		const latestId = inter.command?.manager.cache.find(({name}) => name === latest)?.id;
 		const baseMessage = success
 			? (type === "price"
 				? t("webhook-set-price")
 				: `${t("webhook-set")}\n${t(steam ? "webhook-test-steam" : "webhook-test", {
 					channel: webhookChannel,
-					latest: latestId
-						? `</${latest}:${latestId}>`
-						: `\`/${tr.get(inter.locale, `commands.${latest}.name`)}\``,
+					latest: mentionLatest(inter, type),
 				})}`)
 			: t("webhook-set-error");
 		const message = { embeds: [{ description: baseMessage }]};

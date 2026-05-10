@@ -100,12 +100,6 @@ export async function run(inter)
 			{
 				const { id, name } = webhookInfo;
 				const { channel, newlyCreated, name: nickname, avatar } = res;
-				const latest = steam ? "steam-latest" : "latest";
-				const latestId = inter.command?.manager.cache.find(({name}) => name === latest)?.id;
-				const latestMention = latestId
-					? `</${latest}:${latestId}>`
-					: `\`/${tr.get(inter.locale, `commands.${latest}.name`)}\``;
-					
 				inter.editReply({embeds: [{
 					thumbnail: { url: avatar },
 					title: t(newlyCreated ? "webhook-auto-created" : "webhook-auto-reused"),
@@ -113,7 +107,7 @@ export async function run(inter)
 					\n${type === "price"
 						? t("webhook-auto-price")
 						: t(steam ? "webhook-test-steam" : "webhook-test",
-							{ channel, latest: latestMention })}`
+							{ channel, latest: mentionLatest(inter, type) })}`
 				}]});
 			}
 			else
@@ -131,6 +125,22 @@ export async function run(inter)
 			}]});
 		});
 	}
+}
+
+
+/**
+ * Mention the appropriate /latest command.
+ * @param {import("discord.js").ChatInputCommandInteraction} inter The interaction
+ * @param {"news"|"steam"} type The watcher type
+ * @returns 
+ */
+export function mentionLatest({command, locale}, type)
+{
+	const latest = type === "steam" ? "steam-latest" : "latest";
+	const latestId = command?.manager.cache.find(({name}) => name === latest)?.id;
+	return latestId
+		? `</${latest}:${latestId}>`
+		: `\`/${tr.get(locale, `commands.${latest}.name`)}\``;
 }
 
 
