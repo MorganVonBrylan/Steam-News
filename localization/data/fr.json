@@ -1,5 +1,6 @@
 {
 	"discovery": "**Steam News** vous permet d'avoir les actus et changement de prix de jeux Steam envoyés directement dans un salon de votre serveur Discord.\n\nIl a aussi une commande pour afficher les infos d'un jeu avec bien plus de détails que juste envoyer son adresse du magasin Steam.",
+	"redirect": "Ceci est un bricolage  mis en place à cause de Discord qui a cassé les liens <code>steam://</code>\n<p>Cette page devrait vous ouvrir l'appli Steam ; notez que ça ne fonctionne pas sur mobile.\nCochez la case “toujours autoriser”\nVous pouvez fermer cette page si elle ne le fait pas toute seule.\nSi la redirection ne fonctionne pas, essayez ce lien :",
 	"commands": {
 		"help": {
 			"name": "aide",

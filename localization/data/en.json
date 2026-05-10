@@ -1,5 +1,7 @@
 {
 	"discovery": "**Steam News** allows you to have Steam game news and price changes sent directly to a channel of your choice in your Discord server.\n\nIt also has a command for displaying info on a game, with much more details than just pasting the Steam store URL.",
+
+	"redirect": "This is a workaround for Discord breaking <code>steam://</code> links.\nThis should open the Steam App for you; may not work on mobile, though.\nDo check the “always allow” checkbox for future convenience.\nYou can close this page if doesn't close itself.\nIf the redirection did not work, try this link:",
 	
 	"commands": {
 		"help": {

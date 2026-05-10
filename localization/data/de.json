@@ -1,5 +1,6 @@
 {
 	"discovery": "**Steam News** erlaubt dir, Neuigkeiten über Steam-Spiele und Preisänderungen direkt in einen Kanal deiner Wahl in deinem Discord-Server zu senden.\n\nEs hat außerdem ein Befehl, mit dem du Informationen über ein Spiel mit viel mehr Details anzeigen kannst, als wenn du einfach die Steam-URL in den Kanal schickst.",
+	"redirect": "Das ist eine Abhilfe für Discord, der <code>steam://</code>-Links bricht.\nDas sollte die Steam-App für Sie öffnen; auf mobilen Geräten funktioniert das jedoch möglicherweise nicht.\nAktivieren Sie das Kontrollkästchen „immer zulassen“, damit es in Zukunft einfacher ist.\nSie können diese Seite schließen, wenn sie sich nicht selbst schließt.\nFalls die Weiterleitung nicht funktioniert, versuchen Sie es mit diesem Link:",
 	"commands": {
 		"help": {
 			"name": "hilfe",
