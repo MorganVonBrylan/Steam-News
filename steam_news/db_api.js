@@ -105,9 +105,12 @@ export function getWatchedApps(guildId, includeSteam = false)
 	const apps = stmts.getWatchedApps(guildId);
 	if(includeSteam)
 	{
-		const channelId = stmts.getSteamWatcher(guildId);
-		if(channelId)
-			apps.push({appid: STEAM_APPID, name: "Steam News Hub", nsfw: false, channelId});
+		const watcher = stmts.getSteamWatcher(guildId);
+		if(watcher)
+		{
+			Object.assign(watcher, {appid: STEAM_APPID, name: "Steam News Hub", nsfw: false});
+			apps.push(watcher);
+		}
 	}
 	return apps;
 }
