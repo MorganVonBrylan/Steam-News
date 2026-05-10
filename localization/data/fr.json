@@ -527,6 +527,13 @@
 		"watched": "Les actus de Steam seront désormais envoyées dans %s.",
 		"unwatched": "Les actus de Steam ne seront plus envoyées dans ce serveur."
 	},
+	"group": {
+		"invalidGroup": "Désolé, je n'ai pas trouvé ce groupe. Ce message va s'auto-détruire dans %s secondes.",
+		"members": "Membres",
+		"followers": "Abonné(e)s",
+		"curator_desc": "Slogan de curateur",
+		"openInApp": "Ouvrir dans l’application"
+	},
 	"stats": {
 		"watchers": "Suivis d’actus",
 		"games-watched": "Jeux suivis",

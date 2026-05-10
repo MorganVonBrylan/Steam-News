@@ -115,6 +115,16 @@
 				}
 			}
 		},
+		"group": {
+			"name": "group",
+			"description": "See info about a Steam group.",
+			"options": {
+				"group": {
+					"name": "group",
+					"description": "The group's name or URL."
+				}
+			}
+		},
 		"branding": {
 			"name": "branding",
 			"description": "Get a game's logo and banner",
@@ -523,6 +533,17 @@
 		"watched": "News about Steam will now be sent into %s.",
 		"unwatched": "News about Steam are no longer watched in this server."
 	},
+
+
+	"group": {
+		"invalidGroup": "Sorry, I could not find that group. This message will self-destruct in %s seconds.",
+		"members": "Members",
+		"followers": "Followers",
+		"curator_desc": "Curator tagline",
+		"curator_website": "Site web",
+		"openInApp": "Open in app"
+	},
+
 
 	"stats": {
 		"watchers": "News watchers",
