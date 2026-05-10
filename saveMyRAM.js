@@ -26,7 +26,7 @@ import {
 
 export const cacheLimits = Options.cacheWithLimits({
 	...Options.DefaultMakeCacheSettings,
-	ApplicationCommandManager: 0, // djs-commands has its own cache
+	// No ApplicationCommandManager, we need the command ids for command mentions
 	UserManager: 0,
 	GuildMemberManager: 0,
 	ThreadMemberManager: 0,
