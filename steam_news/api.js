@@ -268,7 +268,8 @@ function sgdb(path) {
 const officialIconCache = Object.create(null);
 officialIconCache[STEAM_APPID] = STEAM_ICON;
 const sgdbCache = Object.create(null);
-sgdbCache[STEAM_APPID] = "https://steamcommunity.com/favicon.ico";
+// I'd use https://steamcommunity.com/favicon.ico but Discord seems to hate .ico files
+sgdbCache[STEAM_APPID] = "https://brylan.fr/bots/SteamNews/Steam.png";
 /**
  * Return the official icon for the game, or if unavailable, one from Steam Grid DB.
  * @param {number} appid That app's id
