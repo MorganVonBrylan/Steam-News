@@ -70,7 +70,7 @@ export function determineLanguage(inter, languageOption)
 export function mention(cmdOrInter)
 {
 	if(cmdOrInter instanceof ApplicationCommand)
-		return `</${cmdOrInter.name}:${cmdOrInter.id}`;
+		return `</${cmdOrInter.name}:${cmdOrInter.id}>`;
 	else
 	{
 		const { options, commandName, commandId } = cmdOrInter;
