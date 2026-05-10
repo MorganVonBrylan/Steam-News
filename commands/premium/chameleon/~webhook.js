@@ -163,6 +163,8 @@ export class Webhook {
 	 * @returns The request
 	 */
 	async send(data, wait = false) {
+		if(typeof data !== "object")
+			data = { content: data };
 		if(this.username || this.avatar)
 			data = { ...data, username: this.username, avatar_url: this.avatar };
 		
