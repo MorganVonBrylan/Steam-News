@@ -396,7 +396,7 @@ const groupCache = new Map();
 export async function groupDetails(nameOrId, lang = "english")
 {
 	const idType = typeof nameOrId === "string" ? "groups" : "gid";
-	const urlId = idType === "group" ? groupNameToSlug(nameOrId) : nameOrId;
+	const urlId = idType === "groups" ? groupNameToSlug(nameOrId) : nameOrId;
 	const existing = groupCache.get(urlId);
 	if(existing)
 	{
@@ -434,9 +434,7 @@ export async function groupDetails(nameOrId, lang = "english")
 		fetch(`${STEAM_BASE_URL}gid/${id}/memberslistxml/?xml=1`).then(async res => { if(res.ok) {
 			const xml = await res.text();
 			const desc = xml.match(/<summary><!\[CDATA\[(.+)\]\]><\/summary>/)?.[1];
-			details.description = desc === "No information given."
-				? xml.match(/<headline><!\[CDATA\[(.+)\]\]><\/headline>/)?.[1]
-				: desc || "";
+			details.description = desc !== "No information given." ? desc : "";
 		}})
 	])
 

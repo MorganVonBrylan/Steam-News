@@ -36,7 +36,8 @@ export async function run(inter)
 			break;
 		}
 	}
-	else if(nameOrId.match(/^[0-9]+$/))
+	
+	if(nameOrId.match(/^[0-9]+$/))
 		nameOrId = +nameOrId;
 
 	groupDetails(nameOrId, lang).then(async details => {
