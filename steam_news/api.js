@@ -2,13 +2,14 @@
 import importJSON from "../utils/importJSON.function.js";
 import { parseStringPromise as parseXML } from "xml2js";
 
+const STEAM_BASE_URL = "https://steamcommunity.com/";
+const STORE_BASE_URL = "https://store.steampowered.com/";
 // Example: view-source:https://store.steampowered.com/feeds/news/app/593110?l=japanese
-const NEWS_URL = "https://store.steampowered.com/feeds/news/app/";
+const NEWS_URL = `${STORE_BASE_URL}feeds/news/app/`;
 // Steam Store API unofficial doc: https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI
-const STORE_BASE_URL = "https://store.steampowered.com/api/";
-const BASE_DETAILS_URL = `${STORE_BASE_URL}appdetails?appids=`;
-const BASE_PRICE_URL = `${STORE_BASE_URL}appdetails?filters=price_overview&appids=`;
-const BASE_SEARCH_URL = `${STORE_BASE_URL}storesearch/?l=english`;
+const BASE_DETAILS_URL = `${STORE_BASE_URL}api/appdetails?appids=`;
+const BASE_PRICE_URL = `${STORE_BASE_URL}api/appdetails?filters=price_overview&appids=`;
+const BASE_SEARCH_URL = `${STORE_BASE_URL}api/storesearch/?l=english`;
 
 export const STEAM_APPID = 593110;
 export const STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/593110/403da5dab6ce5ea2882dc5b7636d7c4dbb73c81a.jpg";
@@ -369,4 +370,84 @@ export async function getUnofficialIcon(appid)
 	}
 	
 	return sgdbCache[appid] = icon;
+}
+
+
+
+
+/**
+ * Get a group's likely slug from its name.
+ * @param {string} name The group's name
+ * @returns a URL slug
+ */
+export function groupNameToSlug(name) {
+	return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove diacritics
+		.toLowerCase().replaceAll(" ", "_").replaceAll(/[^\w]/g, "");
+}
+
+const groupCache = new Map();
+/**
+ * Get details about a Steam group.
+ * @param {number|string} nameOrId The group's name or id.
+ * @param {string} lang A Steam language name, like "english" or "german".
+ * @returns {Promise<?{id:number, group_name:string, description:string, member_count:number, vanity_url:string, is_curator:boolean, avatar_full_url:string, avatar_medium_url:string, curator_description?:string, curator_descs:{[steamLang:string]:string}, followers:number, weblink?:{url:string,title:string}}>}
+ * @throws {Response} If the request failed for another reason than a 404
+ */
+export async function groupDetails(nameOrId, lang = "english")
+{
+	const idType = typeof nameOrId === "string" ? "groups" : "gid";
+	const urlId = idType === "group" ? groupNameToSlug(nameOrId) : nameOrId;
+	const existing = groupCache.get(urlId);
+	if(existing)
+	{
+		console.info("hit cache. Last update was", Date.now() - existing.lastUpdate, "ms ago");
+		if(Date.now() - existing.lastUpdate > 3600_000 || !(lang in details.curator_descs))
+		{
+			const update = await curatorDetails(id, lang);
+			existing.followers = update.followers;
+			if(update.tag_line_localized)
+				details.curator_descs[lang] = update.tag_line_localized;
+			existing.lastUpdate = Date.now();
+		}
+		return existing;
+	}
+
+	const res = await fetch(`${STEAM_BASE_URL}${idType}/${urlId}/ajaxgetvanityandclanid/`);
+	if(res.status === 404)
+		return null;
+	if(!res.ok)
+		throw res;
+
+	const details = await res.json();
+	details.curator_descs = Object.create(null);
+	const id = details.id = details.clanAccountID;
+	await Promise.allSettled([
+		curatorDetails(id, lang).then(cDetails => { if(cDetails) {
+			details.followers = cDetails.followers;
+			if(details.is_curator)
+			{
+				details.weblink = cDetails.weblink;
+				if(cDetails.tag_line_localized)
+					details.curator_descs[lang] = cDetails.tag_line_localized;
+			}
+		}}),
+		fetch(`${STEAM_BASE_URL}gid/${id}/memberslistxml/?xml=1`).then(async res => { if(res.ok) {
+			const xml = await res.text();
+			const desc = xml.match(/<summary><!\[CDATA\[(.+)\]\]><\/summary>/)?.[1];
+			details.description = desc === "No information given."
+				? xml.match(/<headline><!\[CDATA\[(.+)\]\]><\/headline>/)?.[1]
+				: desc || "";
+		}})
+	])
+
+	details.lastUpdate = Date.now();
+	groupCache.set(id, details).set(details.vanity_url, details);
+	return details;
+}
+
+async function curatorDetails(id, lang)
+{
+	const res = await fetch(`${STORE_BASE_URL}curator/${id}/ajaxgetcreatorhomeinfo?l=${lang}`);
+	if(res.ok)
+		return res.json();
 }
