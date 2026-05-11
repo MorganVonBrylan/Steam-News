@@ -3,6 +3,8 @@ import { search } from "../steam_news/api.js";
 import { ApplicationCommand, ChatInputCommandInteraction } from "discord.js";
 import { getLocale } from "../steam_news/db_api.js";
 
+export { mentionCommand as mention } from "@brylan/djs-commands";
+
 /**
  * Defers an interaction and returns the defer promise and app id.
  * If the option is not an appid, a search will be made on the Steam API; if it fails, it replies to the interaction with an error and won't include the app id in the return value.
@@ -61,30 +63,6 @@ export function determineLanguage(inter, languageOption)
 	return inter.locale;
 }
 
-
-/**
- * Format a command or interaction into a command mention.
- * @param {ApplicationCommand|ChatInputCommandInteraction} cmdOrInter An application command or a command interaction
- * @returns {`</${string}:${biging}>`} a command mention
- */
-export function mention(cmdOrInter)
-{
-	if(cmdOrInter instanceof ApplicationCommand)
-		return `</${cmdOrInter.name}:${cmdOrInter.id}>`;
-	else
-	{
-		const { options, commandName, commandId } = cmdOrInter;
-		let fullName = commandName;
-		const group = options.getSubcommandGroup(false);
-		if(group)
-			fullName += ` ${group}`;
-		const subCommand = options.getSubcommand(false);
-		if(subCommand)
-			fullName += ` ${subCommand}`;
-
-		return `</${fullName}:${commandId}>`;
-	}
-}
 
 function toString() {
 	return this.name;

@@ -16,6 +16,7 @@ const MANAGE_WEBHOOKS = PERMISSIONS.ManageWebhooks;
 import { FieldList, sendEmbeds } from "../../../utils/embeds.js";
 
 import { client } from "../../../bot.js";
+import { mention as mentionCommand } from "../../../utils/commands.js";
 
 const STEAMNEWS_ICON = await fetchImage(client.user.avatarURL()).catch(error);
 const ERROR = 0xAA0000;
@@ -134,13 +135,11 @@ export async function run(inter)
  * @param {"news"|"steam"} type The watcher type
  * @returns 
  */
-export function mentionLatest({command, locale}, type)
+export function mentionLatest({locale, guildId}, type)
 {
-	const latest = type === "steam" ? "steam-news" : "game-news";
-	const latestId = command?.manager.cache.find(({name}) => name === latest)?.id;
-	return latestId
-		? `</latest ${latest}:${latestId}>`
-		: `\`/latest ${tr.get(locale, `commands.latest.options.${latest}.name`)}\``;
+	const sub = type === "steam" ? "steam-news" : "game-news";
+	return mentionCommand("latest", { sub, guildId })
+		|| `\`/latest ${tr.get(locale, `commands.latest.options.${sub}.name`)}\``;
 }
 
 
