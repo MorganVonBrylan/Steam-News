@@ -55,6 +55,22 @@ locales["en-US"] = locales[FALLBACK];
 deepFreeze(locales);
 
 
+/** @type {{[lang:string]: Intl.DateTimeFormat}} */
+const formatters = Object.create(null);
+formatters.en = new Intl.DateTimeFormat("en", { dateStyle: "medium" });
+formatters["en-GB"] = formatters["en-US"] = formatters.en;
+/**
+ * Format a date to a short form with day, month and year.
+ * @param {string} lang Language code (e.g fr, en, es-ES...)
+ * @param {Date|number} [date] The date to format. Defaults to the current date.
+ */
+export function formatDate(lang, date)
+{
+	const formatter = formatters[lang] ??= new Intl.DateTimeFormat([lang, FALLBACK], { dateStyle: "medium" });
+	return formatter.format(date);
+}
+
+
 const incompleteTrs = importJSON(`${import.meta.dirname}/knownIncompleteTrs.json`, []);
 if(!Array.isArray(incompleteTrs))
 	throw new TypeError("knownIncompleteTrs.json has an invalid format. Expected: array");
