@@ -3,6 +3,7 @@ import { getAppName } from "./watchers.js";
 import { steamAppLink, banner, icon } from "./api.js";
 const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
 const YT_REGEX = /data-youtube="([\w-]+)"/g;
+const YT_REGEX_BB = /\[previewyoutube="?([\w-]+)(;full)?"?\]\[\/previewyoutube\]/g;
 
 import locales from "../localization/locales.js";
 const { countryToLang } = locales;
@@ -61,6 +62,49 @@ export function toMarkdown(contents, limit = 2045)
 		.replaceAll(/!\[\]\([^)]+\)/g, "") // e.g. ![](https://whtv.com/some_image.gif)
 		.replaceAll("\\[carousel\\]\\[/carousel\\]", "[carousel]")
 		.replaceAll(/(\n *){3,}/g, "\n\n")
+		.trim();
+
+	return contents.length < limit ? contents : `${contents.substring(0, limit-1)}…`;
+}
+
+/**
+ * Converts BBCode code to Markdown
+ * @param {string} contents BBcode
+ * @param {number} limit Maximum character limit for the result. Set to Infinity for no limit.
+ * @returns {string} Discord Markdown
+ */
+export function bbToMarkdown(contents, limit = 2045)
+{
+	contents = contents
+		.replaceAll(/{STEAM_CLAN_IMAGE}[^"\[]+/g, "")
+		.replaceAll(YT_REGEX_BB, "")
+		
+		.replaceAll(/\[table\].*?\[\/table\]/gs, "##table##")
+		.replaceAll(/\[(url=|dynamiclink href=)"?(http[^ "\]]+)( [^\]]+)?"?\]\[\/(url|dynamiclink)\]/g, "$2")
+		.replaceAll(/\[url="?(http[^ \]]+)( [^\]]+)?"?\](.+?)\[\/url\]/g, "[$3]($1)")
+
+		.replaceAll("[hr][/hr]", "\n——————————\n")
+		.replaceAll("&nbsp;", " ")
+
+		.replaceAll(/\n+(\[\/[^\]]+\])/g, "$1")
+
+		.replaceAll(/\n?\[h1\]/g, "\n# ")
+		.replaceAll(/\n?\[h2\]/g, "\n## ")
+		.replaceAll(/\n?\[h[3-9]\]/g, "\n### ")
+		.replaceAll(/\[\/h[0-9]\]\n?/g, "\n")
+
+		.replaceAll(/\[\/?b\]/g, "**")
+		.replaceAll(/\[\/?i\]/g, "*")
+		.replaceAll(/\[\/?u\]/g, "__")
+		.replaceAll(/\[\/?s\]/g, "~~")
+
+		.replaceAll(/\[\/?(img|img src=""|list)\]/g, "")
+		.replaceAll("[/p][p]", "\n")
+		.replaceAll("[/*]", "")
+		.replaceAll(/\n?\[\*\]/g, "\n- ")
+		.replaceAll(/\n{2,}/g, "\n")
+		.replaceAll(/\[\/?[a-z]+\]/g, "")
+		.replaceAll("\n**", "\n\n**")
 		.trim();
 
 	return contents.length < limit ? contents : `${contents.substring(0, limit-1)}…`;
