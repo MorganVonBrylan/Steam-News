@@ -26,7 +26,7 @@ import {
 
 export const cacheLimits = Options.cacheWithLimits({
 	...Options.DefaultMakeCacheSettings,
-	// No ApplicationCommandManager, we need the command ids for command mentions
+	ApplicationCommandManager: 0,
 	UserManager: 0,
 	GuildMemberManager: 0,
 	ThreadMemberManager: 0,
