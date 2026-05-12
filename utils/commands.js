@@ -44,7 +44,6 @@ export async function interpretAppidOption(inter, ephemeral = false, optionName 
  * 3. The interaction's locale
  * @param {ChatInputCommandInteraction} inter the interaction
  * @param {string} [languageOption] A language option the command has, if any.
- * @returns {Promise<{appid: ?string, defer: Promise}>}
  */
 export function determineLanguage(inter, languageOption)
 {
