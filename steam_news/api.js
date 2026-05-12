@@ -400,13 +400,12 @@ export async function groupDetails(nameOrId, lang = "english")
 	const existing = groupCache.get(urlId);
 	if(existing)
 	{
-		console.info("hit cache. Last update was", Date.now() - existing.lastUpdate, "ms ago");
-		if(Date.now() - existing.lastUpdate > 3600_000 || !(lang in details.curator_descs))
+		if(Date.now() - existing.lastUpdate > 3600_000 || !(lang in existing.curator_descs))
 		{
-			const update = await curatorDetails(id, lang);
+			const update = await curatorDetails(existing.id, lang);
 			existing.followers = update.followers;
 			if(update.tag_line_localized)
-				details.curator_descs[lang] = update.tag_line_localized;
+				existing.curator_descs[lang] = update.tag_line_localized;
 			existing.lastUpdate = Date.now();
 		}
 		return existing;
