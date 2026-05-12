@@ -15,7 +15,7 @@ export const updateCmd = guildCommands.updateCmd.bind(null, CMD_NAME);
 export const defaultMemberPermissions = "0";
 
 export function shouldCreateFor(id) {
-	return isWatchingSteam(id) || getWatchedApps(id).length || getWatchedPrices(id).length;
+	return isWatchingSteam(id) || getWatchedApps(id)?.length || getWatchedPrices(id)?.length;
 }
 
 
