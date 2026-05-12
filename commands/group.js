@@ -11,6 +11,21 @@ const URL_REGEXES = [
 	/^https:\/\/steamcommunity.com\/groups\/([^/]+)/,
 ];
 
+export function getNameOrId(nameIdOrURL)
+{
+	if(nameIdOrURL.startsWith("https://")) for(const regex of URL_REGEXES)
+	{
+		const match = nameIdOrURL.match(regex);
+		if(match)
+		{
+			nameIdOrURL = match[1];
+			break;
+		}
+	}
+	
+	return nameIdOrURL.match(/^[0-9]+$/) ? +nameIdOrURL : nameIdOrURL;
+}
+
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
 export const options = [{
@@ -23,24 +38,9 @@ export async function run(inter)
 	const defer = inter.deferReply();
 	const guildLocale = inter.guild && (getLocale(inter.guildId) || inter.guild.preferredLocale);
 	const lang = guildLocale?.lang || steamLanguages[inter.locale];
-
 	const t = tr.set(languageCodes[lang], "group");
 
-	let nameOrId = inter.options.getString("group");
-	if(nameOrId.startsWith("https://")) for(const regex of URL_REGEXES)
-	{
-		const match = nameOrId.match(regex);
-		if(match)
-		{
-			nameOrId = match[1];
-			break;
-		}
-	}
-	
-	if(nameOrId.match(/^[0-9]+$/))
-		nameOrId = +nameOrId;
-
-	groupDetails(nameOrId, lang).then(async details => {
+	groupDetails(getNameOrId(inter.options.getString("group")), lang).then(async details => {
 		await defer;
 		if(!details)
 		{

@@ -1,8 +1,13 @@
 
-import { query, querySteam, getDetails, isNSFW, HTTPError } from "../steam_news/api.js";
+import {
+	query, querySteam, queryGroup,
+	getDetails, isNSFW, groupDetails,
+	HTTPError,
+} from "../steam_news/api.js";
 import { interpretAppidOption, mention as cmdMention, determineLanguage } from "../utils/commands.js";
 import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
 import toEmbed from "../steam_news/toEmbed.function.js";
+import { getNameOrId } from "./group.js";
 
 import { options as localeOptions, steamLanguages } from "./locale.js";
 const languageOption = localeOptions.find(({name}) => name === "language");
@@ -37,6 +42,15 @@ export const options = [{
 		...languageOption,
 		description: "The news' language.",
 	}],
+}, {
+	type: SUBCOMMAND, name: "group-post",
+	options: [{
+		type: STRING, name: "group", required: true,
+		description: "The group's name or URL",
+	}, {
+		...languageOption,
+		description: "The post's language. Availability depends on the group members.",
+	}],
 }];
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
@@ -58,8 +72,8 @@ export async function run(inter)
 	let type = inter.options.getSubcommand();
 	let appnews;
 
-	if(type === "game-news")
-	{
+	switch(type) {
+	case "game-news": {
 		type = "news";
 		const { appid, defer } = await interpretAppidOption(inter);
 		if(!appid)
@@ -91,24 +105,45 @@ export async function run(inter)
 
 		if(isAppNSFW(appid) && !(channel.nsfw || channel.isDMBased()))
 			return inter.editReply({flags: "Ephemeral", content: t("NSFW-content-news")});
+		break;
 	}
-	else if(type === "steam-news")
-	{
+	case "steam-news": {
 		type = "steam";
 		await inter.deferReply();
 		appnews = await querySteam(steamLanguages[lang]);
+		break;
+	}
+	case "group-post": {
+		type = "group";
+		await inter.deferReply();
+		const nameOrId = getNameOrId(inter.options.getString("group"));
+		const id = typeof nameOrId === "number" ? nameOrId
+			: (await groupDetails(nameOrId))?.id;
+
+		if(!id)
+			return inter.editReply(t("bad-group"));
+
+		appnews = await queryGroup(id, steamLanguages[lang]);
+		if(appnews.error)
+		{
+			console.error(appnews);
+			return inter.editReply("Error while fetching data from the Steam API. Please retry later.");
+		}
+		break;
+	}
 	}
 
 	if(!appnews.newsitems.length)
-		inter.editReply({flags: "Ephemeral", content: t("no-news")});
+		inter.editReply(t(type === "group" ? "no-posts" : "no-news"));
 	else
 	{
-		const { appid, newsitems } = appnews;
-		const news = await toEmbed(newsitems[0], lang);
+		const { newsitems: [newsitem] } = appnews;
+		const news = await toEmbed(newsitem, lang);
 		const { guildId } = inter;
 		if(guildId && chameleonGuilds.has(guildId))
 		{
-			const webhookInfo = getWebhook(type, { guildId, appid });
+			const { appid, groupId } = appnews;
+			const webhookInfo = getWebhook(type, { guildId, appid, groupId });
 			if(webhookInfo)
 			{
 				if(channel.isThread() && !webhookInfo.includes("#t"))

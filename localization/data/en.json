@@ -164,6 +164,20 @@
 							"description": "The news' language."
 						}
 					}
+				},
+				"group-post": {
+					"name": "group-post",
+					"description": "See a Steam group's latest post",
+					"options": {
+						"group": {
+							"name": "group",
+							"description": "The group's name or URL"
+						},
+						"language": {
+							"name": "language",
+							"description": "The post's language. Availability depends on the group members."
+						}
+					}
 				}
 			}
 		},
@@ -388,8 +402,10 @@
 	"api-err": "Fetching data failed (error %s).",
 	"no-match": "No game matching \"%s\" found.",
 	"bad-appid": "The id you provided does not belong to any Steam app.",
+	"bad-group": "I could not find that group. Please provide its exact name or URL.",
 	"no-DLC-news": "DLCs do not have a news feed.",
 	"no-news": "This app has no news.",
+	"no-posts": "This group has no posts.",
 	"NSFW-content-news": "This game has adult content. You can only display its news in a NSFW channel.",
 	"NSFW-content-price": "This game has adult content. You can only display its price in a NSFW channel.",
 
