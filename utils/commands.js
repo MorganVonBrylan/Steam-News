@@ -2,6 +2,8 @@
 import { search } from "../steam_news/api.js";
 import { ApplicationCommand, ChatInputCommandInteraction } from "discord.js";
 import { getLocale } from "../steam_news/db_api.js";
+import locales from "../localization/locales.js";
+const { languageCodes } = locales;
 
 export { mentionCommand as mention } from "@brylan/djs-commands";
 
@@ -44,6 +46,7 @@ export async function interpretAppidOption(inter, ephemeral = false, optionName 
  * 3. The interaction's locale
  * @param {ChatInputCommandInteraction} inter the interaction
  * @param {string} [languageOption] A language option the command has, if any.
+ * @returns {string} A language code (e.g fr, en-US, etc)
  */
 export function determineLanguage(inter, languageOption)
 {
@@ -56,7 +59,7 @@ export function determineLanguage(inter, languageOption)
 	{
 		const { guildId, guild } = inter;
 		const locale = getLocale(guildId);
-		if(locale) return locale.lang;
+		if(locale) return languageCodes[locale.lang];
 		if(guild?.features.includes("COMMUNITY")) return guild.preferredLocale;
 	}
 	return inter.locale;

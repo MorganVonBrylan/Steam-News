@@ -65,7 +65,7 @@ export const isNSFW = stmts.isAppNSFW;
 export const getCC = stmts.getCC;
 /**
  * @type {(guildId:string)=>?{cc:string, lang:string}}
- * Get a server's locale
+ * Get a server's locale. 'lang' is a Steam language name.
  */
 export const getLocale = stmts.getLocale;
 /**
@@ -73,7 +73,7 @@ export const getLocale = stmts.getLocale;
  * Change a server's locale
  * @param guildId The guild id
  * @param cc The 2-letter country code
- * @param lang The language code (e.g fr or en-US)
+ * @param lang The language name (e.g french or english)
  * @returns Whether the locale was set
  */
 export const setLocale = stmts.setLocale;
@@ -184,6 +184,7 @@ const webhookGetters = fixedDictionary({
 	news: stmts.getWebhook,
 	price: stmts.getPriceWebhook,
 	steam: stmts.getSteamWebhook,
+	group: Function.noop,
 });
 /**
  * @overload
