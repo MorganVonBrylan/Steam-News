@@ -543,7 +543,11 @@
 		"followers": "Followers",
 		"curator_desc": "Curator tagline",
 		"curator_website": "Site web",
-		"openInApp": "Open in app"
+		"openInApp": "Open in app",
+		"comments": "Comment",
+		"upvotes": "Upvotes",
+		"downvotes": "Downvotes",
+		"last-edit": "Last edited on %s"
 	},
 
 

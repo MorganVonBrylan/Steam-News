@@ -1,6 +1,6 @@
 
 import { getAppName } from "./watchers.js";
-import { steamAppLink, banner, icon } from "./api.js";
+import { steamAppLink, banner, icon, groupDetails } from "./api.js";
 const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
 const YT_REGEX = /data-youtube="([\w-]+)"/g;
 const YT_REGEX_BB = /\[previewyoutube="?([\w-]+)(;full)?"?\]\[\/previewyoutube\]/g;
@@ -9,6 +9,7 @@ import locales from "../localization/locales.js";
 const { countryToLang } = locales;
 
 import { NodeHtmlMarkdown } from "node-html-markdown";
+import { formatDate } from "../localization/index.js";
 const nhm = new NodeHtmlMarkdown({ maxConsecutiveNewlines: 2 });
 const html2markdown = nhm.translate.bind(nhm);
 
@@ -26,10 +27,14 @@ const html2markdown = nhm.translate.bind(nhm);
  * @typedef {{url:string,image:undefined|EmbedImage,title:string,description:string,fields:EmbedField[],yt:string,author:undefined|EmbedAuthor,footer:undefined|EmbedFooter,date:string}} NewsEmbed
  * @returns {Promise<NewsEmbed>} A Discord embed.
  */
-export default async function toEmbed({ appid, url, title, thumbnail, contents, date }, lang = "en")
+export default async function toEmbed(newsitem, lang = "en")
 {
+	if(newsitem.clanid)
+		return postEmbed(newsitem, lang, true);
+
+	const { appid, url, title, contents, date } = newsitem;
 	const eventId = url.substring(url.lastIndexOf("/") + 1);
-	thumbnail ??= contents.match(/<img src="(https[^"]+)"/)?.[1];
+	const thumbnail = newsitem.thumbnail ?? contents.match(/<img src="(https[^"]+)"/)?.[1];
 	const yt = contents.match(YT_REGEX)?.map(m => `https://youtu.be/${m.slice(14, -1)}`).join("\n");
 	const name = getAppName(appid);
 	const iconURL = await icon(appid, { defaultToBanner: false });
@@ -133,3 +138,53 @@ export async function price(appid, name, price)
 		image: { url: await banner(appid, banner.SMALL) },
 	};
 }
+
+
+
+/**
+ * Returns the given group post as a Discord embed.
+ * @param {import("./api.js").GroupPost} post The news item.
+ * @param {string} lang Default: en. The language code.
+ * @param {boolean} includeStats Default: false. Whether to include comments and votes.
+ * @typedef {{url:string,image:undefined|EmbedImage,title:string,description:string,fields:EmbedField[],yt:string,author:undefined|EmbedAuthor,footer:undefined|EmbedFooter,date:string}} NewsEmbed
+ * @returns {Promise<NewsEmbed>} A Discord embed.
+ */
+export async function postEmbed(post, lang = "en", includeStats = false)
+{
+	const { headline, body, posttime, updatetime, clanid, gid, image } = post;
+	const t = tr.set(lang, "group");
+	const yt = body.match(YT_REGEX)?.map(m => `https://youtu.be/${m.slice(14, -1)}`).join("\n");
+
+	const group = await groupDetails(+clanid);
+	const embed = {
+		url: `https://store.steampowered.com/news/group/${clanid}/view/${gid}`,
+		author: {
+			iconURL: group.avatar_medium_url,
+			name: group.group_name,
+			url: `https://steamcommunity.com/groups/${group.vanity_url}`,
+		},
+		title: headline,
+		description: posttime === updatetime ? bbToMarkdown(body)
+			: `-# ${t("last-edit", formatDate(lang, updatetime*1000))}\n\n${bbToMarkdown(body, 2000)}`,
+		footer: {
+			text: group.group_name,
+			iconURL: group.avatar_medium_url,
+		},
+		timestamp: new Date(posttime * 1000).toISOString(),
+		image: image && { url: image },
+		yt,
+	};
+	
+	if(includeStats)
+	{
+		const { commentcount, voteupcount, votedowncount } = post;
+		const inline = true;
+		embed.fields = [
+			{ name: t("comments"), value: ""+commentcount, inline },
+			{ name: t("upvotes"), value: ""+voteupcount, inline },
+			{ name: t("downvotes"), value: ""+votedowncount, inline },
+		];
+	}
+
+	return embed;
+};

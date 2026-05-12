@@ -11,6 +11,9 @@ const BASE_DETAILS_URL = `${STORE_BASE_URL}api/appdetails?appids=`;
 const BASE_PRICE_URL = `${STORE_BASE_URL}api/appdetails?filters=price_overview&appids=`;
 const BASE_SEARCH_URL = `${STORE_BASE_URL}api/storesearch/?l=english`;
 
+// Possible alternate source (RSS): https://store.steampowered.com/feeds/news/group/:gid/?l=lang
+const GROUP_POST_URL = `${STORE_BASE_URL}events/ajaxgetpartnereventspageable/?clan_accountid=`;
+
 export const STEAM_APPID = 593110;
 export const STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/593110/403da5dab6ce5ea2882dc5b7636d7c4dbb73c81a.jpg";
 
@@ -87,7 +90,7 @@ export async function search(terms, cc = "US")
  * @param {string} language (optional) a Steam API language (see https://partner.steamgames.com/doc/store/localization/languages).
  *
  * @typedef {{appid:string, eventId:string,url:string,title:string,thumbnail:?string,contents:string,date:string}} NewsItem
- * @returns {Promise<{appid:number,newsitems:NewsItem[]}|{appid:number,error:string}}>} The news, or an object with error
+ * @returns {Promise<{appid:number,newsitems:NewsItem[]}|{appid:number,error:string}>} The news, or an object with error
  */
 export async function query(appid, language)
 {
@@ -448,3 +451,53 @@ async function curatorDetails(id, lang)
 	if(res.ok)
 		return res.json();
 }
+
+
+/** @typedef {{gid:string, clanid:string, headline:string, image?: string, posttime:number, updatetime:number, body:string, commentcount:number, voteupcount:number, votedowncount:number, tags:string[], language:number, additionalData:string|object}} GroupPost The body is BBCode, and the post/update times are UNIX timestamps in seconds. The language is an index (0 for English, 1 for French, 2 for German, etc) to use with the additionalData's localized arrays. The additionalData starts as a JSON string. */
+/**
+ * Fetch the latest posts of a Steam group.
+ * @param {number} groupId The group's id
+ * @param {string} lang A Steam language
+ * @param {number} count The number of news to fetch. Maximum is 20, defaults to 3.
+ * @returns {Promise<{groupId:number, newsitems:GroupPost[]}|{groupId:number:error:string}>} The posts, or an object with error
+ */
+export async function queryGroup(groupId, lang = "english", count = 3)
+{
+	const res = await fetch(`${GROUP_POST_URL}${groupId}&l=${lang}&count=${count}`);
+	if(!res.ok)
+		return { groupId, error: `${res.status} ${res.statusText}` };
+
+	const { events = [] } = await res.json();
+	return { groupId, newsitems: events.map(event => {
+		const { announcement_body, jsondata } = event;
+		announcement_body.additionalData = jsondata;
+		Object.defineProperty(announcement_body, "image", getGroupPostImage);
+		return announcement_body;
+	})};
+}
+
+
+const getGroupPostImage = Object.freeze({
+	configurable: true,
+	enumerable: true,
+	get() {
+		if(typeof this.additionalData === "string")
+			this.additionalData = JSON.parse(this.additionalData);
+
+		const { language, additionalData: {
+			localized_capsule_image,
+			localized_title_image,
+		}} = this;
+
+		const image = localized_capsule_image[language]
+			|| localized_capsule_image[0]
+			|| localized_title_image[language]
+			|| localized_title_image[0];
+
+		Object.defineProperty(this, "image", {
+			writable: true,
+			value: image && `https://clan.fastly.steamstatic.com/images/${this.clanid}/${image}`,
+		});
+		return this.image;
+	},
+});
