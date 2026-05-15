@@ -1,7 +1,7 @@
 
 import {
 	query, querySteam, queryGroup,
-	getDetails, isNSFW, groupDetails,
+	getDetails, isNSFW, getGroupDetails,
 	HTTPError,
 } from "../steam_news/api.js";
 import { interpretAppidOption, mention as cmdMention, determineLanguage } from "../utils/commands.js";
@@ -118,7 +118,7 @@ export async function run(inter)
 		await inter.deferReply();
 		const nameOrId = getNameOrId(inter.options.getString("group"));
 		const id = typeof nameOrId === "number" ? nameOrId
-			: (await groupDetails(nameOrId))?.id;
+			: (await getGroupDetails(nameOrId))?.id;
 
 		if(!id)
 			return inter.editReply(t("bad-group"));

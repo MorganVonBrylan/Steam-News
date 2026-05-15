@@ -1,5 +1,5 @@
 
-import { groupDetails, steamAppLink, HTTPError } from "../steam_news/api.js";
+import { getGroupDetails, steamAppLink, HTTPError } from "../steam_news/api.js";
 import { getLocale } from "../steam_news/db_api.js";
 import locales from "../localization/locales.js";
 const { steamLanguages, languageCodes } = locales;
@@ -40,7 +40,8 @@ export async function run(inter)
 	const lang = guildLocale?.lang || steamLanguages[inter.locale];
 	const t = tr.set(languageCodes[lang], "group");
 
-	groupDetails(getNameOrId(inter.options.getString("group")), lang).then(async details => {
+	getGroupDetails(getNameOrId(inter.options.getString("group")), lang)
+	.then(async details => {
 		await defer;
 		if(!details)
 		{

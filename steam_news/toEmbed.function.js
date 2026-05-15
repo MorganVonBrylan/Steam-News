@@ -1,6 +1,6 @@
 
 import { getAppName } from "./watchers.js";
-import { steamAppLink, banner, icon, groupDetails } from "./api.js";
+import { steamAppLink, banner, icon, getGroupDetails } from "./api.js";
 const STEAM_CLAN_IMAGE = "https://clan.akamai.steamstatic.com/images";
 const YT_REGEX = /data-youtube="([\w-]+)"/g;
 const YT_REGEX_BB = /\[previewyoutube="?([\w-]+)(;full)?"?\]\[\/previewyoutube\]/g;
@@ -155,7 +155,7 @@ export async function postEmbed(post, lang = "en", includeStats = false)
 	const t = tr.set(lang, "group");
 	const yt = body.match(YT_REGEX)?.map(m => `https://youtu.be/${m.slice(14, -1)}`).join("\n");
 
-	const group = await groupDetails(+clanid);
+	const group = await getGroupDetails(+clanid);
 	const embed = {
 		url: `https://store.steampowered.com/news/group/${clanid}/view/${gid}`,
 		author: {

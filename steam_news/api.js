@@ -396,7 +396,7 @@ const groupCache = new Map();
  * @returns {Promise<?{id:number, group_name:string, description:string, member_count:number, vanity_url:string, is_curator:boolean, avatar_full_url:string, avatar_medium_url:string, curator_description?:string, curator_descs:{[steamLang:string]:string}, followers:number, weblink?:{url:string,title:string}}>}
  * @throws {Response} If the request failed for another reason than a 404
  */
-export async function groupDetails(nameOrId, lang = "english")
+export async function getGroupDetails(nameOrId, lang = "english")
 {
 	const idType = typeof nameOrId === "string" ? "groups" : "gid";
 	const urlId = idType === "groups" ? groupNameToSlug(nameOrId) : nameOrId;
