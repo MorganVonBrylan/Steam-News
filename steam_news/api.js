@@ -388,12 +388,32 @@ export function groupNameToSlug(name) {
 		.toLowerCase().replaceAll(" ", "_").replaceAll(/[^\w]/g, "");
 }
 
+/** @typedef {{id:number, group_name:string, member_count:number, vanity_url:string, is_curator:boolean, avatar_full_url:string, avatar_medium_url:string}} BasicGroupDetails */
+/**
+ * Get a group's basic details. Compared to {@link getGroupDetails}, the description, follower count and curator details will be missing.
+ * @param {number|string} nameOrId The group's name or id.
+ * @returns {Promise<?BasicGroupDetails>} The group's basic info, or null if it doesn't exist.
+ * @throws {Response} If the request failed for another reason than a 404
+ */
+export async function getBasicGroupDetails(nameOrId)
+{
+	const res = await fetch(`${STEAM_BASE_URL}${idType}/${urlId}/ajaxgetvanityandclanid/`);
+	if(res.status === 404)
+		return null;
+	if(!res.ok)
+		throw res;
+
+	const details = await res.json();
+	details.id = details.clanAccountID;
+	return details;
+}
+
 const groupCache = new Map();
 /**
  * Get details about a Steam group.
  * @param {number|string} nameOrId The group's name or id.
  * @param {string} lang A Steam language name, like "english" or "german".
- * @returns {Promise<?{id:number, group_name:string, description:string, member_count:number, vanity_url:string, is_curator:boolean, avatar_full_url:string, avatar_medium_url:string, curator_description?:string, curator_descs:{[steamLang:string]:string}, followers:number, weblink?:{url:string,title:string}}>}
+ * @returns {Promise<?BasicGroupDetails & {description:string, curator_description?:string, curator_descs:{[steamLang:string]:string}, followers:number, weblink?:{url:string,title:string}}>} The group's details, or null if it doesn't exist.
  * @throws {Response} If the request failed for another reason than a 404
  */
 export async function getGroupDetails(nameOrId, lang = "english")
@@ -414,15 +434,11 @@ export async function getGroupDetails(nameOrId, lang = "english")
 		return existing;
 	}
 
-	const res = await fetch(`${STEAM_BASE_URL}${idType}/${urlId}/ajaxgetvanityandclanid/`);
-	if(res.status === 404)
+	const details = await getBasicGroupDetails(nameOrId);
+	if(details === null)
 		return null;
-	if(!res.ok)
-		throw res;
-
-	const details = await res.json();
+	const { id } = details;
 	details.curator_descs = Object.create(null);
-	const id = details.id = details.clanAccountID;
 	await Promise.allSettled([
 		curatorDetails(id, lang).then(cDetails => { if(cDetails) {
 			details.followers = cDetails.followers;
