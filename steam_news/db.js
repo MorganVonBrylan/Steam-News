@@ -35,6 +35,13 @@ CREATE TABLE IF NOT EXISTS Apps (
 	lastPrice INTEGER DEFAULT NULL
 );
 
+CREATE TABLE IF NOT EXISTS Groups (
+	clanid INTEGER PRIMARY KEY,
+	name TEXT NOT NULL,
+	vanityURL TEXT NOT NULL,
+	latest INTEGER DEFAULT NULL
+);
+
 CREATE TABLE IF NOT EXISTS Watchers (
 	appid INTEGER,
 	guildId TEXT,
@@ -62,6 +69,16 @@ CREATE TABLE IF NOT EXISTS SteamWatchers (
 	channelId TEXT NOT NULL,
 	roleId TEXT DEFAULT NULL,
 	webhook TEXT DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS GroupWatchers (
+	groupId INTEGER,
+	guildId TEXT,
+	channelId TEXT NOT NULL,
+	roleId TEXT DEFAULT NULL,
+	premium BOOLEAN DEFAULT FALSE,
+	webhook TEXT DEFAULT NULL,
+	PRIMARY KEY (groupId, guildId)
 );
 
 CREATE TABLE IF NOT EXISTS Guilds (
@@ -163,7 +180,7 @@ function makeProxy(sql, run, pluck = false) {
 	return { readonly, [readonly ? "all" : "run"]: run.bind(sql) };
 }
 
-const watchTables = ["Watchers", "PriceWatchers", "SteamWatchers"];
+const watchTables = ["Watchers", "PriceWatchers", "SteamWatchers", "GroupWatchers"];
 /**
  * Returns a callback that sets an object's "type" property to the provided type.
  * Meant for use with .forEach() and .map()
@@ -239,9 +256,27 @@ export const stmts = dictionary({
 	updateLastPrice: db.prepare("UPDATE Apps SET lastPrice = $lastPrice WHERE appid = $appid"),
 	getPriceWatcherChannel: db.prepare("SELECT channelId from PriceWatchers WHERE appid = $appid AND guildId = $guildId").pluck(),
 
+	insertGroup: db.prepare("INSERT INTO Groups (clanid, name, vanityURL, latest) VALUES (?, ?, ?, ?)"),
+	updateGroup: db.prepare("UPDATE Groups SET name = $group_name, vanityURL = $vanity_url WHERE clanid = $clanid"),
+	getGroupInfo: db.prepare("SELECT * FROM Groups WHERE clanid = ?"),
+
+	watchGroup: db.prepare("INSERT INTO GroupWatchers (groupId, guildId, channelId, roleId, premium) VALUES ($groupId, $guildId, $channelId, $roleId, $premium)"),
+	unwatchPrice: db.prepare("DELETE FROM GroupWatchers WHERE appid = ? AND guildid = ?"),
+	updatePriceWatcher: db.prepare("UPDATE GroupWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId AND clanid = $clanid"),
+	findWatchedGroups: db.prepare("SELECT clanid, latest FROM Groups g WHERE EXISTS (SELECT '*' FROM GroupWatchers WHERE clanid = g.clanid)"),
+	getGroupWatcher: db.prepare("SELECT * FROM GroupWatchers WHERE clanid = $clanid AND guildId = $guildId"),
+	getGroupWatchers: db.prepare(`SELECT GroupWatchers.*, lang
+		FROM GroupWatchers LEFT JOIN Guilds ON id = guildId WHERE clanid = ?`),
+	getWatchedGroups: db.prepare(`SELECT w.*, latest
+		FROM Groups g JOIN PriceWatchers w ON (g.clanid = w.clanid)
+		WHERE guildId = ?`),
+	updateGroupLatest: db.prepare("UPDATE Groups SET latest = $latest WHERE clanid = $clanid"),
+	getGroupWatcherChannel: db.prepare("SELECT channelId from GroupWatchers WHERE clanid = $clanid AND guildId = $guildId").pluck(),
+
 	setWebhook: db.prepare("UPDATE Watchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
 	setPriceWebhook: db.prepare("UPDATE PriceWatchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
 	setSteamWebhook: db.prepare("UPDATE SteamWatchers SET webhook = $webhook WHERE channelId = $channelId"),
+	setGroupWebhook: db.prepare("UPDATE GroupWatchers SET webhook = $webhook WHERE channelId = $channelId && clanid = $clanid"),
 	getWebhook: db.prepare("SELECT webhook FROM Watchers WHERE guildId = $guildId AND appid = $appid").pluck(),
 	getPriceWebhook: db.prepare("SELECT webhook FROM PriceWatchers WHERE guildId = $guildId AND appid = $appid").pluck(),
 	getSteamWebhook: db.prepare("SELECT webhook FROM SteamWatchers WHERE guildId = ?").pluck(),
@@ -253,15 +288,19 @@ export const stmts = dictionary({
 		`),
 		`SELECT ${STEAM_APPID} "appid", 'Steam News Hub' "name", channelId, webhook
 		FROM SteamWatchers WHERE guildId = ? AND webhook IS NOT NULL`,
+		`SELECT clanId, name, channelId, webhook
+		FROM GroupWatchers WHERE guildId = ? AND webhook IS NOT NULL`,
 	], function(guildId, merge = true) {
 		const steam = this[2].get(guildId);
 		const res = {
 			news: this[0].all(guildId),
 			price: this[1].all(guildId),
 			steam: steam ? setType("steam")(steam) : null,
+			gorup: this[3].all(guildId),
 		};
 		return merge ? res.news.map(setType("news")).concat(
 			res.price.map(setType("price")),
+			res.group.map(setType("group")),
 			res.steam || [],
 		) : res;
 	}),

@@ -7,6 +7,7 @@ import { fixedDictionary } from "../utils/dictionaries.js";
  * @typedef {import("./db.js").NewsWatcher} NewsWatcher
  * @typedef {import("./db.js").SteamWatcher} SteamWatcher
  * @typedef {import("./db.js").PriceWatcher} PriceWatcher
+ * @typedef {"news"|"price"|"steam"|"group"} WatcherType
  */
 
 /**
@@ -56,6 +57,30 @@ export const getAppName = stmts.getAppName;
  * @returns Whether is app is NSFW, if known.
  */
 export const isNSFW = stmts.isAppNSFW;
+
+
+/**
+ * @type {(groupId:number)=>({clanid:number, name:string, vanityURL:string, latest:number})|undefined}
+ * @param {number} groupId The group's id
+ * @returns The group data
+ */
+export const getGroupInfo = stmts.getGroupInfo;
+
+/**
+ * @type {(groupId:number, name:string, vanityURL:string, latest:?number)}
+ * @param {number} groupId The group's id
+ * @param {string} name The group's name
+ * @param {string} vanityURL The unique part in a /groups/vanityURL address
+ * @param {number} latest UNIX timestamp in seconds of that group's latest post
+ */
+export const saveGroupInfo = stmts.insertGroup;
+
+/**
+ * @type {(info:{clanid:string, group_name:string, vanity_url:string})=>boolean}
+ * Update a group's name and vanity URL. Properties are name so that the result of the ajaxgetvanityandclanid can be user directly.
+ * @returns true if the group was updated, false if it wasn't in the database.
+ */
+export const updateGroupInfo = info => !!stmts.updateGroup(info).changes;
 
 
 /**
@@ -124,11 +149,12 @@ const watcherGetters = fixedDictionary({
 	news: stmts.getWatcher,
 	price: stmts.getPriceWatcher,
 	steam: ({guildId}) => stmts.getSteamWatcher(guildId),
+	group: stmts.getGroupWatcher,
 });
 /**
  * Get watcher data for a specific app+guild.
- * @param {"news"|"price"|"steam"} type The watcher type
- * @param {{appid:number, guildId:string}} guildAndAppIds An object contraining the guildId and appid (appid not necessary for a Steam watcher)
+ * @param {WatcherType} type The watcher type
+ * @param {{appid?:number, guildId:string}|{clanid:number, guildId:string}} guildAndAppIds An object contraining the guildId and appid (appid not necessary for a Steam watcher)
  * @returns {NewsWatcher|PriceWatcher|SteamWatcher} The watcher data
  */
 export function getWatcher(type, guildAndAppIds)
@@ -147,11 +173,12 @@ const channelGetters = fixedDictionary({
 	news: stmts.getWatcherChannel,
 	price: stmts.getPriceWatcherChannel,
 	steam: ({guildId}) => stmts.getSteamChannel(guildId),
+	group: stmts.getGroupWatcherChannel,
 });
 /**
  * Get the channel of a watcher.
- * @param {"news"|"price"|"steam"} type The watcher type
- * @param {{guildId:string, appid:string}} guildAndAppIds An object containing the guildId and appid (appid not necessary for a Steam watcher)
+ * @param {WatcherType} type The watcher type
+ * @param {{guildId:string, appid:string}|{guildId:string, clanid:string}} guildAndAppIds An object containing the guildId and appid (appid not necessary for a Steam watcher)
  * @returns {string} the channel id
  */
 export function getWatcherChannel(type, guildAndAppIds)
@@ -166,13 +193,11 @@ const webhookSetters = fixedDictionary({
 	news: stmts.setWebhook,
 	price: stmts.setPriceWebhook,
 	steam: stmts.setSteamWebhook,
+	group: stmts.setGroupWebhook,
 });
 /**
- * @param {"news"|"price"|"steam"} type The watcher type
- * @param {{appid: number, channelId: string, webhook: string}} params
- * @param {number} params.appid The appid
- * @param {string} params.channelId The channel id
- * @param {WebhookInfo} params.webhook The webhook info
+ * @param {WatcherType} type The watcher type
+ * @param {{appid: number, channelId: string, webhook: WebhookInfo}|{clanid: number, channelId: string, webhook: WebhookInfo}} params
  * @returns {boolean} true if the watcher was updated, false if it couldn't be found
  */
 export function setWebhook(type, params)
