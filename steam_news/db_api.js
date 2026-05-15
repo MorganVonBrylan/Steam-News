@@ -25,22 +25,22 @@ export const getAppInfo = stmts.getAppInfo;
 /**
  * Stores or updates the given app info.
  * @param {number} appid The app's id.
- * @param {object} details The relevant details (all optional except the name)
- 	* @param {string} details.name The app's name
- 	* @param {boolean} details.nsfw Whether the app is NSFW or not.
-	* @param {string} details.latest That app's latest news' timestamp.
+ * @param {{name:string, nsfw?:boolean, latest?:number, lastPrice?:number}} details The relevant details
  */
 export function saveAppInfo(appid, details)
 {
-	const fields = ["name", "nsfw", "latest"].filter(field => field in details);
-	details.appid = appid;
+	if(typeof details.nsfw === "boolean")
+		details.nsfw = +details.nsfw; // better-sqlite3 refuses to bind booleans (see #262)
 
 	if(stmts.isAppKnown(appid))
+	{
+		details.appid = appid;
 		db.run(`UPDATE Apps SET ${fields.map(f => `${f} = $${f}`).join()} WHERE appid = $appid`, details);
+	}
 	else
 	{
-		fields.push("appid");
-		db.run(`INSERT INTO Apps (${fields.join()}) VALUES (${fields.map(f => "$"+f).join()})`, details);
+		const { name, nsfw = null, latest = null, lastPrice = null } = details;
+		stmts.insertApp(appid, name, nsfw, latest, lastPrice);
 	}
 };
 
