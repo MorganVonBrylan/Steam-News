@@ -73,5 +73,5 @@ export function formatOptionName(name) {
 	return name.length > 32 ? name.substring(0, 31) + "…" : name;
 }
 export function gameToOption({ name, appid }) {
-	return { name: formatOptionName(name), value: ""+appid, toString };
+	return { name: formatOptionName(name), value: appid, toString };
 }

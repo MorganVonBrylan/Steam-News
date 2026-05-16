@@ -27,7 +27,7 @@ const subcommands = generateSubcommands(["news", "price", "steam"],
 	name => ({ type: SUBCOMMAND, name, ...localizations.optionLocalizations(name) }));
 
 const appidOption = {
-	type: STRING, name: "game", required: true,
+	type: INTEGER, name: "game", required: true,
 	description: "The game’s name or id",
 	// middleware takes care of translating this
 };
@@ -85,8 +85,8 @@ export async function run(inter)
 		return;
 	}
 
-	const price = inter.options.getSubcommand() === "price";
-	const appid = inter.options.getString("game");
+	const price = subcommand === "price";
+	const appid = inter.options.getInteger("game");
 	const name = getAppName(appid) || "This game";
 	const unwatched = unwatch(appid, inter.guild, price);
 	const trKey = `unwatch.${price ? "price" : "news"}-${unwatched ? "unwatched" : "unchanged"}`;
