@@ -1,7 +1,7 @@
 
 import {
 	query, queryPrices, querySteam,
-	getDetails,
+	getBasicDetails,
 	isNSFW,
 	STEAM_APPID
 } from "./api.js";
@@ -455,7 +455,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 	const wasUnknown = !stmts.isAppKnown(appid);
 	if(price || wasUnknown)
 	{
-		const details = await getDetails(appid);
+		const details = await getBasicDetails(appid, "price_overview,content_descriptors");
 		if(!details) throw new Error(`Failed to get details of app ${appid}`);
 
 		let knownPrice = null;

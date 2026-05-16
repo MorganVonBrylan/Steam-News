@@ -193,11 +193,12 @@ export async function getDetails(appid, lang = "en", cc = "US")
  * Returns limited details about an app.
  * Compared to {@link getDetails}, things like the price, genre/categories, publisher/developer, release date and ratings will be missing.
  * @param {number} appid The app's id.
+ * @param {string} additionalParts Part of the respons to add on top of the basic ones, separated by commas.
  * @returns {Promise<object?>} The app's basic details, or null if it doesn't exist.
  */
-export async function getBasicDetails(appid)
+export async function getBasicDetails(appid, additionalParts = "")
 {
-	const res = await fetch(`${BASE_DETAILS_URL}${appid}&filters=basic`).then(handleQuery);
+	const res = await fetch(`${BASE_DETAILS_URL}${appid}&filters=basic,${additionalParts}`).then(handleQuery);
 	cacheBanners(res);
 	const { [appid]: details } = res;
 	return details.success ? details.data : null;

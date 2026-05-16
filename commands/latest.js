@@ -1,7 +1,7 @@
 
 import {
 	query, querySteam, queryGroup,
-	getDetails, isNSFW, getGroupDetails,
+	getBasicDetails, isNSFW, getGroupDetails,
 	HTTPError,
 } from "../steam_news/api.js";
 import { interpretAppidOption, mention as cmdMention, determineLanguage } from "../utils/commands.js";
@@ -79,7 +79,7 @@ export async function run(inter)
 		if(!appid)
 			return;
 		
-		const fetchInfo = isKnown(appid) ? null : getDetails(appid);
+		const fetchInfo = isKnown(appid) ? null : getBasicDetails(appid, "content_descriptors");
 		await defer;
 		try	{
 			appnews = await query(appid, steamLanguages[lang]);
