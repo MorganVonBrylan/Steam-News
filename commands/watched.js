@@ -59,12 +59,12 @@ function toEmbeds(watched, t, type)
  * @returns {{name:string, value:string, inline:true}} Field data
  */
 function watcherToField(t, {nsfw, name, channelId, roleId, webhook}) {
-	webhook = webhook ? ` ${t("webhook")}` : "";
 	return {
 		name,
-		value: `${t(`NSFW-${nsfw ? "yes" : "no"}`)}
-			${t("channel", `<#${channelId}>${webhook}`)}
-			${t("ping")} ${roleId ? `<@&${roleId}>` : `*${t("no-ping")}*`}`,
+		value: `${nsfw ? t("NSFW-yes") : ""}
+			${t("channel", `<#${channelId}> ${webhook ? t("webhook") : ""}`)}
+			${roleId ? `${t("ping")} <@&${roleId}>` : ""}}`
+			.trim(),
 		inline: true,
 	};
 }
