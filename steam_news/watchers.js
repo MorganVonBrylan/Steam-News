@@ -433,7 +433,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 		throw new TypeError("'channel' must be a text-based channel");
 
 	const appnews = await query(appid);
-	if(!appnews)
+	if(!appnews || appnews.error)
 		throw new TypeError("'appid' is not a valid app id");
 
 	const { guildId } = channel;
