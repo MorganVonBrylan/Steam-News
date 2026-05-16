@@ -386,8 +386,9 @@ export async function getUnofficialIcon(appid)
  * @returns a URL slug
  */
 export function groupNameToSlug(name) {
+	// We can skip the toLowerCase, vanity URLs are case-insensitive
 	return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove diacritics
-		.toLowerCase().replaceAll(" ", "_").replaceAll(/[^\w]/g, "");
+		.replaceAll(" ", "_").replaceAll(/[^\w-]/g, "");
 }
 
 /** @typedef {{clanid:number, group_name:string, member_count:number, vanity_url:string, is_curator:boolean, avatar_full_url:string, avatar_medium_url:string}} BasicGroupDetails */
@@ -399,6 +400,8 @@ export function groupNameToSlug(name) {
  */
 export async function getBasicGroupDetails(nameOrId)
 {
+	const idType = typeof nameOrId === "string" ? "groups" : "gid";
+	const urlId = idType === "groups" ? groupNameToSlug(nameOrId) : nameOrId;
 	const res = await fetch(`${STEAM_BASE_URL}${idType}/${urlId}/ajaxgetvanityandclanid/`);
 	if(res.status === 404)
 		return null;
@@ -420,26 +423,21 @@ const groupCache = new Map();
  */
 export async function getGroupDetails(nameOrId, lang = "english")
 {
-	const idType = typeof nameOrId === "string" ? "groups" : "gid";
-	const urlId = idType === "groups" ? groupNameToSlug(nameOrId) : nameOrId;
-	const existing = groupCache.get(urlId);
-	if(existing)
+	if(typeof nameOrId === "number")
 	{
-		if(Date.now() - existing.lastUpdate > 3600_000 || !(lang in existing.curator_descs))
-		{
-			const update = await curatorDetails(existing.id, lang);
-			existing.followers = update.followers;
-			if(update.tag_line_localized)
-				existing.curator_descs[lang] = update.tag_line_localized;
-			existing.lastUpdate = Date.now();
-		}
-		return existing;
+		const cached = await updateCachedGroup(nameOrId, lang);
+		if(cached)
+			return cached;
 	}
-
 	const details = await getBasicGroupDetails(nameOrId);
 	if(details === null)
 		return null;
-	const { id } = details;
+
+	const { clanid: id } = details;
+	const cached = await updateCachedGroup(id, lang);
+	if(cached)
+		return cached;
+
 	details.curator_descs = Object.create(null);
 	await Promise.allSettled([
 		curatorDetails(id, lang).then(cDetails => { if(cDetails) {
@@ -456,13 +454,42 @@ export async function getGroupDetails(nameOrId, lang = "english")
 			const desc = xml.match(/<summary><!\[CDATA\[(.+)\]\]><\/summary>/)?.[1];
 			details.description = desc !== "No information given." ? desc : "";
 		}})
-	])
+	]);
 
 	details.lastUpdate = Date.now();
-	groupCache.set(id, details).set(details.vanity_url, details);
+	groupCache.set(id, details);
 	return details;
 }
 
+/**
+ * Retrieve a group from the cache, update its data if it's been a while, and returns it.
+ * @param {number} id The group's id
+ * @returns {ReturnType<getGroupDetails>} The group's data, or undefined if it wasn't cached.
+ */
+async function updateCachedGroup(id, lang)
+{
+	const cached = groupCache.get(id);
+	if(!cached)
+		return;
+	
+	if(Date.now() - cached.lastUpdate > 3600_000 || !(lang in cached.curator_descs))
+	{
+		const update = await curatorDetails(id, lang);
+		cached.followers = update.followers;
+		if(update.tag_line_localized)
+			cached.curator_descs[lang] = update.tag_line_localized;
+		cached.lastUpdate = Date.now();
+	}
+	return cached;
+}
+
+/** @typedef {{creator_clan_id:number, name:string, avatar_url_full_size:string, tag_line_localized:string, followers:number, weblink?:{url:string, title:string}}} CuratorDetails */
+/**
+ * Get a group's curator details
+ * @param {number} id The group's id
+ * @param {string} lang A Steam language name
+ * @returns {Promise<CuratorDetails>}
+ */
 async function curatorDetails(id, lang)
 {
 	const res = await fetch(`${STORE_BASE_URL}curator/${id}/ajaxgetcreatorhomeinfo?l=${lang}`);
