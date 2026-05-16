@@ -533,7 +533,6 @@
 		"ping": "Ping:",
 		"no-ping": "no",
 		"none": "No game is watched in this server.",
-		"id": "Id: %s",
 		"NSFW-yes": "NSFW: Yes",
 		"NSFW-no": "NSFW: No",
 		"channel": "Channel: %s",

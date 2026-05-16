@@ -536,7 +536,6 @@
 		"ping": "Ping:",
 		"no-ping": "no",
 		"none": "No existe ninguna suscripción a ningún juego en este servidor.",
-		"id": "Id: %s",
 		"NSFW-yes": "NSFW: Sí",
 		"NSFW-no": "NSFW: No",
 		"channel": "Canal: %s",

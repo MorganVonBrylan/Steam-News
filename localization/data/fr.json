@@ -511,7 +511,6 @@
 		"ping": "Mention :",
 		"no-ping": "non",
 		"none": "Aucun jeu n’est suivi dans ce serveur.",
-		"id": "Id : %s",
 		"NSFW-yes": "NSFW : Oui",
 		"NSFW-no": "NSFW : Non",
 		"channel": "Salon : %s",

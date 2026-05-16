@@ -517,7 +517,6 @@
 		"ping": "Ping:",
 		"no-ping": "kein",
 		"none": "In diesem Server werden keine Spiele beobachtet.",
-		"id": "ID: %s",
 		"NSFW-yes": "NSFW: Ja",
 		"NSFW-no": "NSFW: Nein",
 		"channel": "Kanal: %s",
