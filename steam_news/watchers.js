@@ -423,7 +423,7 @@ async function postToChannel(channel, message, nsfw)
  * @param {string} roleId The id of the role to ping when posting news/price changes.
  * @param {boolean} price Whether to watch for price changes instead of news. Default: false
  *
- * @returns {Promise<int|object|false|null>} false if that app was already watched in that guild, null if it's a price watch and the game is free, the old watcher data if the watcher existed and was updated, or the new number of watched apps if it was added.
+ * @returns {Promise<int|object|false|null>} false if that app has no price, null if it's a price watch and the game is free, the old watcher data if the watcher existed and was updated, or the new number of watched apps if it was added.
  * @throws {TypeError} if either parameter is invalid
  * @throws {RangeError} if the server reached its LIMIT of apps
  */
