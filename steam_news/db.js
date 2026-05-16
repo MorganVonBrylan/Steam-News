@@ -374,13 +374,9 @@ if(!stmts.isAppKnown.get(STEAM_APPID))
 	db.run(`INSERT INTO Apps (appid, name, nsfw)
 			VALUES (${STEAM_APPID}, 'Steam News Hub', FALSE)`);
 
-const getAll = [
-	"getWatchers", "getWatchedApps", "findWatchedApps",
-	"getPriceWatchers", "getWatchedPrices", "findWatchedPrices",
-	"getSteamWatchers",
-	"getWebhooks", "getNonWebhooks", "getChannelWebhooks",
-	"getAllLocales", "getRecentVoters",
-];
+const getAll = Object.keys(stmts).filter(name => name !== "getStats"
+	&& (name.startsWith("get") || name.startsWith("find"))
+	&& name.endsWith("s"));
 
 // Any errors here about reading undefined are most likely caused by the stmt
 // not being in the getAll list above
