@@ -390,7 +390,7 @@ export function groupNameToSlug(name) {
 		.toLowerCase().replaceAll(" ", "_").replaceAll(/[^\w]/g, "");
 }
 
-/** @typedef {{id:number, group_name:string, member_count:number, vanity_url:string, is_curator:boolean, avatar_full_url:string, avatar_medium_url:string}} BasicGroupDetails */
+/** @typedef {{clanid:number, group_name:string, member_count:number, vanity_url:string, is_curator:boolean, avatar_full_url:string, avatar_medium_url:string}} BasicGroupDetails */
 /**
  * Get a group's basic details. Compared to {@link getGroupDetails}, the description, follower count and curator details will be missing.
  * @param {number|string} nameOrId The group's name or id.
@@ -406,7 +406,7 @@ export async function getBasicGroupDetails(nameOrId)
 		throw res;
 
 	const details = await res.json();
-	details.id = details.clanAccountID;
+	details.clanid = details.clanAccountID;
 	return details;
 }
 
@@ -474,19 +474,19 @@ async function curatorDetails(id, lang)
 /** @typedef {{gid:string, clanid:string, headline:string, image?: string, posttime:number, updatetime:number, body:string, commentcount:number, voteupcount:number, votedowncount:number, tags:string[], language:number, additionalData:string|object}} GroupPost The body is BBCode, and the post/update times are UNIX timestamps in seconds. The language is an index (0 for English, 1 for French, 2 for German, etc) to use with the additionalData's localized arrays. The additionalData starts as a JSON string. */
 /**
  * Fetch the latest posts of a Steam group.
- * @param {number} groupId The group's id
+ * @param {number} clanid The group's id
  * @param {string} lang A Steam language
  * @param {number} count The number of news to fetch. Maximum is 20, defaults to 3.
- * @returns {Promise<{groupId:number, newsitems:GroupPost[]}|{groupId:number:error:string}>} The posts, or an object with error
+ * @returns {Promise<{clanid:number, newsitems:GroupPost[]}|{clanid:number, error:string}>} The posts, or an object with error
  */
-export async function queryGroup(groupId, lang = "english", count = 3)
+export async function queryGroup(clanid, lang = "english", count = 3)
 {
-	const res = await fetch(`${GROUP_POST_URL}${groupId}&l=${lang}&count=${count}`);
+	const res = await fetch(`${GROUP_POST_URL}${clanid}&l=${lang}&count=${count}`);
 	if(!res.ok)
-		return { groupId, error: `${res.status} ${res.statusText}` };
+		return { clanid, error: `${res.status} ${res.statusText}` };
 
 	const { events = [] } = await res.json();
-	return { groupId, newsitems: events.map(event => {
+	return { clanid, newsitems: events.map(event => {
 		const { announcement_body, jsondata } = event;
 		announcement_body.additionalData = jsondata;
 		Object.defineProperty(announcement_body, "image", getGroupPostImage);

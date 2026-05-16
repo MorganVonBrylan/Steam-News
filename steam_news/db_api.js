@@ -60,15 +60,15 @@ export const isNSFW = stmts.isAppNSFW;
 
 
 /**
- * @type {(groupId:number)=>({clanid:number, name:string, vanityURL:string, latest:number})|undefined}
- * @param {number} groupId The group's id
+ * @type {(clanid:number)=>({clanid:number, name:string, vanityURL:string, latest:number})|undefined}
+ * @param {number} clanid The group's id
  * @returns The group data
  */
 export const getGroupInfo = stmts.getGroupInfo;
 
 /**
- * @type {(groupId:number, name:string, vanityURL:string, latest:?number)}
- * @param {number} groupId The group's id
+ * @type {(clanid:number, name:string, vanityURL:string, latest:?number)}
+ * @param {number} clanid The group's id
  * @param {string} name The group's name
  * @param {string} vanityURL The unique part in a /groups/vanityURL address
  * @param {number} latest UNIX timestamp in seconds of that group's latest post

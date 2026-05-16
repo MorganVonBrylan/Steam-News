@@ -1,7 +1,7 @@
 
 import {
 	query, querySteam, queryGroup,
-	getBasicDetails, isNSFW, getGroupDetails,
+	getBasicDetails, isNSFW, getBasicGroupDetails,
 	HTTPError,
 } from "../steam_news/api.js";
 import { interpretAppidOption, mention as cmdMention, determineLanguage } from "../utils/commands.js";
@@ -118,7 +118,7 @@ export async function run(inter)
 		await inter.deferReply();
 		const nameOrId = getNameOrId(inter.options.getString("group"));
 		const id = typeof nameOrId === "number" ? nameOrId
-			: (await getGroupDetails(nameOrId))?.id;
+			: (await getBasicGroupDetails(nameOrId))?.clanid;
 
 		if(!id)
 			return inter.editReply(t("bad-group"));
@@ -142,8 +142,8 @@ export async function run(inter)
 		const { guildId } = inter;
 		if(guildId && chameleonGuilds.has(guildId))
 		{
-			const { appid, groupId } = appnews;
-			const webhookInfo = getWebhook(type, { guildId, appid, groupId });
+			const { appid, clanid } = appnews;
+			const webhookInfo = getWebhook(type, { guildId, appid, clanid });
 			if(webhookInfo)
 			{
 				if(channel.isThread() && !webhookInfo.includes("#t"))

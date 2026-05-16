@@ -52,7 +52,7 @@ export async function run(inter)
 		}
 
 		const {
-			id, group_name, vanity_url,
+			clanid, group_name, vanity_url,
 			avatar_medium_url,
 			description, curator_descs,
 			member_count, followers,
@@ -66,7 +66,7 @@ export async function run(inter)
 		if(is_curator)
 			fields.push({ name: t("curator_desc"), value: curator_descs[lang] });
 
-		fields.push({ name: t("openInApp"), value: steamAppLink(`url/GroupSteamIDPage/${id}`, lang) });
+		fields.push({ name: t("openInApp"), value: steamAppLink(`url/GroupSteamIDPage/${clanid}`, lang) });
 
 		inter.editReply({ embeds: [{
 			url: "https://steamcommunity.com/groups/"+vanity_url,

@@ -72,13 +72,14 @@ CREATE TABLE IF NOT EXISTS SteamWatchers (
 );
 
 CREATE TABLE IF NOT EXISTS GroupWatchers (
-	groupId INTEGER,
+	clanid INTEGER,
 	guildId TEXT,
 	channelId TEXT NOT NULL,
 	roleId TEXT DEFAULT NULL,
 	premium BOOLEAN DEFAULT FALSE,
 	webhook TEXT DEFAULT NULL,
-	PRIMARY KEY (groupId, guildId)
+	PRIMARY KEY (clanid, guildId),
+	CONSTRAINT fk_clanid FOREIGN KEY (clanid) REFERENCES Groups(clanid) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Guilds (
@@ -260,9 +261,9 @@ export const stmts = dictionary({
 	updateGroup: db.prepare("UPDATE Groups SET name = $group_name, vanityURL = $vanity_url WHERE clanid = $clanid"),
 	getGroupInfo: db.prepare("SELECT * FROM Groups WHERE clanid = ?"),
 
-	watchGroup: db.prepare("INSERT INTO GroupWatchers (groupId, guildId, channelId, roleId, premium) VALUES ($groupId, $guildId, $channelId, $roleId, $premium)"),
-	unwatchPrice: db.prepare("DELETE FROM GroupWatchers WHERE appid = ? AND guildid = ?"),
-	updatePriceWatcher: db.prepare("UPDATE GroupWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId AND clanid = $clanid"),
+	watchGroup: db.prepare("INSERT INTO GroupWatchers (clanid, guildId, channelId, roleId, premium) VALUES ($clanid, $guildId, $channelId, $roleId, $premium)"),
+	unwatchGroup: db.prepare("DELETE FROM GroupWatchers WHERE clanid = ? AND guildId = ?"),
+	updateGroupWatcher: db.prepare("UPDATE GroupWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId AND clanid = $clanid"),
 	findWatchedGroups: db.prepare("SELECT clanid, latest FROM Groups g WHERE EXISTS (SELECT '*' FROM GroupWatchers WHERE clanid = g.clanid)"),
 	getGroupWatcher: db.prepare("SELECT * FROM GroupWatchers WHERE clanid = $clanid AND guildId = $guildId"),
 	getGroupWatchers: db.prepare(`SELECT GroupWatchers.*, lang
