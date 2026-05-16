@@ -38,11 +38,11 @@ export async function run(inter)
 	const defer = inter.deferReply();
 	const guildLocale = inter.guild && (getLocale(inter.guildId) || inter.guild.preferredLocale);
 	const lang = guildLocale?.lang || steamLanguages[inter.locale];
-	const t = tr.set(languageCodes[lang], "group");
 
 	getGroupDetails(getNameOrId(inter.options.getString("group")), lang)
 	.then(async details => {
 		await defer;
+		const t = tr.set(languageCodes[lang], "group");
 		if(!details)
 		{
 			const delay = 20;
@@ -77,7 +77,7 @@ export async function run(inter)
 			description: toMarkdown(description),
 			fields,
 		}] });
-	}, async err => {
+	}).catch(async err => {
 		await defer;
 		if(err instanceof HTTPError)
 		{
@@ -89,6 +89,7 @@ export async function run(inter)
 		}
 		else
 		{
+			err.group = inter.options.getString("group");
 			error(err);
 			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "error")});
 		}

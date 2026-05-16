@@ -50,10 +50,9 @@ export async function run(inter)
 		cc ??= langToCountry[lang];
 	}
 
-	const t = tr.set(lang, "info");
-
 	getDetails(appid, lang, cc).then(async details => {
 		await defer;
+		const t = tr.set(lang, "info");
 		if(!details)
 			return inter.editReply({flags: "Ephemeral", content: t("invalidAppid")});
 
@@ -96,7 +95,7 @@ export async function run(inter)
 			],
 			image: { url: header_image },
 		}] });
-	}, async err => {
+	}).catch(async err => {
 		await defer;
 		if(err instanceof TypeError && err.message.includes("appid"))
 			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "bad-appid")});
@@ -110,7 +109,7 @@ export async function run(inter)
 		}
 		else
 		{
-			error(err);
+			error(Object.assign(err, { appid, lang, cc }));
 			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "error")});
 		}
 	});
