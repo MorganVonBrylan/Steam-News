@@ -7,6 +7,7 @@ import { fixedDictionary } from "../utils/dictionaries.js";
  * @typedef {import("./db.js").NewsWatcher} NewsWatcher
  * @typedef {import("./db.js").SteamWatcher} SteamWatcher
  * @typedef {import("./db.js").PriceWatcher} PriceWatcher
+ * @typedef {import("./db.js").GroupWatcher} GroupWatcher
  * @typedef {"news"|"price"|"steam"|"group"} WatcherType
  */
 
@@ -169,6 +170,13 @@ export function getWatcher(type, guildAndAppIds)
  */
 export const getWatchedPrices = stmts.getWatchedPrices;
 
+/**
+ * @type {(guildId:string)=>GroupWatcher[]}
+ * @param {string} guildId The guild id
+ * @returns The app prices watched in that guild, in the format {appid, name, nsfw, lastPrice, channelId}
+ */
+export const getWatchedGroups = stmts.getWatchedGroups;
+
 const channelGetters = fixedDictionary({
 	news: stmts.getWatcherChannel,
 	price: stmts.getPriceWatcherChannel,
@@ -209,13 +217,19 @@ const webhookGetters = fixedDictionary({
 	news: stmts.getWebhook,
 	price: stmts.getPriceWebhook,
 	steam: stmts.getSteamWebhook,
-	group: Function.noop,
+	group: stmts.getGroupWebhook,
 });
+/**
+ * @overload
+ * @param {"group"} type
+ * @param {{guildId:string, clanid:string}} params
+ * @returns {?WebhookInfo} The webhook info, or null is none was set for that group
+ */
 /**
  * @overload
  * @param {"steam"} type
  * @param {"string"|{guildId:string}} params
- * @returns {?WebhookInfo} The webhook info, or null is none was set for that type and app
+ * @returns {?WebhookInfo} The webhook info, or null is none was set
  */
 /**
  * @overload
@@ -226,7 +240,7 @@ const webhookGetters = fixedDictionary({
 /**
  * Returns the webhook for a given app in a given server.
  * @param {string} type
- * @param {string|{guildId: string, appid?:string}} params
+ * @param {string|{guildId:string, appid?:string, clanid?:string}} params
  */
 export function getWebhook(type, params)
 {
@@ -297,12 +311,19 @@ export const purgeChannel = channelId => !!stmts.purgeChannel(channelId.id || ch
 
 
 /**
- * Removes all watchers of an app.
+ * Removes an app and all its watchers.
  * @param {number} appid The app's id.
  * @returns {boolean} true if the app was purged, false if there was nothing to purge.
  */
 export const purgeApp = appid => !!db.run("DELETE FROM Apps WHERE appid = ?", appid).changes;
 // Not prepared because it is rare
+
+/**
+ * Removes a group and all its watchers.
+ * @param {number} clanid The group's id.
+ * @returns {boolean} true if the group was purged, false if there was nothing to purge.
+ */
+export const purgeGroup = clanid => !!db.run("DELETE FROM Groups WHERE clanid = ?", clanid).changes;
 
 
 /**

@@ -21,6 +21,7 @@ db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
  * @typedef {Watcher & {latest:number}} NewsWatcher
  * @typedef {Watcher & {lastPrice: number}} PriceWatcher
  * @typedef {Omit<NewsWatcher, "appid"|"nsfw">} SteamWatcher
+ * @typedef {SteamWatcher & {clanid:string}} GroupWatcher
  */
 
 /* ***** If there ever is a need to change a column in Apps DO NOT DROP IT ***** */
@@ -223,7 +224,7 @@ export const stmts = dictionary({
 	getWatcher: db.prepare("SELECT * FROM Watchers WHERE appid = $appid AND guildId = $guildId"),
 	getWatchers: db.prepare("SELECT * FROM Watchers WHERE appid = ?"),
 	getWatchedApps: db.prepare(`SELECT name, nsfw, latest, w.*
-		FROM Apps a JOIN Watchers w ON (a.appid = w.appid)
+		FROM Apps a JOIN Watchers w ON a.appid = w.appid
 		WHERE guildId = ?
 		ORDER BY name`),
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
@@ -251,7 +252,7 @@ export const stmts = dictionary({
 	getPriceWatchers: db.prepare(`SELECT PriceWatchers.*, lang, COALESCE(cc, 'US') "cc"
 		FROM PriceWatchers LEFT JOIN Guilds ON id = guildId WHERE appid = ?`),
 	getWatchedPrices: db.prepare(`SELECT name, lastPrice, nsfw, w.*
-		FROM Apps a JOIN PriceWatchers w ON (a.appid = w.appid)
+		FROM Apps a JOIN PriceWatchers w ON a.appid = w.appid
 		WHERE guildId = ?
 		ORDER BY name`),
 	updateLastPrice: db.prepare("UPDATE Apps SET lastPrice = $lastPrice WHERE appid = $appid"),
@@ -269,7 +270,7 @@ export const stmts = dictionary({
 	getGroupWatchers: db.prepare(`SELECT GroupWatchers.*, lang
 		FROM GroupWatchers LEFT JOIN Guilds ON id = guildId WHERE clanid = ?`),
 	getWatchedGroups: db.prepare(`SELECT w.*, latest
-		FROM Groups g JOIN PriceWatchers w ON (g.clanid = w.clanid)
+		FROM Groups g JOIN GroupWatchers w ON g.clanid = w.clanid
 		WHERE guildId = ?`),
 	updateGroupLatest: db.prepare("UPDATE Groups SET latest = $latest WHERE clanid = $clanid"),
 	getGroupWatcherChannel: db.prepare("SELECT channelId from GroupWatchers WHERE clanid = $clanid AND guildId = $guildId").pluck(),
@@ -277,10 +278,11 @@ export const stmts = dictionary({
 	setWebhook: db.prepare("UPDATE Watchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
 	setPriceWebhook: db.prepare("UPDATE PriceWatchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
 	setSteamWebhook: db.prepare("UPDATE SteamWatchers SET webhook = $webhook WHERE channelId = $channelId"),
-	setGroupWebhook: db.prepare("UPDATE GroupWatchers SET webhook = $webhook WHERE channelId = $channelId && clanid = $clanid"),
+	setGroupWebhook: db.prepare("UPDATE GroupWatchers SET webhook = $webhook WHERE channelId = $channelId AND clanid = $clanid"),
 	getWebhook: db.prepare("SELECT webhook FROM Watchers WHERE guildId = $guildId AND appid = $appid").pluck(),
 	getPriceWebhook: db.prepare("SELECT webhook FROM PriceWatchers WHERE guildId = $guildId AND appid = $appid").pluck(),
 	getSteamWebhook: db.prepare("SELECT webhook FROM SteamWatchers WHERE guildId = ?").pluck(),
+	getGroupWebhook: db.prepare("SELECT webhook FROM GroupWatchers WHERE guildId = $guildId AND clanid = $clanid").pluck(),
 	getWebhooks: makeProxy([
 		...["Watchers", "PriceWatchers"].map(table => `
 			SELECT a.appid, name, channelId, webhook
@@ -289,8 +291,9 @@ export const stmts = dictionary({
 		`),
 		`SELECT ${STEAM_APPID} "appid", 'Steam News Hub' "name", channelId, webhook
 		FROM SteamWatchers WHERE guildId = ? AND webhook IS NOT NULL`,
-		`SELECT clanId, name, channelId, webhook
-		FROM GroupWatchers WHERE guildId = ? AND webhook IS NOT NULL`,
+		`SELECT g.clanId, name, channelId, webhook
+		FROM GroupWatchers w JOIN Groups g ON w.clanid = g.clanid
+		WHERE guildId = ? AND webhook IS NOT NULL`,
 	], function(guildId, merge = true) {
 		const steam = this[2].get(guildId);
 		const res = {
