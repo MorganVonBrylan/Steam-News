@@ -15,11 +15,9 @@ import { voteURL } from "../../botLists.js";
 
 import { watch, unwatch, getAppInfo, purgeApp } from "../../steam_news/watchers.js";
 import { HTTPError } from "../../steam_news/api.js";
-import { setWebhook } from "../../steam_news/db_api.js";
-import { fetchThreads } from "../../utils/channels.js";
 import { autoSuggestButton } from "../premium/chameleon/set.js";
 
-import { options as baseOptions, checkPerms } from "./~commons.js"
+import { options as baseOptions, checkPerms, updateWebhook } from "./~commons.js"
 
 import { updateCmd as updateUnwatch } from "../~guild/unwatch.js";
 
@@ -159,44 +157,4 @@ export async function run(inter)
 			inter.editReply({flags: "Ephemeral", content: tr.get(locale, "error")});
 		}
 	});
-}
-
-
-/**
- * Update the webhook after
- * @param {{appid:string, channelId:string, webhook:string}} oldWatcher The previous watcher data
- * @param {import("../../utils/channels.js").GuildTextChannel} channel The current watcher channel
- * @param {"news"|"price"|"steam"} type The watcher type
- * @returns {Promise<?boolean>} flase if no update was needed (the channel is the same, or there is no webhook), true if the webhook was updated, null if it had to be removed
- */
-export async function updateWebhook({appid, channelId: oldChannel, webhook}, channel, type = "news")
-{
-	const { id: channelId } = channel;
-	if(!webhook || oldChannel === channelId)
-		return false;
-
-	if(channel.isThread())
-	{
-		if(channel.parentId === oldChannel)
-		{
-			const separator = webhook.indexOf("#", 50);
-			if(separator === -1)
-				webhook += "#t";
-			else
-				webhook = `${webhook.slice(0, separator)}#t${webhook.slice(separator)}`;
-		}
-		else
-		{
-			const siblings = await fetchThreads(channel);
-			if(!siblings.includes(oldChannel))
-				webhook = null;
-		}
-	}
-	else if((await fetchThreads(channel)).includes(oldChannel))
-		webhook = webhook.replace("#t", "");
-	else
-		webhook = null;
-
-	setWebhook(type, { appid, channelId, webhook });
-	return webhook ? true : null;
 }
