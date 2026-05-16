@@ -326,7 +326,9 @@ function applyOptionTranslation(tr, opt)
 	tr = tr[opt.name];
 	if(!tr)
 	{
-		warnMissing(locale, `Missing %l ${forOption}`);
+		// /watch's subcommands share these options, which are not repeated for the sake of brevity
+		if(this.cmdName !== "watch" || (opt.name !== "channel" && opt.name !== "role"))
+			warnMissing(locale, `Missing %l ${forOption}`);
 		return;
 	}
 
