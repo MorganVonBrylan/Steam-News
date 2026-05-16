@@ -208,10 +208,11 @@ export async function getBasicDetails(appid)
  * @param {object} appDetails The app's details.
  * @returns {boolean}
  */
-export function isNSFW({ required_age, content_descriptors })
+export function isNSFW({ content_descriptors: {ids} })
 {
-	const notes = content_descriptors.notes?.toLowerCase();
-	return required_age >= 18 || notes && (notes.includes("nudity") || notes.includes("sex"));
+	// 1 is nudity, 2 is violence, 5 is "generic adult content"
+	// 3 and 4 are implicit and explicit sex, dunno which is which, don't care
+	return ids.length && (ids.includes(1) || ids.includes(3) || ids.includes(4));
 }
 
 
