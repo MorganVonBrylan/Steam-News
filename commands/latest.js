@@ -123,7 +123,7 @@ export async function run(inter)
 		if(!id)
 			return inter.editReply(t("bad-group"));
 
-		appnews = await queryGroup(id, steamLanguages[lang]);
+		appnews = await queryGroup(id, steamLanguages[lang], 1);
 		if(appnews.error)
 		{
 			console.error(appnews);
