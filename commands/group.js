@@ -1,6 +1,6 @@
 
 import { getGroupDetails, steamAppLink, HTTPError } from "../steam_news/api.js";
-import { getLocale } from "../steam_news/db_api.js";
+import { getGroupByName, getLocale } from "../steam_news/db_api.js";
 import locales from "../localization/locales.js";
 const { steamLanguages, languageCodes } = locales;
 import { toMarkdown } from "../steam_news/toEmbed.function.js";
@@ -21,6 +21,12 @@ export function getNameOrId(nameIdOrURL)
 			nameIdOrURL = match[1];
 			break;
 		}
+	}
+	else
+	{
+		const group = getGroupByName(nameIdOrURL);
+		if(group)
+			return group.clanid;
 	}
 	
 	return nameIdOrURL.match(/^[0-9]+$/) ? +nameIdOrURL : nameIdOrURL;

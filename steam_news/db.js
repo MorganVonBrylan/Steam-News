@@ -262,6 +262,7 @@ export const stmts = dictionary({
 	updateGroup: db.prepare("UPDATE Groups SET name = $group_name, vanityURL = $vanity_url WHERE clanid = $clanid"),
 	getGroupInfo: db.prepare("SELECT * FROM Groups WHERE clanid = ?"),
 	getGroupName: db.prepare("SELECT name FROM Groups WHERE clanid = ?").pluck(),
+	getGroupByName: db.prepare("SELECT * FROM Groups WHERE name = ? COLLATE NOCASE"),
 
 	watchGroup: db.prepare("INSERT INTO GroupWatchers (clanid, guildId, channelId, roleId, premium) VALUES ($clanid, $guildId, $channelId, $roleId, $premium)"),
 	unwatchGroup: db.prepare("DELETE FROM GroupWatchers WHERE clanid = ? AND guildId = ?"),

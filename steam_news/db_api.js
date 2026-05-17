@@ -9,6 +9,7 @@ import { fixedDictionary } from "../utils/dictionaries.js";
  * @typedef {import("./db.js").PriceWatcher} PriceWatcher
  * @typedef {import("./db.js").GroupWatcher} GroupWatcher
  * @typedef {"news"|"price"|"steam"|"group"} WatcherType
+ * @typedef {{clanid:number, name:string, vanityURL:string, latest:number}} Group
  */
 
 /**
@@ -61,7 +62,7 @@ export const isNSFW = stmts.isAppNSFW;
 
 
 /**
- * @type {(clanid:number)=>({clanid:number, name:string, vanityURL:string, latest:number})|undefined}
+ * @type {(clanid:number)=>(Group)|undefined}
  * @param {number} clanid The group's id
  * @returns The group data
  */
@@ -72,9 +73,15 @@ export const getGroupInfo = stmts.getGroupInfo;
  * @returns The group name
  */
 export const getGroupName = stmts.getGroupName;
+/**
+ * @type {(name:string)=>Group|undefined}
+ * @param {string} name The group's exact name (this is case-insensitive)
+ * @returns The group, if it is known
+ */
+export const getGroupByName = stmts.getGroupByName;
 
 /**
- * @type {(clanid:number, name:string, vanityURL:string, latest:?number)}
+ * @type {(clanid:number, name:string, vanityURL:string, latest:?number)=>never}
  * @param {number} clanid The group's id
  * @param {string} name The group's name
  * @param {string} vanityURL The unique part in a /groups/vanityURL address
