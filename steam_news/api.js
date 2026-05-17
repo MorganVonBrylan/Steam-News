@@ -522,8 +522,11 @@ export async function queryGroup(clanid, lang = "english", count = 3)
 	const { events = [] } = await res.json();
 	return { clanid, newsitems: events.map(event => {
 		const { announcement_body, jsondata } = event;
-		announcement_body.additionalData = jsondata;
-		Object.defineProperty(announcement_body, "image", getGroupPostImage);
+		if(jsondata)
+		{
+			announcement_body.additionalData = jsondata;
+			Object.defineProperty(announcement_body, "image", getGroupPostImage);
+		}
 		return announcement_body;
 	})};
 }
@@ -537,8 +540,8 @@ const getGroupPostImage = Object.freeze({
 			this.additionalData = JSON.parse(this.additionalData);
 
 		const { language, additionalData: {
-			localized_capsule_image,
-			localized_title_image,
+			localized_capsule_image = Object.null,
+			localized_title_image = Object.null,
 		}} = this;
 
 		const image = localized_capsule_image[language]
