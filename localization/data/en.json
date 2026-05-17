@@ -167,7 +167,7 @@
 				},
 				"group-post": {
 					"name": "group-post",
-					"description": "See a Steam group's latest post",
+					"description": "See a Steam group's latest announcement",
 					"options": {
 						"group": {
 							"name": "group",
@@ -175,7 +175,7 @@
 						},
 						"language": {
 							"name": "language",
-							"description": "The post's language. Availability depends on the group members."
+							"description": "The announcement's language. Availability depends on the group admins."
 						}
 					}
 				}
@@ -240,7 +240,7 @@
 				},
 				"group": {
 					"name": "group",
-					"description": "(admins only) Follow a group’s posts (maximum %s of each per server)",
+					"description": "(admins only) Follow a group’s announcements (maximum %s per server)",
 					"options": {
 						"group": {
 							"name": "group",
@@ -276,7 +276,7 @@
 				},
 				"group": {
 					"name": "group",
-					"description": "(admins only) Stop watching a group's posts."
+					"description": "(admins only) Stop watching a group's announcements."
 				},
 				"name": {
 					"name": "name",
@@ -425,7 +425,7 @@
 	"bad-group": "I could not find that group. Please provide its exact name or URL.",
 	"no-DLC-news": "DLCs do not have a news feed.",
 	"no-news": "This app has no news.",
-	"no-posts": "This group has no posts.",
+	"no-posts": "This group has no announcements.",
 	"NSFW-content-news": "This game has adult content. You can only display its news in a NSFW channel.",
 	"NSFW-content-price": "This game has adult content. You can only display its price in a NSFW channel.",
 
@@ -536,7 +536,7 @@
 
 		"confirm-price": "%s’s price updates will now be sent into %s.",
 		"confirm-news": "%s’s news will now be sent into %s.",
-		"confirm-posts": "%s’s posts will now be sent into %s.",
+		"confirm-posts": "%s’s announcements will now be sent into %s.",
 		"webhook-auto-unset": "Because the watcher channel changed, the webhook has been unset."
 	},
 
@@ -570,8 +570,8 @@
 		"news-unchanged": "%s was not being watched in this server.",
 		"price-unwatched": "%s’s price is no longer watched in this server.",
 		"price-unchanged": "%s’s price was not being watched in this server.",
-		"group-unwatched": "%s’s posts are no longer watched in this server.",
-		"group-unchanged": "%s’s posts were not being watched in this server."
+		"group-unwatched": "%s’s announcements are no longer watched in this server.",
+		"group-unchanged": "%s’s announcements were not being watched in this server."
 	},
 
 	"steam": {
