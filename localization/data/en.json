@@ -252,7 +252,7 @@
 		},
 		"watched": {
 			"name": "watched",
-			"description": "See what games are being watched in this server."
+			"description": "See what games and groups are being watched in this server."
 		},
 		"unwatch": {
 			"name": "unwatch",

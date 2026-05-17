@@ -229,8 +229,7 @@
 			}
 		},
 		"watched": {
-			"name": "suscripciones",
-			"description": "Muestra a qué juegos se está suscrito en este servidor."
+			"name": "suscripciones"
 		},
 		"unwatch": {
 			"name": "desuscribir",

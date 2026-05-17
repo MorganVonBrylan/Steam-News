@@ -210,8 +210,7 @@
 			}
 		},
 		"watched": {
-			"name": "beobachtet",
-			"description": "Zeige an, welche Spiele in diesem Server beobachtet werden."
+			"name": "beobachtet"
 		},
 		"unwatch": {
 			"name": "beobachter-entfernen",

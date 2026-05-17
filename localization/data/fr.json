@@ -207,7 +207,7 @@
 		},
 		"watched": {
 			"name": "suivis",
-			"description": "Voir quels jeux sont suivis sur ce serveur."
+			"description": "Voir quels jeux et groupes sont suivis sur ce serveur."
 		},
 		"unwatch": {
 			"name": "suivre-stop",

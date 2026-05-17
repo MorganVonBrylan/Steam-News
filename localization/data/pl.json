@@ -138,8 +138,7 @@
 			}
 		},
 		"watched": {
-			"name": "oglądałem",
-			"description": "Zobacz, jakie gry są oglądane na tym serwerze."
+			"name": "oglądałem"
 		},
 		"unwatch": {
 			"name": "nie_oglądaj",
