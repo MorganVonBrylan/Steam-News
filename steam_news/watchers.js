@@ -132,7 +132,83 @@ function newsToEmbeds(news, language) {
 }
 
 /**
- * Triggers all watchers.
+ * @param {{serverToLang:{[id:string]:string}, toEmbeds:(news:object[],language:string)=>ReturnType<newsToEmbeds>, attemps:number, successes:number}} data The data for the current posting session.
+ * @param {object[]} baseEmbeds The news embeds in the default language
+ * @param {(lang:string)=>ReturnType<query>} query The query function bound to an appid
+ */
+function getSender(data, baseEmbeds, query) {
+	const { serverToLang, toEmbeds } = data;
+	const nNews = baseEmbeds.length;
+	const { footer: { iconUrl } } = baseEmbeds[0];
+	const embeds = { english: baseEmbeds };
+	const loggedErrors = new Set();
+
+	return function sendNews(watcher) {
+		const { guildId, channelId, roleId } = watcher;
+		return (
+		watcher.webhook && chameleonGuilds.has(guildId)
+		? Promise.resolve(new Webhook(watcher.webhook, channelId))
+		: channels.fetch(channelId)
+	).then(async channel => {
+		if(channel.locked)
+			return purgeChannel(channelId);
+
+		data.attempts++;
+		if(!await canWriteIn(channel))
+			return;
+
+		const lang = serverToLang[guildId]
+			|| steamLanguages[guilds.get(guildId)?.preferredLocale]
+			|| "english";
+		if(!Object.hasOwn(embeds, lang))
+		{
+			const { appid, newsitems, error: err } = await query(lang);
+			if(err)
+			{
+				logQueryError(`Failed to get ${lang} news for app ${appid}`, err);
+				embeds[lang] = embeds.english;
+			}
+			else
+			{
+				newsitems.length = nNews;
+				const trEmbeds = await toEmbeds(newsitems, lang);
+				if(iconUrl) for(const embed of trEmbeds)
+					embed.footer.iconUrl = iconUrl;
+				
+				embeds[lang] = trEmbeds;
+			}
+		}
+
+		return Promise.allSettled(embeds[lang].map(embed => {
+			return channel.send(roleId
+				? { content: `<@&${roleId}>`, embeds: [embed] }
+				: { embeds: [embed] }
+			).then(embed.yt ? () => channel.send(embed.yt) : Function.noop)
+			.then(() => data.successes++)
+			.catch(err => {
+				if(err.status === 403)
+				{
+					err.isWebhook = channel instanceof Webhook;
+					error(err);
+				}
+				else if((channel instanceof Webhook
+					? !handleDeletedWebhook(err, channel, watcher, sendNews)
+					: !handleDeletedChannel(err))
+					&& !loggedErrors.has(err.message))
+				{
+					loggedErrors.add(err.message);
+					error(Object.assign(err, { embeds, targetLang: lang }));
+				}
+			});
+		}));
+	})
+	.catch(handleDeletedChannel)};
+}
+
+
+
+/**
+ * Triggers news watchers.
  * @param {number} range Index of the range of appids to check (see exported 'ranges').
  * @param {boolean} reschedule Whether to schedule the next check.
  * @returns {Promise<number>} The number of news sent.
@@ -144,85 +220,16 @@ export async function checkForNews(range, reschedule = false)
 
 	console.info(new Date(), "Checking news range", ranges[range]);
 	const start = Date.now();
-	const serverToLang = {};
+	const serverToLang = Object.create(null);
 	for(const { id, lang } of stmts.getAllLocales(false))
 		serverToLang[id] = lang;
 
-	let attempts = 0, successes = 0;
+	const data = {
+		serverToLang,
+		toEmbeds: newsToEmbeds,
+		attempts: 0, successes: 0,
+	};
 	let total = 0;
-
-	/**
-	 * @param {object[]} baseEmbeds The news embeds in the default language
-	 * @param {(lang:string)=>ReturnType<query>} query The query function bound to an appid
-	 */
-	function getNewsSender(baseEmbeds, query) {
-		const nNews = baseEmbeds.length;
-		const { footer: { iconUrl } } = baseEmbeds[0];
-		const embeds = { english: baseEmbeds };
-		const loggedErrors = new Set();
-
-		return sendNews;
-		function sendNews(watcher) {
-			const { guildId, channelId, roleId } = watcher;
-			return (
-			watcher.webhook && chameleonGuilds.has(guildId)
-			? Promise.resolve(new Webhook(watcher.webhook, channelId))
-			: channels.fetch(channelId)
-		).then(async channel => {
-			if(channel.locked)
-				return purgeChannel(channelId);
-
-			attempts++;
-			if(!await canWriteIn(channel))
-				return;
-
-			const lang = serverToLang[guildId]
-				|| steamLanguages[guilds.get(guildId)?.preferredLocale]
-				|| "english";
-			if(!Object.hasOwn(embeds, lang))
-			{
-				const { appid, newsitems, error: err } = await query(lang);
-				if(err)
-				{
-					logQueryError(`Failed to get ${lang} news for app ${appid}`, err);
-					embeds[lang] = embeds.english;
-				}
-				else
-				{
-					newsitems.length = nNews;
-					const trEmbeds = await newsToEmbeds(newsitems, lang);
-					if(iconUrl) for(const embed of trEmbeds)
-						embed.footer.iconUrl = iconUrl;
-					
-					embeds[lang] = trEmbeds;
-				}
-			}
-
-			return Promise.allSettled(embeds[lang].map(embed => {
-				return channel.send(roleId
-					? { content: `<@&${roleId}>`, embeds: [embed] }
-					: { embeds: [embed] }
-				).then(embed.yt ? () => channel.send(embed.yt) : Function.noop)
-				.then(() => successes++)
-				.catch(err => {
-					if(err.status === 403)
-					{
-						err.isWebhook = channel instanceof Webhook;
-						error(err);
-					}
-					else if((channel instanceof Webhook
-						? !handleDeletedWebhook(err, channel, watcher, sendNews)
-						: !handleDeletedChannel(err))
-						&& !loggedErrors.has(err.message))
-					{
-						loggedErrors.add(err.message);
-						error(Object.assign(err, { embeds, targetLang: lang }));
-					}
-				});
-			}));
-		})
-		.catch(handleDeletedChannel)};
-	}
 
 	let promises = [];
 
@@ -253,7 +260,7 @@ export async function checkForNews(range, reschedule = false)
 			total += news.length;
 			const [{date: latestDate}] = news;
 			const baseEmbeds = await newsToEmbeds(news);
-			promises.push(...steamWatchers.map(getNewsSender(baseEmbeds, querySteam)));
+			promises.push(...steamWatchers.map(getSender(data, baseEmbeds, querySteam)));
 			updateLatest({ appid: STEAM_APPID, latest: timestamp(latestDate) });
 		});
 	}
@@ -290,7 +297,7 @@ export async function checkForNews(range, reschedule = false)
 
 		const watchers = stmts.getWatchers(appid)
 			.filter(({premium, guildId}) => !premium || premiumGuilds.has(guildId));
-		promises.push(...watchers.map(getNewsSender(baseEmbeds, queryNews)));
+		promises.push(...watchers.map(getSender(data, baseEmbeds, queryNews)));
 
 		updateLatest({ appid, latest: timestamp(latestDate) });
 	};
@@ -305,7 +312,7 @@ export async function checkForNews(range, reschedule = false)
 	}
 
 	if(promises.length)
-		Promise.allSettled(promises).then(() => console.info(new Date(), "Successfully sent", successes, "/", attempts));
+		Promise.allSettled(promises).then(() => console.info(new Date(), "Successfully sent", data.successes, "/", data.attempts));
 
 	return total;
 }
@@ -322,7 +329,7 @@ export async function checkPrices(reschedule = false)
 		pricesSchedule = setTimeout(checkPrices, CHECK_INTERVAL, reschedule);
 
 	console.info(new Date(), "Checking prices");
-	const watchedPrices = {};
+	const watchedPrices = Object.create(null);
 	for(const appDetails of stmts.findWatchedPrices())
 		watchedPrices[appDetails.appid] = appDetails;
 
