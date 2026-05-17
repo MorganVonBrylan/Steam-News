@@ -97,8 +97,11 @@ client.on("clientReady", async () => {
 	master = (await members.fetch(auth.master)).user;
 });
 
-client.once("clientReady", () => {
-	import("./steam_news/watchers.js").then(({scheduleChecks}) => scheduleChecks());
+client.once("clientReady", async () => {
+	const { premiumEnabled } = await import("./steam_news/VIPs.js");
+	// VIPs schedule the checks once the entitlements are loaded
+	if(!premiumEnabled)
+		import("./steam_news/watchers.js").then(({scheduleChecks}) => scheduleChecks());
 
 	if(auth.topGG || auth.dbl)
 		import("./botLists.js").then(({setup}) => setup());

@@ -52,6 +52,7 @@ export const bonus = premium?.bonus || 0;
 export const rebrandSKU = premium?.rebrand;
 export const chameleonSKU = premium?.chameleon;
 export const goldSKU = premium?.gold;
+export const premiumEnabled = premiumSKU || chameleonSKU || goldSKU;
 
 if(premium.freeGoldPlans)
 {
@@ -88,7 +89,7 @@ export function buttons(...skus) {
 	} : null;
 }
 
-if(premiumSKU)
+if(premiumEnabled)
 {
 	/* Doing subscriber role properly requires GUILD_MEMBERS, and I'm not even sure I can get the user id properly
 	let supportServer, subRole;
@@ -118,6 +119,7 @@ if(premiumSKU)
 				chameleonGuilds.add(guildId);
 		}
 		console.log(`Entitlements loaded in ${((Date.now()-start) / 1000).toFixed(1)}s`);
+		import("./watchers.js").then(({scheduleChecks}) => scheduleChecks());
 	});
 
 	client.on("entitlementCreate", async ({skuId, userId, guildId}) => {
