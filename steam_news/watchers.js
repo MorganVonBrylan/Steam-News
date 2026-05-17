@@ -1,7 +1,7 @@
 
 import {
-	query, queryPrices, querySteam,
-	getBasicDetails,
+	query, queryPrices, querySteam, queryGroup,
+	getBasicDetails, getBasicGroupDetails,
 	isNSFW,
 	STEAM_APPID
 } from "./api.js";
@@ -20,9 +20,14 @@ async function canWriteIn(channel) {
 
 export * from "./db_api.js";
 
-import { purgeApp, updateLatest } from "./db_api.js";
+import { purgeApp, purgeGroup, updateLatest, updateLatestPost } from "./db_api.js";
 import db, { stmts } from "./db.js";
-import { getAppInfo, isWatched, getWatchedApps, getWatchedPrices, purgeChannel } from "./db_api.js";
+import {
+	getAppInfo, getGroupInfo,
+	isWatched, getWatchedApps, getWatchedPrices,
+	isGroupWatched, getWatchedGroups,
+	purgeChannel,
+} from "./db_api.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "./limits.js";
 import { premiumGuilds, chameleonGuilds } from "./VIPs.js";
@@ -80,7 +85,7 @@ function handleDeletedWebhook(err, {webhookPurged}, watcher, sendNews) {
 }
 
 
-import toEmbed, { price as toPriceEmbed } from "./toEmbed.function.js";
+import toEmbed, { postEmbed, price as toPriceEmbed } from "./toEmbed.function.js";
 import localesFile from "../localization/locales.js";
 const { steamLanguages } = localesFile;
 
@@ -104,17 +109,23 @@ const newsRanges = ranges.map(range => {
 });
 
 let longestTime = 300;
-let newsSchedule, pricesSchedule;
+let newsSchedule, pricesSchedule, postsSchedule;
 export function scheduleChecks() {
 	newsSchedule?.forEach(clearInterval);
-	clearInterval(pricesSchedule);
-
-	pricesSchedule = setTimeout(checkPrices, CHECK_INTERVAL * 0.8, true);
-	const newsCheckInterval = CHECK_INTERVAL * 0.6 / (newsRanges.length - 1);
+	const { length: nRanges } = newsRanges;
+	const newsCheckInterval = CHECK_INTERVAL * 0.6 / (nRanges - 1);
 	checkPrices().then(() => {
 		newsSchedule = newsRanges.map((_, i) => 
 			setTimeout(checkForNews, newsCheckInterval * i, i, true));
 	});
+
+	clearInterval(pricesSchedule);
+	pricesSchedule = setTimeout(checkPrices, newsCheckInterval * nRanges, true);
+
+	clearInterval(postsSchedule);
+	postsSchedule = setTimeout(checkForPosts, newsCheckInterval * (nRanges+1), true);
+
+checkForPosts()
 }
 
 function timestamp(rssDate) {
@@ -123,13 +134,16 @@ function timestamp(rssDate) {
 
 /**
  * Make news embeds and order them in ascending chronological order.
+ * @param {typeof toEmbed|typeof postEmbed} toEmbed A function that maps a post to an embed.
  * @param {object[]} news The news items in descending chronological order (as returned by the API)
  * @param  {string} language The language 
  * @returns The news embeds
  */
-function newsToEmbeds(news, language) {
+function toEmbeds(toEmbed, news, language) {
 	return Promise.all(news.reverse().map(item => toEmbed(item, language)));
 }
+const newsToEmbeds = toEmbeds.bind(null, toEmbed);
+const postsToEmbeds = toEmbeds.bind(null, postEmbed);
 
 /**
  * @param {{serverToLang:{[id:string]:string}, toEmbeds:(news:object[],language:string)=>ReturnType<newsToEmbeds>, attemps:number, successes:number}} data The data for the current posting session.
@@ -230,8 +244,7 @@ export async function checkForNews(range, reschedule = false)
 		attempts: 0, successes: 0,
 	};
 	let total = 0;
-
-	let promises = [];
+	const promises = [];
 
 	if(range === newsRanges.length - 1)
 	{
@@ -406,6 +419,83 @@ async function updatePriceDatabase(watchedPrices)
 	return appsWithUpdatedPrices;
 }
 
+
+const { findWatchedGroups } = stmts;
+/**
+ * Triggers all group watchers.
+ * @param {boolean} reschedule Whether to schedule the next check.
+ * @returns {Promise<number>} The number of news sent.
+ */
+async function checkForPosts(reschedule)
+{
+	if(reschedule)
+		postsSchedule = setTimeout(checkForPosts, CHECK_INTERVAL, reschedule);
+
+	console.info(new Date(), "Checking posts");
+	const start = Date.now();
+	const serverToLang = Object.create(null);
+	for(const { id, lang } of stmts.getAllLocales(false))
+		serverToLang[id] = lang;
+
+	const data = {
+		serverToLang,
+		toEmbeds: postsToEmbeds,
+		attempts: 0, successes: 0,
+	};
+	let total = 0;
+	const promises = [];
+	for(const { clanid, latest } of findWatchedGroups())
+	{
+		const queryPosts = queryGroup.bind(null, clanid);
+		const { newsitems, error: err } = await queryPosts();
+		if(err)
+		{
+			logQueryError(`Failed to get news of group ${clanid}`, err);
+			if(err.startsWith("404"))
+				purgeGroup(clanid);
+			continue;
+		}
+
+		const posts = [];
+		for(const post of newsitems)
+		{
+			if(post.posttime <= latest)
+				break;
+
+			posts.push(post);
+			if(!latest) break;
+		}
+		
+		if(!posts.length)
+			continue;
+
+		total += posts.length;
+		const [{posttime: latestDate}] = posts;
+		const baseEmbeds = await postsToEmbeds(posts);
+
+		const watchers = stmts.getGroupWatchers(clanid)
+			.filter(({premium, guildId}) => !premium || premiumGuilds.has(guildId));
+		promises.push(...watchers.map(getSender(data, baseEmbeds, queryPosts)));
+
+		updateLatestPost({ clanid, latest: latestDate });
+	};
+
+	const time = ~~((Date.now() - start) / 1000);
+	if(time - longestTime > 60)
+	{
+		const mn = ~~(time / 60);
+		const s = time % 60;
+		sendToMaster(`checkPosts took ${mn}:${s < 10 ? `0${s}` : s}`);
+		longestTime = time;
+	}
+
+	if(promises.length)
+		Promise.allSettled(promises).then(() => console.info(new Date(), "Successfully posted", data.successes, "/", data.attempts));
+
+	return total;
+}
+
+
 /**
  * Send a message to a provided channel. Checks for permissions and nsfw status beforehand.
  * @param {import("../utils/channels.js").GuildTextChannel} channel 
@@ -562,3 +652,68 @@ export function unwatchSteam(guildId)
  * @param {string} guildId The guild id
  */
 export const isWatchingSteam = guildId => !!stmts.isWatchingSteam(guildId);
+
+
+
+/**
+ * Adds a watcher for an app.
+ * A server can only watch 25 apps at once (or 50 if the owner vote on Top.gg).
+ * @param {import("./api.js").BasicGroupDetails} group The group's details.
+ * @param {GuildChannel} channel The text-based channel to send the news to.
+ * @param {string} roleId The id of the role to ping when posting news/price changes.
+ *
+ * @returns {Promise<int|object>} The old watcher data if the watcher existed and was updated, or the new number of watched groups if it was added.
+ * @throws {TypeError} if either parameter is invalid
+ * @throws {RangeError} if the server reached its LIMIT of apps
+ */
+export async function watchGroup(group, channel, roleId = null, LIMIT = WATCH_LIMIT)
+{
+	if(!channel?.isTextBased() || !channel.guildId)
+		throw new TypeError("'channel' must be a text-based channel");
+
+	const posts = await queryGroup(group.clanid, "english", 1);
+	const { guildId } = channel;
+	const watchedGroups = getWatchedGroups(guildId);
+	const { clanid } = group;
+	const watcher = watchedGroups.find(w => w.clanid === clanid);
+	if(watcher)
+	{
+		stmts.updateGroupWatcher({ ...watcher, roleId, channelId: channel.id });
+		return watcher;
+	}
+	
+	if(watchedGroups.length >= LIMIT)
+		throw new RangeError(`This server reached its limit of ${LIMIT} watched groups.`);
+
+	// + because SQLite fails if you give it a boolean
+	const premium = +(watchedGroups.length >= WATCH_LIMIT+WATCH_VOTE_BONUS);
+
+	const { group_name, vanity_url } = group;
+	const knownInfo = getGroupInfo(clanid);
+	if(!knownInfo)
+		stmts.insertGroup(clanid, group_name, vanity_url, posts.newsitems[0]?.posttime);
+	else if(knownInfo.name !== group_name || knownInfo.vanity_url !== vanity_url)
+		stmts.updateGroup(group);
+
+	stmts.watchGroup({clanid, guildId, channelId: channel.id, roleId, premium});
+	return watchedGroups.length + 1;
+}
+
+
+/**
+ * Stops watching the given group in the given guild.
+ * @param {number} clanid The group's id.
+ * @param {Guild|string} guild The guild or guild id.
+ *
+ * @returns {boolean} false if that guild was not watching that app, true otherwise.
+ */
+export function unwatchGroup(clanid, guild)
+{
+	const success = stmts.unwatchGroup(clanid, guild.id || guild).changes;
+	if(!success)
+		return false;
+
+	if(!isGroupWatched(clanid))
+		updateLatestPost({ clanid, latest: null });
+	return true;
+}

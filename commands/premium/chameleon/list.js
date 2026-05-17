@@ -16,8 +16,8 @@ export async function run(inter)
 
 	await inter.deferReply();
 	const webhooked = getWebhooks(inter.guildId)
-		.map(({type, appid, name, channelId, webhook}) =>
-		Object.assign(new Webhook(webhook), { type, appid, appName: name, channelId })
+		.map(({type, appid, clanid, name, channelId, webhook}) =>
+		Object.assign(new Webhook(webhook), { type, appid, clanid, appName: name, channelId })
 	);
 	const webhookCache = Object.create(null);
 	for(const idAndToken of new Set(webhooked.map(({idAndToken}) => idAndToken)))
@@ -31,19 +31,17 @@ export async function run(inter)
 	if(!webhooks.length)
 		return inter.editReply({embeds: [{description: t("no-webhooks")}]});
 
-	webhooks.sort(({appName, type}, {appName: bppName, type: btype}) => {
-		if(type === "steam")
-			return 100;
-		if(btype === "steam")
-			return -100;
-		if(appName !== bppName)
-			return appName < bppName ? 1 : -1;
-		else
-			return type === "news" ? 1 : -1;
-	});
+	webhooks.sort(({appName, type}, {appName: bppName, type: btype}) => 
+		type === "group" ? 200
+		: btype === "group" ? -200
+		: type === "steam" ? 100
+		: btype === "steam" ? -100
+		: appName !== bppName ? (appName < bppName ? 1 : -1)
+		: type === "news" ? 1 : -1
+	);
 
 	const tTypes = {};
-	for(const type of ["news", "price", "steam"])
+	for(const type of ["news", "price", "steam", "group"])
 		tTypes[type] = t(type);
 	const tWebhookName = t("webhook-name");
 	const tUsername = t("name-used");

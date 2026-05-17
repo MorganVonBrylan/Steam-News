@@ -1,11 +1,12 @@
 
 import onAutocompleteError from "../../autocomplete/_errorHandler.js";
 import {
-	unwatch, unwatchSteam,
-	getAppName, getWatchedApps, getWatchedPrices, isWatchingSteam,
+	getWatchedApps, getWatchedPrices, getWatchedGroups, isWatchingSteam,
+	getAppName, getGroupName,
+	unwatch, unwatchSteam, unwatchGroup,
 } from "../../steam_news/watchers.js";
 import { guildCommands } from "@brylan/djs-commands";
-import { gameToOption } from "../../utils/commands.js";
+import { gameToOption, groupToOption } from "../../utils/commands.js";
 
 const MAX_OPTIONS = 25;
 const CMD_NAME = import.meta.filename.match(/([^\\/]+).js$/)[1];
@@ -20,44 +21,47 @@ export function shouldCreateFor(id) {
 
 
 import getLocalizationHelper from "./~localizationHelper.js";
-import { generateDictionary as generateSubcommands } from "../../utils/dictionaries.js";
+import { fixedDictionary, generateDictionary as generateSubcommands } from "../../utils/dictionaries.js";
 const localizations = getLocalizationHelper(CMD_NAME);
 
-const subcommands = generateSubcommands(["news", "price", "steam"],
+const subcommands = generateSubcommands(["news", "price", "steam", "group"],
 	name => ({ type: SUBCOMMAND, name, ...localizations.optionLocalizations(name) }));
 
+
+const watcherGetters = fixedDictionary({
+	news: { getWatched: getWatchedApps, toOptions: gameToOption },
+	price: { getWatched: getWatchedPrices, toOptions: gameToOption },
+	group: { getWatched: getWatchedGroups, toOptions: groupToOption },
+});
+
+// middleware takes care of translating these
 const appidOption = {
 	type: INTEGER, name: "game", required: true,
 	description: "The game’s name or id",
-	// middleware takes care of translating this
 };
-export const options = [appidOption];
+const clanidOption = {
+	type: INTEGER, name: "name", required: true,
+	description: "The group’s name",
+}
+export const options = [appidOption, clanidOption];
 export function getOptions(guildId)
 {
-	const watchedApps = getWatchedApps(guildId).map(gameToOption);
-	const watchedPrices = getWatchedPrices(guildId).map(gameToOption);
-	const nApps = watchedApps.length;
-	const nPrices = watchedPrices.length;
 	const options = [];
-	if(nApps)
-		options.push({
-			...subcommands.news,
-			options: [{
-				...appidOption,
-				...(nApps > MAX_OPTIONS ? {autocomplete: true} : {choices: watchedApps.sort()}),
-			}],
-		});
+	for(const [type, { getWatched, toOptions }] of Object.entries(watcherGetters))
+	{
+		const watchers = getWatched(guildId).map(toOptions);
+		if(!watchers.length)
+			continue;
 
-	if(nPrices)
-		options.push({
-			...subcommands.price,
-			options: [{
-				...appidOption,
-				...(nPrices > MAX_OPTIONS ? {autocomplete: true} : {choices: watchedPrices.sort()}),
-			}],
-		});
+		const watcherOption = { ...(type === "group" ? clanidOption : appidOption) };
+		if(watchers.length <= MAX_OPTIONS)
+			watcherOption.choices = watchers.sort();
+		else
+			watcherOption.autocomplete = true;
+		options.push({ ...subcommands[type], options: [watcherOption] });
+	}
 	
-	if(isWatchingSteam(guildId)) // déplace les traductions
+	if(isWatchingSteam(guildId))
 		options.push(subcommands.steam);
 
 	return options;
@@ -66,35 +70,42 @@ export function getOptions(guildId)
 /** @param {import("discord.js").AutocompleteInteraction} inter */
 export function autocomplete(inter)
 {
-	const search = (inter.options.getFocused() || "").toLowerCase();
-	const apps = (inter.options.getSubcommand() === "price" ? getWatchedPrices : getWatchedApps)(inter.guildId);
-	const results = (search ? apps.filter(({name}) => name.toLowerCase().includes(search)) : apps);
+	/** @type {keyof watcherGetters} */
+	const subcommand = inter.options.getSubcommand();
+	const search = inter.options.getFocused().toLowerCase();
+	const { getWatched, toOptions } = watcherGetters[subcommand];
+	const watchers = getWatched(inter.guildId);
+	const results = (search ? watchers.filter(({name}) => name.toLowerCase().includes(search)) : watchers);
 
-	inter.respond(results.slice(0, 25).map(gameToOption)).catch(onAutocompleteError);
+	inter.respond(results.slice(0, 25).map(toOptions)).catch(onAutocompleteError);
 }
 
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	const subcommand = inter.options.getSubcommand();
+	let unwatched = true, name, trKey;
 	if(subcommand === "steam")
 	{
 		unwatchSteam(inter.guildId);
-		inter.reply({ flags: "Ephemeral", content: tr.get(inter.locale, "steam.unwatched") });
-		updateCmd(inter.guild);
-		return;
+		trKey = "steam.unwatched";
+	}
+	else if(subcommand === "group")
+	{
+		const clanid = inter.options.getInteger("name");
+		name = getGroupName(clanid) || "This group";
+		unwatched = unwatchGroup(clanid, inter.guild);
+		trKey = `unwatch.group-${unwatched ? "unwatched" : "unchanged"}`;
+	}
+	else
+	{
+		const appid = inter.options.getInteger("game");
+		name = getAppName(appid) || "This game";
+		unwatched = unwatch(appid, inter.guild, subcommand === "price");
+		trKey = `unwatch.${subcommand}-${unwatched ? "unwatched" : "unchanged"}`;
 	}
 
-	const price = subcommand === "price";
-	const appid = inter.options.getInteger("game");
-	const name = getAppName(appid) || "This game";
-	const unwatched = unwatch(appid, inter.guild, price);
-	const trKey = `unwatch.${price ? "price" : "news"}-${unwatched ? "unwatched" : "unchanged"}`;
-	inter.reply({
-		flags: "Ephemeral",
-		content: tr.get(inter.locale, trKey, name),
-	});
-
+	inter.reply({ flags: "Ephemeral", content: tr.get(inter.locale, trKey, name) });
 	if(unwatched)
 		updateCmd(inter.guild);
 }

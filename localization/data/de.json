@@ -82,12 +82,10 @@
 									"description": "Der Webhook, der benuzt wird"
 								},
 								"name": {
-									"name": "name",
-									"description": "Benutzername, der für dieses spezifische Spiel benutzt wird"
+									"name": "name"
 								},
 								"avatar": {
-									"name": "avatar",
-									"description": "URL des Avatars, der für dieses spezifische Spiel verwendet wird"
+									"name": "avatar"
 								}
 							}
 						},

@@ -2,9 +2,10 @@
 import checkSKU from "./~checkSKU.js";
 import { webhookInfo } from "./~webhook.js";
 import { getWatcherChannel, setWebhook } from "../../../steam_news/db_api.js";
-import { STEAM_APPID } from "../../../steam_news/api.js";
+import { getBasicGroupDetails, STEAM_APPID } from "../../../steam_news/api.js";
 import { buttons, register } from "../../../utils/components.js";
 import { WebhookAutoSetter, mentionLatest } from "./auto.js";
+import { parseOption } from "./~autocomplete.js";
 
 const MAX_SIZE = 3_000_000;
 
@@ -19,11 +20,11 @@ export const options = [{
 	minLength: 100, maxLength: 150,
 }, {
 	type: STRING, name: "name",
-	description: "Username to use for this game specifically",
+	description: "Username to use for this game/group specifically",
 	maxLength: 32,
 }, {
 	type: STRING, name: "avatar",
-	description: "URL of the avatar to use for this game specifically",
+	description: "URL of the avatar to use for this game/group specifically",
 	maxLength: 300,
 }];
 export { autocomplete } from "./~autocomplete.js";
@@ -36,12 +37,9 @@ export async function run(inter)
 
 	await inter.deferReply();
 	const { options, guildId } = inter;
-	const watcher = options.getString("watcher");
-	const appid = +watcher.substring(1);
-	const steam = appid === STEAM_APPID;
-	const type = steam ? "steam" : watcher[0] === "n" ? "news" : "price";
+	const { appid, type } = parseOption(options.getString("watcher"));
 	const webhookUrl = options.getString("webhook-url");
-	const channelId = getWatcherChannel(type, { appid, guildId });
+	const channelId = getWatcherChannel(type, { appid, clanid: appid, guildId });
 	if(!channelId)
 		return inter.editReply(t("unknown-watcher"));
 
@@ -64,12 +62,12 @@ export async function run(inter)
 
 	webhookInfo(webhookUrl, channel, name, avatar)
 	.then(webhook => {
-		const watcher = { type, appid, channelId, webhook };
+		const watcher = { type, appid, clanid: appid, channelId, webhook };
 		const success = setWebhook(type, watcher);
 		const baseMessage = success
 			? (type === "price"
 				? t("webhook-set-price")
-				: `${t("webhook-set")}\n${t(steam ? "webhook-test-steam" : "webhook-test", {
+				: `${t("webhook-set")}\n${t(type === "steam" ? "webhook-test-steam" : "webhook-test", {
 					channel: webhookChannel,
 					latest: mentionLatest(inter, type),
 				})}`)
@@ -121,6 +119,8 @@ export function autoSuggestButton(t, watcher, inter, callback, idAndToken)
 	register(customId, async () => {
 		const { guild } = inter;
 		const me = await guild.members.fetchMe();
+		if(watcher.type === "group")
+			watcher.details ??= await getBasicGroupDetails(watcher.clanid);
 		const webhookSetter = new WebhookAutoSetter(guild, inter.user, me);
 		try {
 			await webhookSetter.setup(watcher, idAndToken);

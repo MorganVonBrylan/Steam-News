@@ -7,9 +7,9 @@ import {
 	setWebhook,
 	getAppName,
 } from "../../../steam_news/db_api.js";
-import { icon, STEAM_APPID } from "../../../steam_news/api.js";
+import { getBasicGroupDetails, icon, STEAM_APPID } from "../../../steam_news/api.js";
 import { formatWebhookInfo, Webhook } from "./~webhook.js";
-import { ALL_WEBHOOKS } from "./~autocomplete.js";
+import { ALL_WEBHOOKS, parseOption } from "./~autocomplete.js";
 import fetchImage from "../../../utils/fetchImage.function.js";
 import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
 const MANAGE_WEBHOOKS = PERMISSIONS.ManageWebhooks;
@@ -87,14 +87,14 @@ export async function run(inter)
 	}
 	else
 	{
-		const appid = +target.substring(1);
-		const steam = appid === STEAM_APPID;
-		const type = steam ? "steam" : target[0] === "n" ? "news" : "price";
-		const watcher = getWatcher(type, { appid, guildId });
+		const { appid, type } = parseOption(target);
+		const watcher = getWatcher(type, { appid, clanid: appid, guildId });
 		if(!watcher)
 			return inter.editReply(t("unknown-watcher"));
 
 		watcher.type = type;
+		if(type === "group")
+			watcher.details = await getBasicGroupDetails(watcher.clanid);
 		webhooks.setup(watcher).then(async res => {
 			const webhookInfo = await Webhook.fetch(res.webhook);
 			if("name" in webhookInfo)
@@ -107,7 +107,7 @@ export async function run(inter)
 					description: `${t("webhook-auto-info", { name, id, nickname, avatar })}
 					\n${type === "price"
 						? t("webhook-auto-price")
-						: t(steam ? "webhook-test-steam" : "webhook-test",
+						: t(type === "steam" ? "webhook-test-steam" : "webhook-test",
 							{ channel, latest: mentionLatest(inter, type) })}`
 				}]});
 			}
@@ -137,7 +137,9 @@ export async function run(inter)
  */
 export function mentionLatest({locale, guildId}, type)
 {
-	const sub = type === "steam" ? "steam-news" : "game-news";
+	const sub = type === "steam" ? "steam-news"
+		: type === "group" ? "group-post"
+		: "game-news";
 	return mentionCommand("latest", { sub, guildId })
 		|| `\`/latest ${tr.get(locale, `commands.latest.options.${sub}.name`)}\``;
 }
@@ -201,9 +203,15 @@ export class WebhookAutoSetter
 		}
 
 		const webhook = idAndToken || this.webhookCache.get(channelId);
-		const { appid = STEAM_APPID } = watcher;
-		const name = getAppName(appid);
-		const avatar = await icon(appid, { officialFirst: false });
+		let name, avatar;
+		if(watcher.clanid)
+			({ group_name: name, avatar_medium_url: avatar } = watcher.details);
+		else
+		{
+			const { appid = STEAM_APPID } = watcher;
+			const name = getAppName(appid);
+			const avatar = await icon(appid, { officialFirst: false });
+		}
 		watcher.webhook = formatWebhookInfo(webhook, isThread, name, avatar);
 		if(!setWebhook(watcher.type, watcher))
 			throw { key: "database-fail", channel: webhookChannel };

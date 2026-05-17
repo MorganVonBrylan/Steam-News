@@ -40,7 +40,10 @@ const LocalizationHelper = {
 	 */
 	optionLocalizations(optionName) {
 		return this.reduce((optLocalization, [locale, tr]) => {
-			const {name, description} = tr.options[optionName];
+			const option = tr.options[optionName];
+			if(!option) return optLocalization;
+
+			const { name, description } = option;
 			if(name.length > 32)
 				throw new Error(`Option name too long (>32) in ${locale}: ${name}`);
 			if(description.length > 100)

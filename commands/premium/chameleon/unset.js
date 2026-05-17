@@ -2,7 +2,7 @@
 import checkSKU from "./~checkSKU.js";
 import { getWatcherChannel, setWebhook, decoupleWebhooks } from "../../../steam_news/db_api.js";
 import { STEAM_APPID } from "../../../steam_news/api.js";
-import { ALL_WEBHOOKS } from "./~autocomplete.js";
+import { ALL_WEBHOOKS, parseOption } from "./~autocomplete.js";
 
 export const description = "Decouple a watcher from its webhook. This does not delete the webhook.";
 export const options = [{
@@ -24,14 +24,13 @@ export async function run(inter)
 		return inter.reply(t(decoupleWebhooks(guildId) ? "all-decoupled" : "nothing-decoupled"));
 
 	await inter.deferReply();
-	const appid = +watcher.substring(1);
-	const type = appid === STEAM_APPID ? "steam" : watcher[0] === "n" ? "news" : "price";
-	const channelId = getWatcherChannel(type, { appid, guildId });
+	const { appid, type } = parseOption(watcher);
+	const channelId = getWatcherChannel(type, { appid, clanid: appid, guildId });
 	if(!channelId)
 		return inter.editReply(t("unknown-watcher"));
 
 	inter.editReply(t(
-		setWebhook(type, { appid, channelId, webhook: null })
+		setWebhook(type, { appid, clanid: appid, channelId, webhook: null })
 		? (type === "price" ? "webhook-unset-price" : "webhook-unset")
 		: "webhook-unset-error"
 	));

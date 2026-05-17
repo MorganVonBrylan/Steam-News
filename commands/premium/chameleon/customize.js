@@ -10,7 +10,7 @@ import { options as setOptions } from "./set.js";
 export const options = structuredClone(setOptions).filter(({name}) => name !== "webhook-url");
 options.find(({name}) => name === "name").required = true;
 
-import { autocompleteWebhooks } from "./~autocomplete.js";
+import { autocompleteWebhooks, parseOption } from "./~autocomplete.js";
 export function autocomplete(inter) { autocompleteWebhooks(inter, false); }
 
 export async function run(inter)
@@ -21,9 +21,7 @@ export async function run(inter)
 
 	await inter.deferReply();
 	const { options, guildId } = inter;
-	const watcher = options.getString("watcher");
-	const appid = +watcher.substring(1);
-	const type = appid === STEAM_APPID ? "steam" : watcher[0] === "n" ? "news" : "price";
+	const { appid, type } = parseOption(options.getString("watcher"));
 	const { channelId, webhook } = getWatcher(type, { appid, guildId });
 	if(!channelId || !webhook)
 		return inter.editReply(t("unknown-watcher"));
@@ -34,7 +32,7 @@ export async function run(inter)
 	const newWebhook = formatWebhookInfo(idAndToken, isThread, username, avatar);
 	
 	inter.editReply(t(
-		setWebhook(type, { appid, channelId, webhook: newWebhook })
+		setWebhook(type, { appid, clanid: appid, channelId, webhook: newWebhook })
 		? "webhook-customized"
 		: "webhook-customize-error"
 	));

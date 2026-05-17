@@ -270,7 +270,7 @@ export const stmts = dictionary({
 	getGroupWatcher: db.prepare("SELECT * FROM GroupWatchers WHERE clanid = $clanid AND guildId = $guildId"),
 	getGroupWatchers: db.prepare(`SELECT GroupWatchers.*, lang
 		FROM GroupWatchers LEFT JOIN Guilds ON id = guildId WHERE clanid = ?`),
-	getWatchedGroups: db.prepare(`SELECT w.*, latest
+	getWatchedGroups: db.prepare(`SELECT w.*, name, latest
 		FROM Groups g JOIN GroupWatchers w ON g.clanid = w.clanid
 		WHERE guildId = ?`),
 	updateGroupLatest: db.prepare("UPDATE Groups SET latest = $latest WHERE clanid = $clanid"),

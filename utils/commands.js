@@ -75,3 +75,6 @@ export function formatOptionName(name) {
 export function gameToOption({ name, appid }) {
 	return { name: formatOptionName(name), value: appid, toString };
 }
+export function groupToOption({ name, clanid }) {
+	return { name: formatOptionName(name), value: clanid, toString };
+}

@@ -79,11 +79,11 @@
 								},
 								"name": {
 									"name": "nom",
-									"description": "Nom d'utilisateur à utiliser pour ce jeu spécifiquement"
+									"description": "Nom d'utilisateur à utiliser pour ce jeu/groupe spécifiquement"
 								},
 								"avatar": {
 									"name": "avatar",
-									"description": "URL de l'avatar à utiliser pour ce jeu spécifiquement"
+									"description": "URL de l'avatar à utiliser pour ce jeu/groupe spécifiquement"
 								}
 							}
 						},

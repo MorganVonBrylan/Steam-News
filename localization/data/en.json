@@ -67,11 +67,11 @@
 								},
 								"name": {
 									"name": "name",
-									"description": "Username to use for this game specifically"
+									"description": "Username to use for this game/group specifically"
 								},
 								"avatar": {
 									"name": "avatar",
-									"description": "URL of the avatar to use for this game specifically"
+									"description": "URL of the avatar to use for this game/group specifically"
 								}
 							}
 						},
@@ -237,6 +237,16 @@
 							"description": "A role to ping when news are posted"
 						}
 					}
+				},
+				"group": {
+					"name": "group",
+					"description": "(admins only) Follow a group’s posts (maximum %s of each per server)",
+					"options": {
+						"group": {
+							"name": "group",
+							"description": "The group's name or URL"
+						}
+					}
 				}
 			}
 		},
@@ -263,6 +273,14 @@
 				"steam": {
 					"name": "steam",
 					"description": "(admins only) Stop watching news about Steam."
+				},
+				"group": {
+					"name": "group",
+					"description": "(admins only) Stop watching a group's posts."
+				},
+				"name": {
+					"name": "name",
+					"description": "The group's name."
 				}
 			}
 		},
@@ -323,6 +341,7 @@
 			"price": "Price",
 			"news": "News",
 			"steam": "Steam",
+			"group": "Group",
 			"no-webhooks": "You have no webhooks set up.",
 			"webhooks": "This server's Steam News webhooks",
 			"webhook-name": "Webhook name: %s",
@@ -340,6 +359,7 @@
 			"unknown-error": "Got error %s when trying to validate the webhook URL.",
 
 			"watch-suggestAuto": "Chameleon perks are enabled on this server. Do you want to automatically customize this new watcher with the game's name and logo?",
+			"watch-suggestAuto-group": "Chameleon perks are enabled on this server. Do you want to automatically customize this new watcher with the group's name and logo?",
 
 			"all": "All webhooks",
 			"webhook-set": "The webhook was set.",
@@ -506,12 +526,17 @@
 		"server-limit-reached-voted": "Warning: you reached your %s games per server limit. Buy **premium** to increase it.",
 		"server-max-reached": "Warning: you reached the limit of %s games per server.",
 
+		"server-group-limit-reached": "Warning: you reached your ${LIMIT} groups per server limit.\nVote for me on [Top.gg](${vote}) or buy **premium** to watch up to ${MAX_BONUS} more.",
+		"server-group-limit-reached-voted": "Warning: you reached your %s groups per server limit. Buy **premium** to increase it.",
+		"server-max-groups-reached": "Warning: you reached the limit of %s groups per server.",
+
 		"error-limit-reached": "You reached or exceeded the base limit of ${LIMIT} watchers per server.\nVote for me on [Top.gg](${vote}) or buy **premium** to watch up to ${MAX_BONUS} more.",
 		"error-limit-reached-voted": "Sorry, you reached your limit of %s watchers per server. Buy **premium** to increase it.",
 		"error-max-reached": "Sorry, you reached the limit of %s watchers per server.",
 
 		"confirm-price": "%s’s price updates will now be sent into %s.",
 		"confirm-news": "%s’s news will now be sent into %s.",
+		"confirm-posts": "%s’s posts will now be sent into %s.",
 		"webhook-auto-unset": "Because the watcher channel changed, the webhook has been unset."
 	},
 
@@ -519,6 +544,7 @@
 		"games-watched": "Games watched in this server",
 		"prices-watched": "Prices watched in this server",
 		"steam-watched": "News about **Steam** sent in %s",
+		"groups-watched": "Groups watched in this server",
 		"steam-watched-webhook": "News about **Steam** sent in %s with a webhook",
 		"games": {
 			"1": "1 game watched",
@@ -527,6 +553,10 @@
 		"prices": {
 			"1": "1 price watched",
 			"default": "%n prices watched"
+		},
+		"groups": {
+			"1": "1 group watched",
+			"default": "%n groups watched"
 		},
 		"ping": "Ping:",
 		"no-ping": "no",
@@ -541,7 +571,9 @@
 		"news-unwatched": "%s is no longer watched in this server.",
 		"news-unchanged": "%s was not being watched in this server.",
 		"price-unwatched": "%s’s price is no longer watched in this server.",
-		"price-unchanged": "%s’s price was not being watched in this server."
+		"price-unchanged": "%s’s price was not being watched in this server.",
+		"group-unwatched": "%s’s posts are no longer watched in this server.",
+		"group-unchanged": "%s’s posts were not being watched in this server."
 	},
 
 	"steam": {

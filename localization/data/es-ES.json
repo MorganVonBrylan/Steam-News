@@ -92,12 +92,10 @@
 									"description": "El webhook a usar"
 								},
 								"name": {
-									"name": "nombre",
-									"description": "Nombre de usuario para usar para este juego específico"
+									"name": "nombre"
 								},
 								"avatar": {
-									"name": "avatar",
-									"description": "URL de la foto de perfil para usar para este juego específico."
+									"name": "avatar"
 								}
 							}
 						},
