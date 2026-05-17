@@ -139,7 +139,27 @@
 				},
 				"steam-news": {
 					"name": "actu-steam",
-					"description": "Voir les dernières actus à propos de Steam."
+					"description": "Voir les dernières actus à propos de Steam.",
+					"options": {
+						"language": {
+							"name": "langue",
+							"description": "La langue des actus"
+						}
+					}
+				},
+				"group-post": {
+					"name": "annonce-groupe",
+					"description": "Voir la dernière annonce d'un groupe.",
+					"options": {
+						"group": {
+							"name": "groupe",
+							"description": "Le nom ou l'adresse du groupe"
+						},
+						"language": {
+							"name": "langue",
+							"description": "La langue de l'annonce. La disponibilité dépend des admins du groupe."
+						}
+					}
 				}
 			}
 		},
@@ -202,6 +222,16 @@
 							"description": "Un rôle à mentionner quand des actus sont publiées"
 						}
 					}
+				},
+				"group": {
+					"name": "groupe",
+					"description": "(admins seulement) Suivre les annonces d'un groupe (maximum %s par serveur)",
+					"options": {
+						"group": {
+							"name": "groupe",
+							"description": "Le nom ou l'adresse du groupe"
+						}
+					}
 				}
 			}
 		},
@@ -228,6 +258,14 @@
 				"steam": {
 					"name": "steam",
 					"description": "(admins seulement) Ne plus suivre les actus à propos de Steam."
+				},
+				"group": {
+					"name": "groupe",
+					"description": "(admins seulement) Arrêter de suivre les annonces d'un groupe."
+				},
+				"name": {
+					"name": "nom",
+					"description": "Le nom du groupe."
 				}
 			}
 		},
@@ -242,6 +280,16 @@
 				"game": {
 					"name": "jeu",
 					"description": "Le nom ou l'id du jeu"
+				}
+			}
+		},
+		"group": {
+			"name": "groupe",
+			"description": "Voir les infos sur un groupe Steam.",
+			"options": {
+				"group": {
+					"name": "groupe",
+					"description": "Le nom ou l'adresse du groupe."
 				}
 			}
 		}
@@ -374,7 +422,9 @@
 			"webhook-unset-error": "Je n'ai pas pu détacher le webhook. Veuillez réessayer plus tard.",
 			"all-decoupled": "Tous les webhooks ont été détachés. Notez que cela n'a supprime aucun webhook, il ne seront juste plus utilisés pour envoyer des actus et soldes.",
 			"nothing-decoupled": "Aucun changement. Il semble que je n'utilisais pas de webhook dans ce serveur.",
-			"watch-suggestAuto": "Les avantages Chaméléon sont activés sur ce serveur. Voulez-vous personnaliser automatiquement ce suivi avec le titre et logo du jeu ?"
+			"watch-suggestAuto": "Les avantages Chaméléon sont activés sur ce serveur. Voulez-vous personnaliser automatiquement ce suivi avec le titre et logo du jeu ?",
+			"group": "groupe",
+			"watch-suggestAuto-group": "Les avantages Chaméléon sont activés sur ce serveur. Voulez-vous personnaliser automatiquement ce suivi avec le nom et logo du groupe ?"
 		},
 		"server-subscription": "Abonnement du serveur",
 		"no-subscription": "Ce serveur n'a aucun abonnement.",
@@ -391,8 +441,10 @@
 	"api-err": "La récupération des infos a échoué (erreur %s).",
 	"no-match": "Aucun jeu trouvé correspondant à \"%s\".",
 	"bad-appid": "L’id que vous avez fourni ne correspond à aucune appli Steam.",
+	"bad-group": "Je n'ai pas pu trouver ce groupe. Veuillez fournir son nom exact ou son adresse.",
 	"no-DLC-news": "Les DLC n’ont pas d’actus.",
 	"no-news": "Cette appli n’a aucune actu.",
+	"no-posts": "Ce groupe n'a aucune annonce.",
 	"NSFW-content-news": "Ce jeu a du contenu adulte. Vous ne pouvez afficher ses actus que dans un salon soumis à une limite d’âge (NSFW).",
 	"NSFW-content-price": "Ce jeu a du contenu adulte. Vous ne pouvez afficher son prix que dans un salon soumis à une limite d’âge (NSFW).",
 	"used-command": "${user} a utilisé ${command}",
@@ -492,7 +544,11 @@
 		"error-max-reached": "Désolé, vous avez atteint ou dépassé la limite de %s jeux suivis par serveur.",
 		"confirm-price": "Les changements de prix de ${name} seront désormais envoyées dans ${channel}.",
 		"confirm-news": "Les actus de ${name} seront désormais envoyées dans ${channel}.",
-		"webhook-auto-unset": "Comme le salon utilisé a changé, le webhook a été détaché."
+		"webhook-auto-unset": "Comme le salon utilisé a changé, le webhook a été détaché.",
+		"server-group-limit-reached": "Attention : vous avez atteint la limite de ${LIMIT} groupes par serveur.\nVotez pour moi sur [Top.gg](${vote}) ou achetez le **premium** pour pouvoir en ajouter jusque ${MAX_BONUS} de plus.",
+		"server-group-limit-reached-voted": "Attention : vous avez atteint la limite de %s groupes par serveur. Achetez le **premium** pour en avoir plus.",
+		"server-max-groups-reached": "Attention : vous avez atteint la limite de %s groupes par serveur.",
+		"confirm-posts": "Les annonces de ${name} seront envoyées dans ${channel}."
 	},
 	"watched": {
 		"steam-watched": "Actus à propos de **Steam** envoyées dans %s",
@@ -511,13 +567,20 @@
 		"NSFW-no": "NSFW : Non",
 		"channel": "Salon : %s",
 		"steam-watched-webhook": "Actus de **Steam** envoyées dans %s avec un webhook",
-		"webhook": "(avec un webhook)"
+		"webhook": "(avec un webhook)",
+		"groups-watched": "Groupes suivis dans ce serveur",
+		"groups": {
+			"1": "1 groupe suivi",
+			"default": "%n groupes suivis"
+		}
 	},
 	"unwatch": {
 		"news-unwatched": "%s n’est plus suivi dans ce serveur.",
 		"news-unchanged": "%s n’était pas suivi dans ce serveur.",
 		"price-unwatched": "Le prix de %s n’est plus suivi dans ce serveur.",
-		"price-unchanged": "Le prix de %s n’était pas suivi dans ce serveur."
+		"price-unchanged": "Le prix de %s n’était pas suivi dans ce serveur.",
+		"group-unwatched": "Les annonces de %s ne seront plus envoyées dans ce serveur.",
+		"group-unchanged": "Les annonces de %s n'étaient pas suivies dans ce serveur."
 	},
 	"steam": {
 		"watched": "Les actus de Steam seront désormais envoyées dans %s.",
@@ -528,7 +591,12 @@
 		"members": "Membres",
 		"followers": "Abonné(e)s",
 		"curator_desc": "Slogan de curateur",
-		"openInApp": "Ouvrir dans l’application"
+		"openInApp": "Ouvrir dans l’application",
+		"curator_website": "Site web",
+		"comments": "Commentaires",
+		"upvotes": "Votes positifs",
+		"downvotes": "Votes négatifs",
+		"last-edit": "Dernière modification le %s"
 	},
 	"stats": {
 		"watchers": "Suivis d’actus",
@@ -537,6 +605,14 @@
 		"n-watchers": "%s abonnés",
 		"price-watchers": "Suivis de prix",
 		"prices-watched": "Jeux dont le prix est suivi",
-		"active-since": "actif depuis"
+		"active-since": "actif depuis",
+		"steam-watchers": "Serveurs suivant Steam",
+		"group-watchers": "Suivis de groupes",
+		"group-watched": "Groupes suivis",
+		"most-watched-group": "Groupe le plus suivi",
+		"uptime": "Temps de fonctionnement",
+		"n-days": "%s jours",
+		"ping": "Ping",
+		"ping-ms": "%s ms"
 	}
 }
