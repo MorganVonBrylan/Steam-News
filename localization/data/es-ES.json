@@ -1,5 +1,4 @@
 {
-	"discovery": "**Steam News** le permite tener noticias sobre juegos en Steam y cambios de precio enviados directamente al canal de su elección en su servidor de Discord.\n\nTambién tiene un comando para mostrar información sobre un juego, con muchos más detalles que simplemente pegar la URL de la tienda de Steam.",
 	"commands": {
 		"help": {
 			"name": "ayuda",
@@ -281,7 +280,7 @@
 			},
 			{
 				"name": "¿Cuántos juegos puedo seguir?",
-				"value": "Por defecto, puede seguir ${WATCH_LIMIT} fuentes de noticias y la misma cantidad de precios (que no tienen por qué ser del mismo juego). Puede obtener ${WATCH_VOTE_BONUS} fuentes de noticias y precios adicionales si vota por nosotros en Top.gg (link al final de este mensaje)."
+				"value": ""
 			},
 			{
 				"name": "¡El bot no envió las últimas noticias en el momento que salieron!",

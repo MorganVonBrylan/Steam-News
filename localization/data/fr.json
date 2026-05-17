@@ -1,5 +1,5 @@
 {
-	"discovery": "**Steam News** vous permet d'avoir les actus et changement de prix de jeux Steam envoyés directement dans un salon de votre serveur Discord.\n\nIl a aussi une commande pour afficher les infos d'un jeu avec bien plus de détails que juste envoyer son adresse du magasin Steam.",
+	"discovery": "**Steam News** vous permet d'avoir les actus et changement de prix de jeux Steam et les annonces de groupes envoyées directement dans un salon de votre serveur Discord.\n\nIl a aussi une commande pour afficher les infos d'un jeu avec bien plus de détails que juste envoyer son adresse du magasin Steam.",
 	"redirect": "Ceci est un bricolage  mis en place à cause de Discord qui a cassé les liens <code>steam://</code>\n<p>Cette page devrait vous ouvrir l'appli Steam ; notez que ça ne fonctionne pas sur mobile.\nCochez la case “toujours autoriser”\nVous pouvez fermer cette page si elle ne le fait pas toute seule.\nSi la redirection ne fonctionne pas, essayez ce lien :",
 	"commands": {
 		"help": {
@@ -307,7 +307,7 @@
 			},
 			{
 				"name": "Combien de jeux puis-je suivre ?",
-				"value": "De base, vous pouvez suivre ${WATCH_LIMIT} fils d’actu, et autant de prix (qui peuvent être de jeux différents). Vous pouvez avoir ${WATCH_VOTE_BONUS} suivis d’actus et de prix de plus si vous votez pour nous sur Top.gg (lien en bas de ce message)."
+				"value": "De base, vous pouvez suivre ${WATCH_LIMIT} fils d’actu, et autant de prix (qui peuvent être de jeux différents) et de groupes. Vous pouvez avoir ${WATCH_VOTE_BONUS} suivis d’actus, de prix et de groupes de plus si vous votez pour nous sur Top.gg (lien en bas de ce message)."
 			},
 			{
 				"name": "Le bot n’a pas envoyé une actu à la seconde où elle est sortie !",

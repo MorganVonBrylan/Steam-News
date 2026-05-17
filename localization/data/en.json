@@ -1,5 +1,5 @@
 {
-	"discovery": "**Steam News** allows you to have Steam game news and price changes sent directly to a channel of your choice in your Discord server.\n\nIt also has a command for displaying info on a game, with much more details than just pasting the Steam store URL.",
+	"discovery": "**Steam News** allows you to have Steam game news, price changes and group announcements sent directly to a channel of your choice in your Discord server.\n\nIt also has a command for displaying info on a game, with much more details than just pasting the Steam store URL.",
 
 	"redirect": "This is a workaround for Discord breaking <code>steam://</code> links.\nThis should open the Steam App for you; may not work on mobile, though.\nDo check the “always allow” checkbox for future convenience.\nYou can close this page if doesn't close itself.\nIf the redirection did not work, try this link:",
 	
@@ -299,7 +299,7 @@
 		"description": "**Steam News** is a bot that lets you follow Steam game news by sending community announcements, patch notes etc directly into a channel.",
 		"fields": [
 			{ "name": "How do I follow a game’s news/price?", "value": "Add a watcher with `/watch`, remove it with `/unwatch`." },
-			{ "name": "How many games can I follow?", "value": "By default, you can follow ${WATCH_LIMIT} news feeds and as many prices (which can be of different games). You can have an additional ${WATCH_VOTE_BONUS} news feeds and prices if you vote for us on Top.gg (link at the end of this message)." },
+			{ "name": "How many games can I follow?", "value": "By default, you can follow ${WATCH_LIMIT} news feeds and as many prices (which can be of different games) and groups. You can have an additional ${WATCH_VOTE_BONUS} news feeds, prices, and group announcements if you vote for us on Top.gg (link at the end of this message)." },
 			{ "name": "The bot didn’t send the latest news at the second it came out!", "value": "That is normal. It checks for news once an hour, so there can be up to an hour of delay." },
 			{ "name": "What about NSFW games?", "value": "The bot will only send info and news about NSFW games in NSFW channels." },
 			{ "name": "Can I copy your bot?", "value": "Sure! It’s open sourced under the GNU GPL 3.0 licence.\nHere is the Git repository: ${repository}" },

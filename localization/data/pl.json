@@ -1,5 +1,4 @@
 {
-	"discovery": "**Wiadomości Steam** umożliwiają wysyłanie wiadomości o grach Steam i zmianach cen bezpośrednio na wybrany kanał na Twoim serwerze Discord.\n\nZawiera również polecenie wyświetlania informacji o grze, oferujące znacznie więcej szczegółów niż tylko wklejenie adresu URL sklepu Steam.",
 	"commands": {
 		"help": {
 			"name": "pomoc",
