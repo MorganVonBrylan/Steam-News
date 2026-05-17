@@ -66,6 +66,12 @@ export const isNSFW = stmts.isAppNSFW;
  * @returns The group data
  */
 export const getGroupInfo = stmts.getGroupInfo;
+/**
+ * @type {(clanid:number)=>string|undefined}
+ * @param {number} clanid The group's id
+ * @returns The group name
+ */
+export const getGroupName = stmts.getGroupName;
 
 /**
  * @type {(clanid:number, name:string, vanityURL:string, latest:?number)}
@@ -82,6 +88,14 @@ export const saveGroupInfo = stmts.insertGroup;
  * @returns true if the group was updated, false if it wasn't in the database.
  */
 export const updateGroupInfo = info => !!stmts.updateGroup(info).changes;
+
+/**
+ * @type {(params: {clanid:number, latest:?number})=>*}
+ * Update the latest known post date for a group.
+ * @param params.clanid The clan id
+ * @param params.latest A UNIX timestamp in seconds
+ */
+export const updateLatestPost = stmts.updateLatestPost;
 
 
 /**
@@ -145,6 +159,8 @@ export function getWatchedApps(guildId, includeSteam = false)
 export const isWatched = stmts.isWatched;
 /** @type {()=>boolean} Check whether Steam is watched in at least one server. */
 export const isSteamWatched = stmts.isSteamWatched;
+/** @type {(clanid:number)=>boolean} Check whether a group is watched in at least one server. */
+export const isGroupWatched = stmts.isGroupWatched;
 
 const watcherGetters = fixedDictionary({
 	news: stmts.getWatcher,
@@ -257,10 +273,7 @@ export const getChannelWebhooks = stmts.getChannelWebhooks;
 
 
 /**
- * @type {{
- * (guildId: string)=>({type:"news"|"price", appid:number, name:string, channelId: string,webhook: WebhookInfo}|{type:"steam",channelId:string, webhook:WebhookInfo})[];
- * (guildId: string, merge: false)=>({news: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], price: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], steam: ?{channelId:string, webhook:WebhookInfo}});
- * }}
+ * @type {((guildId:string)=>({type:"news"|"price", appid:number, name:string, channelId:string,webhook:WebhookInfo}|{type:"steam", channelId:string, webhook:WebhookInfo}|{type:"group", clanid:string, channelId:string, webhook:WebhookInfo})[]) & (guildId:string, merge:false)=>({news: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], price: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], steam: ?{channelId:string, webhook:WebhookInfo}, group: {clanid:string, channelId:string, webhook:WebhookInfo}[]})}
  * Returns all the whatchers with a webhook of a given server.
  * @param {string} guildId The guild id.
  * @param {boolean} [merge] Whether to merge the results into an array. Defaults to true.
@@ -278,7 +291,7 @@ export const getWebhooks = stmts.getWebhooks;
 export const decoupleWebhooks = stmts.decoupleWebhooks;
 
 /**
- * @type {(guildId: string)=>({type: "news"|"price", appid: number, name: string, channelId: string}|{type: "steam", channelId: string})[]}
+ * @type {(guildId: string)=>({type:"news"|"price", appid:number, name:string, channelId:string}|{type:"steam", channelId:string}|{type:"group", clanid:number, name:string, channelId:string})[]}
  * Opposite of getWebhooks: return all the watchers of a server without a webhook.
  * @param {string} guildId The guild id.
  * @returns A list of watchers

@@ -261,6 +261,7 @@ export const stmts = dictionary({
 	insertGroup: db.prepare("INSERT INTO Groups (clanid, name, vanityURL, latest) VALUES (?, ?, ?, ?)"),
 	updateGroup: db.prepare("UPDATE Groups SET name = $group_name, vanityURL = $vanity_url WHERE clanid = $clanid"),
 	getGroupInfo: db.prepare("SELECT * FROM Groups WHERE clanid = ?"),
+	getGroupName: db.prepare("SELECT name FROM Groups WHERE clanid = ?").pluck(),
 
 	watchGroup: db.prepare("INSERT INTO GroupWatchers (clanid, guildId, channelId, roleId, premium) VALUES ($clanid, $guildId, $channelId, $roleId, $premium)"),
 	unwatchGroup: db.prepare("DELETE FROM GroupWatchers WHERE clanid = ? AND guildId = ?"),
@@ -273,7 +274,9 @@ export const stmts = dictionary({
 		FROM Groups g JOIN GroupWatchers w ON g.clanid = w.clanid
 		WHERE guildId = ?`),
 	updateGroupLatest: db.prepare("UPDATE Groups SET latest = $latest WHERE clanid = $clanid"),
+	updateLatestPost: db.prepare("UPDATE Groups SET latest = $latest WHERE clanid = $clanid"),
 	getGroupWatcherChannel: db.prepare("SELECT channelId from GroupWatchers WHERE clanid = $clanid AND guildId = $guildId").pluck(),
+	isGroupWatched: db.prepare("SELECT EXISTS(SELECT 1 FROM GroupWatchers WHERE clanid = ?)").pluck(),
 
 	setWebhook: db.prepare("UPDATE Watchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
 	setPriceWebhook: db.prepare("UPDATE PriceWatchers SET webhook = $webhook WHERE appid = $appid AND channelId = $channelId"),
@@ -300,7 +303,7 @@ export const stmts = dictionary({
 			news: this[0].all(guildId),
 			price: this[1].all(guildId),
 			steam: steam ? setType("steam")(steam) : null,
-			gorup: this[3].all(guildId),
+			group: this[3].all(guildId),
 		};
 		return merge ? res.news.map(setType("news")).concat(
 			res.price.map(setType("price")),
@@ -333,10 +336,14 @@ export const stmts = dictionary({
 			WHERE guildId = ? AND webhook IS NULL
 		`),
 		"SELECT channelId FROM SteamWatchers WHERE guildId = ? AND webhook IS NULL",
+		`SELECT g.clanid, name, channelId
+		 FROM GroupWatchers w JOIN Groups g ON w.clanid = g.clanid
+		 WHERE guildId = ? AND webhook IS NULL`,
 	], function(guildId) {
 		const steam = this[2].get(guildId);
 		return this[0].all(guildId).map(setType("news")).concat(
 			this[1].all(guildId).map(setType("price")),
+			this[3].all(guildId).map(setType("group")),
 			steam ? setType("steam")(steam) : [],
 		);
 	}),
