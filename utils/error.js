@@ -9,7 +9,7 @@ const TopGGAPIError = TopGGAPIError_.default;
 
 import importJSON from "./importJSON.function.js";
 const settings = importJSON("errors.json", {
-	ignore: { status: ">=500" },
+	ignore: { status: "≥500" },
 	truncate: {
 		status: 408,
 		message: "read ECONNRESET",
@@ -31,10 +31,10 @@ function testRule(value, rule) {
 		case "^": return value.startsWith(rule.substring(1));
 		case "*": return value.includes(rule.substring(1));
 		case "$": return value.endsWith(rule.substring(1));
-		case ">": return value > rule.substring(1);
-		case "≥": return value >= rule.substring(1);
-		case "<": return value < rule.substring(1);
-		case "≤": return value <= rule.substring(1);
+		case ">": return value > +rule.substring(1);
+		case "≥": return value >= +rule.substring(1);
+		case "<": return value < +rule.substring(1);
+		case "≤": return value <= +rule.substring(1);
 		case "\\": return value === rule.substring(1);
 		default: return value === rule;
 	}
