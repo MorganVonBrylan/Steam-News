@@ -490,8 +490,8 @@
 		"error-limit-reached": "Vous avez atteint ou dépassé la limite de ${LIMIT} jeux suivis par serveur.\nVotez pour moi sur [Top.gg](${vote}) ou achetez le **premium** pour en avoir jusque ${MAX_BONUS} de plus.",
 		"error-limit-reached-voted": "Désolé, vous avez atteint ou dépassé votre limite de %s jeux suivis par serveur. Achetez le **premium** pour l'augmenter.",
 		"error-max-reached": "Désolé, vous avez atteint ou dépassé la limite de %s jeux suivis par serveur.",
-		"confirm-price": "Les changements de prix de %s seront désormais envoyées dans %s.",
-		"confirm-news": "Les actus de %s seront désormais envoyées dans %s.",
+		"confirm-price": "Les changements de prix de ${name} seront désormais envoyées dans ${channel}.",
+		"confirm-news": "Les actus de ${name} seront désormais envoyées dans ${channel}.",
 		"webhook-auto-unset": "Comme le salon utilisé a changé, le webhook a été détaché."
 	},
 	"watched": {

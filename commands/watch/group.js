@@ -59,7 +59,7 @@ export async function run(inter)
 	watchGroup(details, channel, role, LIMIT).then(async success => {
 		await defer;
 
-		let reply = t("confirm-posts", details.group_name, channel);
+		let reply = t("confirm-posts", {name: details.group_name, channel});
 
 		if(success === MAX_LIMIT)
 			reply += `\n${t("server-max-groups-reached", MAX_LIMIT)}`

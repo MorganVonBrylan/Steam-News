@@ -494,8 +494,8 @@
 		"error-limit-reached": "Du hast die Basisgrenze von ${LIMIT} Beobachtern pro Server erreicht oder überschritten.\nStimme für mich auf [Top.gg](${vote}) oder kaufe **Premium**, um bis zu ${MAX_BONUS} weitere zu beobachten.",
 		"error-limit-reached-voted": "Entschuldigung, du hast deine Grenze von %s Beobachtern pro Server erreicht. Kaufe **Premium**, um es zu erhöhen.",
 		"error-max-reached": "Entschuldigung, du hast die Grenze von %s Beobachtern pro Server erreicht.",
-		"confirm-price": "Änderungen im Preis von %s werden nun in %s gesendet.",
-		"confirm-news": "Nachrichten zu %s werden nun in %s gesendet.",
+		"confirm-price": "Änderungen im Preis von ${name} werden nun in ${channel} gesendet.",
+		"confirm-news": "Nachrichten zu ${name} werden nun in ${channel} gesendet.",
 		"webhook-auto-unset": "Da der Kanal des Beobachters geändert wurde, wurde der Webhook entfernt."
 	},
 	"watched": {

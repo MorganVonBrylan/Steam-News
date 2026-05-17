@@ -91,7 +91,7 @@ export async function run(inter)
 			return inter.editReply(tr.get(locale, `NSFW-content-${type}`));
 		}
 
-		let reply = t(`confirm-${type}`, details.name, channel);
+		let reply = t(`confirm-${type}`, {name: details.name, channel});
 
 		if(details.name === "undefined")
 			reply += `\n${t("error-retrieving-details")}`;

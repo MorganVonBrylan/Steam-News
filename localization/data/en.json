@@ -534,9 +534,9 @@
 		"error-limit-reached-voted": "Sorry, you reached your limit of %s watchers per server. Buy **premium** to increase it.",
 		"error-max-reached": "Sorry, you reached the limit of %s watchers per server.",
 
-		"confirm-price": "%s’s price updates will now be sent into %s.",
-		"confirm-news": "%s’s news will now be sent into %s.",
-		"confirm-posts": "%s’s announcements will now be sent into %s.",
+		"confirm-price": "${name}’s price updates will now be sent into ${channel}.",
+		"confirm-news": "${name}’s news will now be sent into ${channel}.",
+		"confirm-posts": "${name}’s announcements will now be sent into ${channel}.",
 		"webhook-auto-unset": "Because the watcher channel changed, the webhook has been unset."
 	},
 

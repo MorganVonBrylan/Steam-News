@@ -513,8 +513,8 @@
 		"error-limit-reached": "Alcanzó o superó el límite base de ${LIMIT} suscripciones por servidor.\nRecomiéndeme en [Top.gg](${vote}) o compre **premium** para seguir hasta ${MAX_BONUS} más.",
 		"error-limit-reached-voted": "Lo siento, ha alcanzado su límite de %s suscripciones por servidor. Compre **premium** para aumentarlo.",
 		"error-max-reached": "Lo siento, alcanzó el límite de %s suscripciones por servidor.",
-		"confirm-price": "Las actualizaciones de precios de %s se enviarán ahora en %s.",
-		"confirm-news": "Las noticias de %s serán enviadas ahora en %s.",
+		"confirm-price": "Las actualizaciones de precios de ${name} se enviarán ahora en ${channel}.",
+		"confirm-news": "Las noticias de ${name} serán enviadas ahora en ${channel}.",
 		"webhook-auto-unset": "Como el canal de la suscripción ha cambiado, el webhook se ha desconectado."
 	},
 	"watched": {

@@ -318,8 +318,8 @@
 		"error-limit-reached": "Osiągnąłeś lub przekroczyłeś limit ${LIMIT} obserwujących na serwer.\nZagłosuj na mnie na [Top.gg](${vote}) lub kup **premium**, aby oglądać do ${MAX_BONUS} więcej.",
 		"error-limit-reached-voted": "Przepraszamy, osiągnąłeś limit %s obserwujących na serwer. Kup **premium**, aby go zwiększyć.",
 		"error-max-reached": "Przepraszamy, osiągnięto limit %s obserwujących na serwer.",
-		"confirm-price": "Aktualizacje cen %s będą teraz wysyłane do %s.",
-		"confirm-news": "Wiadomości %s będą teraz wysyłane do %s."
+		"confirm-price": "Aktualizacje cen ${name} będą teraz wysyłane do ${channel}.",
+		"confirm-news": "Wiadomości ${name} będą teraz wysyłane do ${channel}."
 	},
 	"watched": {
 		"steam-watched": "Wiadomości o **Steamie** wysłane w %s",
