@@ -201,3 +201,9 @@ Added support for uploading the stats and command list to discordbotlist.com
 2.19 (19/04/2026)
 Added /premium chameleon customize.
 Fixed some bugs, including a big one regarding the format of App.latest.
+
+2.20 (17/05/2026)
+Added group features: seeing last announcements, watchings announcements, etc.
+Added a bunch of stats to the /stats.
+Made /watched more concise and less redundant.
+Various improvements and bug fixes.
