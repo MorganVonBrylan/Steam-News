@@ -205,8 +205,12 @@ export const stmts = dictionary({
 		(SELECT COUNT(DISTINCT appid) FROM Watchers) AS "watchedApps",
 		(SELECT COUNT('*') FROM PriceWatchers) AS "priceWatchers",
 		(SELECT COUNT(DISTINCT appid) FROM PriceWatchers) AS "watchedPrices",
-		name as "mostWatchedName", MAX((SELECT COUNT(channelId) FROM Watchers w WHERE a.appid = w.appid)) AS "mostWatchedTotal"
-		FROM Apps a;
+		(SELECT COUNT('*') FROM SteamWatchers) AS "steamWatchers",
+		(SELECT COUNT('*') FROM GroupWatchers) AS "groupWatchers",
+		(SELECT COUNT(DISTINCT clanid) FROM GroupWatchers) AS "watchedGroups",
+		MaxApp.*, MaxGroup.*
+		FROM (SELECT name as "mostWatchedName", MAX((SELECT COUNT(channelId) FROM Watchers w WHERE a.appid = w.appid)) AS "mostWatchedTotal" FROM Apps a) as MaxApp,
+			(SELECT name as "mostWatchedGroup", MAX((SELECT COUNT(channelId) FROM GroupWatchers w WHERE g.clanid = w.clanid)) AS "mostWatchedGroupTotal" FROM Groups g) as MaxGroup;
 	`),
 
 	insertApp: db.prepare("INSERT INTO Apps (appid, name, nsfw, latest, lastPrice) VALUES (?, ?, ?, ?, ?)"),

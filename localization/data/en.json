@@ -601,6 +601,14 @@
 		"n-watchers": "%s watchers",
 		"price-watchers": "Price watchers",
 		"prices-watched": "Game prices watched",
-		"active-since": "Active since"
+		"steam-watchers": "Steam watchers",
+		"group-watchers": "Group watchers",
+		"group-watched": "Groups watched",
+		"most-watched-group": "Most watched group",
+		"uptime": "Uptime",
+		"n-days": "%s days",
+		"ping": "Ping",
+		"ping-ms": "%s ms",
+		"active-since": "active since"
 	}
 }
