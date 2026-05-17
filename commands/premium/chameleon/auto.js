@@ -146,14 +146,18 @@ export function mentionLatest({locale, guildId}, type)
 /** @typedef {import("../../../utils/channels.js").GuildTextChannel} GuildTextChannel */
 /** @typedef {import("./~webhook.js").idAndToken} idAndToken */
 
+/**
+ * Utility class for setting up webhooks in a given server.
+ */
 export class WebhookAutoSetter
 {
+	/** @type {Map<string, string>} A channelId-to-idAndToken store */
 	webhookCache = new Map();
 	
 	/**
 	 * @param {import("discord.js").Guild} guild The guild 
 	 * @param {import("discord.js").User} author The author
-	 * @param {import("discord.js").GuildMember} me The bot's member object
+	 * @param {import("discord.js").GuildMember} [me] The bot's member object
 	 */
 	constructor(guild, author, me) {
 		const { username, globalName } = author;
@@ -168,6 +172,7 @@ export class WebhookAutoSetter
 	 * @param {ReturnType<getWatcher>} watcher The watcher to setup a webhook for
 	 * @param {idAndToken} [idAndToken] The webhook to use. If not provided, it will either reuse one this watcher's channel already has, or create a new one.
 	 * @returns {Promise<{webhook:idAndToken, channel:GuildTextChannel, name:string, avatar:?string,newlyCreated:boolean}>}
+	 * @throws {{key:string, channel:GuildTextChannel|string}} If the channel doesn't exist or updating the database failed
 	 */
 	async setup(watcher, idAndToken) {
 		const channel = await this.channels.fetch(watcher.channelId);
@@ -228,7 +233,7 @@ export class WebhookAutoSetter
 	/**
 	 * Sets up webhooks for many watchers.
 	 * @param {ReturnType<getWatcher>[]} watchers 
-	 * @returns 
+	 * @returns The successes, errors, or "misc errors" which are unexpected errors
 	 */
 	async bulkSetup(watchers) {
 		/** @typedef {string} ChannelId */
