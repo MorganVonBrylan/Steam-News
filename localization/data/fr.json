@@ -492,8 +492,6 @@
 		"error-max-reached": "Désolé, vous avez atteint ou dépassé la limite de %s jeux suivis par serveur.",
 		"confirm-price": "Les changements de prix de %s seront désormais envoyées dans %s.",
 		"confirm-news": "Les actus de %s seront désormais envoyées dans %s.",
-		"already-price": "Le prix de %s était déjà suivi dans ce serveur.",
-		"already-news": "Les actus de %s étaient déjà suivies dans ce serveur.",
 		"webhook-auto-unset": "Comme le salon utilisé a changé, le webhook a été détaché."
 	},
 	"watched": {

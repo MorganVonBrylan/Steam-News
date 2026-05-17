@@ -319,9 +319,7 @@
 		"error-limit-reached-voted": "Przepraszamy, osiągnąłeś limit %s obserwujących na serwer. Kup **premium**, aby go zwiększyć.",
 		"error-max-reached": "Przepraszamy, osiągnięto limit %s obserwujących na serwer.",
 		"confirm-price": "Aktualizacje cen %s będą teraz wysyłane do %s.",
-		"confirm-news": "Wiadomości %s będą teraz wysyłane do %s.",
-		"already-price": "Cena %s była już obserwowana na tym serwerze.",
-		"already-news": "Kanał informacyjny %s był już oglądany na tym serwerze."
+		"confirm-news": "Wiadomości %s będą teraz wysyłane do %s."
 	},
 	"watched": {
 		"games-watched": "Mecze obejrzane na tym serwerze",
