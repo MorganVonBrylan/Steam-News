@@ -392,6 +392,10 @@ export function groupNameToSlug(name) {
 }
 
 /** @typedef {{clanid:number, group_name:string, member_count:number, vanity_url:string, is_curator:boolean, avatar_full_url:string, avatar_medium_url:string}} BasicGroupDetails */
+/** @typedef {BasicGroupDetails & {description:string, curator_description?:string, curator_descs:{[steamLang:string]:string}, followers:number, weblink?:{url:string,title:string}}} GroupDetails */
+/** @type {Map<number, GroupDetails>} */
+const groupCache = new Map();
+
 /**
  * Get a group's basic details. Compared to {@link getGroupDetails}, the description, follower count and curator details will be missing.
  * @param {number|string} nameOrId The group's name or id.
@@ -400,6 +404,10 @@ export function groupNameToSlug(name) {
  */
 export async function getBasicGroupDetails(nameOrId)
 {
+	const cached = groupCache.get(nameOrId);
+	if(cached)
+		return cached;
+
 	const idType = typeof nameOrId === "string" ? "groups" : "gid";
 	const urlId = idType === "groups" ? groupNameToSlug(nameOrId) : nameOrId;
 	const res = await fetch(`${STEAM_BASE_URL}${idType}/${urlId}/ajaxgetvanityandclanid/`);
@@ -413,12 +421,11 @@ export async function getBasicGroupDetails(nameOrId)
 	return details;
 }
 
-const groupCache = new Map();
 /**
  * Get details about a Steam group.
  * @param {number|string} nameOrId The group's name or id.
  * @param {string} lang A Steam language name, like "english" or "german".
- * @returns {Promise<?BasicGroupDetails & {description:string, curator_description?:string, curator_descs:{[steamLang:string]:string}, followers:number, weblink?:{url:string,title:string}}>} The group's details, or null if it doesn't exist.
+ * @returns {Promise<?GroupDetails>} The group's details, or null if it doesn't exist.
  * @throws {Response} If the request failed for another reason than a 404
  */
 export async function getGroupDetails(nameOrId, lang = "english")
