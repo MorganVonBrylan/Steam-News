@@ -499,8 +499,6 @@
 		"webhook-auto-unset": "Da der Kanal des Beobachters geändert wurde, wurde der Webhook entfernt."
 	},
 	"watched": {
-		"games-watched": "In diesem Server beobachtete Spiele",
-		"prices-watched": "In diesem Server beobachtete Preise",
 		"steam-watched": "Nachrichten über **Steam** werden in %s gesendet",
 		"games": {
 			"1": "1 beobachtetes Spiel",

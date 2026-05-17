@@ -322,8 +322,6 @@
 		"confirm-news": "Wiadomości %s będą teraz wysyłane do %s."
 	},
 	"watched": {
-		"games-watched": "Mecze obejrzane na tym serwerze",
-		"prices-watched": "Ceny obserwowane na tym serwerze",
 		"steam-watched": "Wiadomości o **Steamie** wysłane w %s",
 		"games": {
 			"1": "1 gra obejrzana",

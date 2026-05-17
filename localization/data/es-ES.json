@@ -518,8 +518,6 @@
 		"webhook-auto-unset": "Como el canal de la suscripción ha cambiado, el webhook se ha desconectado."
 	},
 	"watched": {
-		"games-watched": "Juegos suscritos en este servidor",
-		"prices-watched": "Precios suscritos en este servidor",
 		"steam-watched": "Noticias sobre **Steam** enviadas en %s",
 		"games": {
 			"1": "1 juego suscrito",

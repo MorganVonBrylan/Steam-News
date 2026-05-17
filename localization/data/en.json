@@ -541,8 +541,6 @@
 	},
 
 	"watched": {
-		"games-watched": "Games watched in this server",
-		"prices-watched": "Prices watched in this server",
 		"steam-watched": "News about **Steam** sent in %s",
 		"groups-watched": "Groups watched in this server",
 		"steam-watched-webhook": "News about **Steam** sent in %s with a webhook",

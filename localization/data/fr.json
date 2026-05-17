@@ -495,8 +495,6 @@
 		"webhook-auto-unset": "Comme le salon utilisé a changé, le webhook a été détaché."
 	},
 	"watched": {
-		"games-watched": "Jeux suivis dans ce serveur",
-		"prices-watched": "Prix suivis dans ce serveur",
 		"steam-watched": "Actus à propos de **Steam** envoyées dans %s",
 		"games": {
 			"1": "1 jeu suivi",

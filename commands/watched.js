@@ -50,8 +50,7 @@ function toEmbeds(watched, t, type)
 		embeds.push({fields: watched.slice(i, i + BLOCK_SIZE)});
 
 	Object.assign(embeds[0], {
-		title: t(`${type}-watched`),
-		description: t.plural(type, watched.length),
+		title: t.plural(type, watched.length),
 	});
 	return embeds;
 }
