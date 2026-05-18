@@ -35,6 +35,7 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 		"token": "(optional) your bot's Top.gg token",
 		"webhook": {
 			"port": 5050,
+			"endpoint": "/topggVote",
 			"secret": "whs_abc123"
 		},
 		"voteWatcherBonus": 25
@@ -76,9 +77,9 @@ To start the bot, run `node bot.js`
 
 To update the bot's stats on Top.gg, set its API token.
 
-If using a v1 token, do specify the `Bearer` prefix. Make sure the token has write permissions.
+You need to use a v2 token, and do include the `Bearer` prefix. Make sure the token has write permissions.
 
-If the webhook port is not specified, the `SERVER_PORT` environment variable will be used instead.
+If the webhook port is not specified, the `SERVER_PORT` environment variable will be used instead. If the endpoint is not specified, `/topggVote` will be used.
 
 ## Error reporting settings
 

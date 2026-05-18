@@ -75,6 +75,7 @@ export async function setup()
 		let webhookServer;
 		const {
 			port = process.env.SERVER_PORT,
+			endpoint = "/topggVote",
 			secret,
 		} = webhook;
 
@@ -90,6 +91,12 @@ export async function setup()
 		{
 			webhookServer?.close();
 			webhookServer = createServer(async (req, res) => {
+				if(req.url !== endpoint)
+				{
+					res.statusCode = 404;
+					return res.end();
+				}
+
 				if(req.method !== "POST")
 				{
 					res.setHeader("Allow", "POST");
