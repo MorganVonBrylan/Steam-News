@@ -49,22 +49,24 @@ export async function setup()
 	if(!topGG)
 		return;
 
-	function postStats() {
-		return topggApi.postStats({
-			serverCount: client.guilds.cache.size,
-			shardId: client.shard?.ids[0],
-			shardCount: client.options.shardCount || 1,
-		});
+	if(topggApi)
+	{
+		function postStats() {
+			return topggApi.postStats({
+				serverCount: client.guilds.cache.size,
+				shardId: client.shard?.ids[0],
+				shardCount: client.options.shardCount || 1,
+			});
+		}
+		postStats();
+		setInterval(postStats, 3600_000);
+		console.log("Top.gg stat posting enabled");
+
+		const {id} = client.user;
+		voteURLs.default = `https://top.gg/bot/${id}/vote`;
+		for(const lang of topggLanguages.concat(tr.locales))
+			voteURLs[lang] = `https://top.gg/${topggLanguages.includes(lang) ? `${lang}/` : ""}bot/${id}/vote?lang=${lang}`;
 	}
-	postStats();
-	setInterval(postStats, 3600_000);
-	console.log("Top.gg stat posting enabled");
-
-	const {id} = client.user;
-	voteURLs.default = `https://top.gg/bot/${id}/vote`;
-	for(const lang of topggLanguages.concat(tr.locales))
-		voteURLs[lang] = `https://top.gg/${topggLanguages.includes(lang) ? `${lang}/` : ""}bot/${id}/vote?lang=${lang}`;
-
 
 	const { webhook } = topGG;
 	if(webhook)
