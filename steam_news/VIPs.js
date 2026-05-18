@@ -127,17 +127,21 @@ if(premiumEnabled)
 		// Not sure if the order is guaranteed, so in doubt,
 		// wait a bit before granting the new entitlement to make sure the UPDATE doesn't remove it
 		await wait_a_bit();
+		let sub;
 		switch(skuId)
 		{
 			case goldSKU:
+				sub = "gold";
 			case premiumSKU:
+				sub ??= "premium";
 			case chameleonSKU:
+				sub ??= "chameleon";
 				if(skuId !== premiumSKU)
 					chameleonGuilds.add(guildId);
 				if(skuId !== chameleonSKU)
 					premiumGuilds.add(guildId);
 				const guild = await client.guilds.fetch(guildId);
-				sendToMaster(`New sub! Guild: ${guild} (${guildId}), owner: ${guild.ownerId}, user: ${userId}`);
+				sendToMaster(`New ${sub} sub! Guild: ${guildId}, owner: ${guild.ownerId}, user: ${userId}`);
 				break;
 			case rebrandSKU:
 				sendToMaster(`<@${userId}> bought a rebrand! (${userId})`);
