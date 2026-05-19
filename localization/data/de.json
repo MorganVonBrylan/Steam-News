@@ -261,7 +261,7 @@
 			},
 			{
 				"name": "Wie vielen Spielen kann ich folgen?",
-				"value": "Standardmäßig kannst du ${WATCH_LIMIT} Nachrichten und genauso vielen Preisen (Die zu verschiedenen Spielen gehören können) folgen. Du kannst ${WATCH_VOTE_BONUS} zusätzlichen Nachrichten und preisen folgen, wenn du auf Top.gg für uns stimmst (folge dem Link am Ende dieser Nachricht)."
+				"value": ""
 			},
 			{
 				"name": "Der Bot hat die letzten Nachrichten nicht in der Sekunde geschickt, in der sie veröffentlicht wurden!",

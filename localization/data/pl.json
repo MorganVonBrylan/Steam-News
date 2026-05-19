@@ -179,7 +179,7 @@
 			},
 			{
 				"name": "Ile gier mogę śledzić?",
-				"value": "Domyślnie możesz śledzić ${WATCH_LIMIT} kanałów informacyjnych i dowolną liczbę cen (mogą to być różne gry). Możesz otrzymać dodatkowy ${WATCH_VOTE_BONUS} kanałów informacyjnych i cen, jeśli zagłosujesz na nas na Top.gg (link na końcu tej wiadomości)."
+				"value": ""
 			},
 			{
 				"name": "Bot nie wysłał najnowszych wiadomości od razu, gdy się pojawiły!",
