@@ -1,8 +1,8 @@
 
 import { client, auth, sendToMaster } from "../bot.js";
 
-import { stmts } from "./db.js";
-const { getLastVote, insertLastVote, updateLastVote, getRecentVoters } = stmts;
+import db, { stmts } from "./db.js";
+const { getLastVote, insertLastVote, updateLastVote } = stmts;
 const VOTE_NOTIFICATION_COOLDOWN = 604800_000; // 7 days
 const VOTE_BONUS_DURATION = 43200_000; // 12 hours, which is how often one can vote
 
@@ -13,13 +13,12 @@ function setVoter(id, timeout)
 	voters.set(id, setTimeout(voters.delete.bind(voters, id), timeout));
 }
 
-for(const {id, lastVote} of getRecentVoters(Date.now() - VOTE_BONUS_DURATION))
+db.run("DELETE FROM Voters WHERE lastVote < ?", Date.now() - VOTE_BONUS_DURATION);
+for(const { id, lastVote } of db.prepare("SELECT * FROM Voters").all())
 	setVoter(id, Date.now() - lastVote);
 
 
 export const voted = voters.has.bind(voters);
-
-export function getVoters() { return [...voters.keys()]; }
 
 export function addVoter(id, lang, forceNotif = false)
 {

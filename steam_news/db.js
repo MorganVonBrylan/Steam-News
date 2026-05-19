@@ -374,7 +374,6 @@ export const stmts = dictionary({
 	getLastVote: db.prepare("SELECT lastVote FROM Voters WHERE id = ?").pluck(),
 	insertLastVote: db.prepare("INSERT INTO Voters (id, lastVote) VALUES ($id, $date)"),
 	updateLastVote: db.prepare("UPDATE Voters SET lastVote = $date WHERE id = $id"),
-	getRecentVoters: db.prepare("SELECT * FROM Voters WHERE lastVote > ?"),
 
 	purgeGuild: makeProxy(watchTables.map(table => `DELETE FROM ${table} WHERE guildId = ?`),
 	function(id) {
