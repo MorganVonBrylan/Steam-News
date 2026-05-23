@@ -44,6 +44,7 @@ export async function run(inter)
 	if(!details)
 	{
 		const delay = 20;
+		await defer;
 		inter.editReply({flags: "Ephemeral", content: tr.get(locale, "group.invalidGroup", delay)});
 		setTimeout(() => inter.deleteReply(), delay * 1000);
 		return;
