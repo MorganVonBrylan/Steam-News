@@ -16,7 +16,7 @@ export async function run(inter)
 	const inline = true;
 
 	inter.reply({embeds: [{
-		title: "Steam News statistics",
+		title: t("title"),
 		fields: [
 			{ name: t("watchers"), value: ""+stats.watchers, inline },
 			{ name: t("games-watched"), value: ""+stats.watchedApps, inline },

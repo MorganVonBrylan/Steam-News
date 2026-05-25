@@ -603,6 +603,7 @@
 		"last-edit": "Dernière modification le %s"
 	},
 	"stats": {
+		"title": "Statistiques sur Steam News",
 		"watchers": "Suivis d’actus",
 		"games-watched": "Jeux suivis",
 		"most-watched": "Jeu le plus suivi",

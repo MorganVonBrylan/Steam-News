@@ -599,6 +599,7 @@
 
 
 	"stats": {
+		"title": "Steam News statistics",
 		"watchers": "News watchers",
 		"games-watched": "Games watched",
 		"most-watched": "Most watched game",
