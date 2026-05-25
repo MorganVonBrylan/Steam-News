@@ -74,7 +74,7 @@ export async function setup()
 		const { addVoter } = await import("./steam_news/VIPs.js");
 		let webhookServer;
 		const {
-			port = process.env.SERVER_PORT,
+			port = +process.env.SERVER_PORT,
 			endpoint = "/topggVote",
 			secret,
 		} = webhook;
