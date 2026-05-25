@@ -79,6 +79,9 @@ export async function setup()
 			secret,
 		} = webhook;
 
+		if(!Number.isInteger(port) || port < 1000)
+			throw new TypeError(`Invalid port for the Top.gg webhook: ${port}`);
+
 		// In case a previous listener was left dangling...
 		exec(`lsof -i TCP:${port} | grep LISTEN`, (_, stdout) => {
 			if(stdout)
