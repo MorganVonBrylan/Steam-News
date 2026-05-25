@@ -207,3 +207,9 @@ Added group features: seeing last announcements, watchings announcements, etc.
 Added a bunch of stats to the /stats.
 Made /watched more concise and less redundant.
 Various improvements and bug fixes.
+
+	2.20.1 (25/05/2026)
+	Fixed /watched not showing the role pinged for Steam news.
+	/watch's reply now mentions the role that will be pinged.
+	/watched and /watch now use embeds, and have a different colour for games, prices etc.
+	/stats no longer shows "active since" and now has a translatable title.
