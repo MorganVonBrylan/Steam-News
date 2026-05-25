@@ -612,7 +612,6 @@
 		"uptime": "Uptime",
 		"n-days": "%s days",
 		"ping": "Ping",
-		"ping-ms": "%s ms",
-		"active-since": "active since"
+		"ping-ms": "%s ms"
 	}
 }

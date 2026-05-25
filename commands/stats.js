@@ -35,8 +35,7 @@ export async function run(inter)
 		],
 		footer:{
 			iconUrl: bot.avatarURL(),
-			text: `${bot.username} ${version} — ${t("active-since")}`,
+			text: `${bot.username} ${version}`,
 		},
-		timestamp: inter.client.application.createdAt.toISOString(),
 	}]});
 }
