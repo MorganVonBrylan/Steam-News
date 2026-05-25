@@ -535,8 +535,11 @@
 		"error-max-reached": "Sorry, you reached the limit of %s watchers per server.",
 
 		"confirm-price": "${name}’s price updates will now be sent into ${channel}.",
+		"confirm-price-role": "${name}’s price updates will now be sent into ${channel} and ping ${role}.",
 		"confirm-news": "${name}’s news will now be sent into ${channel}.",
+		"confirm-news-role": "${name}’s news will now be sent into ${channel} and ping ${role}.",
 		"confirm-posts": "${name}’s announcements will now be sent into ${channel}.",
+		"confirm-posts-role": "${name}’s announcements will now be sent into ${channel} and ping ${role}.",
 		"webhook-auto-unset": "Because the watcher channel changed, the webhook has been unset."
 	},
 
@@ -576,6 +579,7 @@
 
 	"steam": {
 		"watched": "News about Steam will now be sent into %s.",
+		"watched-role": "News about Steam will now be sent into ${channel} and ping ${role}.",
 		"unwatched": "News about Steam are no longer watched in this server."
 	},
 

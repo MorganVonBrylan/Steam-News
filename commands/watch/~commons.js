@@ -10,6 +10,11 @@ const {
 import { fetchThreads } from "../../utils/channels.js";
 import { setWebhook } from "../../steam_news/db_api.js";
 
+export const STEAM_COLOR = 0x11415E;
+export const GAME_COLOR = 0x317D00;
+export const PRICE_COLOR = 0xFF8F00;
+export const GROUP_COLOR = 0x015e80;
+
 
 export const options = [{
 	type: ROLE, name: "role",

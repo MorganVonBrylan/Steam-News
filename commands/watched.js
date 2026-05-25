@@ -1,6 +1,7 @@
 
 import { getWatchedApps, getWatchedPrices, getWatchedGroups } from "../steam_news/watchers.js";
 import { STEAM_APPID } from "../steam_news/api.js";
+import { GAME_COLOR, PRICE_COLOR, STEAM_COLOR, GROUP_COLOR } from "./watch/~commons.js";
 import { sendEmbeds } from "../utils/embeds.js";
 
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
@@ -19,8 +20,10 @@ export function run(inter) {
 
 	if(steamWatch)
 	{
-		const string = steamWatch.webhook ? "steam-watched-webhook" : "steam-watched";
-		embeds.push({ description: t(string, `<#${steamWatch.channelId}>`) });
+		const { webhook, channelId, roleId } = steamWatch;
+		const string = webhook ? "steam-watched-webhook" : "steam-watched";
+		const role = roleId ? `\n${t("ping")} <@&${roleId}>` : "";
+		embeds.push({ color: STEAM_COLOR, description: t(string, `<#${channelId}>`) + role });
 	}
 
 	if(watchedGroups.length)
@@ -46,8 +49,9 @@ function toEmbeds(watched, t, type)
 	if(!watched.length) return [];
 	watched = watched.map(watcherToField.bind(null, t));
 	const embeds = [];
+	const color = type === "games" ? GAME_COLOR : type === "prices" ? PRICE_COLOR : GROUP_COLOR;
 	for(let i = 0 ; i < watched.length ; i += BLOCK_SIZE)
-		embeds.push({fields: watched.slice(i, i + BLOCK_SIZE)});
+		embeds.push({ color, fields: watched.slice(i, i + BLOCK_SIZE) });
 
 	Object.assign(embeds[0], {
 		title: t.plural(type, watched.length),

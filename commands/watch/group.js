@@ -16,7 +16,11 @@ import { setWebhook } from "../../steam_news/db_api.js";
 import { fetchThreads } from "../../utils/channels.js";
 import { autoSuggestButton } from "../premium/chameleon/set.js";
 
-import { options as baseOptions, checkPerms, updateWebhook } from "./~commons.js"
+import {
+	options as baseOptions,
+	GROUP_COLOR,
+	checkPerms, updateWebhook,
+} from "./~commons.js"
 import { getNameOrId, options as groupOptions } from "../group.js";
 
 import { updateCmd as updateUnwatch } from "../~guild/unwatch.js";
@@ -50,17 +54,19 @@ export async function run(inter)
 		return;
 	}
 
-	const role = inter.options.getRole("role")?.id;
+	const role = inter.options.getRole("role");
 
 	const LIMIT = (voted(inter.user.id) ? LIMIT_WITH_VOTE : WATCH_LIMIT)
 		+ (premiumGuilds.has(guild.id) ? WATCH_PREMIUM_BONUS : 0);
 	const MAX_BONUS = WATCH_VOTE_BONUS + WATCH_PREMIUM_BONUS;
 	const errorReplaces = { LIMIT, MAX_BONUS, vote: voteURL(locale) };
 
-	watchGroup(details, channel, role, LIMIT).then(async success => {
+	watchGroup(details, channel, role?.id, LIMIT).then(async success => {
 		await defer;
 
-		let reply = t("confirm-posts", {name: details.group_name, channel});
+		let reply = role
+			? t(`confirm-posts-role`, { name: details.group_name, channel, role })
+			: t("confirm-posts", { name: details.group_name, channel });
 
 		if(success === MAX_LIMIT)
 			reply += `\n${t("server-max-groups-reached", MAX_LIMIT)}`
@@ -76,22 +82,25 @@ export async function run(inter)
 			if(await updateWebhook(success, channel, "group") === null)
 				reply += `\n${t("webhook-auto-unset")}`;
 
+		reply = { embeds: [{ color: GROUP_COLOR, description: reply }]};
+
 		updateUnwatch(guild);
 		if(!success.webhook && chameleonGuilds.has(guild.id))
 		{
 			const t = tr.set(locale, "premium.chameleon");
-			const baseReply = reply;
-			reply = {
-				content: `${reply}\n\n${t("watch-suggestAuto-group")}`,
-				components: autoSuggestButton(t,
-					{ type: "group", clanid: details.clanid, details, channelId: channel.id },
-					inter,
-					result => inter.editReply({
-						content: result ? `${baseReply}\n-# ${result}` : baseReply,
-						components: [],
-					}),
-				),
-			}
+			const baseReply = reply.embeds[0].description;
+			reply.embeds[0].description += `\n\n${t("watch-suggestAuto")}`;
+			reply.components = autoSuggestButton(t,
+				{ type: "group", clanid: details.clanid, details, channelId: channel.id },
+				inter,
+				result => inter.editReply({
+					embeds: [{
+						color: GROUP_COLOR,
+						description: baseReply,
+						footer: result ? { text: result } : undefined}],
+					components: [],
+				}),
+			);
 		}
 		inter.editReply(reply);
 	}, async err => {

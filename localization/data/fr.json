@@ -548,7 +548,10 @@
 		"server-group-limit-reached": "Attention : vous avez atteint la limite de ${LIMIT} groupes par serveur.\nVotez pour moi sur [Top.gg](${vote}) ou achetez le **premium** pour pouvoir en ajouter jusque ${MAX_BONUS} de plus.",
 		"server-group-limit-reached-voted": "Attention : vous avez atteint la limite de %s groupes par serveur. Achetez le **premium** pour en avoir plus.",
 		"server-max-groups-reached": "Attention : vous avez atteint la limite de %s groupes par serveur.",
-		"confirm-posts": "Les annonces de ${name} seront envoyées dans ${channel}."
+		"confirm-posts": "Les annonces de ${name} seront envoyées dans ${channel}.",
+		"confirm-price-role": "Les changements de prix de ${name} seront désormais envoyées dans ${channel} et notifieront ${role}.",
+		"confirm-news-role": "Les actus de ${name} seront désormais envoyées dans ${channel} et notifieront ${role}.",
+		"confirm-posts-role": "Les annonces de ${name} seront envoyées dans ${channel} et notifieront ${role}."
 	},
 	"watched": {
 		"steam-watched": "Actus à propos de **Steam** envoyées dans %s",
@@ -584,7 +587,8 @@
 	},
 	"steam": {
 		"watched": "Les actus de Steam seront désormais envoyées dans %s.",
-		"unwatched": "Les actus de Steam ne seront plus envoyées dans ce serveur."
+		"unwatched": "Les actus de Steam ne seront plus envoyées dans ce serveur.",
+		"watched-role": "Les actus de Steam seront désormais envoyées dans ${channel} et notifieront ${role}."
 	},
 	"group": {
 		"invalidGroup": "Désolé, je n'ai pas trouvé ce groupe. Ce message va s'auto-détruire dans %s secondes.",

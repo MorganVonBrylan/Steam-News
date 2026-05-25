@@ -17,8 +17,11 @@ import { watch, unwatch, getAppInfo, purgeApp } from "../../steam_news/watchers.
 import { HTTPError } from "../../steam_news/api.js";
 import { autoSuggestButton } from "../premium/chameleon/set.js";
 
-import { options as baseOptions, checkPerms, updateWebhook } from "./~commons.js"
-
+import {
+	options as baseOptions,
+	GAME_COLOR, PRICE_COLOR,
+	checkPerms, updateWebhook,
+} from "./~commons.js"
 import { updateCmd as updateUnwatch } from "../~guild/unwatch.js";
 
 export const defaultMemberPermissions = "0";
@@ -52,7 +55,7 @@ export async function run(inter)
 	else if(+appid === STEAM_APPID)
 		return defer.then(() => inter.editReply({flags: "Ephemeral", content: tr.get(locale, "no-match", appid)}));
 
-	const role = options.getRole("role")?.id;
+	const role = options.getRole("role");
 	const type = options.getString("type");
 	const watchPrice = type === "price";
 
@@ -61,7 +64,7 @@ export async function run(inter)
 	const MAX_BONUS = WATCH_VOTE_BONUS + WATCH_PREMIUM_BONUS;
 	const errorReplaces = { LIMIT, MAX_BONUS, vote: voteURL(locale) };
 
-	watch(+appid, channel, role, watchPrice, LIMIT).then(async success => {
+	watch(+appid, channel, role?.id, watchPrice, LIMIT).then(async success => {
 		await defer;
 		const details = getAppInfo(appid);
 
@@ -91,7 +94,9 @@ export async function run(inter)
 			return inter.editReply(tr.get(locale, `NSFW-content-${type}`));
 		}
 
-		let reply = t(`confirm-${type}`, {name: details.name, channel});
+		let reply = role
+			? t(`confirm-${type}-role`, { name: details.name, channel, role })
+			: t(`confirm-${type}`, { name: details.name, channel });
 
 		if(details.name === "undefined")
 			reply += `\n${t("error-retrieving-details")}`;
@@ -110,22 +115,27 @@ export async function run(inter)
 			if(await updateWebhook(success, channel, type) === null)
 				reply += `\n${t("webhook-auto-unset")}`;
 
+		const color = type === "news" ? GAME_COLOR : PRICE_COLOR;
+		reply = { embeds: [{ color, description: reply }]};
+
 		updateUnwatch(guild);
 		if(!success.webhook && chameleonGuilds.has(guild.id))
 		{
 			const t = tr.set(locale, "premium.chameleon");
-			const baseReply = reply;
-			reply = {
-				content: `${reply}\n\n${t("watch-suggestAuto")}`,
-				components: autoSuggestButton(t,
-					{ type, appid, channelId: channel.id },
-					inter,
-					result => inter.editReply({
-						content: result ? `${baseReply}\n-# ${result}` : baseReply,
-						components: [],
-					}),
-				),
-			}
+			const baseReply = reply.embeds[0].description;
+			reply.embeds[0].description += `\n\n${t("watch-suggestAuto")}`;
+			reply.components = autoSuggestButton(t,
+				{ type, appid, channelId: channel.id },
+				inter,
+				result => inter.editReply({
+					embeds: [{
+						color,
+						description: baseReply,
+						footer: result ? { text: result } : undefined,
+					}],
+					components: [],
+				}),
+			);
 		}
 		inter.editReply(reply);
 	}, async err => {
