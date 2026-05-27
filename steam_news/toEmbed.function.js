@@ -41,12 +41,12 @@ export default async function toEmbed(newsitem, lang = "en")
 	const steamLink = `url/EventAnnouncementPage/${appid}/${eventId}`;
 	return {
 		url,
+		author: name && { iconURL, name, url: "https://store.steampowered.com/app/"+appid },
 		image: thumbnail ? { url: thumbnail } : undefined,
 		title,
 		description: toMarkdown(contents),
 		fields: [{name: tr.get(lang, "info.openInApp"), value: steamAppLink(steamLink, lang) }],
 		yt,
-		author: name ? { name, url: "https://store.steampowered.com/app/"+appid } : undefined,
 		footer: name || iconURL ? { text: name, iconURL } : undefined,
 		timestamp: new Date(date).toISOString(),
 	};
@@ -156,20 +156,17 @@ export async function postEmbed(post, lang = "en", includeStats = false)
 	const yt = body.match(YT_REGEX)?.map(m => `https://youtu.be/${m.slice(14, -1)}`).join("\n");
 
 	const group = await getBasicGroupDetails(+clanid);
+	const iconURL = group.avatar_medium_url;
 	const embed = {
 		url: `https://store.steampowered.com/news/group/${clanid}/view/${gid}`,
 		author: {
-			iconURL: group.avatar_medium_url,
-			name: group.group_name,
+			iconURL, name: group.group_name,
 			url: `https://steamcommunity.com/groups/${group.vanity_url}`,
 		},
 		title: headline,
 		description: posttime === updatetime ? bbToMarkdown(body)
 			: `-# ${t("last-edit", formatDate(lang, updatetime*1000))}\n\n${bbToMarkdown(body, 2000)}`,
-		footer: {
-			text: group.group_name,
-			iconURL: group.avatar_medium_url,
-		},
+		footer: { iconURL, text: group.group_name },
 		timestamp: new Date(posttime * 1000).toISOString(),
 		image: image && { url: image },
 		yt,
