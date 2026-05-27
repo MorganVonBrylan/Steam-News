@@ -90,10 +90,12 @@ export function buttons(...skus) {
 
 if(premiumEnabled)
 {
+	const { guilds } = client;
+
 	/* Doing subscriber role properly requires GUILD_MEMBERS, and I'm not even sure I can get the user id properly
 	let supportServer, subRole;
 	client.once("clientReady", async () => {
-		supportServer = await client.guilds.fetch(premium.supportServer);
+		supportServer = await guilds.fetch(premium.supportServer);
 		subRole = supportServer.roles.fetch(premium.premiumRole);
 	});
 	client.on("guildMemberAdd", member => {});
@@ -101,6 +103,12 @@ if(premiumEnabled)
 
 	function wait_a_bit() {
 		return new Promise(resolve => setTimeout(resolve, 3000));
+	}
+	function subName(skuId) {
+		return skuId === goldSKU ? "Gold"
+			: skuId === premiumSKU ? "More watchers"
+			: skuId === chameleonSKU ? "Chameleon"
+			: `Unknown (${skuId})`;
 	}
 
 	client.once("clientReady", async () => {
@@ -126,27 +134,22 @@ if(premiumEnabled)
 		// Not sure if the order is guaranteed, so in doubt,
 		// wait a bit before granting the new entitlement to make sure the UPDATE doesn't remove it
 		await wait_a_bit();
-		let sub;
 		switch(skuId)
 		{
 			case goldSKU:
-				sub = "gold";
 			case premiumSKU:
-				sub ??= "premium";
+				premiumGuilds.add(guildId);
 			case chameleonSKU:
-				sub ??= "chameleon";
 				if(skuId !== premiumSKU)
 					chameleonGuilds.add(guildId);
-				if(skuId !== chameleonSKU)
-					premiumGuilds.add(guildId);
-				const guild = await client.guilds.fetch(guildId);
-				sendToMaster(`New ${sub} sub! Guild: ${guildId}, owner: ${guild.ownerId}, user: ${userId}`);
+				const { ownerId } = await guilds.fetch(guildId);
+				sendToMaster(`New ${subName(skuId)} sub! Guild: ${guildId}, owner: ${ownerId}, user: ${userId}`);
 				break;
 			case rebrandSKU:
 				sendToMaster(`<@${userId}> bought a rebrand! (${userId})`);
 				break;
 			default:
-				sendToMaster(`New supporter! <@${userId}> (${userId})`);
+				sendToMaster(`New supporter with an unknown (${skuId}) subscription! <@${userId}> (${userId})`);
 		}
 	});
 
@@ -164,13 +167,13 @@ if(premiumEnabled)
 
 		const { skuId, guildId, userId } = entitlement;
 		removeEntitlement(skuId, guildId);
-		const guild = await client.guilds.fetch(guildId);
-		sendToMaster(`Sub ended. Guild: ${guild} (${guildId}), user: ${userId}`);
+		const guild = await guilds.fetch(guildId);
+		sendToMaster(`${subName(skuId)} sub ended. Guild: ${guildId}, user: ${userId}`);
 	});
 
 	client.on("entitlementDelete", async ({skuId, guildId, userId}) => {
 		removeEntitlement(skuId, guildId);
-		const guild = await client.guilds.fetch(guildId);
-		sendToMaster(`Sub cancelled. Guild: ${guild} (${guildId}), user: ${userId}`);
+		const guild = await guilds.fetch(guildId);
+		sendToMaster(`${subName(skuId)} sub cancelled. Guild: ${guildId}, user: ${userId}`);
 	});
 }
