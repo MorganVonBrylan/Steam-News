@@ -1,5 +1,5 @@
 {
-	"discovery": "**Steam News** erlaubt es dir, Steam-Spiel-Nachrichten, Preisänderungen und Gruppenankündigungen direkt in einen Kanal deiner Wahl in deinem Discord-Server gesendet zu bekommen.\n\nEs hat außerdem ein Kommando, um Informationen über ein Spiel oder eine Gruppe anzuzeigen, mit viel mehr Details als bloß die URL des Steam-Ladens Einzufügen.",
+	"discovery": "**Steam News** erlaubt es dir, Steam-Spiel-Nachrichten, Preisänderungen und Gruppenankündigungen direkt in einen Kanal deiner Wahl in deinem Discord-Server gesendet zu bekommen.\n\nEs hat außerdem ein Befehl, um Informationen über ein Spiel oder eine Gruppe anzuzeigen, mit viel mehr Details als bloß die URL des Steam-Ladens Einzufügen.",
 	"redirect": "Das ist eine Abhilfe für Discord, der <code>steam://</code>-Links bricht.\nDas sollte die Steam-App für Sie öffnen; auf mobilen Geräten funktioniert das jedoch möglicherweise nicht.\nAktivieren Sie das Kontrollkästchen „immer zulassen“, damit es in Zukunft einfacher ist.\nSie können diese Seite schließen, wenn sie sich nicht selbst schließt.\nFalls die Weiterleitung nicht funktioniert, versuchen Sie es mit diesem Link:",
 	"commands": {
 		"help": {
@@ -22,7 +22,7 @@
 		},
 		"premium": {
 			"name": "premium",
-			"description": "Premium-Kommandos",
+			"description": "Premium-Befehle",
 			"options": {
 				"rebrand": {
 					"name": "darstellung-ändern",
@@ -59,7 +59,7 @@
 				},
 				"chameleon": {
 					"name": "chamäleon",
-					"description": "Kommandos, um den Bot pro Spiel anzupassen.",
+					"description": "Befehle, um den Bot pro Spiel anzupassen.",
 					"options": {
 						"help": {
 							"name": "hilfe",
@@ -345,7 +345,7 @@
 			"banner-rate-limit": "Du hast mich zu oft aufgefordert, mein Banner zu ändern und Discord begrenzt mich. Bitte versuche es später nochmal.",
 			"failure": "Die Änderung der Darstellung ist mit der Nachricht '%s' fehlgeschlagen.\nDein Rebrand-Token wurde nicht verbraucht.",
 			"success": "Mein Aussehen wurde geändert! Ich fühle mich wieder jung.\nFalls du keine Änderung siehst, lade Discord neu.",
-			"grace": "Falls du deine Meinung änderst oder Änderungen vornehmen möchtest, kannst du dieses Kommando innerhalb der nächsten Stunde kostenlos nochmal benutzen.",
+			"grace": "Falls du deine Meinung änderst oder Änderungen vornehmen möchtest, kannst du diesen Befehl innerhalb der nächsten Stunde kostenlos nochmal benutzen.",
 			"resetFailure": "Das Zurücksetzen des Aussehens ist mit der Nachricht '%s' fehlgeschlagen.",
 			"resetSuccess": "Mein Aussehen wurde zurückgesetzt.\nFalls du keine Änderung siehst, lade Discord neu."
 		},
@@ -433,7 +433,7 @@
 		"sub-gold": "Dieser Server hat den ✨Gold-Plan✨",
 		"user-entitlements": "Persönliche Ansprüche",
 		"has-rebrand": "Du hast einen Rebrand-Token.",
-		"has-rebrand-not-admin": "Du hast einen Rebrand-Token, kannst ihn in diesem Server aber nicht verwenden, da du kein Admin bist (außer, ein Admin hat die Berechtigungen für das Kommando `premium` geändert)."
+		"has-rebrand-not-admin": "Du hast einen Rebrand-Token, kannst ihn in diesem Server aber nicht verwenden, da du kein Admin bist (außer, ein Admin hat die Berechtigungen für den Befehl `premium` geändert)."
 	},
 	"error": "Ein Fehler ist aufgetreten.",
 	"api-failed": "Die Verbindung zur Steam API ist fehlgeschlagen. Bitte versuchen Sie es in einigen Minuten erneut.",
