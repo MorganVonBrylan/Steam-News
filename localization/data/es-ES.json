@@ -1,4 +1,6 @@
 {
+	"discovery": "**Steam News** le permite recibir noticias de juegos de Steam, cambios de precio y anuncios de grupos directamente en el canal que elija de su servidor de Discord.\n\nTambién incluye un comando para mostrar información sobre un juego o grupo, con muchos más detalles que simplemente pegar la URL de la tienda de Steam.",
+	"redirect": "Esta es un parche para arreglar que Discord rompiera los enlaces `steam://`.\nDebería abrir Steam; sin embargo, puede que no funcione en dispositivos móviles.\nMarca la casilla \"Permitir siempre\" hacerlo más cómodo en el futuro.\nPuedes cerrar esta página si no se cierra automáticamente.\nSi la redirección no funciona, prueba con este enlace:",
 	"commands": {
 		"help": {
 			"name": "ayuda",
@@ -91,10 +93,12 @@
 									"description": "El webhook a usar"
 								},
 								"name": {
-									"name": "nombre"
+									"name": "nombre",
+									"description": "Nombre de usuario para usar en este juego/grupo en específico"
 								},
 								"avatar": {
-									"name": "avatar"
+									"name": "avatar",
+									"description": "URL del avatar a usar para este juego/grupo en específico"
 								}
 							}
 						},
@@ -158,12 +162,35 @@
 							"name": "idioma",
 							"description": "El idioma de las noticias. La disponibilidad depende de los desarrolladores del juego."
 						}
-					}
+					},
+					"name": "noticias-de-juego"
 				},
 				"steam-news": {
-					"description": "Muestra las últimas noticias sobre Steam."
+					"description": "Muestra las últimas noticias sobre Steam.",
+					"name": "noticias-de-steam",
+					"options": {
+						"language": {
+							"name": "idioma",
+							"description": "El idioma de la noticia."
+						}
+					}
+				},
+				"group-post": {
+					"name": "post-de-grupo",
+					"description": "Muestra el último post de un grupo de Steam.",
+					"options": {
+						"group": {
+							"name": "grupo",
+							"description": "El nombre o URL del grupo"
+						},
+						"language": {
+							"name": "idioma",
+							"description": "El idioma del post. La disponibilidad depende de los administradores del grupo."
+						}
+					}
 				}
-			}
+			},
+			"description": "Muestra las últimas noticias."
 		},
 		"locale": {
 			"name": "idioma",
@@ -224,11 +251,22 @@
 							"description": "Un rol a notificar cuando se publiquen noticias"
 						}
 					}
+				},
+				"group": {
+					"name": "grupo",
+					"description": "(Solo para admins) Sigue los anuncios de un grupo (Máximo %s por servidor)",
+					"options": {
+						"group": {
+							"name": "grupo",
+							"description": "El nombre o URL del grupo"
+						}
+					}
 				}
 			}
 		},
 		"watched": {
-			"name": "suscripciones"
+			"name": "suscripciones",
+			"description": "Muestra los juegos y grupos a los que está suscrito este servidor."
 		},
 		"unwatch": {
 			"name": "desuscribir",
@@ -249,6 +287,14 @@
 				"steam": {
 					"name": "steam",
 					"description": "(Sólo admins) Se desuscribe de las noticias sobre Steam."
+				},
+				"group": {
+					"name": "grupo",
+					"description": "(Sólo para admins) Deja de seguir los anuncios de un grupo."
+				},
+				"name": {
+					"name": "nombre",
+					"description": "El nombre del grupo."
 				}
 			}
 		},
@@ -263,6 +309,16 @@
 				"game": {
 					"name": "juego",
 					"description": "El nombre o id del juego"
+				}
+			}
+		},
+		"group": {
+			"name": "grupo",
+			"description": "Muestra la información de un grupo de Steam.",
+			"options": {
+				"group": {
+					"name": "grupo",
+					"description": "El nombre del grupo o su URL"
 				}
 			}
 		}
@@ -280,7 +336,7 @@
 			},
 			{
 				"name": "¿Cuántos juegos puedo seguir?",
-				"value": ""
+				"value": "Por defecto, puedes seguir ${WATCH_LIMIT} hilos de noticias, ${WATCH_LIMIT} precios, y ${WATCH_LIMIT} grupos. Puedes seguir ${WATCH_VOTE_BONUS} hilos, precios, y grupos más si me votas en Top.gg (Link al final del mensaje)"
 			},
 			{
 				"name": "¡El bot no envió las últimas noticias en el momento que salieron!",
@@ -395,7 +451,9 @@
 			"webhook-unset-error": "No pude desconectar el webhook. Por favor, inténtalo más tarde.",
 			"all-decoupled": "Todos los webhooks han sido desconectados. Esto no elimina los webhooks, simplemente no serán usados para enviar noticias o rebajas.",
 			"nothing-decoupled": "Sin cambios. Parece que no estaba usando webhooks en este servidor.",
-			"watch-suggestAuto": "La funcionalidad camaleon está activa en este servidor. Quiere personalizar automáticamente la suscripcion con el nombre y logo del juego?"
+			"watch-suggestAuto": "La funcionalidad camaleon está activa en este servidor. ¿Quiere personalizar automáticamente la suscripcion con el nombre y logo del juego?",
+			"group": "Grupo",
+			"watch-suggestAuto-group": "La funcionalidad camaleon está activa en este servidor. ¿Quiere personalizar automáticamente la suscripcion con el nombre y logo del grupo?"
 		},
 		"server-subscription": "Membresía del servidor",
 		"no-subscription": "Este servidor carece de ninguna membresía.",
@@ -412,8 +470,10 @@
 	"api-err": "Error al obtener los datos (error %s).",
 	"no-match": "No se ha encontrado un juego que coincida con \"%s\".",
 	"bad-appid": "El id proporcionado no pertenece a ninguna aplicación de Steam.",
+	"bad-group": "No pude encontrar ese grupo. Por favor, proporcione el nombre exacto o la URL.",
 	"no-DLC-news": "Los DLC no tienen noticias.",
 	"no-news": "Esta aplicación no tiene noticias.",
+	"no-posts": "Este grupo no tiene ningún post.",
 	"NSFW-content-news": "Este juego tiene contenido para adultos. Sólo puede mostrar sus noticias en un canal marcado como NSFW.",
 	"NSFW-content-price": "Este juego tiene contenido para adultos. Sólo puede mostrar su precio en un canal marcado como NSFW.",
 	"used-command": "${user} ha usado ${command}",
@@ -511,19 +571,26 @@
 		"error-limit-reached": "Alcanzó o superó el límite base de ${LIMIT} suscripciones por servidor.\nRecomiéndeme en [Top.gg](${vote}) o compre **premium** para seguir hasta ${MAX_BONUS} más.",
 		"error-limit-reached-voted": "Lo siento, ha alcanzado su límite de %s suscripciones por servidor. Compre **premium** para aumentarlo.",
 		"error-max-reached": "Lo siento, alcanzó el límite de %s suscripciones por servidor.",
-		"confirm-price": "Las actualizaciones de precios de ${name} se enviarán ahora en ${channel}.",
-		"confirm-news": "Las noticias de ${name} serán enviadas ahora en ${channel}.",
-		"webhook-auto-unset": "Como el canal de la suscripción ha cambiado, el webhook se ha desconectado."
+		"confirm-price": "Las actualizaciones de precios de ${name} ahora se enviarán a ${channel}.",
+		"confirm-news": "Las noticias de ${name} ahora se enviarán a ${channel}.",
+		"webhook-auto-unset": "Como el canal de la suscripción ha cambiado, el webhook se ha desconectado.",
+		"server-group-limit-reached": "Advertencia: ha alcanzado el límite de ${LIMIT} grupos por servidor.\nRecomiéndeme en [Top.gg](${vote}) o compre **premium** para seguir hasta ${MAX_BONUS} grupos más.",
+		"server-group-limit-reached-voted": "Advertencia: ha alcanzado el límite de %s grupos por servidor. Compre **premium** para aumentarlo.",
+		"server-max-groups-reached": "Advertencia: alcanzó el límite de %s grupos por servidor.",
+		"confirm-price-role": "Las actualizaciones de precios de ${name} ahora se enviarán a ${channel}, notificando a ${role}.",
+		"confirm-news-role": "Las noticias de ${name} ahora se enviarán a ${channel}, notificando a ${role}.",
+		"confirm-posts": "Los posts de ${name} ahora se enviarán a ${channel}.",
+		"confirm-posts-role": "Los posts de ${name} ahora se enviarán a ${channel}, notificando a ${role}."
 	},
 	"watched": {
 		"steam-watched": "Noticias sobre **Steam** enviadas en %s",
 		"games": {
-			"1": "1 juego suscrito",
-			"default": "%n juegos suscritos"
+			"1": "1 suscripción a juegos",
+			"default": "%n suscripciones a juegos"
 		},
 		"prices": {
-			"1": "1 precio suscrito",
-			"default": "%n precios suscritos"
+			"1": "1 suscripción a precio",
+			"default": "%n suscripciones a precios"
 		},
 		"ping": "Ping:",
 		"no-ping": "no",
@@ -532,17 +599,37 @@
 		"NSFW-no": "NSFW: No",
 		"channel": "Canal: %s",
 		"steam-watched-webhook": "Noticias sobre **Steam** enviadas en %s mediante un webhook",
-		"webhook": "(mediante webhook)"
+		"webhook": "(mediante webhook)",
+		"groups-watched": "Suscripciones a grupos en este servidor",
+		"groups": {
+			"1": "1 suscripción a grupo",
+			"default": "%n suscripciones a grupos"
+		}
 	},
 	"unwatch": {
 		"news-unwatched": "Se ha eliminado la suscripción a %s en este servidor.",
-		"news-unchanged": "No existía una sucripción a %s en este servidor.",
+		"news-unchanged": "No existía una suscripción a %s en este servidor.",
 		"price-unwatched": "Se ha eliminado la suscripción al precio de %s en este servidor.",
-		"price-unchanged": "No existía una suscripción al precio de %s en este servidor."
+		"price-unchanged": "No existía una suscripción al precio de %s en este servidor.",
+		"group-unwatched": "Se ha eliminado la suscripción a %s en este servidor.",
+		"group-unchanged": "No existía una suscripción a %s en este servidor."
 	},
 	"steam": {
 		"watched": "Las noticias sobre Steam se enviarán ahora a %s.",
-		"unwatched": "Se ha eliminado la suscripción a las noticias sobre Steam en este servidor."
+		"unwatched": "Se ha eliminado la suscripción a las noticias sobre Steam en este servidor.",
+		"watched-role": "Las noticias sobre Steam se enviarán ahora a ${channel}, notificando a ${role}."
+	},
+	"group": {
+		"invalidGroup": "Lo siento, no pude encontrar ese grupo. Este mensaje se autodestruirá en %s segundos.",
+		"members": "Miembros",
+		"followers": "Seguidores",
+		"curator_desc": "Descripción del mentor",
+		"curator_website": "Página web",
+		"openInApp": "Abrir en la aplicación",
+		"comments": "Comentario",
+		"upvotes": "Likes",
+		"downvotes": "Dislikes",
+		"last-edit": "Editado por última vez el %s"
 	},
 	"stats": {
 		"watchers": "Suscripciones a noticias",
@@ -550,6 +637,15 @@
 		"most-watched": "Juego más suscrito",
 		"n-watchers": "%s suscripciones",
 		"price-watchers": "Suscripciones a precios",
-		"prices-watched": "Precios de juegos seguidos"
+		"prices-watched": "Precios seguidos",
+		"title": "Estadísticas de Steam News",
+		"steam-watchers": "Suscripciones a steam",
+		"group-watchers": "Suscripciones a grupos",
+		"group-watched": "Grupos seguidos",
+		"most-watched-group": "Grupo más seguido",
+		"uptime": "Tiempo activo",
+		"n-days": "%s días",
+		"ping": "Ping",
+		"ping-ms": "%s ms"
 	}
 }
