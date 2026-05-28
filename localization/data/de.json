@@ -1,4 +1,5 @@
 {
+	"discovery": "**Steam News** erlaubt es dir, Steam-Spiel-Nachrichten, Preisänderungen und Gruppenankündigungen direkt in einen Kanal deiner Wahl in deinem Discord-Server gesendet zu bekommen.\n\nEs hat außerdem ein Kommando, um Informationen über ein Spiel oder eine Gruppe anzuzeigen, mit viel mehr Details als bloß die URL des Steam-Ladens Einzufügen.",
 	"redirect": "Das ist eine Abhilfe für Discord, der <code>steam://</code>-Links bricht.\nDas sollte die Steam-App für Sie öffnen; auf mobilen Geräten funktioniert das jedoch möglicherweise nicht.\nAktivieren Sie das Kontrollkästchen „immer zulassen“, damit es in Zukunft einfacher ist.\nSie können diese Seite schließen, wenn sie sich nicht selbst schließt.\nFalls die Weiterleitung nicht funktioniert, versuchen Sie es mit diesem Link:",
 	"commands": {
 		"help": {
@@ -81,10 +82,12 @@
 									"description": "Der Webhook, der benuzt wird"
 								},
 								"name": {
-									"name": "name"
+									"name": "name",
+									"description": "Benutzername zur spezifischen Verwendung für dieses Spiel/diese Gruppe"
 								},
 								"avatar": {
-									"name": "avatar"
+									"name": "avatar",
+									"description": "URL des Avatars zur spezifischen Verwendung für dieses Spiel/diese Gruppe"
 								}
 							}
 						},
@@ -141,6 +144,20 @@
 						"language": {
 							"name": "sprache",
 							"description": "Die Sprache der Nachrichten."
+						}
+					}
+				},
+				"group-post": {
+					"name": "gruppen-post",
+					"description": "Zeige die letzte Ankündigung einer Steam-Gruppe an.",
+					"options": {
+						"group": {
+							"name": "gruppe",
+							"description": "Der Name oder die URL der Gruppe."
+						},
+						"language": {
+							"name": "sprache",
+							"description": "Die Sprache der Ankündigung. Verfügbarkeit hängt von den Gruppen-Administratoren ab."
 						}
 					}
 				}
@@ -205,11 +222,22 @@
 							"description": "Eine Rolle, die anpingt, wenn Neuigkeiten veröffentlicht werden"
 						}
 					}
+				},
+				"group": {
+					"name": "gruppe",
+					"description": "(nur Administratoren) Folge den Ankündigungen einer Gruppe (maximal %s pro Server)",
+					"options": {
+						"group": {
+							"name": "gruppe",
+							"description": "Der Name oder die URL der Gruppe."
+						}
+					}
 				}
 			}
 		},
 		"watched": {
-			"name": "beobachtet"
+			"name": "beobachtet",
+			"description": "Zeige an, welche Spiele und Gruppen in diesem Server beobachtet werden."
 		},
 		"unwatch": {
 			"name": "beobachter-entfernen",
@@ -230,6 +258,14 @@
 				"steam": {
 					"name": "steam",
 					"description": "(nur für Admins) Aufhören, Nachrichten über Steam zu beobachten."
+				},
+				"group": {
+					"name": "gruppe",
+					"description": "(nur Administratoren) Höre auf, Ankündigungen einer Gruppe zu beobachten."
+				},
+				"name": {
+					"name": "name",
+					"description": "Der Name der Gruppe."
 				}
 			}
 		},
@@ -244,6 +280,16 @@
 				"game": {
 					"name": "spiel",
 					"description": "Der Name oder die ID des Spiels"
+				}
+			}
+		},
+		"group": {
+			"name": "gruppe",
+			"description": "Zeige Informationen über eine Steam-Gruppe an.",
+			"options": {
+				"group": {
+					"name": "gruppe",
+					"description": "Der Name oder die URL der Gruppe."
 				}
 			}
 		}
@@ -261,7 +307,7 @@
 			},
 			{
 				"name": "Wie vielen Spielen kann ich folgen?",
-				"value": ""
+				"value": "Standardmäßig kannst du ${WATCH_LIMIT} Nachrichtenkanälen und genauso vielen Preisen (möglicherweise von verschiedenen Spielen) und Gruppen folgen. Du kannst ${WATCH_VOTE_BONUS} zusätzliche Nachrichtenkanäle, Preise und Gruppenankündigungen haben, wenn du auf Top.gg für uns stimmst (Link am Ende dieser Nachricht)."
 			},
 			{
 				"name": "Der Bot hat die letzten Nachrichten nicht in der Sekunde geschickt, in der sie veröffentlicht wurden!",
@@ -376,7 +422,9 @@
 			"webhook-unset-price": "Der Webhook wurde für Preis-Updates abgehängt.",
 			"webhook-unset-error": "Ich konnte den Webhook nicht abhängen. Bitte versuche es später noch einmal.",
 			"all-decoupled": "Alle Webhooks wurden abgehängt. Bitte beachte, dass dies die Webhooks nicht gelöscht hat, sie werden nur nicht mehr verwendet, um Nachrichten oder Verkäufe zu schicken.",
-			"nothing-decoupled": "Keine Änderungen. Es scheint, als hätte ich in diesem Server keine Webhooks verwendet."
+			"nothing-decoupled": "Keine Änderungen. Es scheint, als hätte ich in diesem Server keine Webhooks verwendet.",
+			"group": "gruppe",
+			"watch-suggestAuto-group": "Chamaeleon-Vorteile sind auf diesem Server aktiviert. Möchtest du diesen neuen Beobachter automatisch mit dem Namen und Logo der Gruppe anpassen?"
 		},
 		"server-subscription": "Server-Abonnement",
 		"no-subscription": "Dieser Server hat kein Abonnement.",
@@ -393,8 +441,10 @@
 	"api-err": "Datenabruf ist fehlgeschlagen (Fehler %s).",
 	"no-match": "Kein Spiel gefunden, das zu \"%s\" passt.",
 	"bad-appid": "Die angegebene ID gehört nicht zu einer Steam-App.",
+	"bad-group": "Ich konnte diese Gruppe nicht finden. Bitte gib ihren exakten Namen oder ihre URL an.",
 	"no-DLC-news": "DLCs haben keine Nachrichten.",
 	"no-news": "Diese App hat keine Nachrichten.",
+	"no-posts": "Diese Gruppe hat keine Ankündigungen.",
 	"NSFW-content-news": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seine Nachrichten nur in einem NSFW-Kanal anzeigen.",
 	"NSFW-content-price": "Dieses Spiel enthält Inhalte für Erwachsene. Du kannst seinen Preis nur in einem NSFW-Kanal anzeigen.",
 	"used-command": "${user} verwendet ${command}",
@@ -494,7 +544,14 @@
 		"error-max-reached": "Entschuldigung, du hast die Grenze von %s Beobachtern pro Server erreicht.",
 		"confirm-price": "Änderungen im Preis von ${name} werden nun in ${channel} gesendet.",
 		"confirm-news": "Nachrichten zu ${name} werden nun in ${channel} gesendet.",
-		"webhook-auto-unset": "Da der Kanal des Beobachters geändert wurde, wurde der Webhook entfernt."
+		"webhook-auto-unset": "Da der Kanal des Beobachters geändert wurde, wurde der Webhook entfernt.",
+		"server-group-limit-reached": "Warnung: du hast deine Grenze von ${LIMIT} Gruppen pro Server erreicht.\nStimme auf [Top.gg](${vote}) für mich oder kaufe **premium**, um bis zu ${MAX_BONUS} weitere zu beobachten.",
+		"server-group-limit-reached-voted": "Warnung: du hast deine Grenze von %s Gruppen pro Server erreicht. Kaufe **premium**, um sie zu erhöhen.",
+		"server-max-groups-reached": "Warnung: du hast deine Grenze von %s Gruppen pro Server erreicht.",
+		"confirm-price-role": "Preisveränderungen von ${name} werden nun in ${channel} gesendet und ${role} pingen.",
+		"confirm-news-role": "Nachrichten von ${name} werden nun in ${channel} gesendet und ${role} pingen.",
+		"confirm-posts": "Ankündigungen von ${name} werden nun in ${channel} gesendet.",
+		"confirm-posts-role": "Ankündigungen von ${name} werden nun in ${channel} gesendet und ${role} pingen."
 	},
 	"watched": {
 		"steam-watched": "Nachrichten über **Steam** werden in %s gesendet",
@@ -513,17 +570,37 @@
 		"NSFW-no": "NSFW: Nein",
 		"channel": "Kanal: %s",
 		"steam-watched-webhook": "Nachrichten über **Steam** gesendet in %s mit einem Webhook",
-		"webhook": "(mit Webhook)"
+		"webhook": "(mit Webhook)",
+		"groups-watched": "Gruppen, die in diesem Server beobachtet werden",
+		"groups": {
+			"1": "1 Gruppe beobachtet",
+			"default": "%n Gruppen beobachtet"
+		}
 	},
 	"unwatch": {
 		"news-unwatched": "%s wird in diesem Server nicht mehr beobachtet.",
 		"news-unchanged": "%s wurde in diesem Server noch nicht beobachtet.",
 		"price-unwatched": "Der Preis von %s wird in diesem Server nicht mehr beobachtet.",
-		"price-unchanged": "Der Preis von %s wurde in diesem Server noch nicht beobachtet."
+		"price-unchanged": "Der Preis von %s wurde in diesem Server noch nicht beobachtet.",
+		"group-unwatched": "Ankündigungen von %s werden in diesem Server nicht mehr beobachtet.",
+		"group-unchanged": "Ankündigungen von %s wurden in diesem Server noch nicht beobachtet."
 	},
 	"steam": {
 		"watched": "Nachrichten über Steam werden nun in %s geschickt.",
-		"unwatched": "Nachrichten über Steam werden in diesem Server nicht mehr beobachtet."
+		"unwatched": "Nachrichten über Steam werden in diesem Server nicht mehr beobachtet.",
+		"watched-role": "Nachrichten über Steam werden nun in ${channel} gesendet und ${role} pingen."
+	},
+	"group": {
+		"invalidGroup": "Entschuldigung, ich konnte diese Gruppe nicht finden. Diese Nachricht wird sich in %s Sekunden selbst zerstören.",
+		"members": "Mitglieder",
+		"followers": "Folgende",
+		"curator_desc": "Kurator-Slogan",
+		"curator_website": "Webseite",
+		"openInApp": "In der App öffnen",
+		"comments": "Kommentare",
+		"upvotes": "Positive Stimmen",
+		"downvotes": "Negative Stimmen",
+		"last-edit": "Zuletzt geändert am %s"
 	},
 	"stats": {
 		"watchers": "Nachrichtenbeobachter",
@@ -531,6 +608,15 @@
 		"most-watched": "Am meisten beobachtetes Spiel",
 		"n-watchers": "%s Beobachter",
 		"price-watchers": "Preisbeobachter",
-		"prices-watched": "Beobachtete Preise"
+		"prices-watched": "Beobachtete Preise",
+		"title": "Steam-News Statistiken",
+		"steam-watchers": "Steam-Beobachter",
+		"group-watchers": "Gruppenbeobachter",
+		"group-watched": "Beobachtete Gruppen",
+		"most-watched-group": "Am meisten beobachtete Gruppe",
+		"uptime": "Betriebszeit",
+		"n-days": "%s Tage",
+		"ping": "Ping",
+		"ping-ms": "%s ms"
 	}
 }
