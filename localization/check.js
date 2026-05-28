@@ -102,7 +102,16 @@ function checkGroup(group, localeGroup, path = "")
 			const reqPlaceholders = value.match(/%s/g)?.length || 0;
 			const gotPlaceholders = localeGroup[key].match(/%s/g)?.length || 0;
 			if(reqPlaceholders !== gotPlaceholders)
-				console.error(`${keyPath} has ${gotPlaceholders} placeholders, should have ${reqPlaceholders}`);
+				console.error(`${keyPath} has ${gotPlaceholders} %s placeholders, should have ${reqPlaceholders}`);
+
+			const reqNamedPlaceholders = new Set(value.match(/\${[^}]+}/g));
+			const gotNamedPlaceholders = new Set(localeGroup[key].match(/\${[^}]+}/g));
+			for(const placeholder of reqNamedPlaceholders)
+				if(!gotNamedPlaceholders.has(placeholder))
+					console.error(`${keyPath} is missing the ${placeholder} placeholder`);
+			for(const placeholder of gotNamedPlaceholders)
+				if(!reqNamedPlaceholders.has(placeholder))
+					console.error(`${keyPath} has a ${placeholder} placeholder that isn't in the original`);
 		}
 	}
 }
