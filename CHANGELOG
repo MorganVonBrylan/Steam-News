@@ -213,3 +213,7 @@ Various improvements and bug fixes.
 	/watch's reply now mentions the role that will be pinged.
 	/watched and /watch now use embeds, and have a different colour for games, prices etc.
 	/stats no longer shows "active since" and now has a translatable title.
+
+	2.20.2 (28/03/2026)
+	Fixed /locale.
+	News embeds now use the game logo in the author field in addition to the footer.
