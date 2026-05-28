@@ -74,6 +74,7 @@ export function run(inter)
 			inter.reply({flags: "Ephemeral", content: t("cc-invalid", CC_LIST)});
 		else
 		{
+			const { guild } = inter;
 			let lang = inter.options.getString("language");
 			lang = (lang ? steamLanguages[lang] : steamDefaultLanguages[cc])
 				|| guild.features.includes("COMMUNITY") && steamLanguages[guild.preferredLocale]
