@@ -47,6 +47,7 @@ const BLOCK_SIZE = 25;
 function toEmbeds(watched, t, type)
 {
 	if(!watched.length) return [];
+	const webhook = watched.some(w => w.webhook);
 	watched = watched.map(watcherToField.bind(null, t));
 	const embeds = [];
 	const color = type === "games" ? GAME_COLOR : type === "prices" ? PRICE_COLOR : GROUP_COLOR;
@@ -56,6 +57,8 @@ function toEmbeds(watched, t, type)
 	Object.assign(embeds[0], {
 		title: t.plural(type, watched.length),
 	});
+	if(webhook)
+		embeds.at(-1).footer = { text: `*${t("webhook")}` };
 	return embeds;
 }
 
@@ -69,7 +72,7 @@ function watcherToField(t, {nsfw, name, channelId, roleId, webhook}) {
 	return {
 		name,
 		value: `${nsfw ? t("NSFW-yes") : ""}
-			${t("channel", `<#${channelId}> ${webhook ? t("webhook") : ""}`)}
+			${t("channel", `<#${channelId}> ${webhook ? "*" : ""}`)}
 			${roleId ? `${t("ping")} <@&${roleId}>` : ""}`
 			.trim(),
 		inline: true,
