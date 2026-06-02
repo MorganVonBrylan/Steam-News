@@ -31,10 +31,10 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 
 	"steamGridDB": "Your SteamGridDB token here, for fetching icons",
 
+	"webhookPort": 5050,
 	"topGG": {
 		"token": "(optional) your bot's Top.gg token",
 		"webhook": {
-			"port": 5050,
 			"endpoint": "/topggVote",
 			"secret": "whs_abc123"
 		},
@@ -42,6 +42,10 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 	},
 	"dbl": {
 		"token": "(optional) your bot's discordbotlist token",
+		"webhook": {
+			"endpoint": "/dblVote",
+			"secret": "super-secret-thing"
+		}
 	},
 	"debug": false,
 	"logLevel": "warn",
@@ -66,20 +70,23 @@ Additionally, `debug` can be a list of entitlements to immediately enable in the
 
 The `logLevel` can be "silent", "error", "warn", "log" or "verbose". If not set, defaults to "warn". **Note:** if `debug` is `true`, the log level is forcefully set to "verbose".
 
-`backups` assigns the backup schedule. Possible values are `false`, `"daily"` and `"weekly"`. Weekly is every Sunday at midnight. If omitted or null, defaults to "weekly". If the `BACKUP_SCHEDULE` environment variable is set, it will have priority.
+`backups` assigns the backup schedule. Possible values are `false`, `"daily"` and `"weekly"`. Backups are done at midnight, on Sundays if weekly. If omitted or null, defaults to "weekly". If the `BACKUP_SCHEDULE` environment variable is set, it will have priority over the `auth.json` value.
 
 The `premium` category is optional.
 `freeGoldPlans` must be either an array of server ids or an object whose values are server ids. The object option is so you can label those ids. `freeWatchers` works the same.
 
 To start the bot, run `node bot.js`
 
-## Top.gg
+## Bot lists
 
-To update the bot's stats on Top.gg, set its API token.
+Both `topGG` and `dbl` are optional.
 
-You need to use a v2 token, and do include the `Bearer` prefix. Make sure the token has write permissions.
+To update the bot's stats on Top.gg, set its API token. Same with Discord Bot List (DBL). For Top.gg, you need to use a v2 token, and do include the `Bearer` prefix. Make sure the token has write permissions.
 
-If the webhook port is not specified, the `SERVER_PORT` environment variable will be used instead. If the endpoint is not specified, `/topggVote` will be used.
+### Webhooks
+
+If the `webhookPort` is not specified, the `SERVER_PORT` environment variable will be used instead. If any endpoint is not specified, the value shown in the example will be used.
+
 
 ## Error reporting settings
 

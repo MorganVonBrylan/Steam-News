@@ -6,37 +6,54 @@ const { getLastVote, insertLastVote, updateLastVote } = stmts;
 const VOTE_NOTIFICATION_COOLDOWN = 604800_000; // 7 days
 const VOTE_BONUS_DURATION = 43200_000; // 12 hours, which is how often one can vote
 
-const voters = new Map();
-function setVoter(id, timeout)
-{
-	clearTimeout(voters.get(id));
-	voters.set(id, setTimeout(voters.delete.bind(voters, id), timeout));
+class Voters extends Map {
+	/**
+	 * Add a voter to the list
+	 * @param {string} id The user's id
+	 * @param {Parameters<setTimeout>[1]} timeout How long before the vote expires, in ms
+	 */
+	set(id, timeout = VOTE_BONUS_DURATION) {
+		clearTimeout(this.get(id));
+		super.set(id, setTimeout(this.delete.bind(this, id), timeout));
+	}
 }
+const topGGVoters = new Voters();
+const dblVoters = new Voters();
+
 
 db.run("DELETE FROM Voters WHERE lastVote < ?", Date.now() - VOTE_BONUS_DURATION);
 for(const { id, lastVote } of db.prepare("SELECT * FROM Voters").all())
-	setVoter(id, Date.now() - lastVote);
+	topGGVoters.set(id, Date.now() - lastVote);
 
 
-export const voted = voters.has.bind(voters);
+export const voted = topGGVoters.has.bind(topGGVoters);
+export const votedDBL = dblVoters.has.bind(dblVoters);
 
 export function addVoter(id, lang, forceNotif = false)
 {
-	setVoter(id, VOTE_BONUS_DURATION);
-
+	topGGVoters.set(id);
 	const date = Date.now();
 	const lastVote = getLastVote(id);
+	let res;
 	if(forceNotif || !lastVote || date - lastVote > VOTE_NOTIFICATION_COOLDOWN)
-	{
-		client.users.fetch(id)
+		res = client.users.fetch(id)
 			.then(user => user.send(tr.get(lang || "en", "voting.thanks")))
 			.catch(Function.noop);
-	}
 
 	if(lastVote)
 		updateLastVote({id, date});
 	else
 		insertLastVote({id, date});
+
+	return res;
+}
+
+export function addDBLVoter(id, lang)
+{
+	topGGVoters.set(id);
+	return client.users.fetch(id)
+		.then(user => user.send(tr.get(lang || "en", "voting.thanks-dbl")))
+		.catch(Function.noop);
 }
 
 export const premiumGuilds = new Set();

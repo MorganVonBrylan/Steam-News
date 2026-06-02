@@ -1,6 +1,6 @@
 
 import importJSON from "./utils/importJSON.function.js";
-export const { topGG, dbl } = importJSON("auth.json");
+export const { topGG, dbl, webhookPort = +process.env.SERVER_PORT } = importJSON("auth.json");
 
 import { Api } from "@top-gg/sdk";
 import DblApi from "./dblApi.js";
@@ -14,8 +14,12 @@ const excludeCommands = ["owner", "unwatch", "steam-unwatch"];
 
 const voteURLs = { default: "*oops, it seems I am actually not on Top.gg*" };
 const topggLanguages = ["fr", "de", "hi", "tr"];
+const BAD_REQUEST = 400, WRONG_METHOD = 405, UNSUPPORTED_TYPE = 415,
+	UNAUTHORIZED = 401, FORBIDDEN = 403,
+	NOT_FOUND = 404, OK = 200;
 
 import { clientLoggedIn, client } from "./bot.js";
+import { addDBLVoter } from "./steam_news/VIPs.js";
 const topggApi = topGG?.token ? new Api(topGG.token) : null;
 const dblApi = dbl?.token ? new DblApi(await clientLoggedIn, dbl.token) : null;
 
@@ -46,9 +50,6 @@ export async function setup()
 			.catch(error);
 	}
 
-	if(!topGG)
-		return;
-
 	if(topggApi)
 	{
 		function postStats() {
@@ -68,22 +69,77 @@ export async function setup()
 			voteURLs[lang] = `https://top.gg/${topggLanguages.includes(lang) ? `${lang}/` : ""}bot/${id}/vote?lang=${lang}`;
 	}
 
-	const { webhook } = topGG;
-	if(webhook)
-	{
-		const { addVoter } = await import("./steam_news/VIPs.js");
-		let webhookServer;
-		const {
-			port = +process.env.SERVER_PORT,
-			endpoint = "/topggVote",
-			secret,
-		} = webhook;
 
-		if(!Number.isInteger(port) || port < 1000)
-			throw new TypeError(`Invalid port for the Top.gg webhook: ${port}`);
+	if(topGG?.webhook?.port)
+		console.error("topGG.webhook.port is no longer supported. Use webhookPort instead.");
+	const webhooks = {
+		topGG: topGG?.webhook,
+		dbl: dbl?.webhook,
+	};
+	if(webhooks.topGG || webhooks.dbl)
+	{
+		if(!Number.isInteger(webhookPort) || webhookPort < 1000)
+			throw new TypeError(`Invalid port for the webhooks: ${webhookPort}`);
+
+		let webhookServer;
+		/** @type {{[endpoint:string]: Parameters<createServer>[1]}} */
+		const endpoints = Object.create(null);
+		if(webhooks.topGG)
+		{
+			// https://docs.top.gg/webhooks/overview
+			const { endpoint = "/topggVote", secret } = webhooks.topGG;
+			if(!secret)
+				throw new Error("Missing Top.gg webhook secret");
+
+			const { addVoter } = await import("./steam_news/VIPs.js");
+			endpoints[endpoint] = async (req, res) => {
+				const rawBody = await getRawBody(req, { encoding: "utf-8" });
+				const err = await verifySignature(req.headers, rawBody, secret);
+				if(err)
+				{
+					error(`Received a bogus Top.gg vote: ${err.error}`);
+					res.statusCode = err.code;
+					res.end(err.error);
+					return;
+				}
+				res.end();
+				const { type, data: { user: { platform_id: id } }, query } = JSON.parse(rawBody);
+				addVoter(id, query?.lang, type === "webhook.test");
+			};
+		}
+		if(webhooks.dbl)
+		{
+			// https://docs.discordbotlist.com/vote-webhooks
+			const { endpoint = "/dblVote", secret } = webhooks.dbl;
+			if(!secret)
+				throw new Error("Missing DBL webhook secret");
+			endpoints[endpoint] = async (req, res) => {
+				const { authorization } = req.headers;
+				if(!authorization)
+					res.statusCode = UNAUTHORIZED;
+				else if(authorization !== secret)
+				{
+					error(`Received a bogus DBL vote: ${authorization}`);
+					res.statusCode = FORBIDDEN;
+				}
+				else
+				{
+					const body = await getRawBody(req, { encoding: "utf-8" });
+					try {
+						const { id } = JSON.parse(body);
+						addDBLVoter(id);
+					} catch {
+						error(`Invalid DBL body received: \`\`\`${body || "\n"}\`\`\``);
+						res.statusCode = UNSUPPORTED_TYPE;
+						res.setHeader("Accept-Post", "application/json; charset=UTF-8");
+					}
+				}
+			};
+		}
+		Object.freeze(endpoints);
 
 		// In case a previous listener was left dangling...
-		exec(`lsof -i TCP:${port} | grep LISTEN`, (_, stdout) => {
+		exec(`lsof -i TCP:${webhookPort} | grep LISTEN`, (_, stdout) => {
 			if(stdout)
 				exec(`kill -9 ${stdout.match(/[0-9]+/)}`, launchWebhook);
 			else
@@ -94,36 +150,25 @@ export async function setup()
 		{
 			webhookServer?.close();
 			webhookServer = createServer(async (req, res) => {
-				if(req.url !== endpoint)
+				const endpoint = endpoints[req.url];
+				if(!endpoint)
+					res.statusCode = NOT_FOUND;
+				else if(req.method !== "POST")
 				{
-					res.statusCode = 404;
-					return res.end();
-				}
-
-				if(req.method !== "POST")
-				{
+					res.statusCode = req.method === "OPTIONS" ? OK : WRONG_METHOD;
 					res.setHeader("Allow", "POST");
-					res.statusCode = req.method === "OPTIONS" ? 200 : 405;
-					return res.end();
 				}
+				else
+					await endpoint(req, res);
 
-				const rawBody = await getRawBody(req, { encoding: "utf-8" });
-				const err = await verifySignature(req.headers, rawBody, secret);
-				if(err)
-				{
-					error(`Received a bogus vote: ${err.error}`);
-					res.statusCode = err.code;
-					res.end(err.error);
-					return;
-				}
-				
-				res.end();
-				const { type, data: { user: { platform_id: id } }, query } = JSON.parse(rawBody);
-				addVoter(id, query?.lang, type === "webhook.test");
+				if(!res.writableEnded)
+					res.end();
 			});
 
-			webhookServer.listen(port);
-			console.log("Top.gg webhook listening on port", port);
+			webhookServer.listen(webhookPort);
+			console.log(
+				webhooks.topGG ? (webhooks.dbl ? "Webhooks" : "Top.gg webhook") : "DBL webhook",
+				"listening on port", webhookPort);
 		}
 	}
 }
@@ -155,7 +200,7 @@ async function verifySignature(headers, rawBody, secret)
 {
 	const signatureHeader = headers["x-topgg-signature"];
 	if(!signatureHeader)
-		return { code: 401, error: "Missing signature" };
+		return { code: UNAUTHORIZED, error: "Missing signature" };
 
 	// Signature format: t={unix timestamp},v1={signature}
 	const parsedSignature = signatureHeader.split(",").map(part => part.split("="));
@@ -165,7 +210,7 @@ async function verifySignature(headers, rawBody, secret)
 	} = Object.fromEntries(parsedSignature);
 
 	if(!timestamp || !signature)
-		return { code: 400, error: "Invalid signature format" };
+		return { code: BAD_REQUEST, error: "Invalid signature format" };
 
 	const hmac = createHmac("sha256", secret);
 	const digest = hmac.update(`${timestamp}.${rawBody}`).digest("hex");
@@ -175,7 +220,7 @@ async function verifySignature(headers, rawBody, secret)
 	 * 3. The request did not originate from Top.gg
 	 * In any of these cases, we want to reject the request. */
 	if(signature !== digest)
-		return { code: 403, error: "Invalid signature" };
+		return { code: FORBIDDEN, error: "Invalid signature" };
 
 	return null;
 };
