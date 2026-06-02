@@ -236,7 +236,7 @@ export async function checkForNews(range, reschedule = false)
 	const start = Date.now();
 	const serverToLang = Object.create(null);
 	for(const { id, lang } of stmts.getAllLocales(false))
-		serverToLang[id] = lang;
+		serverToLang[id] = steamLanguages[lang];
 
 	const data = {
 		serverToLang,
@@ -435,7 +435,7 @@ async function checkForPosts(reschedule)
 	const start = Date.now();
 	const serverToLang = Object.create(null);
 	for(const { id, lang } of stmts.getAllLocales(false))
-		serverToLang[id] = lang;
+		serverToLang[id] = steamLanguages[lang];
 
 	const data = {
 		serverToLang,
