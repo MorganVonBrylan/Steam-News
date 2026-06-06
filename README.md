@@ -141,6 +141,8 @@ I accept pull requests.
 You can also make donations on [LiberaPay](https://liberapay.com/Brylan/).
 [![patrons](https://img.shields.io/liberapay/patrons/Brylan.svg?logo=liberapay)](https://liberapay.com/Brylan/)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/G2G0V3MT8)
+
 # License
 **Steam News** is published under GNU General Public Licence v3 (GPL-3.0). See [COPYING.txt](./COPYING.txt)
 
