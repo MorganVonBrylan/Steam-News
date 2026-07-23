@@ -323,7 +323,7 @@
 			},
 			{
 				"name": "J’ai encore besoin d’aide !",
-				"value": "C’est fâcheux. Vous pouvez venir expliquer votre souci sur notre serveur de support : ${SUPPORT_SERVER}"
+				"value": "C’est fâcheux. Vous pouvez venir expliquer votre souci sur notre serveur d'assistance : ${SUPPORT_SERVER}"
 			},
 			{
 				"name": "Une dernière chose",
@@ -412,7 +412,7 @@
 			"channel-not-found-short": "salon non trouvé ou privé",
 			"missing-permissions": "Je ne peux pas créer de webhooks dans ce salon.",
 			"missing-permissions-short": "permissions manquantes",
-			"database-fail": "Mise à jour de la base de données échouée. C'est une erreur majeure, merci de la signaler dans le serveur de support.",
+			"database-fail": "Mise à jour de la base de données échouée. C'est une erreur majeure, merci de la signaler dans le serveur d'assistance.",
 			"database-fail-short": "mise à jour de la base de données échouée",
 			"error-bundle": "Erreur \"${error}\" dans ces salons : ${channels}",
 			"unknown-error-bundle": "Autres erreurs pour ces salons : ${channels}",
