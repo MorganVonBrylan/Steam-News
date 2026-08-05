@@ -80,7 +80,7 @@ export async function run(inter)
 			author: weblink && { name: weblink.title, url: weblink.url },
 			title: group_name,
 			provider: { name: "Steam", url: "https://steamcommunity.com/" },
-			description: toMarkdown(description),
+			description: toMarkdown(description || ""),
 			fields,
 		}] });
 	}).catch(async err => {
