@@ -74,12 +74,13 @@ export function error(err)
 	if(err instanceof SyntaxError) // from an import probably
 		throw err;
 	
-	if(!err
-		|| err instanceof DOMException // Discord.js failing some random call
+	if(err instanceof DOMException // Discord.js failing some random call
 		|| err instanceof TopGGAPIError && err.response.statusCode === 429 // occasional Top.gg bug
 	)
 		return;
 
+	if(typeof err !== "object")
+		err = new Error(err);
 	const { message } = err;
 	const treatment = specialTreatment({ message,
 		code: err.code || err.cause?.code,
