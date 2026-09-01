@@ -9,7 +9,10 @@ const TopGGAPIError = TopGGAPIError_.default;
 
 import importJSON from "./importJSON.function.js";
 const settings = importJSON("errors.json", {
-	ignore: { status: "≥500" },
+	ignore: {
+		status: "≥500",
+		message: ["^Unexpected server response: 5"]
+	},
 	truncate: {
 		status: 408,
 		message: "read ECONNRESET",
