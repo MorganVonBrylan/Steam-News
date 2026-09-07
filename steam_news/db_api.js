@@ -4,10 +4,7 @@ import { STEAM_APPID } from "./api.js";
 import { fixedDictionary } from "../utils/dictionaries.js";
 
 /**
- * @typedef {import("./db.js").NewsWatcher} NewsWatcher
- * @typedef {import("./db.js").SteamWatcher} SteamWatcher
- * @typedef {import("./db.js").PriceWatcher} PriceWatcher
- * @typedef {import("./db.js").GroupWatcher} GroupWatcher
+ * @import { NewsWatcher, SteamWatcher, PriceWatcher, GroupWatcher } from "./db.js"
  * @typedef {"news"|"price"|"steam"|"group"} WatcherType
  * @typedef {{clanid:number, name:string, vanityURL:string, latest:number}} Group
  */
@@ -218,7 +215,7 @@ export function getWatcherChannel(type, guildAndAppIds)
 }
 
 
-/** @typedef {import("../commands/premium/chameleon/~webhook.js").WebhookInfo} WebhookInfo */
+/** @import {WebhookInfo} from "../commands/premium/chameleon/~webhook.js" */
 
 const webhookSetters = fixedDictionary({
 	news: stmts.setWebhook,

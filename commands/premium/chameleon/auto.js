@@ -145,8 +145,8 @@ export function mentionLatest({locale, guildId}, type)
 }
 
 
-/** @typedef {import("../../../utils/channels.js").GuildTextChannel} GuildTextChannel */
-/** @typedef {import("./~webhook.js").idAndToken} idAndToken */
+/** @import {GuildTextChannel} from "../../../utils/channels.js" */
+/** @import {idAndToken} from "./~webhook.js" */
 
 /**
  * Utility class for setting up webhooks in a given server.

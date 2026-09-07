@@ -1,9 +1,9 @@
 
-/** @typedef {import("discord.js").BaseGuildTextChannel|import("discord.js").AnyThreadChannel} GuildTextChannel */
+/** @import { BaseGuildTextChannel, AnyThreadChannel } from "discord.js" */
 
 /**
  * Get's a channel's thread or a thread's siblings
- * @param {GuildTextChannel} channel The channel
+ * @param {BaseGuildTextChannel|AnyThreadChannel} channel The channel
  * @returns The threads ids
  */
 export async function fetchThreads(channel)

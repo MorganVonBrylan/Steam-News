@@ -8,7 +8,7 @@ import {
 import { gameToOption } from "../../../utils/commands.js";
 import { fixedDictionary } from "../../../utils/dictionaries.js";
 
-/** @typedef {import("discord.js").AutocompleteInteraction} AutocompleteInteraction */
+/** @import {AutocompleteInteraction} from "discord.js" */
 
 export const ALL_WEBHOOKS = "#all#";
 
