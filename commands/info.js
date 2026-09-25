@@ -108,7 +108,7 @@ export async function run(inter)
 			});
 		}
 		else if(err instanceof ApiError)
-			inter.editReply({ flags: "Ephemeral", content: tr.get("api-failed") });
+			inter.editReply({ flags: "Ephemeral", content: tr.get(inter.locale, "api-failed") });
 		else
 		{
 			error(Object.assign(err, { appid, lang, cc }));
