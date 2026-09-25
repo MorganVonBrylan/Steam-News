@@ -205,6 +205,8 @@ export async function getBasicDetails(appid, additionalParts = "")
 	const res = await fetch(`${BASE_DETAILS_URL}${appid}&filters=basic,${additionalParts}`).then(handleQuery);
 	cacheBanners(res);
 	const { [appid]: details } = res;
+	if(!details)
+		throw new ApiError("appid absent from results");
 	return details.success ? details.data : null;
 }
 

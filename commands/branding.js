@@ -1,7 +1,7 @@
 
 import { interpretAppidOption } from "../utils/commands.js";
 import {
-	getBasicDetails, HTTPError,
+	getBasicDetails, HTTPError, ApiError,
 	banner as getBanner, getOfficialIcon, getUnofficialIcon,
 } from "../steam_news/api.js";
 import { getAppName } from "../steam_news/db_api.js";
@@ -31,6 +31,8 @@ export async function run(inter)
 			const { code } = err;
 			inter.editReply(tr.get(locale, code === 403 ? "api-403" : "api-err", code));
 		}
+		else if(err instanceof ApiError)
+			inter.editReply(tr.get(locale, "api-failed"));
 		else
 		{
 			error(err);

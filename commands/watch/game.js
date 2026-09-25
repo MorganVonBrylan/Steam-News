@@ -1,5 +1,5 @@
 
-import { STEAM_APPID } from "../../steam_news/api.js";
+import { ApiError, STEAM_APPID } from "../../steam_news/api.js";
 import { interpretAppidOption } from "../../utils/commands.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../../steam_news/limits.js";
@@ -159,6 +159,8 @@ export async function run(inter)
 				content: tr.get(locale, code === 403 ? "api-403" : "api-err", code),
 			});
 		}
+		else if(err instanceof ApiError)
+			inter.editReply({flags: "Ephemeral", content: tr.get(locale, "api-failed")});
 		else
 		{
 			error(err);
