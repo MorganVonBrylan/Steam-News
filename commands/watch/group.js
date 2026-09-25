@@ -10,11 +10,9 @@ const premiumButton = buttons(premiumSKU, goldSKU);
 const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
 import { voteURL } from "../../botLists.js";
 
-import { watchGroup, unwatchGroup } from "../../steam_news/watchers.js";
+import { watchGroup } from "../../steam_news/watchers.js";
 import { getBasicGroupDetails } from "../../steam_news/api.js";
 import { handleGenericApiError } from "../../utils/commands.js";
-import { setWebhook } from "../../steam_news/db_api.js";
-import { fetchThreads } from "../../utils/channels.js";
 import { autoSuggestButton } from "../premium/chameleon/set.js";
 
 import {

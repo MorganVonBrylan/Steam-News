@@ -4,7 +4,6 @@ import {
 	getBasicDetails,
 	banner as getBanner, getOfficialIcon, getUnofficialIcon,
 } from "../steam_news/api.js";
-import { getAppName } from "../steam_news/db_api.js";
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;

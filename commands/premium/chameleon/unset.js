@@ -1,7 +1,6 @@
 
 import checkSKU from "./~checkSKU.js";
 import { getWatcherChannel, setWebhook, decoupleWebhooks } from "../../../steam_news/db_api.js";
-import { STEAM_APPID } from "../../../steam_news/api.js";
 import { ALL_WEBHOOKS, parseOption } from "./~autocomplete.js";
 
 export const description = "Decouple a watcher from its webhook. This does not delete the webhook.";

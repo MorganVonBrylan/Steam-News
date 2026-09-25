@@ -2,7 +2,7 @@
 import checkSKU from "./~checkSKU.js";
 import { webhookInfo } from "./~webhook.js";
 import { getWatcherChannel, setWebhook } from "../../../steam_news/db_api.js";
-import { getBasicGroupDetails, STEAM_APPID } from "../../../steam_news/api.js";
+import { getBasicGroupDetails } from "../../../steam_news/api.js";
 import { buttons, register } from "../../../utils/components.js";
 import { WebhookAutoSetter, mentionLatest } from "./auto.js";
 import { parseOption } from "./~autocomplete.js";
