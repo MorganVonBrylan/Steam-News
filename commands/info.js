@@ -1,6 +1,6 @@
 
-import { getDetails, isNSFW, steamAppLink, HTTPError, ApiError } from "../steam_news/api.js";
-import { interpretAppidOption } from "../utils/commands.js";
+import { getDetails, isNSFW, steamAppLink } from "../steam_news/api.js";
+import { interpretAppidOption, handleGenericApiError } from "../utils/commands.js";
 import { getLocale } from "../steam_news/db_api.js";
 import locales from "../localization/locales.js";
 const { langToCountry, languageCodes } = locales;
@@ -97,23 +97,7 @@ export async function run(inter)
 		}] });
 	}).catch(async err => {
 		await defer;
-		if(err instanceof TypeError && err.message.includes("appid"))
-			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "bad-appid")});
-		else if(err instanceof HTTPError)
-		{
-			const { code } = err;
-			inter.editReply({
-				flags: "Ephemeral",
-				content: tr.get(inter.locale, code === 403 ? "api-403" : "api-err", code),
-			});
-		}
-		else if(err instanceof ApiError)
-			inter.editReply({ flags: "Ephemeral", content: tr.get(inter.locale, "api-failed") });
-		else
-		{
-			error(Object.assign(err, { appid, lang, cc }));
-			inter.editReply({flags: "Ephemeral", content: tr.get(inter.locale, "error")});
-		}
+		handleGenericApiError(err, inter, { appid, lang, cc });
 	});
 }
 

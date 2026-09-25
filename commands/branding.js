@@ -1,7 +1,7 @@
 
-import { interpretAppidOption } from "../utils/commands.js";
+import { handleGenericApiError, interpretAppidOption } from "../utils/commands.js";
 import {
-	getBasicDetails, HTTPError, ApiError,
+	getBasicDetails,
 	banner as getBanner, getOfficialIcon, getUnofficialIcon,
 } from "../steam_news/api.js";
 import { getAppName } from "../steam_news/db_api.js";
@@ -22,24 +22,7 @@ export async function run(inter)
 		return;
 
 	await defer;
-	const { locale } = inter;
-	const details = await getBasicDetails(appid).catch(err => {
-		if(err instanceof TypeError && err.message.includes("appid"))
-			inter.editReply(tr.get(locale, "bad-appid"));
-		else if(err instanceof HTTPError)
-		{
-			const { code } = err;
-			inter.editReply(tr.get(locale, code === 403 ? "api-403" : "api-err", code));
-		}
-		else if(err instanceof ApiError)
-			inter.editReply(tr.get(locale, "api-failed"));
-		else
-		{
-			error(err);
-			inter.editReply({flags: "Ephemeral", content: tr.get(locale, "error")});
-		}
-		return null;
-	});
+	const details = await getBasicDetails(appid).catch(err => handleGenericApiError(err, inter));
 	if(!details)
 		return;
 
@@ -50,7 +33,7 @@ export async function run(inter)
 	} = details;
 	const banner = header || capsule;
 
-	const t = tr.set(locale, "branding");
+	const t = tr.set(inter.locale, "branding");
 	const [icon, sgdbIcon] = type !== "game" ? [] : (await Promise.allSettled([
 		getOfficialIcon(appid),
 		getUnofficialIcon(appid),

@@ -1,11 +1,12 @@
 
-import { search } from "../steam_news/api.js";
-import { ApplicationCommand, ChatInputCommandInteraction } from "discord.js";
+import { search, HTTPError, ApiError } from "../steam_news/api.js";
 import { getLocale } from "../steam_news/db_api.js";
 import locales from "../localization/locales.js";
 const { languageCodes } = locales;
 
 export { mentionCommand as mention } from "@brylan/djs-commands";
+
+/** @import {ChatInputCommandInteraction} from "discord.js" */
 
 /**
  * Defers an interaction and returns the defer promise and app id.
@@ -77,4 +78,31 @@ export function gameToOption({ name, appid }) {
 }
 export function groupToOption({ name, clanid }) {
 	return { name: formatOptionName(name), value: clanid, toString };
+}
+
+/**
+ * Handle any generic mishap with an API call, editing the reply of the interaction accordingly.
+ * @param {Error} err The error
+ * @param {ChatInputCommandInteraction} inter The interaction
+ * @param {object} [additionalInfo] Additional info to provide in case the error needs to be logged.
+ */
+export function handleGenericApiError(err, inter, additionalInfo)
+{
+	const { locale } = inter;
+	if(err instanceof TypeError && err.message.includes("appid"))
+		inter.editReply(tr.get(locale, "bad-appid"));
+	else if(err instanceof HTTPError)
+	{
+		const { code } = err;
+		const key = code === 403 ? "api-403" : "api-err";
+		inter.editReply(tr.get(locale, key, code));
+	}
+	else if(err instanceof ApiError)
+		inter.editReply(tr.get(locale, "api-failed"));
+	else
+	{
+		if(additionalInfo) Object.assign(err, additionalInfo);
+		error(err);
+		inter.editReply(tr.get(locale, "error"));
+	}
 }

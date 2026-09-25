@@ -11,7 +11,8 @@ const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
 import { voteURL } from "../../botLists.js";
 
 import { watchGroup, unwatchGroup } from "../../steam_news/watchers.js";
-import { getBasicGroupDetails, HTTPError } from "../../steam_news/api.js";
+import { getBasicGroupDetails } from "../../steam_news/api.js";
+import { handleGenericApiError } from "../../utils/commands.js";
 import { setWebhook } from "../../steam_news/db_api.js";
 import { fetchThreads } from "../../utils/channels.js";
 import { autoSuggestButton } from "../premium/chameleon/set.js";
@@ -114,18 +115,7 @@ export async function run(inter)
 				components: premiumButton ? [premiumButton] : undefined,
 			});
 		}
-		else if(err instanceof HTTPError)
-		{
-			const { code } = err;
-			inter.editReply({
-				flags: "Ephemeral",
-				content: tr.get(locale, code === 403 ? "api-403" : "api-err", code),
-			});
-		}
 		else
-		{
-			error(err);
-			inter.editReply({flags: "Ephemeral", content: tr.get(locale, "error")});
-		}
+			handleGenericApiError(err, inter);
 	});
 }

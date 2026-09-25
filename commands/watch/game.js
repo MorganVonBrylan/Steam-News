@@ -1,6 +1,6 @@
 
-import { ApiError, STEAM_APPID } from "../../steam_news/api.js";
-import { interpretAppidOption } from "../../utils/commands.js";
+import { STEAM_APPID } from "../../steam_news/api.js";
+import { interpretAppidOption, handleGenericApiError } from "../../utils/commands.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../../steam_news/limits.js";
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
@@ -14,7 +14,6 @@ const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
 import { voteURL } from "../../botLists.js";
 
 import { watch, unwatch, getAppInfo, purgeApp } from "../../steam_news/watchers.js";
-import { HTTPError } from "../../steam_news/api.js";
 import { autoSuggestButton } from "../premium/chameleon/set.js";
 
 import {
@@ -140,7 +139,7 @@ export async function run(inter)
 		inter.editReply(reply);
 	}, async err => {
 		await defer;
-		if(err instanceof TypeError && err.message.includes("appid") || err.message.includes(appid))
+		if(err.message.includes(appid))
 			inter.editReply({flags: "Ephemeral", content: tr.get(locale, "bad-appid")});
 		else if(err instanceof RangeError)
 		{
@@ -151,20 +150,7 @@ export async function run(inter)
 				components: premiumButton ? [premiumButton] : undefined,
 			});
 		}
-		else if(err instanceof HTTPError)
-		{
-			const { code } = err;
-			inter.editReply({
-				flags: "Ephemeral",
-				content: tr.get(locale, code === 403 ? "api-403" : "api-err", code),
-			});
-		}
-		else if(err instanceof ApiError)
-			inter.editReply({flags: "Ephemeral", content: tr.get(locale, "api-failed")});
 		else
-		{
-			error(err);
-			inter.editReply({flags: "Ephemeral", content: tr.get(locale, "error")});
-		}
+			handleGenericApiError(err, inter);
 	});
 }
