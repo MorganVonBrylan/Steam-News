@@ -5,7 +5,7 @@ const {
 } = Object;
 
 /**
- * @type {<T extends object>(props: T) => T}
+ * @type {<T extends object>(props: T) => Readonly<T>}
  * Freeze an object recursively.
  * @param {T} object The object to freeze
  * @returns The frozen object with frozen properties
@@ -31,7 +31,7 @@ export function dictionary(props = {})
 }
 
 /**
- * @type {<T extends object>(props: T) => T}
+ * @type {<T extends object>(props: T) => Readonly<T>}
  * Makes a deeply frozen, null-prototype object.
  * @param {T} props A list of properties
  * @returns {T} A frozen, null-prototype object with all the enumerable own properties of props.
@@ -43,11 +43,25 @@ export function fixedDictionary(props)
 }
 
 /**
+ * @overload
+ * @param {string[]} entryNames The entry names.
+ * @param {(entryName:string)=>*} map 
+ * @param {true} [freeze] 
+ * @returns {Readonly<{[entryName:string]: *}>} A dictionary
+ */
+/**
+ * @overload
+ * @param {string[]} entryNames The entry names.
+ * @param {(entryName:string)=>*} map 
+ * @param {false} freeze 
+ * @returns {{[entryName:string]: *}} A dictionary
+ */
+/**
  * Generate a dictionary with a list of entries with a mapping function.
  * @param {string[]} entryNames The entry names.
  * @param {(entryName:string)=>*} map A function that will map an entry name to its value.
  * @param {boolean} [freeze] Default: true. Whether to deep-freeze the dictionary.
- * @returns {{[entryName:string]: *}} A dictionary
+ * @returns {{[entryName:string]: *}|Readonly<{[entryName:string]: *}>} A dictionary
  * @see deepFreeze
  */
 export function generateDictionary(entryNames, map, freeze = true)
