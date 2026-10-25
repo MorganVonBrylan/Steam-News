@@ -66,15 +66,19 @@ export function determineLanguage(inter, languageOption)
 }
 
 
+/** @returns {string} */
 function toString() {
 	return this.name;
 }
+/** @param {string} name */
 export function formatOptionName(name) {
 	return name.length > 32 ? name.substring(0, 31) + "…" : name;
 }
+/** @param {{name:string, appid:number}} */
 export function gameToOption({ name, appid }) {
 	return { name: formatOptionName(name), value: appid, toString };
 }
+/** @param {{name:string, clanid:number}} */
 export function groupToOption({ name, clanid }) {
 	return { name: formatOptionName(name), value: clanid, toString };
 }
