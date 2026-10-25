@@ -284,6 +284,49 @@
 				}
 			}
 		},
+		"filter": {
+			"name": "filter",
+			"description": "Filter commands",
+			"options": {
+				"help": {
+					"name": "help",
+					"description": "Get help with filters"
+				},
+				"set": {
+					"name": "set",
+					"description": "Set the filter for a game",
+					"options": {
+						"type": {
+							"name": "type",
+							"description": "Whether to require or exclude the keywords",
+							"choices": ["Require", "Exclude"]
+						},
+						"game": {
+							"name": "game",
+							"description": "The game to set a filter for"
+						},
+						"filter": {
+							"name": "filter",
+							"description": "The keywords to filter, separated by commas."
+						}
+					}
+				},
+				"remove": {
+					"name": "remove",
+					"description": "Remove the filter for a game",
+					"options": {
+						"game": {
+							"name": "game",
+							"description": "The game to re remove the filter of"
+						}
+					}
+				},
+				"list": {
+					"name": "list",
+					"description": "See all your filters"
+				}
+			}
+		},
 		"stats": {
 			"name": "stats",
 			"description": "Display statistics about the bot"
@@ -542,6 +585,20 @@
 		"confirm-posts": "${name}’s announcements will now be sent into ${channel}.",
 		"confirm-posts-role": "${name}’s announcements will now be sent into ${channel} and ping ${role}.",
 		"webhook-auto-unset": "Because the watcher channel changed, the webhook has been unset."
+	},
+
+	"filter": {
+		"help": {
+			"title": "Help with filters",
+			"description": "Filters let you limit what news of a game you see. For instance you might not be interested in patch notes and want to filter them out, or you might be interested exclusively in patch notes and want to filter everything else out. For that you can set either an inclusive or exclusive filter for a given game.\nFilters are case-insensitive, and separated by commas, and check both the news title and content.\nWithout a subscription, you can only have a filter on one game per server, but the more watchers” subscription grants you infinite filters. You can also vote for the bot on [DiscordBotList](https://discordbotlist.com/bots/steam-news) to incraese your free filters to 5.",
+			"fields": [{
+				"name": "Excluding filter",
+				"value": "This will exclude news that contain any of the given filter words. For instance, `patch,hotfix` will exclude all news that contain either “patch” or “hotfix”."
+			}, {
+				"name": "Requirement filter",
+				"value": "This is the opposite: it excludes every news that *don't* have any of the keywords. To use the same example, `patch,hotfix` will only let news that have either “patch” or “hotfix” be posted."
+			}]
+		}
 	},
 
 	"watched": {
