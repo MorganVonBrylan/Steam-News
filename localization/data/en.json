@@ -598,7 +598,9 @@
 				"name": "Requirement filter",
 				"value": "This is the opposite: it excludes every news that *don't* have any of the keywords. To use the same example, `patch,hotfix` will only let news that have either “patch” or “hotfix” be posted."
 			}]
-		}
+		},
+		"removed": "Removed the filter for %s.",
+		"remove-failed": "Couldn't find the game to remove the filter of. Didn't you send the command a bit too fast? Please make sure to select an option from the autocomplete."
 	},
 
 	"watched": {
