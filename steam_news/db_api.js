@@ -214,6 +214,23 @@ export function getWatcherChannel(type, guildAndAppIds)
 	return channelGetters[type](guildAndAppIds);
 }
 
+/**
+ * @type {(guildId:string)=>boolean}
+ * Get whether a server alraady has a filter or not
+ */
+export const hasFilter = stmts.setFilter;
+/**
+ * @typedef {`${"+"|"-"}${string}`} filter
+ * @type {(filter:?filter, appid:number, guildId:string)=>{changes:number}}
+ * Set the filter for a watcher
+ */
+export const setFilter = stmts.setFilter;
+/**
+ * @type {(guildId:string)=>{appid:number, name:string, channelId:string, roleId:?string, filter:?string}}
+ * Get the filters of a guild.
+ */
+export const getFilters = stmts.getFilters;
+
 
 /** @import {WebhookInfo} from "../commands/premium/chameleon/~webhook.js" */
 

@@ -11,7 +11,7 @@ const db = new SQLite3(`${import.meta.dirname}/watchers.db`);
 export default db;
 db.pragma("journal_mode = WAL");
 
-const DB_VERSION = 8;
+const DB_VERSION = 9;
 
 db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS Watchers (
 	roleId TEXT DEFAULT NULL,
 	premium BOOLEAN DEFAULT FALSE,
 	webhook TEXT DEFAULT NULL,
+	filter TEXT DEFAULT NULL,
 	PRIMARY KEY (appId, guildId),
 	CONSTRAINT fk_appid FOREIGN KEY (appid) REFERENCES Apps(appid) ON DELETE CASCADE
 );
@@ -150,6 +151,9 @@ if(currentVersion < DB_VERSION)
 	case 7:
 		db.exec(["Watchers", "PriceWatchers", "SteamWatchers"]
 			.map(table => `ALTER TABLE ${table} ADD webhook TEXT DEFAULT NULL;`).join(""));
+
+	case 8:
+		db.exec(`ALTER TABLE Watchers ADD filter TEXT DEFAULT NULL;`);
 	}
 
 	db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
@@ -234,6 +238,10 @@ export const stmts = dictionary({
 	updateLatest: db.prepare("UPDATE Apps SET latest = $latest WHERE appid = $appid"),
 	getWatcherChannel: db.prepare("SELECT channelId from Watchers WHERE appid = $appid AND guildId = $guildId").pluck(),
 	isWatched: db.prepare("SELECT EXISTS(SELECT 1 FROM Watchers WHERE appid = ?)").pluck(),
+
+	hasFilter: db.prepare("SELECT EXISTS(SELECT 1 FROM Watchers WHERE guildId = ? AND filter IS NOT NULL)").pluck(),
+	setFilter: db.prepare("UPDATE Watchers SET filter = ? WHERE appid = ? AND guildId = ?"),
+	getFilters: db.prepare("SELECT w.appid, name, channelId, roleId, filter FROM Watchers w JOINS Apps a ON w.appid = a.appid WHERE guildId = ?AND filter <> ''"),
 
 	watchSteam: makeProxy([
 		"UPDATE SteamWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId",
