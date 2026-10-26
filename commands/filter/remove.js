@@ -22,8 +22,8 @@ export function autocomplete(inter)
 export function run(inter)
 {
 	const t = tr.set(inter.locale, "filter");
-	const appid = inter.options.getNumber(inter, true);
-	const { changes } = setFilter(null, appid);
+	const appid = inter.options.getNumber("game", true);
+	const { changes } = setFilter({ filter: null, appid, guildId: inter.guildId });
 	if(changes)
 		inter.reply(t("removed", getAppName(appid)));
 	else
