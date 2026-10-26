@@ -221,12 +221,12 @@ export function getWatcherChannel(type, guildAndAppIds)
 export const hasFilter = stmts.setFilter;
 /**
  * @typedef {`${"+"|"-"}${string}`} filter
- * @type {(filter:?filter, appid:number, guildId:string)=>{changes:number}}
+ * @type {(filter:{filter:?filter, appid:number, guildId:string})=>{changes:number}}
  * Set the filter for a watcher
  */
 export const setFilter = stmts.setFilter;
 
-/** @typedef {{appid:number, name:string, channelId:string, roleId:?string, filter:?string}} Filter */
+/** @typedef {{appid:number, name:string, channelId:string, roleId:?string, filter:?filter}} Filter */
 /**
  * @overload
  * @param {string} guildId The guild to get the filters for
