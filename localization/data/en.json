@@ -599,6 +599,13 @@
 				"value": "This is the opposite: it excludes every news that *don't* have any of the keywords. To use the same example, `patch,hotfix` will only let news that have either “patch” or “hotfix” be posted."
 			}]
 		},
+		"exclude": "Exclude %s",
+		"require": "Require one of %s",
+		"added": "Filter set for %s:",
+		"add-failed": "Couldn't find the game to set a filter for. Didn't you send the command a bit too fast? Please make sure to select an option from the autocomplete.",
+		"at-maximum-plzvote": "You already have a filter in this server. To unlock more, vote for me on ${dbl_link} or purchase a subcription.",
+		"reached-maximum-plzvote": "This is your only free filter for this server. To unlock more, vote for me on ${dbl_link} or purchase a subcription.",
+		"at-maximum": "This server has reached the maximum number of %s free filters. For unlimited filters, purchase a subscription.",
 		"removed": "Removed the filter for %s.",
 		"remove-failed": "Couldn't find the game to remove the filter of. Didn't you send the command a bit too fast? Please make sure to select an option from the autocomplete."
 	},

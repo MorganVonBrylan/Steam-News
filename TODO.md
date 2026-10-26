@@ -1,7 +1,8 @@
 # FILTERS
 
 ### To do
-- set, list
+- set: show a warning if a filter aleady exists, and put buttons to merge, replace or cancel
+- list
 - additional votes with DBL vote
 - invinite votes with premium/gold
 
