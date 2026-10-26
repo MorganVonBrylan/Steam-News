@@ -12,6 +12,8 @@ import localesFile from "./locales.js";
 import { readdirSync } from "node:fs";
 import { dictionary, deepFreeze } from "../utils/dictionaries.js";
 
+import { dbl_link } from "../commands/filter/~data.js";
+
 const locales = dictionary();
 
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
@@ -20,11 +22,14 @@ for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 	const localeName = file.substring(0, file.length - 5);
 	locales[localeName] = locale;
 
-	const { commands: { watch, latest, premium }, voting } = locale;
+	const { commands: { watch, latest, premium }, voting, filter } = locale;
 	voting.thanks = voting.thanks.replace("%s", WATCH_VOTE_BONUS);
 	const { options: { game, steam } } = watch;
 	game.description = game.description.replace("%s", WATCH_LIMIT);
 	Object.assign(game.options, steam.options);
+
+	if(filter?.help)
+		filter.help.description = filter.help.description.replace("${dbl_link}", dbl_link);
 
 	if(premium?.options?.chameleon?.options?.set?.options)
 	{

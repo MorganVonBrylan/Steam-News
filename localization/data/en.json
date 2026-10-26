@@ -590,7 +590,7 @@
 	"filter": {
 		"help": {
 			"title": "Help with filters",
-			"description": "Filters let you limit what news of a game you see. For instance you might not be interested in patch notes and want to filter them out, or you might be interested exclusively in patch notes and want to filter everything else out. For that you can set either an inclusive or exclusive filter for a given game.\nFilters are case-insensitive, and separated by commas, and check both the news title and content.\nWithout a subscription, you can only have a filter on one game per server, but the more watchers” subscription grants you infinite filters. You can also vote for the bot on [DiscordBotList](https://discordbotlist.com/bots/steam-news) to incraese your free filters to 5.",
+			"description": "Filters let you limit what news of a game you see. For instance you might not be interested in patch notes and want to filter them out, or you might be interested exclusively in patch notes and want to filter everything else out. For that you can set either an inclusive or exclusive filter for a given game.\nFilters are case-insensitive, and separated by commas, and check both the news title and content.\nWithout a subscription, you can only have a filter on one game per server, but the more watchers” subscription grants you infinite filters. You can also vote for the bot on ${dbl_link} to increase your free filters to 5.",
 			"fields": [{
 				"name": "Excluding filter",
 				"value": "This will exclude news that contain any of the given filter words. For instance, `patch,hotfix` will exclude all news that contain either “patch” or “hotfix”."
