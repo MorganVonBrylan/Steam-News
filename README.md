@@ -42,6 +42,7 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 	},
 	"dbl": {
 		"token": "(optional) your bot's discordbotlist token",
+		"uri": "Your bot's URI fragment, for instance steam-news. Used to build the vote URL.",
 		"webhook": {
 			"endpoint": "/dblVote",
 			"secret": "super-secret-thing"
