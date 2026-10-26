@@ -225,11 +225,39 @@ export const hasFilter = stmts.setFilter;
  * Set the filter for a watcher
  */
 export const setFilter = stmts.setFilter;
+
+/** @typedef {{appid:number, name:string, channelId:string, roleId:?string, filter:?string}} Filter */
 /**
- * @type {(guildId:string)=>{appid:number, name:string, channelId:string, roleId:?string, filter:?string}}
- * Get the filters of a guild.
+ * @overload
+ * @param {string} guildId The guild to get the filters for
+ * @param {false} [mappedByApp] Whether to map the filters by app id.
+ * @returns {Filter[]}
  */
-export const getFilters = stmts.getFilters;
+/**
+ * @overload
+ * @param {string} guildId The guild to get the filters for
+ * @param {true} mappedByApp Whether to map the filters by app id.
+ * @returns {{length: number, [appid:number]: Filter}}
+ */
+/**
+ * Get the filters mapps by app id
+ * @param {string} guildId The guild to get the filters for
+ * @param {boolean} mappedByApp Whether to map the filters by app id.
+ * @returns {Filter[]|{length: number, [appid:number]: Filter}}
+ */
+export function getFilters(guildId, mappedByApp = false)
+{
+	/** @type {Filter[]} */
+	const filters = stmts.getFilters(guildId);
+	if(!mappedByApp)
+		return filters;
+	/** @type {{length: number, [appid:number]: Filter}} */
+	const mappedFilters = Object.create(null);
+	mappedFilters.length = filters.length;
+	for(const filter of filters)
+		mappedFilters[filter.appid] = filter;
+	return Object.freeze(mappedFilters);
+}
 
 
 /** @import {WebhookInfo} from "../commands/premium/chameleon/~webhook.js" */
