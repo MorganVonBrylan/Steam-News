@@ -603,11 +603,12 @@
 		"require": "Require one of %s",
 		"added": "Filter set for %s:",
 		"add-failed": "Couldn't find the game to set a filter for. Didn't you send the command a bit too fast? Please make sure to select an option from the autocomplete.",
+		"vote-required": "This filter was added thanks to a DiscordBotList vote. You need to vote again to edit it: <${dbl_url}>",
+		"premium-required": "This filter was added thanks to a premium subscription. It is currently disabled, as this server's subscription expired. You need to subscribe again to re-enable it.",
 		"at-maximum-plzvote": "You already have a filter in this server. To unlock more, vote for me on ${dbl_link} or purchase a subcription.",
 		"at-maximum-plzbuy": "You already have a filter in this server. To unlock more, purchase a subcription.",
 		"reached-maximum-plzvote": "This is your only free filter for this server. To unlock more, vote for me on ${dbl_link} or purchase a subcription.",
 		"at-maximum": "This server has reached the maximum of %s free filters. For unlimited filters, purchase a subscription.",
-		"vote-required": "This filter was added thanks to a DiscordBotList vote.",
 		"removed": "Removed the filter for %s.",
 		"remove-failed": "Couldn't find the game to remove the filter of. Didn't you send the command a bit too fast? Please make sure to select an option from the autocomplete."
 	},

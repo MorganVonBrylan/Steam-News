@@ -220,43 +220,58 @@ export function getWatcherChannel(type, guildAndAppIds)
  */
 export const hasFilter = stmts.setFilter;
 /**
- * @typedef {`${"+"|"-"}${string}`} filter
+ * @typedef {`${"+"|"-"}${string}\n${"free"|"vote"|"premium"}`} filter
  * @type {(filter:{filter:?filter, appid:number, guildId:string})=>{changes:number}}
  * Set the filter for a watcher
  */
 export const setFilter = stmts.setFilter;
 
 /** @typedef {{appid:number, name:string, filter:?filter}} Filter */
+/** @typedef {Filter & {slot:string}} FilterWithSlot */
+/** @typedef {{length:number, free?:FilterWithSlot, voteFilters: FilterWithSlot[], premiumFilters: FilterWithSlot[], [appid:number]: FilterWithSlot}} DetailedFilterList */
 /**
  * @overload
- * @param {string} guildId The guild to get the filters for
- * @param {false} [mappedByApp] Whether to map the filters by app id.
+ * @param {string} guildId
+ * @param {false} [detailed]
  * @returns {Filter[]}
  */
 /**
  * @overload
- * @param {string} guildId The guild to get the filters for
- * @param {true} mappedByApp Whether to map the filters by app id.
- * @returns {{length: number, [appid:number]: Filter}}
+ * @param {string} guildId
+ * @param {true} detailed
+ * @returns {DetailedFilterList}
  */
 /**
- * Get the filters mapps by app id
+ * Get the filters of a guild.
  * @param {string} guildId The guild to get the filters for
- * @param {boolean} mappedByApp Whether to map the filters by app id.
- * @returns {Filter[]|{length: number, [appid:number]: Filter}}
+ * @param {boolean} detailed Whether to map the filters by app id and have ready-made lists by slot.
  */
-export function getFilters(guildId, mappedByApp = false)
+export function getFilters(guildId, detailed = false)
 {
 	/** @type {Filter[]} */
 	const filters = stmts.getFilters(guildId);
-	if(!mappedByApp)
+	if(!detailed)
 		return filters;
-	/** @type {{length: number, [appid:number]: Filter}} */
-	const mappedFilters = Object.create(null);
-	mappedFilters.length = filters.length;
+
+	/** @type {DetailedFilterList} */
+	const details = Object.create(null);
+	const voteFilters = details.voteFilters = [];
+	const premiumFilters = details.premiumFilters = [];
+	details.length = filters.length;
 	for(const filter of filters)
-		mappedFilters[filter.appid] = filter;
-	return Object.freeze(mappedFilters);
+	{
+		const slot = filter.filter.split("\n").at(-1);
+		filter.slot = slot;
+		details[filter.appid] = filter;
+		switch(slot)
+		{
+			case "free": details.free = filter; break;
+			case "vote": voteFilters.push(filter); break;
+			case "premium": premiumFilters.push(filter); break;
+			default: error(new TypeError(`Unknown filter slot found: ${slot}`));
+		}
+	}
+	return Object.freeze(details);
 }
 
 

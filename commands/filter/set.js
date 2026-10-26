@@ -2,10 +2,9 @@
 import onAutocompleteError from "../../autocomplete/_errorHandler.js";
 import { getAppName, getFilters, getWatchedApps, setFilter } from "../../steam_news/db_api.js";
 import { gameToOption } from "../../utils/commands.js";
-import { dbl_url, dbl_link, MAX_FREE, MAX_WITH_VOTE } from "./~data.js";
+import { dbl_url, dbl_link, MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE } from "./~data.js";
 import { votedDBL, premiumGuilds, premiumSKU, goldSKU, buttons } from "../../steam_news/VIPs.js";
 const premiumButtons = buttons(premiumSKU, goldSKU);
-
 
 /**
  * @type {(t: (key:string, arg?:*)=>string, hardMaxReached:boolean)=>string}
@@ -44,20 +43,36 @@ export async function run(inter)
 	const t = tr.set(inter.locale, "filter");
 	const { guildId, options } = inter;
 	const appid = options.getNumber("game", true);
-	const isPremium = premiumGuilds.has(guildId);
-	const hasVoted = isPremium || votedDBL(inter.user.id);
-	const { [appid]: existingFilter, length: nFilters } = getFilters(guildId, true);
+	const hasPremium = premiumGuilds.has(guildId);
+	const hasVoted = hasPremium || votedDBL(inter.user.id);
+	const { [appid]: existingFilter, length: nFilters, voteFilters, free } = getFilters(guildId, true);
+
+	const slot = existingFilter?.slot ??
+		(!free ? "free"
+		: hasVoted && voteFilters.length < VOTE_BONUS ? "vote"
+		: "premium");
 	
-	if(!existingFilter && !isPremium && nFilters >= (hasVoted ? MAX_WITH_VOTE : MAX_FREE))
+	if(existingFilter)
+	{
+		if(existingFilter.slot === "vote" && !hasVoted)
+			return inter.reply({flags: "Ephemeral", content: t("vote-required", {dbl_url})});
+		if(existingFilter.slot === "premium" && !hasPremium)
+			return inter.reply({
+				flags: "Ephemeral",
+				content: t("premium-required"),
+				components: [premiumButtons],
+			});
+	}
+	else if(!hasPremium && nFilters >= (hasVoted ? MAX_WITH_VOTE : MAX_FREE))
 		return inter.reply({flags: "Ephemeral", content: maxWarning(t, hasVoted)});
 
 	const type = options.getString("type");
 	const filter = options.getString("filter").toLowerCase();
-	const { changes } = setFilter({filter: `${type}${filter}`, appid, guildId});
+	const { changes } = setFilter({filter: `${type}${filter}\n${slot}`, appid, guildId});
 	if(changes)
 	{
 		const newNFilters = existingFilter ? nFilters : nFilters+1;
-		const hasFiltersLeft = isPremium || hasVoted && newNFilters < MAX_WITH_VOTE;
+		const hasFiltersLeft = hasPremium || hasVoted && newNFilters < MAX_WITH_VOTE;
 		let reply = `${t("added", existingFilter?.name || getAppName(appid))}
 			${t(type === "+" ? "require" : "exclude", `\`${filter}\``)}`;
 
