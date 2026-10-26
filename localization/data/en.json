@@ -286,7 +286,7 @@
 		},
 		"filter": {
 			"name": "filter",
-			"description": "Filter commands",
+			"description": "(admin only) Filter commands",
 			"options": {
 				"help": {
 					"name": "help",
