@@ -226,7 +226,7 @@ export const hasFilter = stmts.setFilter;
  */
 export const setFilter = stmts.setFilter;
 
-/** @typedef {{appid:number, name:string, channelId:string, roleId:?string, filter:?filter}} Filter */
+/** @typedef {{appid:number, name:string, filter:?filter}} Filter */
 /**
  * @overload
  * @param {string} guildId The guild to get the filters for
