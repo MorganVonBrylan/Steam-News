@@ -88,7 +88,7 @@ export function error(err)
 	const treatment = specialTreatment({ message,
 		code: err.code || err.cause?.code,
 		status: err instanceof TopGGAPIError ? err.response?.statusCode
-			: (err.httpStatus || err.code || err.status || err.response?.status),
+			: (err.httpStatus || err.status || err.response?.status || err.code),
 	});
 	if(treatment === IGNORE) return;
 
