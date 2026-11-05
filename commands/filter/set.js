@@ -3,7 +3,7 @@ import onAutocompleteError from "../../autocomplete/_errorHandler.js";
 import { getAppName, getFilters, getWatchedApps, setFilter } from "../../steam_news/db_api.js";
 import { gameToOption } from "../../utils/commands.js";
 import {
-	dbl_url, dbl_link, storeButtons,
+	dbl_url, storeButtons,
 	MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE,
 	translateFilter,
 } from "./~data.js";
@@ -14,7 +14,7 @@ import { votedDBL, premiumGuilds } from "../../steam_news/VIPs.js";
  * Get the warning message about a maximum number of filters being reached.
  */
 const maxWarning = dbl_url
-	? (t, hardMaxReached, action = "at") => (hardMaxReached ? t("at-maximum", MAX_WITH_VOTE) : t(`${action}-maximum-plzvote`, { dbl_link }))
+	? (t, hardMaxReached, action = "at") => (hardMaxReached ? t("at-maximum", MAX_WITH_VOTE) : t(`${action}-maximum-plzvote`))
 	: (t, hardMaxReached) => (hardMaxReached ? t("at-maximum", MAX_FREE) : t("at-maximum-plzbuy"));
 
 
@@ -58,7 +58,7 @@ export async function run(inter)
 	if(existingFilter)
 	{
 		if(existingFilter.slot === "vote" && !hasVoted)
-			return inter.reply({flags: "Ephemeral", content: t("vote-required", {dbl_url})});
+			return inter.reply({flags: "Ephemeral", content: t("vote-required")});
 		if(existingFilter.slot === "premium" && !hasPremium)
 			return inter.reply({
 				flags: "Ephemeral",

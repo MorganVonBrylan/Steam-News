@@ -12,7 +12,7 @@ import localesFile from "./locales.js";
 import { readdirSync } from "node:fs";
 import { dictionary, deepFreeze } from "../utils/dictionaries.js";
 
-import { dbl_link } from "../commands/filter/~data.js";
+import { dbl_link, dbl_url } from "../commands/filter/~data.js";
 
 const locales = dictionary();
 
@@ -28,8 +28,15 @@ for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 	game.description = game.description.replace("%s", WATCH_LIMIT);
 	Object.assign(game.options, steam.options);
 
-	if(filter?.help)
-		filter.help.description = filter.help.description.replace("${dbl_link}", dbl_link);
+	if(filter && dbl_url) for(const string in filter)
+	{
+		if(string === "help")
+			filter.help.description = filter.help.description.replace("${dbl_link}", dbl_link);
+		else if(string.includes("vote"))
+			filter[string] = filter[string]
+				.replace("${dbl_link}", dbl_link)
+				.replace("${dbl_url}", dbl_url);
+	}
 
 	if(premium?.options?.chameleon?.options?.set?.options)
 	{
