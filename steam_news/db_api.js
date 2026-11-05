@@ -220,7 +220,7 @@ export function getWatcherChannel(type, guildAndAppIds)
  */
 export const hasFilter = stmts.setFilter;
 /**
- * @typedef {`${"+"|"-"}${string}\n${"free"|"vote"|"premium"}`} filter
+ * @typedef {`${"free"|"vote"|"premium"}\n${"+"|"-"}${string}`} filter
  * @type {(filter:{filter:?filter, appid:number, guildId:string})=>{changes:number}}
  * Set the filter for a watcher
  */
@@ -260,7 +260,7 @@ export function getFilters(guildId, detailed = false)
 	details.length = filters.length;
 	for(const filter of filters)
 	{
-		const slot = filter.filter.split("\n").at(-1);
+		const slot = filter.filter.split("\n", 1)[0];
 		filter.slot = slot;
 		details[filter.appid] = filter;
 		switch(slot)

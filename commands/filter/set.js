@@ -73,7 +73,7 @@ export async function run(inter)
 		.map(string => string.trim())
 		.filter((str, i, arr) => str && arr.indexOf(str) === i)
 		.join(",");
-	const { changes } = setFilter({filter: `${type}${filter}\n${slot}`, appid, guildId});
+	const { changes } = setFilter({filter: `${slot}\n${type}${filter}`, appid, guildId});
 	if(changes)
 	{
 		const newNFilters = existingFilter ? nFilters : nFilters+1;
