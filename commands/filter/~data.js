@@ -14,35 +14,6 @@ export const MAX_FREE = 1;
 export const VOTE_BONUS = 4;
 export const MAX_WITH_VOTE = MAX_FREE + VOTE_BONUS;
 
-import { premiumSKU, goldSKU, buttons } from "../../steam_news/VIPs.js";
-export const storeButtons = buttons(premiumSKU, goldSKU);
-
-
-
-/**
- * Translate a filter
- * @param {(key:string, filter:string)=>string} t Translator function, set to "filter"
- * @param {import("../../steam_news/db_api.js").Filter} filter The filter to translate
- */
-export function translateFilter(t, {filter})
-{
-	const [, ...lines] = filter.split("\n");
-	return lines.map(translateFilterLine.bind(null, t)).join("\n");
-}
-
-/**
- * Format a filter line
- * @param {(key:string, filter:string)=>string} t Translator function, set to "filter"
- * @param {`${"+"|"-"}${string}`} filter Terms to filter, separated by commas
- */
-function translateFilterLine(t, filter)
-{
-	const typeKey = filter[0] === "-" ? "exclude"
-		: filter.includes(",") ? "require-one-of" : "require";
-	const terms = filter.substring(1).split(",");
-	return t(typeKey, `\`${terms.join("`, `")}\``);
-}
-
 
 /*
 === HOW FILTER CATEGORIES WORK ===

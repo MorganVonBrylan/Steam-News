@@ -2,11 +2,8 @@
 import onAutocompleteError from "../../autocomplete/_errorHandler.js";
 import { getAppName, getFilters, getWatchedApps, setFilter } from "../../steam_news/db_api.js";
 import { gameToOption } from "../../utils/commands.js";
-import {
-	dbl_url, storeButtons,
-	MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE,
-	translateFilter,
-} from "./~data.js";
+import { dbl_url, MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE } from "./~data.js";
+import { storeButtons, translateFilter } from "./~cmdUtils.js";
 import { votedDBL, premiumGuilds } from "../../steam_news/VIPs.js";
 
 /**
