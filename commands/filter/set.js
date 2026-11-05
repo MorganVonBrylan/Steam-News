@@ -2,7 +2,7 @@
 import onAutocompleteError from "../../autocomplete/_errorHandler.js";
 import { getAppName, getFilters, getWatchedApps, setFilter } from "../../steam_news/db_api.js";
 import { gameToOption } from "../../utils/commands.js";
-import { dbl_url, dbl_link, MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE } from "./~data.js";
+import { dbl_url, dbl_link, MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE, translateFilter } from "./~data.js";
 import { votedDBL, premiumGuilds, premiumSKU, goldSKU, buttons } from "../../steam_news/VIPs.js";
 const premiumButtons = buttons(premiumSKU, goldSKU);
 
@@ -67,22 +67,20 @@ export async function run(inter)
 		return inter.reply({flags: "Ephemeral", content: maxWarning(t, hasVoted)});
 
 	const type = options.getString("type");
-	const filter = options.getString("filter")
+	const terms = options.getString("filter")
 		.toLowerCase()
 		.split(",")
 		.map(string => string.trim())
 		.filter((str, i, arr) => str && arr.indexOf(str) === i)
 		.join(",");
-	const { changes } = setFilter({filter: `${slot}\n${type}${filter}`, appid, guildId});
+	const filter = { filter: `${slot}\n${type}${terms}`, appid, guildId };
+	const { changes } = setFilter(filter);
 	if(changes)
 	{
 		const newNFilters = existingFilter ? nFilters : nFilters+1;
 		const hasFiltersLeft = hasPremium || hasVoted && newNFilters < MAX_WITH_VOTE;
-		const formattedFilter = filter.split(",").map(f => `\`${f}\``);
-		const typeKey = type === "-" ? "exclude" 
-			: formattedFilter.length === 1 ? "require" : "require-one-of";
 		let reply = `${t("added", existingFilter?.name || getAppName(appid))}
-			${t(typeKey, formattedFilter.join(", "))}`;
+			${translateFilter(t, filter)}`;
 
 		if(hasFiltersLeft)
 			reply = { embeds: [{ description: reply, }] };
