@@ -67,7 +67,12 @@ export async function run(inter)
 		return inter.reply({flags: "Ephemeral", content: maxWarning(t, hasVoted)});
 
 	const type = options.getString("type");
-	const filter = options.getString("filter").toLowerCase();
+	const filter = options.getString("filter")
+		.toLowerCase()
+		.split(",")
+		.map(string => string.trim())
+		.filter((str, i, arr) => str && arr.indexOf(str) === i)
+		.join(",");
 	const { changes } = setFilter({filter: `${type}${filter}\n${slot}`, appid, guildId});
 	if(changes)
 	{
