@@ -2,9 +2,12 @@
 import onAutocompleteError from "../../autocomplete/_errorHandler.js";
 import { getAppName, getFilters, getWatchedApps, setFilter } from "../../steam_news/db_api.js";
 import { gameToOption } from "../../utils/commands.js";
-import { dbl_url, dbl_link, MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE, translateFilter } from "./~data.js";
-import { votedDBL, premiumGuilds, premiumSKU, goldSKU, buttons } from "../../steam_news/VIPs.js";
-const premiumButtons = buttons(premiumSKU, goldSKU);
+import {
+	dbl_url, dbl_link, storeButtons,
+	MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE,
+	translateFilter,
+} from "./~data.js";
+import { votedDBL, premiumGuilds } from "../../steam_news/VIPs.js";
 
 /**
  * @type {(t: (key:string, arg?:*)=>string, hardMaxReached:boolean)=>string}
@@ -60,7 +63,7 @@ export async function run(inter)
 			return inter.reply({
 				flags: "Ephemeral",
 				content: t("premium-required"),
-				components: [premiumButtons],
+				components: [storeButtons],
 			});
 	}
 	else if(!hasPremium && nFilters >= (hasVoted ? MAX_WITH_VOTE : MAX_FREE))
@@ -89,7 +92,7 @@ export async function run(inter)
 			const callToAction = maxWarning(t, newNFilters === (dbl_url ? MAX_WITH_VOTE : MAX_FREE), "reached");
 			reply = {
 				embeds: [{ description: `${reply}\n\n-# ${callToAction}` }],
-				components: [premiumButtons],
+				components: [storeButtons],
 			};
 		}
 		inter.reply(reply);

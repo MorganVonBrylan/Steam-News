@@ -1,5 +1,4 @@
 
-
 import auth from "../../auth.json" with { type: "json" };
 export const dbl_url = auth.dbl?.uri
 	? `https://discordbotlist.com/bots/${auth.dbl.uri}`
@@ -14,6 +13,9 @@ export const dbl_link_suppressed = dbl_url
 export const MAX_FREE = 1;
 export const VOTE_BONUS = 4;
 export const MAX_WITH_VOTE = MAX_FREE + VOTE_BONUS;
+
+import { premiumSKU, goldSKU, buttons } from "../../steam_news/VIPs.js";
+export const storeButtons = buttons(premiumSKU, goldSKU);
 
 
 
