@@ -600,7 +600,8 @@
 			}]
 		},
 		"exclude": "Exclude %s",
-		"require": "Require one of %s",
+		"require": "Require %s",
+		"require-one-of": "Require one of %s",
 		"added": "Filter set for %s:",
 		"add-failed": "Couldn't find the game to set a filter for. Didn't you send the command a bit too fast? Please make sure to select an option from the autocomplete.",
 		"vote-required": "This filter was added thanks to a DiscordBotList vote. You need to vote again to edit it: <${dbl_url}>",

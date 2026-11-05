@@ -78,8 +78,11 @@ export async function run(inter)
 	{
 		const newNFilters = existingFilter ? nFilters : nFilters+1;
 		const hasFiltersLeft = hasPremium || hasVoted && newNFilters < MAX_WITH_VOTE;
+		const formattedFilter = filter.split(",").map(f => `\`${f}\``);
+		const typeKey = type === "-" ? "exclude" 
+			: formattedFilter.length === 1 ? "require" : "require-one-of";
 		let reply = `${t("added", existingFilter?.name || getAppName(appid))}
-			${t(type === "+" ? "require" : "exclude", `\`${filter}\``)}`;
+			${t(typeKey, formattedFilter.join(", "))}`;
 
 		if(hasFiltersLeft)
 			reply = { embeds: [{ description: reply, }] };
