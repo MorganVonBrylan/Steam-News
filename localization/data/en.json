@@ -611,7 +611,17 @@
 		"reached-maximum-plzvote": "This is your only free filter for this server. To unlock more, vote for me on ${dbl_link} or purchase a subcription.",
 		"at-maximum": "This server has reached the maximum of %s free filters. For unlimited filters, purchase a subscription.",
 		"removed": "Removed the filter for %s.",
-		"remove-failed": "Couldn't find the game to remove the filter of. Didn't you send the command a bit too fast? Please make sure to select an option from the autocomplete."
+		"remove-failed": "Couldn't find the game to remove the filter of. Didn't you send the command a bit too fast? Please make sure to select an option from the autocomplete.",
+
+		"free-filter": "Free filter",
+		"for-game": "For **%s**:",
+		"vote-filters": "Vote filters (${number}/${max})",
+		"vote-filters-desc": "Require voting on ${dbl_link} to edit",
+		"vote-filters-none": "None! But you did vote on DiscordBotList recently, so you can add some.",
+		"premium-filters": "Premium filters",
+		"premium-filters-desc": "These will be disabled if the server's subscription ends.",
+		"premium-filters-disabled": "This server's subscription expired; these filters are currently disabled.",
+		"suggest-premium": "You have all the filters you can have for free. Unlock unlimited filters with a premium subscription."
 	},
 
 	"watched": {
