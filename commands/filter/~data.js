@@ -11,7 +11,7 @@ export const dbl_link_suppressed = dbl_url
 	: dbl_link;
 
 export const MAX_FREE = 1;
-export const VOTE_BONUS = 4;
+export const VOTE_BONUS = auth.dbl?.voteFilterBonus ?? 3;
 export const MAX_WITH_VOTE = MAX_FREE + VOTE_BONUS;
 
 
