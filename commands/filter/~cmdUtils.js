@@ -5,7 +5,7 @@ export const storeButtons = buttons(premiumSKU, goldSKU);
 /**
  * Translate a filter
  * @param {(key:string, filter:string)=>string} t Translator function, set to "filter"
- * @param {import("../../steam_news/db_api.js").Filter} filter The filter to translate
+ * @param {import("./~data.js").Filter} filter The filter to translate
  */
 export function translateFilter(t, {filter})
 {

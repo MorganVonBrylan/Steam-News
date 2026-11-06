@@ -22,7 +22,7 @@ export function run(inter)
 			description: `${t("for-game", free.name)}\n${translate(free)}`,
 		};
 
-	/** @param {import("./~cmdUtils.js").Filter} filter */
+	/** @param {import("./~data.js").Filter} filter */
 	const filterToField = ({name, filter}) => ({ name, value: translate({filter}), inline: true });
 
 	if(voteFilters.length)
