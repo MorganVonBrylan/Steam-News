@@ -8,6 +8,7 @@ const {
 } = ComponentType;
 const { Primary: PRIMARY } = ButtonStyle;
 
+/** @import {MessageComponent, MessageComponentInteraction} from "discord.js" */
 
 /**
  * Create a select menu
@@ -28,8 +29,12 @@ export function selectMenu(selectMenu)
 }
 
 /**
+ * @typedef {{ customId:string, type?:ComponentType, label:string, disabled:boolean }} ButtonBase
+ * @typedef {ButtonBase & ({ style:ButtonStyle.Link, url:string }|{ style:ButtonStyle.Premium, skuId:string }|{ style?:Exclude<ButtonStyle,ButtonStyle.Link|ButtonStyle.Premium> })} Button
+ */
+/**
  * Create a row of buttons
- * @param  {...{ customId:string, type?:number=BUTTON, skuId?:string, label?:string, style?:number=PRIMARY, url?:string, disabled?:boolean = false }} buttons 
+ * @param  {...Button} buttons 
  * @returns An action row
  */
 export function buttons(...buttons)
@@ -46,7 +51,7 @@ const components = new Map();
  * Registers a component for interaction handling.
  * If a component with the same custom id is already registered, it will be overwritten.
  * @param {string|MessageComponent} customId The component's custom id, or the component itself
- * @param {(interaction:import("discord.js").MessageComponentInteraction)=>*} callback The Callback, which will be passed the interaction
+ * @param {(interaction:MessageComponentInteraction)=>*} callback The Callback, which will be passed the interaction
  * @param {object} options 
  * @param {boolean} options.singleUse Whether this component is single-use or not. Defaults to false.
  * @param {number} options.timeout The amount of time (in seconds) after which the component will be un-registered. Defaults to 180.
@@ -84,7 +89,7 @@ export const unregister = components.delete.bind(components);
 
 /**
  * Handles the given component interaction, calling the appropriate callback if a component with the same custom id was registered (it is then un-registered).
- * @param {BaseInteraction} interaction The interaction
+ * @param {MessageComponentInteraction} interaction The interaction
  * @returns {?boolean} true if the interaction was handled, false if no component with the same custom id was registered, null if it wasn't an interaction with a custom id.
  */
 export function handleInteraction(interaction)

@@ -1,6 +1,6 @@
 
 import { buttons, selectMenu, register, unregister } from "./components.js";
-import { ButtonInteraction, ButtonStyle } from "discord.js";
+import { ButtonStyle } from "discord.js";
 const { Secondary: style } = ButtonStyle;
 const registerOptions = { singleUse: true, timeout: 3600 };
 
@@ -69,7 +69,7 @@ export default function paginate(interaction, data)
 /**
  * Shows a modal to let the user choose a page to display.
  * This function should be have the data bound as this
- * @param {ButtonInteraction} interaction The button interaction
+ * @param {import("discord.js").ButtonInteraction} interaction The button interaction
  */
 function choosePage(interaction)
 {
