@@ -6,7 +6,7 @@ import { Api } from "@top-gg/sdk";
 import DblApi from "./dblApi.js";
 import { exec } from "node:child_process";
 import { createServer } from "node:http";
-import { createHmac } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import getRawBody from "raw-body";
 
 import { commands } from "@brylan/djs-commands";
@@ -196,7 +196,7 @@ export async function setup()
 	}
   }).listen(5050);
  */
-async function verifySignature(headers, rawBody, secret)
+function verifySignature(headers, rawBody, secret)
 {
 	const signatureHeader = headers["x-topgg-signature"];
 	if(!signatureHeader)
@@ -219,8 +219,8 @@ async function verifySignature(headers, rawBody, secret)
 	 * 2. The payload was tampered with
 	 * 3. The request did not originate from Top.gg
 	 * In any of these cases, we want to reject the request. */
-	if(signature !== digest)
+	if(!timingSafeEqual(Buffer.from(signature), Buffer.from(digest)))
 		return { code: FORBIDDEN, error: "Invalid signature" };
 
 	return null;
-};
+}
