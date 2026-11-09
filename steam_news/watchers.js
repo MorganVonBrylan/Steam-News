@@ -1,11 +1,13 @@
 
 import {
 	query, queryPrices, querySteam, queryGroup,
-	getBasicDetails, getBasicGroupDetails,
+	getBasicDetails,
 	isNSFW,
 	STEAM_APPID
 } from "./api.js";
 import { REQUIRED_PERMS, REQUIRED_THREAD_PERMS } from "../utils/embeds.js";
+
+/** @import {Guild, GuildChannel, Message} from "discord.js" */
 
 /**
  * Check if the bot can send message to a channel.
@@ -501,7 +503,7 @@ async function checkForPosts(reschedule)
  * @param {import("../utils/channels.js").GuildTextChannel} channel 
  * @param {string|object} message Message data
  * @param {boolean} nsfw Whether the message is NSFW
- * @returns {Promise<?import("discord.js").Message>} The message, or undefined the permissions are missing or the message is NSFW but the channel isn't.
+ * @returns {Promise<?Message>} The message, or undefined the permissions are missing or the message is NSFW but the channel isn't.
  */
 async function postToChannel(channel, message, nsfw)
 {
