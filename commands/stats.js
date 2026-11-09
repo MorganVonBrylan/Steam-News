@@ -34,7 +34,7 @@ export async function run(inter)
 			{ name: t("ping"), value: t("ping-ms", ping), inline },
 		],
 		footer:{
-			iconUrl: bot.avatarURL(),
+			iconURL: bot.avatarURL(),
 			text: `${bot.username} ${version}`,
 		},
 	}]});

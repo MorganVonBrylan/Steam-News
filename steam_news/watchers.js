@@ -155,7 +155,7 @@ const postsToEmbeds = toEmbeds.bind(null, postEmbed);
 function getSender(data, baseEmbeds, query) {
 	const { serverToLang, toEmbeds } = data;
 	const nNews = baseEmbeds.length;
-	const { footer: { iconUrl } } = baseEmbeds[0];
+	const { footer: { iconURL } } = baseEmbeds[0];
 	const embeds = { english: baseEmbeds };
 	const loggedErrors = new Set();
 
@@ -188,8 +188,8 @@ function getSender(data, baseEmbeds, query) {
 			{
 				newsitems.length = nNews;
 				const trEmbeds = await toEmbeds(newsitems, lang);
-				if(iconUrl) for(const embed of trEmbeds)
-					embed.footer.iconUrl = iconUrl;
+				if(iconURL) for(const embed of trEmbeds)
+					embed.footer.iconURL = iconURL;
 				
 				embeds[lang] = trEmbeds;
 			}
