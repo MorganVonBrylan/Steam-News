@@ -3,7 +3,7 @@ import checkSKU from "./~checkSKU.js";
 import { webhookInfo } from "./~webhook.js";
 import { getWatcherChannel, setWebhook } from "../../../steam_news/db_api.js";
 import { getBasicGroupDetails, STEAM_APPID } from "../../../steam_news/api.js";
-import { buttons, register } from "../../../utils/components.js";
+import { buttonRow, register } from "../../../utils/components.js";
 import { WebhookAutoSetter, mentionLatest } from "./auto.js";
 import { parseOption } from "./~autocomplete.js";
 
@@ -115,7 +115,7 @@ export async function run(inter)
 export function autoSuggestButton(t, watcher, inter, callback, idAndToken)
 {
 	const customId = inter.id;
-	const button = buttons({customId, label: t("webhook-set-auto")});
+	const button = buttonRow({customId, label: t("webhook-set-auto")});
 	register(customId, async () => {
 		const { guild } = inter;
 		const me = await guild.members.fetchMe();

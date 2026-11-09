@@ -1,5 +1,5 @@
 
-import { buttons, selectMenu, register, unregister } from "./components.js";
+import { buttonRow, selectMenu, register, unregister } from "./components.js";
 import { ButtonStyle } from "discord.js";
 const { Secondary: style } = ButtonStyle;
 const registerOptions = { singleUse: true, timeout: 3600 };
@@ -58,7 +58,7 @@ export default function paginate(interaction, data)
 			register(next, inter => paginate(inter, {...data, page: page+1}), registerOptions);
 		// This one is not single-use because the user can cancel the modal
 		register(choose, choosePage.bind(data), { timeout: registerOptions.timeout });
-		reply.components = [buttons(components)];
+		reply.components = [buttonRow(components)];
 	}
 
 	return interaction.customId ? interaction.update(reply)

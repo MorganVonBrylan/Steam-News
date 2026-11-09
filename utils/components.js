@@ -37,7 +37,7 @@ export function selectMenu(selectMenu)
  * @param  {...Button} buttons 
  * @returns An action row
  */
-export function buttons(...buttons)
+export function buttonRow(...buttons)
 {
 	if(buttons[0] instanceof Array)
 		[buttons] = buttons;
