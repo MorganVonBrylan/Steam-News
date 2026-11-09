@@ -82,7 +82,7 @@ export async function search(terms, cc = "US")
 }
 
 
-// So far ISteamNews has no language arg and ignores the Accept-Language headeer :-(
+// So far ISteamNews has no language arg and ignores the Accept-Language header :-(
 
 /**
  * Queries the Steam API to get the latest news of an app.

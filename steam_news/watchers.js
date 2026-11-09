@@ -148,7 +148,7 @@ const newsToEmbeds = toEmbeds.bind(null, toEmbed);
 const postsToEmbeds = toEmbeds.bind(null, postEmbed);
 
 /**
- * @param {{serverToLang:{[id:string]:string}, toEmbeds:(news:object[],language:string)=>ReturnType<newsToEmbeds>, attemps:number, successes:number}} data The data for the current posting session.
+ * @param {{serverToLang:{[id:string]:string}, toEmbeds:(news:object[],language:string)=>ReturnType<newsToEmbeds>, attempts:number, successes:number}} data The data for the current posting session.
  * @param {object[]} baseEmbeds The news embeds in the default language
  * @param {(lang:string)=>ReturnType<query>} query The query function bound to an appid
  */
