@@ -227,7 +227,7 @@ export const hasFilter = stmts.setFilter;
  */
 export const setFilter = stmts.setFilter;
 
-/** @typedef {{appid:number, name:string, filter:?filter}} Filter */
+/** @typedef {{appid:number, guildId: string, name:string, filter:?filter}} Filter */
 /** @typedef {Filter & {slot:slot}} FilterWithSlot */
 /** @typedef {{length:number, free?:FilterWithSlot, voteFilters: FilterWithSlot[], premiumFilters: FilterWithSlot[], [appid:number]: FilterWithSlot}} DetailedFilterList */
 /**
