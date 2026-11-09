@@ -16,6 +16,7 @@ export const MAX_WITH_VOTE = MAX_FREE + VOTE_BONUS;
 
 
 /** @typedef {import("../../steam_news/db_api.js").Filter} Filter */
+/** @typedef {import("../../steam_news/db_api.js").FilterWithSlot} FilterWithSlot */
 
 
 /*

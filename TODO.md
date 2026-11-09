@@ -1,11 +1,11 @@
 # FILTERS
 
 ### To do
-- set: show a warning if a filter aleady exists, and put buttons to merge, replace or cancel
-- uhh maybe check if getFilters really needs to return that many fields. Maybe {[appid:numer]:string} is enough
+- list: take into account that there might be more than 25 premium filters
+- actually make the filters work in watchers.js and such
 
 ### Done
-- help, remove, list
+- help, set, remove, list
 - additional votes with DBL vote
 - infinite votes with premium/gold
 

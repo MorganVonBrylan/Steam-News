@@ -6,6 +6,37 @@ import { dbl_url, MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE } from "./~data.js";
 import { storeButtons, translateFilter } from "./~cmdUtils.js";
 import { votedDBL, premiumGuilds } from "../../steam_news/VIPs.js";
 
+import { buttonRow, register } from "../../utils/components.js";
+import { ButtonStyle } from "discord.js";
+const registerOptions = { singleUse: true, timeout: 900 };
+
+/** @import {Filter,FilterWithSlot} from "./~data.js" */
+
+/** @extends Set<string> */
+class Terms extends Set {
+	/** @param {string[]|`${"+"|"-"}${string}`} terms @param {"+"|"-"} type */
+	constructor(terms, type = terms[0]) {
+		super(Array.isArray(terms) ? terms : terms.substring(1).split(","));
+		this.type = type;
+	}
+	#assignPropsTo(set) {
+		set.type = this.type;
+		set.toString = this.toString;
+		return set;
+	}
+	/** @param {Set<string>} other @returns {typeof this} @see Set.prototype.union */
+	union(other) {
+		return this.#assignPropsTo(super.union(other));
+	}
+	/** @param {Set<string>} other @returns {typeof this} @see Set.prototype.difference */
+	difference(other) {
+		return this.#assignPropsTo(super.difference(other));
+	}
+	toString() {
+		return `${this.type}${Array.from(this)}`;
+	}
+}
+
 /**
  * @type {(t: (key:string, arg?:*)=>string, hardMaxReached:boolean)=>string}
  * Get the warning message about a maximum number of filters being reached.
@@ -67,33 +98,125 @@ export async function run(inter)
 		return inter.reply({flags: "Ephemeral", content: maxWarning(t, hasVoted)});
 
 	const type = options.getString("type");
-	const terms = options.getString("filter")
+	const terms = new Terms(
+		options.getString("filter")
 		.toLowerCase()
 		.split(",")
-		.map(string => string.trim())
-		.filter((str, i, arr) => str && arr.indexOf(str) === i)
-		.join(",");
-	const filter = { filter: `${slot}\n${type}${terms}`, appid, guildId };
+		.map(string => string.trim()),
+		type,
+	);
+	terms.delete("");
+
+	if(existingFilter)
+	{
+		handleConflict(inter, existingFilter, terms, { hasPremium, hasVoted, nFilters });
+		return;
+	}
+
+	const filter = { filter: `${slot}\n${terms}`, appid, guildId };
 	const { changes } = setFilter(filter);
 	if(changes)
 	{
-		const newNFilters = existingFilter ? nFilters : nFilters+1;
-		const hasFiltersLeft = hasPremium || hasVoted && newNFilters < MAX_WITH_VOTE;
-		let reply = `${t("added", existingFilter?.name || getAppName(appid))}
-			${translateFilter(t, filter)}`;
-
-		if(hasFiltersLeft)
-			reply = { embeds: [{ description: reply, }] };
-		else
-		{
-			const callToAction = maxWarning(t, newNFilters === (dbl_url ? MAX_WITH_VOTE : MAX_FREE), "reached");
-			reply = {
-				embeds: [{ description: `${reply}\n\n-# ${callToAction}` }],
-				components: [storeButtons],
-			};
-		}
-		inter.reply(reply);
+		const hasFiltersLeft = hasPremium || hasVoted && nFilters+1 < MAX_WITH_VOTE;
+		inter.reply(filterSetReply(t, filter, hasFiltersLeft, nFilters+1));
 	}
 	else
 		inter.reply({flags: "Ephemeral", content: t("add-failed")});
+}
+
+
+const { Primary: PRIMARY, Success: SUCCESS, Secondary: SECONDARY } = ButtonStyle;
+/**
+ * Suggest replacing the old filter, merging it with the new, or cancelling the operation.
+ * @param {import("discord.js").ChatInputCommandInteraction} inter
+ * @param {FilterWithSlot} existingFilter 
+ * @param {Terms} newFilter 
+ * @param {{ hasPremium:boolean, hasVoted:boolean, nFilters:number }} info
+ */
+function handleConflict(inter, existingFilter, newFilter, { hasPremium, hasVoted, nFilters })
+{
+	const t = tr.set(inter.locale, "filter");
+	const hasFiltersLeft = hasPremium || hasVoted && nFilters < MAX_WITH_VOTE;
+	const nonce = inter.id;
+	const REPLACE = `replace-filter-${nonce}`;
+	const MERGE = `merge-filters-${nonce}`;
+	const CANCEL = `cancel-filter-${nonce}`;
+	inter.reply({
+		flags: "Ephemeral",
+		embeds: [{ description: `${t("conflict")}\n${translateFilter(t, existingFilter)}\n${t("conflict-action")}` }],
+		components: [buttonRow(
+			{ customId: REPLACE, label: t("conflict-replace"), style: PRIMARY },
+			{ customId: MERGE, label: t("conflict-merge"), style: SUCCESS },
+			{ customId: CANCEL, label: t("conflict-cancel"), style: SECONDARY },
+		)],
+	});
+
+	/** @param {import("discord.js").MessageComponentInteraction} inter */
+	function updateFilterAndReply(inter) {
+		if(setFilter(existingFilter).changes)
+		{
+			const reply = filterSetReply(t, existingFilter, hasFiltersLeft, nFilters);
+			reply.components ??= [];
+			inter.update(reply);
+		}
+		else
+			inter.update({content: t("add-failed"), components: []});
+	}
+
+	register(REPLACE, inter => {
+		existingFilter.filter = `${existingFilter.slot}\n${newFilter}`;
+		updateFilterAndReply(inter);
+	}, registerOptions);
+
+	register(MERGE, inter => {
+		const [slot, line1, line2] = existingFilter.filter.split("\n");
+		const lineOfType = line1[0] === newFilter.type ? line1 : line2;
+		if(lineOfType)
+		{
+			const mergedTermsOfType = new Terms(lineOfType).union(newFilter);
+			const otherLine = lineOfType !== line1 ? line1 : line2;
+			const filteredOtherTerms = otherLine
+				? new Terms(otherLine).difference(newFilter)
+				: { size: 0 };
+			existingFilter.filter = filteredOtherTerms.size
+				? `${slot}\n${mergedTermsOfType}\n${filteredOtherTerms}`
+				: `${slot}\n${mergedTermsOfType}`;
+		}
+		else
+		{
+			const filteredOldTerms = new Terms(line1).difference(newFilter);
+			const allTerms = filteredOldTerms.size
+				? `${filteredOldTerms}\n${newFilter}`
+				: newFilter.toString();
+			existingFilter.filter = `${slot}\n${allTerms}`;
+		}
+
+		updateFilterAndReply(inter);
+	}, registerOptions);
+
+	register(CANCEL, () => inter.deleteReply(), registerOptions);
+}
+
+
+/**
+ * 
+ * @param {(key:string, filter:string) => string} t Translator function, set to "filter"
+ * @param {Filter} filter The filter that was just set
+ * @param {boolean} hasFiltersLeft Whether the user could still add fitlers afterwards
+ * @param {number} nFilters Number of filters after setting that one
+ */
+function filterSetReply(t, filter, hasFiltersLeft, nFilters)
+{
+	const reply = `${t("added", filter.name || getAppName(filter.appid))}\n${translateFilter(t, filter)}`;
+
+	if(hasFiltersLeft)
+		return { embeds: [{ description: reply }] };
+	else
+	{
+		const callToAction = maxWarning(t, nFilters === (dbl_url ? MAX_WITH_VOTE : MAX_FREE), "reached");
+		return {
+			embeds: [{ description: `${reply}\n\n-# ${callToAction}` }],
+			components: [storeButtons],
+		};
+	}
 }
