@@ -221,11 +221,7 @@ export function getWatcherChannel(type, guildAndAppIds)
  * @typedef {Filter & {slot:FilterSlot}} FilterWithSlot 
  * @typedef {{length:number, free?:FilterWithSlot, voteFilters: FilterWithSlot[], premiumFilters: FilterWithSlot[], [appid:number]: FilterWithSlot}} DetailedFilterList 
  */
-/**
- * @type {(guildId:string)=>boolean}
- * Get whether a server alraady has a filter or not
- */
-export const hasFilter = stmts.setFilter;
+
 /**
  * @type {(filter:{filter:?filter, appid:number, guildId:string})=>{changes:number}}
  * Set the filter for a watcher

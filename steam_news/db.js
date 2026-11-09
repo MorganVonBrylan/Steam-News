@@ -241,7 +241,6 @@ export const stmts = dictionary({
 	getWatcherChannel: db.prepare("SELECT channelId from Watchers WHERE appid = $appid AND guildId = $guildId").pluck(),
 	isWatched: db.prepare("SELECT EXISTS(SELECT 1 FROM Watchers WHERE appid = ?)").pluck(),
 
-	hasFilter: db.prepare("SELECT EXISTS(SELECT 1 FROM Watchers WHERE guildId = ? AND filter IS NOT NULL)").pluck(),
 	setFilter: db.prepare("UPDATE Watchers SET filter = $filter WHERE appid = $appid AND guildId = $guildId"),
 	getFilters: db.prepare("SELECT w.appid, guildId, name, filter FROM Watchers w JOIN Apps a ON w.appid = a.appid WHERE guildId = ? AND filter <> ''"),
 
