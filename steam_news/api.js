@@ -90,7 +90,7 @@ export async function search(terms, cc = "US")
  * @param {string} language (optional) a Steam API language (see https://partner.steamgames.com/doc/store/localization/languages).
  *
  * @typedef {{appid:string, eventId:string,url:string,title:string,thumbnail:?string,contents:string,date:string}} NewsItem
- * @returns {Promise<{appid:number,newsitems:NewsItem[]}|{appid:number,error:string}>} The news, or an object with error
+ * @returns {Promise<{appid:number,newsitems:NewsItem[]}|{appid:number,error:string}>} The news, or an object with error. The date is in the format returned by .toUTCString()
  */
 export async function query(appid, language)
 {
@@ -556,3 +556,11 @@ const getGroupPostImage = Object.freeze({
 		return this.image;
 	},
 });
+
+
+
+export async function enableMocks()
+{
+	const mocks = await import("./api_mocks.js");
+	query = mocks.query;
+}

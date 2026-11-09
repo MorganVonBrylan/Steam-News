@@ -8,11 +8,10 @@ if(auth.debug)
 {
 	process.env.DEBUG = true;
 	auth.logLevel = "verbose";
+	if(auth.enableMocks)
+		import("./steam_news/api.js").then(api => api.enableMocks());
 }
-else
-	auth.logLevel ??= "log";
-
-switch(auth.logLevel) {
+else switch(auth.logLevel ??= "log") {
 	case "silent": console.error = Function.noop;
 	case "error": console.warn = Function.noop;
 	case "warn": console.log = Function.noop;

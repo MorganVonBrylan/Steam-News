@@ -50,6 +50,7 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 		"voteFilterBonus": 3,
 	},
 	"debug": false,
+	"enableMocks": false,
 	"logLevel": "warn",
 	"backups": false,
 
@@ -66,7 +67,7 @@ You will need an `auth.json` file in the same folder as `bot.js` widht the follo
 	"donate": "(optional) The URL for donations"
 }
 ```
-`debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode.
+`debug` should be `true` in development and `false` (or not set) in production. In debug mode, commands are created as server commands for quicker updating. They are global commands otherwise. Also, commands under the `debug` subfolder are ignored unless in debug mode. `enableMocks` replaces actual news with fake ones. This setting is ignored if `debug` is falsy.
 
 Additionally, `debug` can be a list of entitlements to immediately enable in the test server for the current bot session, for example `["Watchers", "Chameleon"]`. See `commands/~debug/add-entitlements.js`
 
