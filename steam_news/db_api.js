@@ -214,22 +214,24 @@ export function getWatcherChannel(type, guildAndAppIds)
 	return channelGetters[type](guildAndAppIds);
 }
 
+
+/**
+ * @import {FilterSlot, Filter as filter} from "./db.js"
+ * @typedef {{appid:number, guildId: string, name:string, filter:?filter}} Filter
+ * @typedef {Filter & {slot:FilterSlot}} FilterWithSlot 
+ * @typedef {{length:number, free?:FilterWithSlot, voteFilters: FilterWithSlot[], premiumFilters: FilterWithSlot[], [appid:number]: FilterWithSlot}} DetailedFilterList 
+ */
 /**
  * @type {(guildId:string)=>boolean}
  * Get whether a server alraady has a filter or not
  */
 export const hasFilter = stmts.setFilter;
 /**
- * @typedef {"free"|"vote"|"premium"} slot
- * @typedef {`${slot}\n${"+"|"-"}${string}`} filter
  * @type {(filter:{filter:?filter, appid:number, guildId:string})=>{changes:number}}
  * Set the filter for a watcher
  */
 export const setFilter = stmts.setFilter;
 
-/** @typedef {{appid:number, guildId: string, name:string, filter:?filter}} Filter */
-/** @typedef {Filter & {slot:slot}} FilterWithSlot */
-/** @typedef {{length:number, free?:FilterWithSlot, voteFilters: FilterWithSlot[], premiumFilters: FilterWithSlot[], [appid:number]: FilterWithSlot}} DetailedFilterList */
 /**
  * @overload
  * @param {string} guildId
