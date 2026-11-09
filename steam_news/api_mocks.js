@@ -20,10 +20,10 @@ export async function query(appid, language)
 	const fakeNews = {
 		appid, eventId: +Math.random().toString().substring(2),
 		url: "https://perdu.com/",
-		title: `${language} ${mockSentence()}`,
+		title: `${language} ${appid} patch notes`,
 		contents: `${mockSentence()}. ${mockSentence()}.\n${mockSentence()}!`,
 		date: date.toUTCString(),
 	};
-	console.info("Fake news created:", fakeNews);
+	console.info("Fake news created:", fakeNews.title);
 	return { appid, newsitems: [fakeNews] };
 }

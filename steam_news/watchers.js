@@ -103,7 +103,7 @@ const { steamLanguages } = localesFile;
  * 4,5,6	58+57+50 = 165
  * 7,8,9	32+39+42 = 113
  */
-export const ranges = ["= '1'", "= '2'", "= '3'", "IN ('4', '5', '6')", "IN ('7', '8', '9')"];
+export const ranges = ["= '5'", "= '2'", "= '3'", "IN ('4', '5', '6')", "IN ('7', '8', '9')"];
 const newsRanges = ranges.map(range => {
 	const stmt = db.prepare(`SELECT DISTINCT appid FROM Watchers
 		WHERE substr(appid, 1, 1) ${range}`).pluck();
@@ -147,18 +147,39 @@ function toEmbeds(toEmbed, news, language) {
 const newsToEmbeds = toEmbeds.bind(null, toEmbed);
 const postsToEmbeds = toEmbeds.bind(null, postEmbed);
 
+
 /**
- * @param {{serverToLang:{[id:string]:string}, toEmbeds:(news:object[],language:string)=>ReturnType<newsToEmbeds>, attempts:number, successes:number}} data The data for the current posting session.
- * @param {object[]} baseEmbeds The news embeds in the default language
+ * Filter out news
+ * @param {?import("./db.js").Filter} filter The filter
+ * @param {Awaited<ReturnType<toEmbeds>>} news The news to filter 
+ */
+function filterEmbeds(filter, news)
+{
+	if(!filter) return news;
+	const [, line1, line2] = filter.split("\n");
+	const required = line1[0] === "+" ? line1.substring(1).split(",") : null;
+	const excluded = (required ? line2 : line1)?.substring(1).split(",");
+	return news.filter(({title, description}) => {
+		const termMatch = term => title.includes(term) || description.includes(term);
+		return (!required || required.some(termMatch)) && !excluded?.some(termMatch);
+	});
+}
+
+/**
+ * @typedef {Awaited<ReturnType<toEmbed>>} Embed
+ * @param {{serverToLang:{[id:string]:string}, toEmbeds:(news:Embed[],language:string)=>ReturnType<newsToEmbeds>, attempts:number, successes:number, filteredOut:number}} data The data for the current posting session.
+ * @param {Embed[]} baseEmbeds The news embeds in the default language
  * @param {(lang:string)=>ReturnType<query>} query The query function bound to an appid
  */
 function getSender(data, baseEmbeds, query) {
 	const { serverToLang, toEmbeds } = data;
 	const nNews = baseEmbeds.length;
 	const { footer: { iconURL } } = baseEmbeds[0];
+	/** @type {{[language:string]: typeof baseEmbeds}} */
 	const embeds = { english: baseEmbeds };
 	const loggedErrors = new Set();
 
+	/** @param {import("./db.js").Watcher} watcher */
 	return function sendNews(watcher) {
 		const { guildId, channelId, roleId } = watcher;
 		return (
@@ -195,7 +216,14 @@ function getSender(data, baseEmbeds, query) {
 			}
 		}
 
-		return Promise.allSettled(embeds[lang].map(embed => {
+		const { filter } = watcher;
+		const newsToSend = filter?.startsWith("premium") && !premiumGuilds.has(guildId)
+			? embeds[lang]
+			: filterEmbeds(filter, embeds[lang]);
+		if(!newsToSend.length)
+			data.attempts--;
+		
+		return Promise.allSettled(newsToSend.map(embed => {
 			return channel.send(roleId
 				? { content: `<@&${roleId}>`, embeds: [embed] }
 				: { embeds: [embed] }
@@ -222,7 +250,6 @@ function getSender(data, baseEmbeds, query) {
 }
 
 
-
 /**
  * Triggers news watchers.
  * @param {number} range Index of the range of appids to check (see exported 'ranges').
@@ -243,7 +270,7 @@ export async function checkForNews(range, reschedule = false)
 	const data = {
 		serverToLang,
 		toEmbeds: newsToEmbeds,
-		attempts: 0, successes: 0,
+		attempts: 0, successes: 0, filteredOut: 0,
 	};
 	let total = 0;
 	const promises = [];
