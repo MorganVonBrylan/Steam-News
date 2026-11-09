@@ -18,7 +18,7 @@ db.run = function(sql, ...params) { return this.prepare(sql).run(...params); }
 
 /**
  * @typedef {"free"|"vote"|"premium"} FilterSlot
- * @typedef {`${FilterSlot}\n${"+"|"-"}${string}`} Filter
+ * @typedef {`${FilterSlot}\n${"+"|"-"}${string}`|`${FilterSlot}\n+${string}\n-${string}`} Filter
  * @typedef {{appid:number, name:string, nsfw:?boolean, guildId:string, channelId:string, roleId:?string, premium:boolean, webhook:?string, filter?:Filter}} Watcher
  * @typedef {Watcher & {latest:number}} NewsWatcher
  * @typedef {Watcher & {lastPrice: number}} PriceWatcher

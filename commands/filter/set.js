@@ -171,6 +171,8 @@ function handleConflict(inter, existingFilter, newFilter, { hasPremium, hasVoted
 	register(MERGE, inter => {
 		const [slot, line1, line2] = existingFilter.filter.split("\n");
 		const lineOfType = line1[0] === newFilter.type ? line1 : line2;
+		/** @type {Terms[]} */
+		let finalLines;
 		if(lineOfType)
 		{
 			const mergedTermsOfType = new Terms(lineOfType).union(newFilter);
@@ -178,19 +180,22 @@ function handleConflict(inter, existingFilter, newFilter, { hasPremium, hasVoted
 			const filteredOtherTerms = otherLine
 				? new Terms(otherLine).difference(newFilter)
 				: { size: 0 };
-			existingFilter.filter = filteredOtherTerms.size
-				? `${slot}\n${mergedTermsOfType}\n${filteredOtherTerms}`
-				: `${slot}\n${mergedTermsOfType}`;
+			if(filteredOtherTerms.size)
+				finalLines = mergedTermsOfType.type === "+"
+					? [mergedTermsOfType, filteredOtherTerms]
+					: [filteredOtherTerms, mergedTermsOfType];
+			else
+				finalLines = [mergedTermsOfType];
 		}
 		else
 		{
 			const filteredOldTerms = new Terms(line1).difference(newFilter);
-			const allTerms = filteredOldTerms.size
-				? `${filteredOldTerms}\n${newFilter}`
-				: newFilter.toString();
-			existingFilter.filter = `${slot}\n${allTerms}`;
+			finalLines = newFilter.type === "+"
+				? [newFilter, filteredOldTerms]
+				: [filteredOldTerms, newFilter];
 		}
 
+		existingFilter.filter = `${slot}\n${finalLines.join("\n")}`;
 		updateFilterAndReply(inter);
 	}, registerOptions);
 
