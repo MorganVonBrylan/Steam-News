@@ -90,7 +90,7 @@ export async function search(terms, cc = "US")
  * @param {string} language (optional) a Steam API language (see https://partner.steamgames.com/doc/store/localization/languages).
  *
  * @typedef {{appid:string, eventId:string,url:string,title:string,thumbnail:?string,contents:string,date:string}} NewsItem
- * @returns {Promise<{appid:number,newsitems:NewsItem[]}|{appid:number,error:string}>} The news, or an object with error. The date is in the format returned by .toUTCString()
+ * @returns {Promise<{appid:number,newsitems:NewsItem[]}|{appid:number,error:string,newsitems:undefined}>} The news, or an object with error. The date is in the format returned by .toUTCString()
  */
 export async function query(appid, language)
 {
@@ -511,7 +511,7 @@ async function curatorDetails(id, lang)
  * @param {number} clanid The group's id
  * @param {string} lang A Steam language
  * @param {number} count The number of news to fetch. Maximum is 20, defaults to 3.
- * @returns {Promise<{clanid:number, newsitems:GroupPost[]}|{clanid:number, error:string}>} The posts, or an object with error
+ * @returns {Promise<{clanid:number, newsitems:GroupPost[]}|{clanid:number, error:string, newsitems:undefined}>} The posts, or an object with error
  */
 export async function queryGroup(clanid, lang = "english", count = 3)
 {
