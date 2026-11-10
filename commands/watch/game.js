@@ -115,7 +115,13 @@ export async function run(inter)
 				reply += `\n${t("webhook-auto-unset")}`;
 
 		const color = type === "news" ? GAME_COLOR : PRICE_COLOR;
-		reply = { embeds: [{ color, description: reply }]};
+		if(reply.content)
+		{
+			reply.embeds = [{ color, description: reply.content }];
+			reply.content = undefined;
+		}
+		else
+			reply = { embeds: [{ color, description: reply }]};
 
 		updateUnwatch(guild);
 		if(!success.webhook && chameleonGuilds.has(guild.id))
@@ -123,7 +129,7 @@ export async function run(inter)
 			const t = tr.set(locale, "premium.chameleon");
 			const baseReply = reply.embeds[0].description;
 			reply.embeds[0].description += `\n\n${t("watch-suggestAuto")}`;
-			reply.components = autoSuggestButton(t,
+			const suggestButton = autoSuggestButton(t,
 				{ type, appid, channelId: channel.id },
 				inter,
 				result => inter.editReply({
@@ -135,6 +141,7 @@ export async function run(inter)
 					components: [],
 				}),
 			);
+			reply.components = suggestButton.concat(reply.components || []);
 		}
 		inter.editReply(reply);
 	}, async err => {
