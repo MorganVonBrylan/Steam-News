@@ -336,7 +336,19 @@ export const getChannelWebhooks = stmts.getChannelWebhooks;
 
 
 /**
- * @type {((guildId:string)=>({type:"news"|"price", appid:number, name:string, channelId:string,webhook:WebhookInfo}|{type:"steam", channelId:string, webhook:WebhookInfo}|{type:"group", clanid:string, channelId:string, webhook:WebhookInfo})[]) & (guildId:string, merge:false)=>({news: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], price: {appid:number, name:string, channelId:string, webhook:WebhookInfo}[], steam: ?{channelId:string, webhook:WebhookInfo}, group: {clanid:string, channelId:string, webhook:WebhookInfo}[]})}
+ * @typedef {{name:string, channelId:string, webhook:WebhookInfo}} WatcherWebhook
+ * @typedef {WatcherWebhook & { appid:string }} AppWatcherWebhook
+ * @typedef {WatcherWebhook & { clanid:string }} GroupWatcherWebhook
+ * @type {((guildId:string, merge?:true)=>(
+ *    {type:"news"|"price"|"steam"} & AppWatcherWebhook
+ *  | {type:"group"} & GroupWatcherWebhook
+ * )[]
+ * ) & (guildId:string, merge:false)=>({
+ 	* news: AppWatcherWebhook[],
+	* price: AppWatcherWebhook[],
+	* steam: ?AppWatcherWebhook,
+	* group: GroupWatcherWebhook[],
+ * })}
  * Returns all the whatchers with a webhook of a given server.
  * @param {string} guildId The guild id.
  * @param {boolean} [merge] Whether to merge the results into an array. Defaults to true.
