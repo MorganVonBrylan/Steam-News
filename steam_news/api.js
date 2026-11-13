@@ -15,6 +15,7 @@ const BASE_SEARCH_URL = `${STORE_BASE_URL}api/storesearch/?l=english`;
 const GROUP_POST_URL = `${STORE_BASE_URL}events/ajaxgetpartnereventspageable/?clan_accountid=`;
 
 export const STEAM_APPID = 593110;
+export const STEAM_NAME = "Steam News Hub";
 export const STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/593110/403da5dab6ce5ea2882dc5b7636d7c4dbb73c81a.jpg";
 
 

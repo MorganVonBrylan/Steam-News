@@ -1,6 +1,6 @@
 
 import db, { stmts } from "./db.js";
-import { STEAM_APPID } from "./api.js";
+import { STEAM_APPID, STEAM_NAME } from "./api.js";
 import { fixedDictionary } from "../utils/dictionaries.js";
 
 /**
@@ -152,7 +152,7 @@ export function getWatchedApps(guildId, includeSteam = false)
 		const watcher = stmts.getSteamWatcher(guildId);
 		if(watcher)
 		{
-			Object.assign(watcher, {appid: STEAM_APPID, name: "Steam News Hub", nsfw: false});
+			Object.assign(watcher, {appid: STEAM_APPID, name: STEAM_NAME, nsfw: false});
 			apps.push(watcher);
 		}
 	}

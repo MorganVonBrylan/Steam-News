@@ -1,5 +1,5 @@
 
-import { STEAM_APPID } from "./api.js";
+import { STEAM_APPID, STEAM_NAME } from "./api.js";
 import SQLite3 from "better-sqlite3";
 
 import { dictionary } from "../utils/dictionaries.js";
@@ -111,7 +111,7 @@ if(currentVersion < DB_VERSION)
 	switch(currentVersion)
 	{
 	case 0: // first time
-		db.exec(`INSERT INTO Apps (appid, name, nsfw) VALUES (${STEAM_APPID}, 'Steam News Hub', FALSE);`);
+		db.exec(`INSERT INTO Apps (appid, name, nsfw) VALUES (${STEAM_APPID}, '${STEAM_NAME}', FALSE);`);
 		break;
 
 	case 1:
@@ -126,10 +126,10 @@ if(currentVersion < DB_VERSION)
 
 	case 3:
 		try {
-			db.exec(`INSERT INTO Apps (appid, name, nsfw) VALUES (${STEAM_APPID}, 'Steam News Hub', FALSE);`);
+			db.exec(`INSERT INTO Apps (appid, name, nsfw) VALUES (${STEAM_APPID}, '${STEAM_NAME}', FALSE);`);
 		} catch {
 			db.exec(`
-				UPDATE Apps SET name = 'Steam News Hub' WHERE appid = ${STEAM_APPID};
+				UPDATE Apps SET name = '${STEAM_NAME}' WHERE appid = ${STEAM_APPID};
 				INSERT INTO SteamWatchers(guildId, channelId) SELECT guildId, channelId FROM Watchers WHERE appid = ${STEAM_APPID};
 				DELETE FROM Watchers WHERE appid = ${STEAM_APPID};`);
 		}
@@ -306,7 +306,7 @@ export const stmts = dictionary({
 			FROM ${table} w JOIN Apps a ON w.appid = a.appid
 			WHERE guildId = ? AND webhook IS NOT NULL
 		`),
-		`SELECT ${STEAM_APPID} "appid", 'Steam News Hub' "name", channelId, webhook
+		`SELECT ${STEAM_APPID} "appid", '${STEAM_NAME}' "name", channelId, webhook
 		FROM SteamWatchers WHERE guildId = ? AND webhook IS NOT NULL`,
 		`SELECT g.clanId, name, channelId, webhook
 		FROM GroupWatchers w JOIN Groups g ON w.clanid = g.clanid
@@ -396,7 +396,7 @@ export const stmts = dictionary({
 
 if(!stmts.isAppKnown.get(STEAM_APPID))
 	db.run(`INSERT INTO Apps (appid, name, nsfw)
-			VALUES (${STEAM_APPID}, 'Steam News Hub', FALSE)`);
+			VALUES (${STEAM_APPID}, '${STEAM_NAME}', FALSE)`);
 
 const getAll = Object.keys(stmts).filter(name => name !== "getStats"
 	&& (name.startsWith("get") || name.startsWith("find"))
