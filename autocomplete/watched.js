@@ -8,12 +8,12 @@ import { gameToOption } from "../utils/commands.js";
 /** @import {WatcherType} from "../steam_news/db_api.js" */
 
 /** @type {readonly WatcherType[]} */
-export const allTypes = Object.freeze(["news", "steam", "guild", "groups"]);
+export const allTypes = Object.freeze(["news", "steam", "guild", "group"]);
 
 const getters = Object.freeze({
 	news: getWatchedApps,
 	prices: getWatchedPrices,
-	groups: getWatchedGroups,
+	group: getWatchedGroups,
 });
 
 export const STEAM = `n${STEAM_APPID}`;
@@ -41,6 +41,9 @@ export function makeAutocomplete(watcherTypes, withAll)
 	watcherTypes = new Set(watcherTypes);
 	const withSteam = watcherTypes.has("steam");
 	watcherTypes.delete("steam");
+	for(const type of watcherTypes)
+		if(!(type in getters))
+			throw new RangeError("Invalid watcher type", { cause: type });
 	return inter => {
 		const { guildId } = inter;
 		const search = inter.options.getFocused();
