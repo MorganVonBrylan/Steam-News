@@ -146,14 +146,16 @@ const newsToEmbeds = toEmbeds.bind(null, toEmbed);
 const postsToEmbeds = toEmbeds.bind(null, postEmbed);
 
 /**
+ * @typedef {Awaited<ReturnType<toEmbed>>} Embed
  * @param {{serverToLang:{[id:string]:string}, toEmbeds:(news:object[],language:string)=>ReturnType<newsToEmbeds>, attemps:number, successes:number}} data The data for the current posting session.
- * @param {object[]} baseEmbeds The news embeds in the default language
+ * @param {Embed[]} baseEmbeds The news embeds in the default language
  * @param {(lang:string)=>ReturnType<query>} query The query function bound to an appid
  */
 function getSender(data, baseEmbeds, query) {
 	const { serverToLang, toEmbeds } = data;
 	const nNews = baseEmbeds.length;
 	const { footer: { iconUrl } } = baseEmbeds[0];
+	/** @type {{[language:string]: typeof baseEmbeds}} */
 	const embeds = { english: baseEmbeds };
 	const loggedErrors = new Set();
 
@@ -211,7 +213,8 @@ function getSender(data, baseEmbeds, query) {
 					&& !loggedErrors.has(err.message))
 				{
 					loggedErrors.add(err.message);
-					error(Object.assign(err, { embeds, targetLang: lang }));
+					const { appid, clanid } = embed;
+					error(Object.assign(err, { embeds, appid, clanid, targetLang: lang }));
 				}
 			});
 		}));
