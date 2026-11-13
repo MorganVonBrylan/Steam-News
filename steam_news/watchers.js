@@ -96,14 +96,13 @@ const { steamLanguages } = localesFile;
  * SELECT substr(appid, 1, 1), COUNT(DISTINCT appid)
  * FROM Watchers
  * GROUP BY substr(appid, 1, 1);
- * Stats on 2025-03-15:
- * 1	544
- * 2	505
- * 3	133
- * 4,5,6	58+57+50 = 165
- * 7,8,9	32+39+42 = 113
+ * Stats on 2026-11-13:
+ * 1	575
+ * 2	633
+ * 3,4	347+163 = 510
+ * 5..9	73+47+37+47+45 = 249
  */
-export const ranges = ["= '5'", "= '2'", "= '3'", "IN ('4', '5', '6')", "IN ('7', '8', '9')"];
+export const ranges = ["= '1'", "= '2'", "IN ('3', '4')", ">= '5'"];
 const newsRanges = ranges.map(range => {
 	const stmt = db.prepare(`SELECT DISTINCT appid FROM Watchers
 		WHERE substr(appid, 1, 1) ${range}`).pluck();
