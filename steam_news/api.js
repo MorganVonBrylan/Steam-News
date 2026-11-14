@@ -564,4 +564,5 @@ export async function enableMocks()
 {
 	const mocks = await import("./api_mocks.js");
 	query = mocks.query;
+	queryGroup = mocks.queryGroup;
 }
