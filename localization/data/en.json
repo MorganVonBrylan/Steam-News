@@ -294,16 +294,16 @@
 				},
 				"set": {
 					"name": "set",
-					"description": "Set the filter for a game",
+					"description": "Set a filter",
 					"options": {
 						"type": {
 							"name": "type",
 							"description": "Whether to require or exclude the keywords",
 							"choices": ["Require", "Exclude"]
 						},
-						"game": {
-							"name": "game",
-							"description": "The game to set a filter for"
+						"game-or-group": {
+							"name": "game-or-group",
+							"description": "The game/group to set a filter for"
 						},
 						"filter": {
 							"name": "filter",
@@ -313,11 +313,11 @@
 				},
 				"remove": {
 					"name": "remove",
-					"description": "Remove the filter for a game",
+					"description": "Remove a filter",
 					"options": {
 						"game": {
-							"name": "game",
-							"description": "The game to re remove the filter of"
+							"name": "game-or-group",
+							"description": "The game/group to remove the filter of"
 						}
 					}
 				},

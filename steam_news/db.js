@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS SteamWatchers (
 	guildId TEXT PRIMARY KEY,
 	channelId TEXT NOT NULL,
 	roleId TEXT DEFAULT NULL,
+	filter TEXT DEFAULT NULL,
 	webhook TEXT DEFAULT NULL
 );
 
@@ -81,6 +82,7 @@ CREATE TABLE IF NOT EXISTS GroupWatchers (
 	channelId TEXT NOT NULL,
 	roleId TEXT DEFAULT NULL,
 	premium BOOLEAN DEFAULT FALSE,
+	filter TEXT DEFAULT NULL,
 	webhook TEXT DEFAULT NULL,
 	PRIMARY KEY (clanid, guildId),
 	CONSTRAINT fk_clanid FOREIGN KEY (clanid) REFERENCES Groups(clanid) ON DELETE CASCADE
@@ -155,7 +157,11 @@ if(currentVersion < DB_VERSION)
 			.map(table => `ALTER TABLE ${table} ADD webhook TEXT DEFAULT NULL;`).join(""));
 
 	case 8:
-		db.exec(`ALTER TABLE Watchers ADD filter TEXT DEFAULT NULL;`);
+		db.exec(`
+			ALTER TABLE Watchers ADD filter TEXT DEFAULT NULL;
+			ALTER TABLE SteamWatchers ADD filter TEXT DEFAULT NULL;
+			ALTER TABLE GroupWatchers ADD filter TEXT DEFAULT NULL;
+		`);
 	}
 
 	db.run("UPDATE DB_Version SET version = ?", DB_VERSION);
@@ -242,7 +248,16 @@ export const stmts = dictionary({
 	isWatched: db.prepare("SELECT EXISTS(SELECT 1 FROM Watchers WHERE appid = ?)").pluck(),
 
 	setFilter: db.prepare("UPDATE Watchers SET filter = $filter WHERE appid = $appid AND guildId = $guildId"),
-	getFilters: db.prepare("SELECT w.appid, guildId, name, filter FROM Watchers w JOIN Apps a ON w.appid = a.appid WHERE guildId = ? AND filter <> ''"),
+	setSteamFilter: db.prepare("UPDATE SteamWatchers SET filter = $filter WHERE guildId = $guildId"),
+	setGroupFilter: db.prepare("UPDATE GroupWatchers SET filter = $filter WHERE clanid = $clanid AND guildId = $guildId"),
+	getFilters: makeProxy([
+		"SELECT w.appid, guildId, name, filter FROM Watchers w JOIN Apps a ON w.appid = a.appid WHERE guildId = ? AND filter <> ''",
+		`SELECT ${STEAM_APPID} "appid", guildId, '${STEAM_NAME}' "name", filter FROM SteamWatchers w WHERE guildId = ? AND filter <> ''`,
+		"SELECT w.clanid, guildId, name, filter FROM GroupWatchers w JOIN Groups g ON w.clanid = g.clanid WHERE guildId = ? AND filter <> ''",
+	], function(guildId) {
+		return this.map(stmt => stmt.all(guildId)).flat();
+	}),
+	a: db.prepare("SELECT w.appid, guildId, name, filter FROM Watchers w JOIN Apps a ON w.appid = a.appid WHERE guildId = ? AND filter <> ''"),
 
 	watchSteam: makeProxy([
 		"UPDATE SteamWatchers SET channelId = $channelId, roleId = $roleId WHERE guildId = $guildId",

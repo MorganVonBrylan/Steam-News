@@ -6,6 +6,7 @@ import { fixedDictionary } from "../utils/dictionaries.js";
 /**
  * @import { NewsWatcher, SteamWatcher, PriceWatcher, GroupWatcher } from "./db.js"
  * @typedef {"news"|"price"|"steam"|"group"} WatcherType
+ * @typedef {`${"n"|"p"|"g"}${number}`} TaggedId
  * @typedef {{clanid:number, name:string, vanityURL:string, latest:number}} Group
  */
 
@@ -217,16 +218,23 @@ export function getWatcherChannel(type, guildAndAppIds)
 
 /**
  * @import {FilterSlot, Filter as filter} from "./db.js"
- * @typedef {{appid:number, guildId: string, name:string, filter:?filter}} Filter
+ * @typedef {{guildId: string, name:string, filter:?filter}} BaseFilter
+ * @typedef {{appid:number} & BaseFilter} AppFilter
+ * @typedef {{clanid:number} & BaseFilter} GroupFilter
+ * @typedef {AppFilter | GroupFilter} Filter
  * @typedef {Filter & {slot:FilterSlot}} FilterWithSlot 
- * @typedef {{length:number, free?:FilterWithSlot, voteFilters: FilterWithSlot[], premiumFilters: FilterWithSlot[], [appid:number]: FilterWithSlot}} DetailedFilterList 
+ * @typedef {{length:number, free?:FilterWithSlot, voteFilters: FilterWithSlot[], premiumFilters: FilterWithSlot[], [appid:`n${number}`]:FilterWithSlot, [clanid:`g${number}`]:FilterWithSlot}} DetailedFilterList 
  */
 
 /**
- * @type {(filter:{filter:?filter, appid:number, guildId:string})=>{changes:number}}
  * Set the filter for a watcher
+ * @param {{filter:?filter, guildId:string} & ({appid:number}|{clanid:number})} params 
+ * @returns {{changes:number}}
  */
-export const setFilter = stmts.setFilter;
+export const setFilter = params => 
+	params.clanid ? stmts.setGroupFilter(params)
+	: params.appid === STEAM_APPID ? stmts.setSteamFilter(params)
+	: stmts.setFilter(params);
 
 /**
  * @overload
@@ -261,7 +269,9 @@ export function getFilters(guildId, detailed = false)
 	{
 		const slot = filter.filter.split("\n", 1)[0];
 		filter.slot = slot;
-		details[filter.appid] = filter;
+		/** @type {Exclude<TaggedId, `p${number}`>} */
+		const taggedId = filter.appid ? `n${filter.appid}` : `g${filter.clanid}`;
+		details[taggedId] = filter;
 		switch(slot)
 		{
 			case "free": details.free = filter; break;

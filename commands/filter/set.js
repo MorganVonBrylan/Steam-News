@@ -1,10 +1,9 @@
 
-import onAutocompleteError from "../../autocomplete/_errorHandler.js";
-import { getAppName, getFilters, getWatchedApps, setFilter } from "../../steam_news/db_api.js";
-import { gameToOption } from "../../utils/commands.js";
+import { getAppName, getGroupName, getFilters, setFilter } from "../../steam_news/db_api.js";
 import { dbl_url, MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE } from "./~data.js";
 import { storeButtons, translateFilter } from "./~cmdUtils.js";
 import { votedDBL, premiumGuilds } from "../../steam_news/VIPs.js";
+import { makeAutocomplete } from "../../autocomplete/watched.js";
 
 import { buttonRow, register } from "../../utils/components.js";
 import { ButtonStyle } from "discord.js";
@@ -47,8 +46,8 @@ const maxWarning = dbl_url
 
 
 export const options = [{
-	type: NUMBER, name: "game", required: true,
-	description: "The game to set a filter for",
+	type: STRING, name: "game-or-group", required: true,
+	description: "The game/group to set a filter for",
 	autocomplete: true,
 }, {
 	type: STRING, name: "type", required: true,
@@ -59,24 +58,19 @@ export const options = [{
 	description: "The keywords to filter, separated by commas.",
 }];
 /** @param {import("discord.js").AutocompleteInteraction} inter */
-export function autocomplete(inter)
-{
-	const search = inter.options.getFocused().toLowerCase();
-	const watchers = getWatchedApps(inter.guildId);
-	const results = search ? watchers.filter(({name}) => name.toLowerCase().includes(search)) : watchers;
-
-	inter.respond(results.slice(0, 25).map(gameToOption)).catch(onAutocompleteError);
-}
+export const autocomplete = makeAutocomplete(["news", "steam", "group"]);
 
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export async function run(inter)
 {
 	const t = tr.set(inter.locale, "filter");
 	const { guildId, options } = inter;
-	const appid = options.getNumber("game", true);
+	const id = options.getString("game-or-group", true);
+	const isGroup = id[0] === "g";
+	const appOrClanId = +id.substring(1);
 	const hasPremium = premiumGuilds.has(guildId);
 	const hasVoted = hasPremium || votedDBL(inter.user.id);
-	const { [appid]: existingFilter, length: nFilters, voteFilters, free } = getFilters(guildId, true);
+	const { [id]: existingFilter, length: nFilters, voteFilters, free } = getFilters(guildId, true);
 
 	const slot = existingFilter?.slot ??
 		(!free ? "free"
@@ -113,7 +107,12 @@ export async function run(inter)
 		return;
 	}
 
-	const filter = { filter: `${slot}\n${terms}`, appid, guildId };
+	const filter = {
+		filter: `${slot}\n${terms}`,
+		guildId,
+		[isGroup ? "clanid" : "appid"]: appOrClanId,
+		name: (isGroup ? getGroupName : getAppName)(appOrClanId),
+	};
 	const { changes } = setFilter(filter);
 	if(changes)
 	{
@@ -212,7 +211,7 @@ function handleConflict(inter, existingFilter, newFilter, { hasPremium, hasVoted
  */
 function filterSetReply(t, filter, hasFiltersLeft, nFilters)
 {
-	const reply = `${t("added", filter.name || getAppName(filter.appid))}\n${translateFilter(t, filter)}`;
+	const reply = `${t("added", filter.name)}\n${translateFilter(t, filter)}`;
 
 	if(hasFiltersLeft)
 		return { embeds: [{ description: reply }] };
