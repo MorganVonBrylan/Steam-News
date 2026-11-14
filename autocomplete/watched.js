@@ -8,11 +8,11 @@ import { gameToOption } from "../utils/commands.js";
 /** @import {WatcherType} from "../steam_news/db_api.js" */
 
 /** @type {readonly WatcherType[]} */
-export const allTypes = Object.freeze(["news", "steam", "guild", "group"]);
+export const allTypes = Object.freeze(["news", "steam", "price", "group"]);
 
 const getters = Object.freeze({
 	news: getWatchedApps,
-	prices: getWatchedPrices,
+	price: getWatchedPrices,
 	group: getWatchedGroups,
 });
 
@@ -75,7 +75,7 @@ export function all(inter, withAll = false)
 /**
  * Do the final processing of search results and respond to the autocomplete with them.
  * @param {AutocompleteInteraction} inter The interaction
- * @param {{news?:App[], prices?:App[], steam?:App, groups?:Group[]}} results The apps & groups
+ * @param {{news?:App[], price?:App[], steam?:App, group?:Group[]}} results The apps & groups
  * @param {?ReturnType<filterName>} filter What to filter the news and prices with. Leave null for no filtering.
  * @param {boolean} addAll Whether to add an "all" option at the top
  */
@@ -88,7 +88,7 @@ export function respond(inter, results, filter = null, addAll = false)
 	const filteredResults = [];
 	for(const type in results)
 	{
-		if(type !== "news" && type !== "prices" && type !== "groups")
+		if(type !== "news" && type !== "price" && type !== "group")
 			continue;
 		const filtered = filter ? results[type].filter(filter) : results[type];
 		for(const watcher of filtered)
