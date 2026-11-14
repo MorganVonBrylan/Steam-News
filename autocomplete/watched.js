@@ -2,7 +2,8 @@
 import onError from "./_errorHandler.js";
 import { STEAM_APPID } from "../steam_news/api.js";
 import { getWatchedPrices, getWatchedApps, getWatchedGroups } from "../steam_news/db_api.js";
-import { gameToOption } from "../utils/commands.js";
+import { formatOptionName } from "../utils/commands.js";
+import { fixedDictionary } from "../utils/dictionaries.js";
 
 /** @import {AutocompleteInteraction} from "discord.js" */
 /** @import {WatcherType} from "../steam_news/db_api.js" */
@@ -98,18 +99,33 @@ export function respond(inter, results, filter = null, addAll = false)
 		filteredResults.push(filtered);
 	}
 
-	// This was originally code exclusive to the chameleon autocompletes, and it's just more efficient to leave the strings where they were
-	const t = tr.set(inter.locale, "premium.chameleon");
-	const type = { n: t("news"), p: t("price"), g: t("group") };
-
+	const { t, makeOption } = makeOptionMaker(inter.locale);
 	const options = filteredResults.flat()
 		.sort((a, b) => a.appid === STEAM ? -1000
 			: b.appid === STEAM ? 1000
 			: a.name > b.name ? 1 : -1)
 		.slice(0, addAll ? 24 : 25)
-		.map(({appid, name}) => gameToOption({appid, name: `[${type[appid[0]]}] ${name}`}));
-
+		.map(({appid, name}) => makeOption(appid, name));
 	if(addAll)
 		options.unshift({name: t("all"), value: ALL});
+
 	return inter.respond(options).catch(onError);
+}
+
+
+const type = fixedDictionary({ n: "news", p: "price", g: "group" });
+/**
+ * @typedef {`${"n"|"p"|"g"}${number}`} TaggedId
+ * Get a function that turns an app/group into an option name, with the watcher type (e.g "News", "Price"...)
+ * @param {string} locale The locale
+ * @returns {{t:(key:string)=>string, makeOption:(taggedId:TaggedId, name:string)=>{name:`[${string}] ${string}`, value:TaggedId}}} The translator function and the option maker
+ */
+export function makeOptionMaker(locale)
+{
+	// This was originally code exclusive to the chameleon autocompletes, and it's just more efficient to leave the strings where they were
+	const t = tr.set(locale, "premium.chameleon");
+	return { t, makeOption: (taggedId, name) => ({
+		name: formatOptionName(`[${t(type[taggedId[0]])}] ${name}`),
+		value: taggedId,
+	}) };
 }
