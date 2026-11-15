@@ -3,6 +3,7 @@ import { getWatchedApps, getWatchedPrices, getWatchedGroups } from "../steam_new
 import { STEAM_APPID } from "../steam_news/api.js";
 import { GAME_COLOR, PRICE_COLOR, STEAM_COLOR, GROUP_COLOR } from "./watch/~commons.js";
 import { sendEmbeds } from "../utils/embeds.js";
+import { translateFilter } from "./filter/~cmdUtils.js";
 
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export function run(inter) {
@@ -20,10 +21,12 @@ export function run(inter) {
 
 	if(steamWatch)
 	{
-		const { webhook, channelId, roleId } = steamWatch;
+		const { webhook, channelId, roleId, filter } = steamWatch;
 		const string = webhook ? "steam-watched-webhook" : "steam-watched";
-		const role = roleId ? `\n${t("ping")} <@&${roleId}>` : "";
-		embeds.push({ color: STEAM_COLOR, description: t(string, `<#${channelId}>`) + role });
+		const lines = [t(string, `<#${channelId}>`)];
+		if(roleId) lines.push(`${t("ping")} <@&${roleId}>`);
+		if(filter) lines.push(filterLine(t, filter));
+		embeds.push({ color: STEAM_COLOR, description: lines.join("\n") });
 	}
 
 	if(watchedGroups.length)
@@ -68,13 +71,19 @@ function toEmbeds(watched, t, type)
  * @param {import("../steam_news/db.js").NewsWatcher|import("../steam_news/db.js").PriceWatcher|import("../steam_news/db.js").GroupWatcher} watcher The watcher data 
  * @returns {{name:string, value:string, inline:true}} Field data
  */
-function watcherToField(t, {nsfw, name, channelId, roleId, webhook}) {
-	return {
-		name,
-		value: `${nsfw ? t("NSFW-yes") : ""}
-			${t("channel", `<#${channelId}> ${webhook ? "*" : ""}`)}
-			${roleId ? `${t("ping")} <@&${roleId}>` : ""}`
-			.trim(),
-		inline: true,
-	};
+function watcherToField(t, {nsfw, name, channelId, roleId, webhook, filter}) {
+	const lines = [];
+	if(nsfw) lines.push(t("NSFW-yes"));
+	lines.push(t("channel", `<#${channelId}> ${webhook ? "*" : ""}`));
+	if(roleId) lines.push(`${t("ping")} <@&${roleId}>`);
+	if(filter) lines.push(filterLine(t, filter));
+
+	return { name, value: lines.join("\n"), inline: true };
+}
+
+
+function filterLine(t, filter)
+{
+	const tFilter = t.filter ??= tr.set(t.lang, "filter");
+	return `${t("filter")} ${translateFilter(tFilter, {filter})}`;
 }

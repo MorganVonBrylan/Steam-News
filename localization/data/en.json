@@ -651,6 +651,7 @@
 		"NSFW-yes": "NSFW: Yes",
 		"NSFW-no": "NSFW: No",
 		"channel": "Channel: %s",
+		"filter": "Filter:",
 		"webhook": "(with webhook)"
 	},
 
