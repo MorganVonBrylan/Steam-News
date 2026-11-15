@@ -148,6 +148,7 @@ export const tr = {
 			}
 		}
 		const t = this.t.bind({ lang, locale, fallback });
+		t.lang = lang;
 		t.plural = tr.plural.bind(t);
 		return t;
 	},
