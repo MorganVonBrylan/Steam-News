@@ -315,7 +315,7 @@
 					"name": "remove",
 					"description": "Remove a filter",
 					"options": {
-						"game": {
+						"game-or-group": {
 							"name": "game-or-group",
 							"description": "The game/group to remove the filter of"
 						}
@@ -624,9 +624,12 @@
 		"vote-filters-desc": "Require voting on ${dbl_link} to edit",
 		"vote-filters-none": "None! But you did vote on DiscordBotList recently, so you can add some.",
 		"premium-filters": "Premium filters",
+		"premium-filters-page": "Premium filters (page ${page} of ${nPages})",
 		"premium-filters-desc": "These will be disabled if the server's subscription ends.",
 		"premium-filters-disabled": "This server's subscription expired; these filters are currently disabled.",
-		"suggest-premium": "You have all the filters you can have for free. Unlock unlimited filters with a premium subscription."
+		"premium-filters-plzBuy": "Purchase a subscription to re-enable your premium filters.",
+		"suggest-premium": "You have all the filters you can have for free. Unlock unlimited filters with a premium subscription.",
+		"more-filters-to-show": "... and %s more."
 	},
 
 	"watched": {
