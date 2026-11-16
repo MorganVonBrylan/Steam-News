@@ -76,7 +76,7 @@ export function run(inter)
 
 
 /**
- * @param {(key:string, replaces:string|object)=>string} t Translator function
+ * @param {TranslatorFunction} t
  * @param {(filer:Filter)=>({name:string, value:string, inline:true})} filterToField
  * @param {boolean} hasPremium 
  * @param {Filter[]} premiumFilters 

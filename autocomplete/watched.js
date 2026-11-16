@@ -118,7 +118,7 @@ const type = fixedDictionary({ n: "news", p: "price", g: "group" });
  * @import {TaggedId} from "../steam_news/db_api.js"
  * Get a function that turns an app/group into an option name, with the watcher type (e.g "News", "Price"...)
  * @param {string} locale The locale
- * @returns {{t:(key:string)=>string, makeOption:(taggedId:TaggedId, name:string)=>{name:`[${string}] ${string}`, value:TaggedId}}} The translator function and the option maker
+ * @returns {{t:TranslatorFunction, makeOption:(taggedId:TaggedId, name:string)=>{name:`[${string}] ${string}`, value:TaggedId}}} The translator function and the option maker
  */
 export function makeOptionMaker(locale)
 {

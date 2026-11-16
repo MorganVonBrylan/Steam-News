@@ -4,7 +4,7 @@ export const storeButtons = buttons(premiumSKU, goldSKU);
 
 /**
  * Translate a filter
- * @param {(key:string, filter:string)=>string} t Translator function, set to "filter"
+ * @param {TranslatorFunction} t Translator function set to "filter"
  * @param {import("./~data.js").Filter} filter The filter to translate
  */
 export function translateFilter(t, {filter})
@@ -15,7 +15,7 @@ export function translateFilter(t, {filter})
 
 /**
  * Format a filter line
- * @param {(key:string, filter:string)=>string} t Translator function, set to "filter"
+ * @param {TranslatorFunction} t Translator function set to "filter"
  * @param {`${"+"|"-"}${string}`} filter Terms to filter, separated by commas
  */
 function translateFilterLine(t, filter)

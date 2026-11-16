@@ -6,7 +6,13 @@ import { sendToMaster } from "../bot.js";
 import { DiscordAPIError } from "discord.js";
 import TopGGAPIError from "@top-gg/sdk/dist/utils/ApiError.js";
 
+/**
+ * @typedef {{[props:string]: number|string|(number|string)[]}} RuleSet
+ * @typedef {{ignore:RuleSet, simplify:RuleSet, downgrade:RuleSet}} Settings
+ */
+
 import importJSON from "./importJSON.function.js";
+/** @type {Readonly<Settings>} */
 const settings = importJSON("errors.json", {
 	ignore: {
 		status: "≥500",
@@ -71,6 +77,12 @@ function specialTreatment(err)
 const recent = new Set();
 
 export default error;
+/**
+ * Log an error, applying special treatment defined in errors.json.
+ * It will also send it the the bot owner if no error with the same message occurred recently.
+ * @param {*} err 
+ * @global
+ */
 export function error(err)
 {
 	if(err instanceof SyntaxError) // from an import probably

@@ -66,7 +66,7 @@ function toEmbeds(watched, t, type)
 
 /**
  * Turn a watcher's data info an embed field.
- * @param {(key:string, ...replaces:string[])=>string} t A translator function.
+ * @param {TranslatorFunction} t A translator function.
  * @param {import("../steam_news/db.js").NewsWatcher|import("../steam_news/db.js").PriceWatcher|import("../steam_news/db.js").GroupWatcher} watcher The watcher data 
  * @returns {{name:string, value:string, inline:true}} Field data
  */
@@ -81,6 +81,12 @@ function watcherToField(t, {nsfw, name, channelId, roleId, webhook, filter}) {
 }
 
 
+/**
+ * 
+ * @param {ReturnType<tr.set>} t 
+ * @param {*} filter 
+ * @returns 
+ */
 function filterLine(t, filter)
 {
 	const tFilter = t.filter ??= tr.set(t.lang, "filter");

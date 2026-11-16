@@ -19,6 +19,21 @@ export const STEAM_NAME = "Steam News Hub";
 export const STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/593110/403da5dab6ce5ea2882dc5b7636d7c4dbb73c81a.jpg";
 
 
+/**
+ * @typedef {`https://shared.akamai.steamstatic.com/${string}`} SteamImage
+ * @typedef {{minimum:string, recommended?:string}} Requirements
+ * @typedef {{header_image:SteamImage, capsule_image:SteamImage, capsule_imagev5:SteamImage}} AppImages
+ * @typedef {AppImages & {type:"game"|"dlc"|"hardware", name:string, steam_appid:number, requires_age:number, is_free:boolean, controller_support?:"full", dlc?:number[], fullgame?:{appid:`${number}`,name:string}, detailed_description:string, about_the_game:string, short_description:string, supported_languages:string, website?:string, pc_requirements:Requirements, mac_requirements:Requirements, linux_requirements:Requirements, legal_notice?:string}} BasicDetails
+ * @typedef {{currency:string, initial:number, final:number}} Price
+ * @typedef {Price & {initial_formatted:string, discount_percent:number, final_formatted:string}} PriceOverview
+ * @typedef {{windows:boolean,linux:boolean,mac:boolean}} Platforms
+ * @typedef {{id:number|`${number}`, description:string}} Category
+ * @typedef {{icon:string, path:SteamImage, localized_name:string, archived:0|1, hidden:0|1}} Achievement
+ * @typedef {{ids:number[], notes:?string}} ContentDescriptors
+ * @typedef {BasicDetails & { price_overview:PriceOverview, packages?:number[], package_groups:object[], developers?:string[], publishers:string[], demos?:{appid:number,description:string}, platforms:Platforms, metacritic?:{score:number,url:string}, categories?:Category[], genres?:Category[], screenshots?:{id:number,path_thumbnail:SteamImage,path_full:SteamImage}[], movies?:object[], recommendations?:{total:number}, achievements:{total:number,highlighted:Achievement[]}, release_date:{coming_soon:boolean,date:string}, content_descriptors:ContentDescriptors }} AppDetails
+ */
+
+
 export class HTTPError extends Error {
 	constructor({url, status, statusText}) {
 		super(`Query ended with code ${status}`);
@@ -30,6 +45,14 @@ export class HTTPError extends Error {
 
 export class ApiError extends Error {}
 
+/**
+ * @typedef {{success:true,data:BasicDetails|AppDetails}} AppQueryData
+ * 
+ * Handle a Steam API query
+ * @param {Response} res The fetch request response
+ * @param {boolean} retry Whether to retry in case the request failed or its body isn't JSON
+ * @returns {Promise<{[appid:number]: {success:false}|AppQueryData}>}
+ */
 function handleQuery(res, retry = true)
 {
 	if(res.ok && res.headers.get("Content-Type").startsWith("application/json"))
@@ -61,7 +84,7 @@ function handleQuery(res, retry = true)
  * @param {string} steamLink The steam:// link
  * @param {string} lang A 2-letter language code
  *
- * @returns {string} a Markdown link
+ * @returns {`[steam://${string}](https://${string})`} a Markdown link
  */
 export function steamAppLink(steamLink, lang = "en")
 {
@@ -75,7 +98,7 @@ export function steamAppLink(steamLink, lang = "en")
  * @param {string} terms The research terms.
  * @param {string} cc The country code, for price purposes (e.g. "FR", "UK", etc). Default: "US"
  *
- * @returns {Promise<Array>} The results (up to 10)
+ * @returns {Promise<{type:"app", name:string, id:number, price?:Price, tiny_image:SteamImage, metascore:""|`${number}`, platforms:Platforms, streamingvideo:boolean}[]>} The results (up to 10)
  */
 export async function search(terms, cc = "US")
 {
@@ -130,7 +153,6 @@ export const querySteam = query.bind(null, STEAM_APPID);
 /**
  * Helper function to know if an appid is valid or not.
  * @param {number} appid The app's id.
- * @returns {Promise<boolean>} true or false
  */
 export async function exists(appid)
 {
@@ -142,10 +164,9 @@ export async function exists(appid)
 const BULK_LIMIT = 250;
 /**
  * Queries prices for one or more apps.
- * @param {number|Array<number>} appids The app id(s)
+ * @param {number|number[]} appids The app id(s)
  * @param {string} cc The country code for the price (e.g. "FR", "UK", etc). Default: "US"
  * 
- * @typedef {{currency:string,initial:number,final:number,discount_percent:number,initial_formatted:string,final_formatted:string}} PriceOverview
  * @returns {Promise<{[appid:string]:?PriceOverview}>} A promise resolving to a dictionary of appid => price_overview pairs.
  */
 export async function queryPrices(appids, cc = "US")
@@ -165,7 +186,8 @@ export async function queryPrices(appids, cc = "US")
 	{
 		const data = await fetch(`${BASE_PRICE_URL}${group}&cc=${cc}`).then(handleQuery);
 		for(const appid in data)
-			prices[appid] = data[appid].data?.price_overview;
+			if(data[appid].success)
+				prices[appid] = data[appid].data?.price_overview;
 	}
 	return prices;
 }
@@ -176,7 +198,7 @@ export async function queryPrices(appids, cc = "US")
  * @param {number} appid The app's id.
  * @param {string} lang (optional) The language to get the details in. Default: en
  * @param {string} cc (optional) The country to get the details for. Mostly for prices. Default: US
- * @returns {Promise<object?>} The app's details, or null if it doesn't exist.
+ * @returns {Promise<?AppDetails>} The app's details, or null if it doesn't exist.
  * @see https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI#Result_data_3
  */
 export async function getDetails(appid, lang = "en", cc = "US")
@@ -195,11 +217,12 @@ export async function getDetails(appid, lang = "en", cc = "US")
 
 
 /**
- * Returns limited details about an app.
+ * @typedef {"basic" | Exclude<keyof AppDetails, keyof BasicDetails>} Filter
+ * 
  * Compared to {@link getDetails}, things like the price, genre/categories, publisher/developer, release date and ratings will be missing.
  * @param {number} appid The app's id.
- * @param {string} additionalParts Part of the respons to add on top of the basic ones, separated by commas.
- * @returns {Promise<object?>} The app's basic details, or null if it doesn't exist.
+ * @param {Filter[]|ReturnType<Filter[]['join']>} additionalParts Part of the respons to add on top of the basic ones, either separated by commas or as an array.
+ * @returns {Promise<?BasicDetails & Partial<AppDetails>} The app's basic details, or null if it doesn't exist.
  */
 export async function getBasicDetails(appid, additionalParts = "")
 {
@@ -213,7 +236,7 @@ export async function getBasicDetails(appid, additionalParts = "")
 
 /**
  * Checks if the given app is NSFW.
- * @param {object} appDetails The app's details.
+ * @param {{content_descriptors: ContentDescriptors}} appDetails The app's details.
  * @returns {boolean}
  */
 export function isNSFW({ content_descriptors: {ids} })
@@ -224,7 +247,9 @@ export function isNSFW({ content_descriptors: {ids} })
 }
 
 
+/** @type {{[appid:number]: AppImages}} */
 const bannerCache = Object.create(null);
+/** @param {{[appid:number]: AppQueryData}} details */
 function cacheBanners(details)
 {
 	const { SMALL, MEDIUM, LARGE } = banner;
@@ -478,7 +503,7 @@ export async function getGroupDetails(nameOrId, lang = "english")
 /**
  * Retrieve a group from the cache, update its data if it's been a while, and returns it.
  * @param {number} id The group's id
- * @returns {ReturnType<getGroupDetails>} The group's data, or undefined if it wasn't cached.
+ * @returns The group's data, or undefined if it wasn't cached.
  */
 async function updateCachedGroup(id, lang)
 {
@@ -566,6 +591,9 @@ const getGroupPostImage = Object.freeze({
 
 
 
+/**
+ * Replace the query functions with mock ones, for testing purposes.
+ */
 export async function enableMocks()
 {
 	const mocks = await import("./api_mocks.js");

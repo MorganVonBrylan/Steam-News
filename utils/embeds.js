@@ -7,6 +7,8 @@ import {
 export const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
 export const REQUIRED_THREAD_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessagesInThreads | PERMISSIONS.EmbedLinks;
 
+/** @import {Embed} form "discord.js" */
+
 const { Flags: { Ephemeral } } = MessageFlagsBitField;
 
 export const MAX_FIELDS_PER_EMBED = 25;
@@ -17,7 +19,7 @@ export const EMBEDS_PER_MESSAGE = 10;
 
 /**
  * Send embeds to a channel or interaction while respecting the embed limit per message.
- * @param {object[]|FieldList} embeds The embeds
+ * @param {Embed[]|FieldList} embeds The embeds
  * @param {ChatInputCommandInteraction|import("./channels.js").GuildTextChannel} sender 
  * @param {import("discord.js").BitFieldResolvable} [flags]
  */
@@ -56,7 +58,7 @@ export async function sendEmbeds(embeds, sender, flags)
 /**
  * This class allows having groups of fields sprawl over several embeds.
  * It is, fundamentally, an array of embeds.
- * @extends Array<import("discord.js").Embed>
+ * @extends Array<Embed>
  */
 export class FieldList extends Array
 {

@@ -14,6 +14,7 @@ import { dictionary, deepFreeze } from "../utils/dictionaries.js";
 
 import { dbl_link, dbl_url } from "../commands/filter/~data.js";
 
+/** @type {{[locale:string]: object}} */
 const locales = dictionary();
 
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
@@ -101,29 +102,35 @@ function warnMissing(language, message)
 
 /**
  * Replaces elements in a string for dynamic translation purposes.
- * @example
- * trReplace("I am %s, I live %s", ["Joe", "here"])
- * @example
- * trReplace("I am ${name}, I live ${where}", {name: "Joe", where: "here"})
- * 
  * @param {string} str The source string.
- * @param {Array<string>|object} replaces Either an array of replacements, or a plain object.
- * @returns {string} the strings with replaced substrings.
+ * @param {string[]|object} replacements Either an array of replacements, or a plain object for named replacements.
+ * @returns the strings with replaced substrings.
+ * 
+ * @example trReplace("I am %s, I live %s", ["Joe", "here"])
+ * @example trReplace("I am ${name}, I live ${where}", {name: "Joe", where: "here"})
  */
-export function trReplace(str, replaces)
+export function trReplace(str, replacements)
 {
-	if(replaces.length === 1 && typeof replaces[0] === "object")
-		replaces = replaces[0];
-	return replaces instanceof Array
-		? replaces.reduce((str, r) => str.replace("%s", r), str)
-		: Object.entries(replaces).reduce((str, [key, r]) => str.replaceAll(`\${${key}}`, r), str);
+	if(replacements.length === 1 && typeof replacements[0] === "object")
+		replacements = replacements[0];
+	return replacements instanceof Array
+		? replacements.reduce((str, r) => str.replace("%s", r), str)
+		: Object.entries(replacements).reduce((str, [key, r]) => str.replaceAll(`\${${key}}`, r), str);
 }
 
+/** @typedef {typeof tr.t} TranslatorFunction */
 
-export const tr = {
+/** @global */
+export const tr = Object.freeze({
 	locales: Object.keys(locales),
 	fallbackLocale: FALLBACK,
 
+	/**
+	 * Bind the translator function to a language and group
+	 * @param {string} lang 
+	 * @param {string} [group] 
+	 * @returns the bound translator function
+	 */
 	set(lang, group) {
 		if(!(lang in locales))
 			lang = FALLBACK;
@@ -153,27 +160,53 @@ export const tr = {
 		return t;
 	},
 
-	get(lang, key, ...replaces) {
-		return trReplace(tr.set(lang)(key), replaces);
+	/**
+	 * Get a translation
+	 * @param {string} lang 
+	 * @param {string} key 
+	 * @param  {...string|object} replacements 
+	 */
+	get(lang, key, ...replacements) {
+		return trReplace(tr.set(lang)(key), replacements);
 	},
-	getAll(key, skipFallback = false, ...replaces) {
+	/**
+	 * Get a translation in all languages
+	 * @param {string} key 
+	 * @param {boolean} skipFallback Whether to exclude the fallback locale from the result
+	 * @param  {...string|object} replacements 
+	 * @returns {{[locale:keyof locales]: string}}
+	 */
+	getAll(key, skipFallback = false, ...replacements) {
 		const translations = {};
 		for(const locale of tr.locales)
 			if(!skipFallback || locale !== FALLBACK)
-				translations[locale] = trReplace(tr.set(locale)(key), replaces);
+				translations[locale] = trReplace(tr.set(locale)(key), replacements);
 
 		return translations;
 	},
 
-	plural(keyOrPlurals, n, ...replaces) {
+	/**
+	 * Get a translation with a proper plural. This must be called from a translation function.
+	 * @param {string|{default:string,[n:number]:string}} keyOrPlurals The plurals data, or the key of the string
+	 * @param {number} n The number
+	 * @param  {...string} replacements 
+	 * @returns {string}
+	 */
+	plural(keyOrPlurals, n, ...replacements) {
 		const plurals = typeof keyOrPlurals === "object" ? keyOrPlurals : this(keyOrPlurals);
 		let str = plurals[n] || plurals.default.replace("%n", n);
-		for(const replace of replaces)
+		for(const replace of replacements)
 			str = str.replace("%s", replace);
 		return str;
 	},
 
-	t(key, ...replaces) {
+	/**
+	 * Translate a string. This function must be bound to a language. @see {tr.set}
+	 * @param {string} key 
+	 * @param  {...string|object} replacements 
+	 * @returns the translation
+	 */
+	t(key, ...replacements) {
 		if(typeof key !== "string")
 			throw new TypeError("'key' must be a string");
 
@@ -181,7 +214,7 @@ export const tr = {
 			? Function.noop
 			: (message) => error(Object.assign(
 				new Error(message),
-				{ locale: this.locale, key, replaces },
+				{ locale: this.locale, key, replacements },
 			));
 		
 		const path = key.split(".");
@@ -215,11 +248,10 @@ export const tr = {
 			}
 		}
 
-		return obj ? trReplace(obj, replaces) : key;
+		return obj ? trReplace(obj, replacements) : key;
 	},
-};
+});
 
-Object.freeze(tr);
 export default tr;
 global.tr = tr;
 
@@ -228,7 +260,7 @@ global.tr = tr;
 /**
  * Apply the translation on a command object. This is meant to be used as middleware for djs-commands.
  * @param {string} cmdName The command's name
- * @param {object} cmd The command data
+ * @param {import("discord.js").ChatInputApplicationCommandData} cmd The command data
  */
 export function applyTranslations(cmdName, cmd)
 {

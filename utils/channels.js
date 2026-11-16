@@ -1,5 +1,5 @@
 
-/** @import { BaseGuildTextChannel, AnyThreadChannel } from "discord.js" */
+/** @import { BaseGuildTextChannel, AnyThreadChannel, GuildTextThreadManager } from "discord.js" */
 
 /**
  * Get's a channel's thread or a thread's siblings
@@ -14,7 +14,7 @@ export async function fetchThreads(channel)
 	// Fetching archived threads required the permission to read message history,
 	// which SteamNews doesn't have by default
 	// and doesn't need outside of this specific situation.
-	/** @type {Awaited<ReturnType<import("discord.js").GuildTextThreadManager["fetchActive"]>>} */
+	/** @type {Awaited<ReturnType<GuildTextThreadManager['fetchActive']>>} */
 	const { threads } = await channel.threads.fetchActive(false);
 	return Array.from(threads.keys());
 }

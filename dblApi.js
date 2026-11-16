@@ -40,7 +40,7 @@ export class DblApi
 
 	/**
 	 * Post the bot's command list to DBL
-	 * @param {object[]} commands Command data, same as you send to Discord
+	 * @param {import("discord.js").ApplicationCommandDataResolvable[]} commands Command data, same as you send to Discord
 	 */
 	async postCommands(commands) {
 		const res = await this._request("/commands", commands);

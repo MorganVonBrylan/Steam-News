@@ -23,7 +23,7 @@ const html2markdown = nhm.translate.bind(nhm);
 
 /**
  * Returns the given Steam news item as a Discord embed.
- * @param {object} newsitem The news item.
+ * @param {import("./api.js").NewsItem} newsitem The news item.
  * @param {string} lang The language (default: en)
  * @returns {Promise<NewsEmbed>} A Discord embed.
  */
@@ -121,7 +121,7 @@ export function bbToMarkdown(contents, limit = 2045)
  * Returns the given price_overview as a Discord embed
  * @param {number} appid The app's id
  * @param {string} name The app's name
- * @param {object} price A price_overview object, with a cc property (country code)
+ * @param {import("./api.js").PriceOverview} price A price_overview object, with a cc property (country code)
  * 
  * @typedef {{appid:number, url:string, title:string, description:string, fields:EmbedField[], image:EmbedImage}} PriceEmbed
  * @returns {Promise<PriceEmbed>} A Discord embed.

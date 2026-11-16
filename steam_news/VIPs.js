@@ -49,6 +49,7 @@ export function addVoter(id, lang, forceNotif = false)
 	return res;
 }
 
+/** @param {string} id  @param {string} lang */
 export function addDBLVoter(id, lang)
 {
 	topGGVoters.set(id);
@@ -57,7 +58,9 @@ export function addDBLVoter(id, lang)
 		.catch(Function.noop);
 }
 
+/** @type {Set<string>} */
 export const premiumGuilds = new Set();
+/** @type {typeof premiumGuilds} */
 export const chameleonGuilds = new Set();
 export let STORE_LINK = "See the store in the bot's profile";
 client.once("shardReady", () => STORE_LINK = `https://discord.com/application-directory/${client.user.id}/store`);

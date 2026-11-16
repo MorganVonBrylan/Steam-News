@@ -5,6 +5,28 @@ import { resolve } from "node:path";
 const cache = new Map();
 
 /**
+ * @overload
+ * @param {"auth.json"} path
+ * @return {{
+  *  token: string, master:string, adminServer:string,
+  *  steamGridDB?: string,
+  *  webhookPort?: number,
+  *  topGG?: { voteWatcherBonus?:number, webhook?: { endpoint?:string, secret:string } },
+  *  dbl?: { voteFilterBonus?:number, uri:string, webhooj?: { endpoint?:string, secret:string } },
+  *  baseWatcherLimit?:number,
+  *  backups?: false|"daily"|"weekly",
+  *  logLevel?: "log"|"warn"|"error"|"silent",
+  *  debug?: boolean|("Watchers"|"Chameleon")[],
+  * 	premium?: {bonus?:boolean, [skuId:string]:string}
+  *  donate?: string,
+  * }}
+  * 
+  * @typedef {Partial<import("./error.js").Settings>} ErrorSettings
+  * @overload
+  * @param {"errors.json"} path
+  * @param {ErrorSettings} defaultValue
+  * @return {ErrorSettings}
+ * 
  * Import a JSON file like require, except relative paths are relative to the working directory instead of the current file.
  * @param {string} path The .json file's path
  * @param {*} defaultValue The default value to use in case the file doesn't exist. If left undefined, the function will throw instead.

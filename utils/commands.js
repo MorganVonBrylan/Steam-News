@@ -6,7 +6,7 @@ const { languageCodes } = locales;
 
 export { mentionCommand as mention } from "@brylan/djs-commands";
 
-/** @import {ChatInputCommandInteraction} from "discord.js" */
+/** @import { ChatInputCommandInteraction } from "discord.js" */
 
 /**
  * Defers an interaction and returns the defer promise and app id.
@@ -14,7 +14,6 @@ export { mentionCommand as mention } from "@brylan/djs-commands";
  * @param {ChatInputCommandInteraction} inter the interaction
  * @param {boolean} ephemeral Whether to make the defer ephemeral
  * @param {string} optionName The name of the appid option
- * @returns {Promise<{appid: ?string, defer: Promise}>}
  */
 export async function interpretAppidOption(inter, ephemeral = false, optionName = "game")
 {

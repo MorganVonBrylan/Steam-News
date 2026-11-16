@@ -158,7 +158,7 @@ export class Webhook {
 
 	/**
 	 * Post to this webhook. Like TextChannel#send, throws on failure. Moreover, on 401, 403 and 404 codes, the webhook will be purged and the `webhookPurged` property will be set to `true` on the Response object.
-	 * @param {object} data The body of the POST request
+	 * @param {string|{content?:string, embeds?:import("discord.js").APIEmbed[], flags?:number, username?:string, avatar_url?:string}} data The body of the POST request
 	 * @param {boolean} wait 'wait' parameter, @see https://docs.discord.com/developers/resources/webhook#execute-webhook
 	 * @returns The request
 	 */

@@ -37,7 +37,7 @@ class Terms extends Set {
 }
 
 /**
- * @type {(t: (key:string, arg?:*)=>string, hardMaxReached:boolean)=>string}
+ * @type {(t: TranslatorFunction, hardMaxReached:boolean)=>string}
  * Get the warning message about a maximum number of filters being reached.
  */
 const maxWarning = dbl_url
@@ -204,7 +204,7 @@ function handleConflict(inter, existingFilter, newFilter, { hasPremium, hasVoted
 
 /**
  * 
- * @param {(key:string, filter:string) => string} t Translator function, set to "filter"
+ * @param {TranslatorFunction} t Translator function set to "filter"
  * @param {Filter} filter The filter that was just set
  * @param {boolean} hasFiltersLeft Whether the user could still add fitlers afterwards
  * @param {number} nFilters Number of filters after setting that one

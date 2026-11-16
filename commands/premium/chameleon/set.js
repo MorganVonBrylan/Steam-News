@@ -105,7 +105,7 @@ export async function run(inter)
 
 /**
  * Get a button that allows auto-customizing a watchers.
- * @param {(key:string)=>string} t A translation function set to the premium.chameleon group
+ * @param {TranslatorFunction} t Translation function set to premium.chameleon
  * @param {{type:"news"|"price"|"steam", appid:number, channelId:string, webhook?:string }} watcher The watcher data
  * @param {import("discord.js").ChatInputCommandInteraction} inter The interaction
  * @param {(result:string)=>*} callback A function to execute on button action. Will include a result message if the button is clicked, undefined if the button times out.

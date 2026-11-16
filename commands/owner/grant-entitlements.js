@@ -38,7 +38,7 @@ export function run(inter)
 /**
  * Sets the entitlements for the current bot session.
  * @param {string} guildId The guild id the set entitlements for
- * @param {number|object[]} ents A bitset or array of entitlements
+ * @param {number|(entitlements[keyof entitlements])[]} ents A bitset or array of entitlements
  * @return {string} a confirmation message
  */
 export function setEntitlements(guildId, ents)

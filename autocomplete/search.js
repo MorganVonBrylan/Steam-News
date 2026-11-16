@@ -4,7 +4,7 @@ import { search } from "../steam_news/api.js";
 
 /** @import {AutocompleteInteraction} from "discord.js" */
 
-/** @param {AutocompleteInteraction} inter */
+/** @param {Awaited<ReturnType<search>>} inter */
 const resultToOption = ({ id, name }) => ({
 	name: name.length > 100 ? name.substring(0, 99) + "…" : name,
 	value: "" + id,

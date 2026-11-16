@@ -8,6 +8,7 @@ import {
 import { REQUIRED_PERMS, REQUIRED_THREAD_PERMS } from "../utils/embeds.js";
 
 /** @import {Guild, GuildChannel, Message} from "discord.js" */
+/** @import {Watcher, NewsWatcher, PriceWatcher, GroupWatcher} from "./db.js" */
 
 /**
  * Check if the bot can send message to a channel.
@@ -64,9 +65,9 @@ function handleDeletedChannel({status, url}) {
  * If trying to post to a webhook ended with a 4** error, purge it from the database and try sending the news again to the channel.
  * @param {Error} err The Error received when trying to send news/prices.
  * @param {Webhook} webhook The webhook object
- * @param {object} watcher The watcher info
- * @param {(watcher:object)=>*} sendNews The sendNews function, to try again with the channel
- * @returns {boolean} true if the error was handled, false if it wasn't a 4**
+ * @param {Watcher} watcher The watcher info
+ * @param {(watcher:Watcher)=>*} sendNews The sendNews function, to try again with the channel
+ * @returns true if the error was handled, false if it wasn't a 4xx
  */
 function handleDeletedWebhook(err, {webhookPurged}, watcher, sendNews) {
 	if(webhookPurged)
@@ -136,7 +137,7 @@ function timestamp(rssDate) {
 /**
  * Make news embeds and order them in ascending chronological order.
  * @param {typeof toEmbed|typeof postEmbed} toEmbed A function that maps a post to an embed.
- * @param {object[]} news The news items in descending chronological order (as returned by the API)
+ * @param {import("./api.js").NewsItem[]} news The news items in descending chronological order (as returned by the API)
  * @param  {string} language The language 
  * @returns The news embeds
  */
@@ -178,7 +179,7 @@ function getSender(data, baseEmbeds, query) {
 	const embeds = { english: baseEmbeds };
 	const loggedErrors = new Set();
 
-	/** @param {import("./db.js").Watcher} watcher */
+	/** @param {Watcher} watcher */
 	return function sendNews(watcher) {
 		const { guildId, channelId, roleId } = watcher;
 		return (
@@ -528,7 +529,7 @@ async function checkForPosts(reschedule)
 /**
  * Send a message to a provided channel. Checks for permissions and nsfw status beforehand.
  * @param {import("../utils/channels.js").GuildTextChannel} channel 
- * @param {string|object} message Message data
+ * @param {string|import("discord.js").MessageCreateOptions} message Message data
  * @param {boolean} nsfw Whether the message is NSFW
  * @returns {Promise<?Message>} The message, or undefined the permissions are missing or the message is NSFW but the channel isn't.
  */
@@ -548,8 +549,9 @@ async function postToChannel(channel, message, nsfw)
  * @param {GuildChannel} channel The text-based channel to send the news to.
  * @param {string} roleId The id of the role to ping when posting news/price changes.
  * @param {boolean} price Whether to watch for price changes instead of news. Default: false
+ * @param {number} LIMIT The maximum number of watchers this server is allowed to have
  *
- * @returns {Promise<int|object|false|null>} false if that app has no price, null if it's a price watch and the game is free, the old watcher data if the watcher existed and was updated, or the new number of watched apps if it was added.
+ * @returns {Promise<int|PriceWatcher|NewsWatcher|false|null>} false if that app has no price, null if it's a price watch and the game is free, the old watcher data if the watcher existed and was updated, or the new number of watched apps if it was added.
  * @throws {TypeError} if either parameter is invalid
  * @throws {RangeError} if the server reached its LIMIT of apps
  */
@@ -583,7 +585,7 @@ export async function watch(appid, channel, roleId = null, price = false, LIMIT 
 	{
 		const details = await getBasicDetails(appid, "price_overview,content_descriptors");
 		if(!details) throw new Error(`Failed to get details of app ${appid}`);
-
+details.type
 		let knownPrice = null;
 		if(wasUnknown)
 		{
@@ -691,7 +693,7 @@ export const isWatchingSteam = guildId => !!stmts.isWatchingSteam(guildId);
  * @param {GuildChannel} channel The text-based channel to send the news to.
  * @param {string} roleId The id of the role to ping when posting news/price changes.
  *
- * @returns {Promise<int|object>} The old watcher data if the watcher existed and was updated, or the new number of watched groups if it was added.
+ * @returns {Promise<int|GroupWatcher>} The old watcher data if the watcher existed and was updated, or the new number of watched groups if it was added.
  * @throws {TypeError} if either parameter is invalid
  * @throws {RangeError} if the server reached its LIMIT of apps
  */

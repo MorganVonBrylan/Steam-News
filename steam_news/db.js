@@ -173,7 +173,7 @@ if(currentVersion < DB_VERSION)
  * @param {string|string[]} sql SQL statement(s). If this argument is provided, the statement(s) will be prepared, and bound to the run function as thisArg.
  * @param {function} run The function to run. Make sure this is not an arrow function.
  * @param {boolean} pluck Whether to pluck the stmts
- * @returns {object} Something that looks, swims and quacks like a prepared statement.
+ * @returns Something that looks, swims and quacks like a prepared statement.
  */
 function makeProxy(sql, run, pluck = false) {
 	let readonly;
