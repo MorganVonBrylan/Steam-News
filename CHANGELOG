@@ -217,3 +217,6 @@ Various improvements and bug fixes.
 	2.20.2 (28/03/2026)
 	Fixed /locale.
 	News embeds now use the game logo in the author field in addition to the footer.
+
+2.21 (17/11/2026)
+Add news filters.
