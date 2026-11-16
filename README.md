@@ -99,10 +99,10 @@ You can customize which errors are ignored or truncated by created a `errors.jso
 
 `errors.json` is a JSON file that can have the following keys:
 - `ignore` for rules for ignoring some errors
-- `truncate` to only log the error message and not the 
+- `simplify` to only log the error message and not the stack trace
 - `downgrade` to log the error as a warning, meaning it could be ignored if the log level is low enough.
 
-Note that an error can be both truncated and downgraded if it matches a rule of both.
+Note that an error can be both simplified and downgraded if it matches a rule of both.
 
 The values for these properties is an object that can have the following keys:
 - `message` to test the error message
@@ -117,14 +117,14 @@ The values for these properties are either rules or arrays of rules. A rule is a
 
 If you want to check for equality with those symbols at the beginning, you can escape the prefix with a backslash.
 
-Example: ignore server errors, connection errors and timeouts, truncate "forbidden" errors, truncate and downgrade "not found" errors, downgrade all `fetch` errors (they start with "UND_" because Node uses Undici)
+Example: ignore server errors, connection errors and timeouts, simplify "forbidden" errors, simplify and downgrade "not found" errors, downgrade all `fetch` errors (they start with "UND_" because Node uses Undici)
 ```json
 {
 	"ignore": {
 		"status": ["≥500", 408],
 		"message": "read ECONNRESET"
 	},
-	"truncate": {
+	"simplify": {
 		"status": [403, 404]
 	},
 	"downgrade": {

@@ -12,7 +12,7 @@ const settings = importJSON("errors.json", {
 		status: "≥500",
 		message: ["^Unexpected server response: 5"]
 	},
-	truncate: {
+	simplify: {
 		status: 408,
 		message: "read ECONNRESET",
 	},
