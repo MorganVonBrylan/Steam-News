@@ -4,17 +4,18 @@ import { ButtonStyle } from "discord.js";
 const { Secondary: style } = ButtonStyle;
 const registerOpts = { singleUse: true, timeout: 3600 };
 
-/** @import {Embed, InteractionReplyOptions} from "discord.js" */
+/** @import {Embed, InteractionReplyOptions, ChatInputCommandInteraction, MessageComponentInteraction} from "discord.js" */
 /**
+ * @template T
  * Show data in a paginated embed.
  * @param {ChatInputCommandInteraction|MessageComponentInteraction} interaction The interaction to use
  * @param {object} data 
- * @param {Array} data.items The data to paginate
+ * @param {T[]} data.items The data to paginate
  * @param {string} data.customId A custom id to use for the buttons (default to interaction id) (max 90 characters)
  * @param {number} data.pageLength How many items will be shown at a time
- * @param {number} data.page The page number at which to start, indexed at 0. Defaults to 0. 
+ * @param {number} data.page The page number at which to start, indexed at 0. Defaults to 0.
+ * @param {(slice: T[], range:{start:number,end:number,total:number,page:number,totalPages:number})=>(Embed|Embed[])} data.renderer A function that takes a slice of the data and the range of items shown (indexed at 1 for convenient user display) and returns the embed(s) used to display that slice.
  * @param {InteractionReplyOptions['flags']} [flags] Flags for the reply
- * @param {(slice: Array, range:{start:number,end:number,total:number,page:number,totalPages:number})=>(Embed|Embed[])} data.renderer A function that takes a slice of the data and the range of items shown (indexed at 1 for convenient user display) and returns the embed(s) used to display that slice.
  * @returns {Promise<InteractionResponse>} The interaction reponse promise
  */
 export default function paginate(interaction, data, flags)
