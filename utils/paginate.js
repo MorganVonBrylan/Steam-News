@@ -11,9 +11,9 @@ const registerOpts = { singleUse: true, timeout: 3600 };
  * @param {ChatInputCommandInteraction|MessageComponentInteraction} interaction The interaction to use
  * @param {object} data 
  * @param {T[]} data.items The data to paginate
- * @param {string} data.customId A custom id to use for the buttons (default to interaction id) (max 90 characters)
+ * @param {string} [data.customId] A custom id to use for the buttons (default to interaction id) (max 90 characters)
  * @param {number} data.pageLength How many items will be shown at a time
- * @param {number} data.page The page number at which to start, indexed at 0. Defaults to 0.
+ * @param {number} [data.page] The page number at which to start, indexed at 0. Defaults to 0.
  * @param {(slice: T[], range:{start:number,end:number,total:number,page:number,totalPages:number})=>(Embed|Embed[])} data.renderer A function that takes a slice of the data and the range of items shown (indexed at 1 for convenient user display) and returns the embed(s) used to display that slice.
  * @param {InteractionReplyOptions['flags']} [flags] Flags for the reply
  * @returns {Promise<InteractionResponse>} The interaction reponse promise
@@ -43,16 +43,15 @@ export default function paginate(interaction, data, flags)
 		{ start: shift+1, end: Math.min(shift+pageLength+1, total), total, page, totalPages },
 	);
 
-	const chooseLabel = tr.get(interaction.locale, "page-display", {current: page, total: totalPages});
+	const chooseLabel = tr.get(interaction.locale, "page-display", {current: page+1, total: totalPages});
 
 	const reply = { flags, embeds: Array.isArray(embed) ? embed : [embed] };
 	if(total > pageLength)
 	{
-		const curPage = shift / 9 + 1;
 		const components = [
 			{style, label: "←", customId: `${customId}_prev`, disabled: !page},
 			{style, label: chooseLabel, customId: `${customId}_choose`},
-			{style, label: "→", customId: `${customId}_next`, disabled: !totalPages || curPage === totalPages},
+			{style, label: "→", customId: `${customId}_next`, disabled: !totalPages || page+1 === totalPages},
 		];
 		const [prev, choose, next] = components;
 		if(!prev.disabled)
