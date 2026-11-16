@@ -54,6 +54,7 @@ export async function sendEmbeds(embeds, sender, flags)
 /**
  * This class allows having groups of fields sprawl over several embeds.
  * It is, fundamentally, an array of embeds.
+ * @extends Array<import("discord.js").Embed>
  */
 export class FieldList extends Array
 {

@@ -6,6 +6,7 @@ const { getLastVote, insertLastVote, updateLastVote } = stmts;
 const VOTE_NOTIFICATION_COOLDOWN = 604800_000; // 7 days
 const VOTE_BONUS_DURATION = 43200_000; // 12 hours, which is how often one can vote
 
+/** @extends {Map<string, ReturnType<setTimeout>>} */
 class Voters extends Map {
 	/**
 	 * Add a voter to the list
