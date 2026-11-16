@@ -4,8 +4,7 @@ process.on("unhandledRejection", error);
 
 import { sendToMaster } from "../bot.js";
 import { DiscordAPIError } from "discord.js";
-import TopGGAPIError_ from "@top-gg/sdk/dist/utils/ApiError.js";
-const TopGGAPIError = TopGGAPIError_.default;
+import TopGGAPIError from "@top-gg/sdk/dist/utils/ApiError.js";
 
 import importJSON from "./importJSON.function.js";
 const settings = importJSON("errors.json", {
