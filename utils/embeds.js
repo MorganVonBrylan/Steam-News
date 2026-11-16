@@ -10,6 +10,8 @@ export const REQUIRED_THREAD_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendM
 const { Flags: { Ephemeral } } = MessageFlagsBitField;
 
 export const MAX_FIELDS_PER_EMBED = 25;
+/** Divisible by 3; avoids having one lonely entry at the bottom when all fields are inline */
+export const MAX_FIELDS_PER_EMBED_NICE_INLINES = 24;
 export const FIELD_LENGTH_LIMIT = 1024;
 export const EMBEDS_PER_MESSAGE = 10;
 
