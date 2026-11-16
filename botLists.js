@@ -34,7 +34,7 @@ export async function postCommands()
 		.then(() => console.log("DiscordBotList command list updated"))
 		.catch(error);
 	
-	topggApi?._request("POST", "/v1/projects/@me/commands", dblCommands)
+	topggApi?.postCommands(dblCommands)
 		.then(() => console.log("Top.GG command list updated"))
 		.catch(error);
 }
@@ -53,9 +53,8 @@ export async function setup()
 	if(topggApi)
 	{
 		function postStats() {
-			return topggApi.postStats({
+			return topggApi.postMetrics({
 				serverCount: client.guilds.cache.size,
-				shardId: client.shard?.ids[0],
 				shardCount: client.options.shardCount || 1,
 			});
 		}
