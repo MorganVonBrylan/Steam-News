@@ -1,8 +1,7 @@
 
-import onAutocompleteError from "../autocomplete/_errorHandler.js";
+import onAutocompleteError, { MAX_OPTIONS } from "../autocomplete/_errorHandler.js";
 import { getCC, getLocale, setLocale } from "../steam_news/db_api.js";
 import locales from "../localization/locales.js";
-import { MAX_FIELDS_PER_EMBED } from "../utils/embeds.js";
 const {
 	codeToCountry,
 	steamLanguages, steam_exclude,
@@ -41,8 +40,8 @@ export function autocomplete(inter)
 			results.splice(pos, 1);
 		results.unshift(codeToCountry[search].toUpperCase());
 	}
-	if(results.length > MAX_FIELDS_PER_EMBED)
-		results.length = MAX_FIELDS_PER_EMBED;
+	if(results.length > MAX_OPTIONS)
+		results.length = MAX_OPTIONS;
 
 	inter.respond(results.map(upperName => {
 		const cc = countryToCode[upperName];
