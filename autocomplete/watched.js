@@ -1,5 +1,5 @@
 
-import onError from "./_errorHandler.js";
+import onError, { MAX_OPTIONS } from "./_errorHandler.js";
 import { STEAM_APPID } from "../steam_news/api.js";
 import { getWatchedPrices, getWatchedApps, getWatchedGroups } from "../steam_news/db_api.js";
 import { formatOptionName } from "../utils/commands.js";
@@ -104,7 +104,7 @@ export function respond(inter, results, filter = null, addAll = false)
 		.sort((a, b) => a.appid === STEAM ? -1000
 			: b.appid === STEAM ? 1000
 			: a.name > b.name ? 1 : -1)
-		.slice(0, addAll ? 24 : 25)
+		.slice(0, addAll ? MAX_OPTIONS-1 : MAX_OPTIONS)
 		.map(({appid, name}) => makeOption(appid, name));
 	if(addAll)
 		options.unshift({name: t("all"), value: ALL});

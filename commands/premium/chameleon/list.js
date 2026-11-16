@@ -3,8 +3,7 @@ import checkSKU from "./~checkSKU.js";
 import { Webhook } from "./~webhook.js";
 import { getWebhooks, purgeWebhook } from "../../../steam_news/db_api.js";
 import paginate from "../../../utils/paginate.js";
-
-const MAX_FIELDS_PER_EMBED = 25;
+import { MAX_FIELDS_PER_EMBED } from "../../../utils/embeds.js";
 
 export const description = "See all webhooks set up in this server.";
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */

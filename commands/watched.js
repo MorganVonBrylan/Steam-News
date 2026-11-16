@@ -2,7 +2,7 @@
 import { getWatchedApps, getWatchedPrices, getWatchedGroups } from "../steam_news/watchers.js";
 import { STEAM_APPID } from "../steam_news/api.js";
 import { GAME_COLOR, PRICE_COLOR, STEAM_COLOR, GROUP_COLOR } from "./watch/~commons.js";
-import { sendEmbeds } from "../utils/embeds.js";
+import { MAX_FIELDS_PER_EMBED, sendEmbeds } from "../utils/embeds.js";
 import { translateFilter } from "./filter/~cmdUtils.js";
 
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
@@ -39,7 +39,6 @@ export function run(inter) {
 }
 
 
-const BLOCK_SIZE = 25;
 /**
  * Groups watcher data into embeds.
  * @param {(import("../steam_news/db.js").NewsWatcher|import("../steam_news/db.js").PriceWatcher)[]} watched Watcher data
@@ -54,8 +53,8 @@ function toEmbeds(watched, t, type)
 	watched = watched.map(watcherToField.bind(null, t));
 	const embeds = [];
 	const color = type === "games" ? GAME_COLOR : type === "prices" ? PRICE_COLOR : GROUP_COLOR;
-	for(let i = 0 ; i < watched.length ; i += BLOCK_SIZE)
-		embeds.push({ color, fields: watched.slice(i, i + BLOCK_SIZE) });
+	for(let i = 0 ; i < watched.length ; i += MAX_FIELDS_PER_EMBED)
+		embeds.push({ color, fields: watched.slice(i, i + MAX_FIELDS_PER_EMBED) });
 
 	Object.assign(embeds[0], {
 		title: t.plural(type, watched.length),

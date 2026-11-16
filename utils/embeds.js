@@ -9,9 +9,9 @@ export const REQUIRED_THREAD_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendM
 
 const { Flags: { Ephemeral } } = MessageFlagsBitField;
 
-const FIELDS_PER_EMBED = 25;
-const FIELD_LENGTH_LIMIT = 1024;
-const EMBEDS_PER_MESSAGE = 10;
+export const MAX_FIELDS_PER_EMBED = 25;
+export const FIELD_LENGTH_LIMIT = 1024;
+export const EMBEDS_PER_MESSAGE = 10;
 
 /**
  * Send embeds to a channel or interaction while respecting the embed limit per message.
@@ -75,8 +75,8 @@ export class FieldList extends Array
 				field.value = `${field.value.slice(0, FIELD_LENGTH_LIMIT-3)}…`;
 
 		const firstOfGroup = this.length;
-		for(let i = 0 ; i < fields.length ; i += FIELDS_PER_EMBED)
-			this.push({fields: fields.slice(i, i + FIELDS_PER_EMBED), color});
+		for(let i = 0 ; i < fields.length ; i += MAX_FIELDS_PER_EMBED)
+			this.push({fields: fields.slice(i, i + MAX_FIELDS_PER_EMBED), color});
 		this[firstOfGroup].title = title;
 		this[firstOfGroup].description = description;
 		return this.length;
