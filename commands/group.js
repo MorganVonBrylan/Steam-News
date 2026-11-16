@@ -101,39 +101,3 @@ export async function run(inter)
 		}
 	});
 }
-
-
-// Thanks Akane!
-function controllerSupport({ controller_support, categories = [] })
-{
-	if(controller_support === "full" || categories.some(({ id }) => id === 28))
-		return "full";
-	if(categories.some(({ id }) => id === 18))
-		return "partial";
-	return "no";
-}
-
-
-function displayPrice({discount_percent, final_formatted})
-{
-	return `${final_formatted}${discount_percent ? ` (-${discount_percent}%)` : ""}`;
-}
-
-function listPlatforms(platforms)
-{
-	return Object.entries(platforms || {})
-		.filter(([,supported]) => supported)
-		.map(([name]) => name.replace(/(?:^|\s|-)\S/g, a => a.toUpperCase()))
-		.join(", ");
-}
-
-function parseLanguages(html, maxLength = 1024)
-{
-	html = html.replaceAll(/\*/g, "\\*")
-		.replaceAll(/<br\/?>(.+)/g, "\n_$1_")
-		.replaceAll(" - ", " – ") // non-breaking spaces
-		.replaceAll(/<\/?(strong|b)>/g, "**")
-		.replaceAll(/<\/?(em|i)>/g, "_");
-
-	return html.length < maxLength ? html : `${html.substring(0, maxLength-1)}…`;
-}

@@ -2,7 +2,7 @@
 import {
 	query, querySteam, queryGroup,
 	getBasicDetails, isNSFW, getBasicGroupDetails,
-	HTTPError,
+	HTTPError, ApiError,
 } from "../steam_news/api.js";
 import { interpretAppidOption, mention as cmdMention, determineLanguage } from "../utils/commands.js";
 import { isKnown, saveAppInfo, isNSFW as isAppNSFW } from "../steam_news/watchers.js";
@@ -94,13 +94,18 @@ export async function run(inter)
 		if(!appnews)
 			return inter.editReply({content: t("bad-appid")});
 
-		if(fetchInfo)
+		if(fetchInfo) try
 		{
 			const details = await fetchInfo;
 			if(details.type === "dlc")
 				return inter.editReply({flags: "Ephemeral", content: t("no-DLC-news")});
 
 			saveAppInfo(appid, { name: details.name, nsfw: +isNSFW(details) });
+		}
+		catch(err)
+		{
+			inter.editReply({flags: "Ephemeral", content: tr.get(err instanceof ApiError ? "api-failed" : "error")});
+			return;
 		}
 
 		if(isAppNSFW(appid) && !(channel.nsfw || channel.isDMBased()))

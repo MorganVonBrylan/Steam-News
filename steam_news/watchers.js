@@ -240,7 +240,8 @@ function getSender(data, baseEmbeds, query) {
 					&& !loggedErrors.has(err.message))
 				{
 					loggedErrors.add(err.message);
-					error(Object.assign(err, { embeds, targetLang: lang }));
+					const { appid, clanid } = embed;
+					error(Object.assign(err, { embeds, appid, clanid, targetLang: lang }));
 				}
 			});
 		}));

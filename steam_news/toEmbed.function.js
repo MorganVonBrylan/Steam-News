@@ -18,13 +18,13 @@ const html2markdown = nhm.translate.bind(nhm);
  * @typedef {{url:string}} EmbedImage
  * @typedef {{name:string,url:string}} EmbedAuthor
  * @typedef {{text:string,iconURL:string|undefined}} EmbedFooter
+ * @typedef {({appid:number}|{clanid:number}) & {url:string, image?:EmbedImage, title:string, description:string, fields:EmbedField[], yt:string, author?:EmbedAuthor, footer?:EmbedFooter, date:string}} NewsEmbed
  */
 
 /**
  * Returns the given Steam news item as a Discord embed.
  * @param {object} newsitem The news item.
  * @param {string} lang The language (default: en)
- * @typedef {{url:string,image:undefined|EmbedImage,title:string,description:string,fields:EmbedField[],yt:string,author:undefined|EmbedAuthor,footer:undefined|EmbedFooter,date:string}} NewsEmbed
  * @returns {Promise<NewsEmbed>} A Discord embed.
  */
 export default async function toEmbed(newsitem, lang = "en")
@@ -40,6 +40,7 @@ export default async function toEmbed(newsitem, lang = "en")
 	const iconURL = await icon(appid, { defaultToBanner: false });
 	const steamLink = `url/EventAnnouncementPage/${appid}/${eventId}`;
 	return {
+		appid,
 		url,
 		author: name && { iconURL, name, url: "https://store.steampowered.com/app/"+appid },
 		image: thumbnail ? { url: thumbnail } : undefined,
@@ -122,13 +123,14 @@ export function bbToMarkdown(contents, limit = 2045)
  * @param {string} name The app's name
  * @param {object} price A price_overview object, with a cc property (country code)
  * 
- * @typedef {{url:string,title:string,description:string,fields:EmbedField[],image:EmbedImage}} PriceEmbed
+ * @typedef {{appid:number, url:string, title:string, description:string, fields:EmbedField[], image:EmbedImage}} PriceEmbed
  * @returns {Promise<PriceEmbed>} A Discord embed.
  */
 export async function price(appid, name, price)
 {
 	const t = tr.get(countryToLang[price.cc], "price");
 	return {
+		appid,
 		url: "https://store.steampowered.com/app/"+appid,
 		title: name,
 		description: price.discount_percent
@@ -146,7 +148,6 @@ export async function price(appid, name, price)
  * @param {import("./api.js").GroupPost} post The news item.
  * @param {string} lang Default: en. The language code.
  * @param {boolean} includeStats Default: false. Whether to include comments and votes.
- * @typedef {{url:string,image:undefined|EmbedImage,title:string,description:string,fields:EmbedField[],yt:string,author:undefined|EmbedAuthor,footer:undefined|EmbedFooter,date:string}} NewsEmbed
  * @returns {Promise<NewsEmbed>} A Discord embed.
  */
 export async function postEmbed(post, lang = "en", includeStats = false)
@@ -158,6 +159,7 @@ export async function postEmbed(post, lang = "en", includeStats = false)
 	const group = await getBasicGroupDetails(+clanid);
 	const iconURL = group.avatar_medium_url;
 	const embed = {
+		clanid,
 		url: `https://store.steampowered.com/news/group/${clanid}/view/${gid}`,
 		author: {
 			iconURL, name: group.group_name,

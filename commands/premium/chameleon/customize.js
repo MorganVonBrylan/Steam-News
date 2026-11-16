@@ -2,7 +2,6 @@
 import checkSKU from "./~checkSKU.js";
 import { parseWebhookInfo, formatWebhookInfo } from "./~webhook.js";
 import { getWatcher, setWebhook } from "../../../steam_news/db_api.js";
-import { STEAM_APPID } from "../../../steam_news/api.js";
 
 export const description = "Customize a webhook.";
 

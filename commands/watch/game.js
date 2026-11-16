@@ -1,6 +1,6 @@
 
 import { STEAM_APPID } from "../../steam_news/api.js";
-import { interpretAppidOption } from "../../utils/commands.js";
+import { interpretAppidOption, handleGenericApiError } from "../../utils/commands.js";
 
 import { WATCH_LIMIT, WATCH_VOTE_BONUS, WATCH_PREMIUM_BONUS } from "../../steam_news/limits.js";
 const LIMIT_WITH_VOTE = WATCH_LIMIT + WATCH_VOTE_BONUS;
@@ -14,7 +14,6 @@ const MAX_LIMIT = LIMIT_WITH_VOTE + WATCH_PREMIUM_BONUS;
 import { voteURL } from "../../botLists.js";
 
 import { watch, unwatch, getAppInfo, purgeApp } from "../../steam_news/watchers.js";
-import { HTTPError } from "../../steam_news/api.js";
 import { autoSuggestButton } from "../premium/chameleon/set.js";
 
 import {
@@ -116,7 +115,13 @@ export async function run(inter)
 				reply += `\n${t("webhook-auto-unset")}`;
 
 		const color = type === "news" ? GAME_COLOR : PRICE_COLOR;
-		reply = { embeds: [{ color, description: reply }]};
+		if(reply.content)
+		{
+			reply.embeds = [{ color, description: reply.content }];
+			reply.content = undefined;
+		}
+		else
+			reply = { embeds: [{ color, description: reply }]};
 
 		updateUnwatch(guild);
 		if(!success.webhook && chameleonGuilds.has(guild.id))
@@ -124,7 +129,7 @@ export async function run(inter)
 			const t = tr.set(locale, "premium.chameleon");
 			const baseReply = reply.embeds[0].description;
 			reply.embeds[0].description += `\n\n${t("watch-suggestAuto")}`;
-			reply.components = autoSuggestButton(t,
+			const suggestButton = autoSuggestButton(t,
 				{ type, appid, channelId: channel.id },
 				inter,
 				result => inter.editReply({
@@ -136,11 +141,12 @@ export async function run(inter)
 					components: [],
 				}),
 			);
+			reply.components = suggestButton.concat(reply.components || []);
 		}
 		inter.editReply(reply);
 	}, async err => {
 		await defer;
-		if(err instanceof TypeError && err.message.includes("appid") || err.message.includes(appid))
+		if(err.message.includes(appid))
 			inter.editReply({flags: "Ephemeral", content: tr.get(locale, "bad-appid")});
 		else if(err instanceof RangeError)
 		{
@@ -151,18 +157,7 @@ export async function run(inter)
 				components: premiumButton ? [premiumButton] : undefined,
 			});
 		}
-		else if(err instanceof HTTPError)
-		{
-			const { code } = err;
-			inter.editReply({
-				flags: "Ephemeral",
-				content: tr.get(locale, code === 403 ? "api-403" : "api-err", code),
-			});
-		}
 		else
-		{
-			error(err);
-			inter.editReply({flags: "Ephemeral", content: tr.get(locale, "error")});
-		}
+			handleGenericApiError(err, inter);
 	});
 }

@@ -28,6 +28,8 @@ export class HTTPError extends Error {
 	}
 }
 
+export class ApiError extends Error {}
+
 function handleQuery(res, retry = true)
 {
 	if(res.ok && res.headers.get("Content-Type").startsWith("application/json"))
@@ -186,6 +188,8 @@ export async function getDetails(appid, lang = "en", cc = "US")
 	}).then(handleQuery);
 	cacheBanners(res);
 	const { [appid]: details } = res;
+	if(!details)
+		throw new ApiError("appid absent from results");
 	return details.success ? details.data : null;
 }
 
@@ -202,6 +206,8 @@ export async function getBasicDetails(appid, additionalParts = "")
 	const res = await fetch(`${BASE_DETAILS_URL}${appid}&filters=basic,${additionalParts}`).then(handleQuery);
 	cacheBanners(res);
 	const { [appid]: details } = res;
+	if(!details)
+		throw new ApiError("appid absent from results");
 	return details.success ? details.data : null;
 }
 
