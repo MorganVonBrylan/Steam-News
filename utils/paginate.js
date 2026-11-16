@@ -4,6 +4,7 @@ import { ButtonStyle } from "discord.js";
 const { Secondary: style } = ButtonStyle;
 const registerOptions = { singleUse: true, timeout: 3600 };
 
+/** @import {Embed} from "discord.js" */
 /**
  * Show data in a paginated embed.
  * @param {ChatInputCommandInteraction|MessageComponentInteraction} interaction The interaction to use
@@ -12,7 +13,7 @@ const registerOptions = { singleUse: true, timeout: 3600 };
  * @param {string} data.customId A custom id to use for the buttons (default to interaction id) (max 90 characters)
  * @param {number} data.pageLength How many items will be shown at a time
  * @param {number} data.page The page number at which to start, indexed at 0. Defaults to 0. 
- * @param {(slice: Array, range:{start:number,end:number,total:number,page:number,totalPages:number})=>object} data.renderer A function that takes a slice of the data and the range of items shown (indexed at 1 for convenient user display) and returns the embed.
+ * @param {(slice: Array, range:{start:number,end:number,total:number,page:number,totalPages:number})=>(Embed|Embed[])} data.renderer A function that takes a slice of the data and the range of items shown (indexed at 1 for convenient user display) and returns the embed(s) used to display that slice.
  * @returns {Promise<InteractionResponse>} The interaction reponse promise
  */
 export default function paginate(interaction, data)
@@ -42,7 +43,7 @@ export default function paginate(interaction, data)
 
 	const chooseLabel = tr.get(interaction.locale, "page-display", {current: page, total: totalPages});
 
-	const reply = { embeds: [embed] };
+	const reply = { embeds: Array.isArray(embed) ? embed : [embed] };
 	if(total > pageLength)
 	{
 		const curPage = shift / 9 + 1;
