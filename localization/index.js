@@ -33,7 +33,7 @@ const locales = dictionary();
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 {
 	/** @type {Locale} */
-	const locale = await import(`./data/${file}`, {with:{type:"json"}});
+	const {default: locale} = await import(`./data/${file}`, {with:{type:"json"}});
 	const localeName = file.substring(0, file.length - 5);
 	locales[localeName] = locale;
 
@@ -423,20 +423,31 @@ function applyOptionTranslation(translations, opt)
 	if(!nChoices)
 		return;
 
-	const choices = opt.name === "language"
-		? opt.choices.map(({value}) => this.languages[value])
-		: tr.choices;
+	/** @type {ApplicationCommandOptionData[]} */
+	const optChoices = opt.choices;
+	const choices = opt.name === "language" ? this.languages : tr.choices;
+	const choiceKeys = Object.keys(choices || Object.null);
 	
-	if(nChoices !== choices?.length)
+	if(opt.name !== "language")
 	{
-		warnMissing(locale, `Mismatched number of choices in %l ${forOption} (expected ${nChoices}, got ${choices?.length})`);
-		return;
+		if(nChoices !== choiceKeys.length)
+		{
+			warnMissing(locale, `Mismatched number of choices in %l ${forOption} (expected ${nChoices}, got ${choiceKeys.length})`);
+			return;
+		}
+
+		const requestedChoiceKeys = optChoices.map(({value}) => String(value));
+		for(const choiceKey of choiceKeys)
+			if(!requestedChoiceKeys.includes(choiceKey))
+				warnMissing(locale, `Unused choice in %l ${forOption}: ${choiceKey}`);
 	}
 
-	for(let i = 0 ; i < nChoices ; ++i)
+	for(const choice of optChoices)
 	{
-		const choice = opt.choices[i];
-		if(choice.nameLocalizations) choice.nameLocalizations[locale] = choices[i];
-		else choice.nameLocalizations = { [locale]: choices[i] };
+		const { value } = choice;
+		const { [value]: name } = choices;
+		if(!name) warnMissing(locale, `Missing ${value} choice in %l ${forOption}`);
+		else if(choice.nameLocalizations) choice.nameLocalizations[locale] = name;
+		else choice.nameLocalizations = { [locale]: name };
 	}
 }

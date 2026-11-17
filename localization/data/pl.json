@@ -29,11 +29,11 @@
 						"what": {
 							"name": "co",
 							"description": "Wybierz, co chcesz zresetować",
-							"choices": [
-								"Awatara",
-								"Transparent",
-								"Obydwa"
-							]
+							"choices": {
+								"1": "Awatara",
+								"2": "Transparent",
+								"3": "Obydwa"
+							}
 						}
 					}
 				}
@@ -109,10 +109,10 @@
 						"type": {
 							"name": "typ",
 							"description": "Czy oglądać wiadomości czy zmiany cen",
-							"choices": [
-								"Aktualności",
-								"cena"
-							]
+							"choices": {
+								"news": "Aktualności",
+								"price": "cena"
+							}
 						},
 						"game": {
 							"name": "gra",

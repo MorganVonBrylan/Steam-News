@@ -45,11 +45,11 @@
 						"what": {
 							"name": "quoi",
 							"description": "Que réinitialiser ?",
-							"choices": [
-								"Avatar",
-								"Bannière",
-								"Les deux"
-							]
+							"choices": {
+								"1": "Avatar",
+								"2": "Bannière",
+								"3": "Les deux"
+							}
 						}
 					}
 				},
@@ -198,10 +198,10 @@
 						"type": {
 							"name": "type",
 							"description": "S’il faut suivre les actus ou les évolutions du prix",
-							"choices": [
-								"Actus",
-								"Prix"
-							]
+							"choices": {
+								"news": "Actus",
+								"price": "Prix"
+							}
 						},
 						"game": {
 							"name": "jeu",
