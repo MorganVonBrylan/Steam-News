@@ -37,7 +37,7 @@
 						"what": {
 							"name": "what",
 							"description": "Choose what to reset",
-							"choices": {"1": "Avatar", "2": "Banner", "3": "Both"}
+							"choices": [["1", "Avatar"], ["2", "Banner"], ["3", "Both"]]
 						}
 					}
 				},
@@ -216,7 +216,7 @@
 						"type": {
 							"name": "type",
 							"description": "Whether to watch news or price changes",
-							"choices": {"news": "News", "price": "Price"}
+							"choices": [["news", "News"], ["price", "Price"]]
 						},
 						"game": {
 							"name": "game",
@@ -299,7 +299,7 @@
 						"type": {
 							"name": "type",
 							"description": "Whether to require or exclude the keywords",
-							"choices": {"+": "Require", "-": "Exclude"}
+							"choices": [["+", "Require"], ["-", "Exclude"]]
 						},
 						"game-or-group": {
 							"name": "game-or-group",

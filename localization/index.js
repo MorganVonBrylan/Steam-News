@@ -16,7 +16,7 @@ import { dbl_link, dbl_url } from "../commands/filter/~data.js";
 
 /**
  * @typedef {{name:string, description:string}} BaseData
- * @typedef {BaseData & {choices?:{[value:string]:string}}} CmdOption
+ * @typedef {BaseData & {choices?:[string,string][]}} CmdOption
  * @typedef {{name:string, description:string, options?:{[name:string]: CmdOption}}} Subcmd
  * @typedef {{name:string, description:string, options?:{[name:string]: SubcmdData}}} SubcmdGroup
  * @typedef {{name:string, description:string, options?:{[name:string]: CmdOption}|{[name:string]: Subcmd|SubcmdGroup}}} Command
@@ -425,27 +425,25 @@ function applyOptionTranslation(translations, opt)
 
 	/** @type {ApplicationCommandOptionData[]} */
 	const optChoices = opt.choices;
-	const choices = opt.name === "language" ? this.languages : tr.choices;
-	const choiceKeys = Object.keys(choices || Object.null);
+	/** @type {Exclude<CmdOption['choices'],undefined>} */
+	const choices = opt.name === "language" ? Object.entries(this.languages) : tr.choices;
+	const choiceTrs = Object.fromEntries(choices);
 	
 	if(opt.name !== "language")
 	{
-		if(nChoices !== choiceKeys.length)
-		{
-			warnMissing(locale, `Mismatched number of choices in %l ${forOption} (expected ${nChoices}, got ${choiceKeys.length})`);
-			return;
-		}
+		if(nChoices !== choices.length)
+			warnMissing(locale, `Mismatched number of choices in %l ${forOption} (expected ${nChoices}, got ${choices.length})`);
 
 		const requestedChoiceKeys = optChoices.map(({value}) => String(value));
-		for(const choiceKey of choiceKeys)
-			if(!requestedChoiceKeys.includes(choiceKey))
-				warnMissing(locale, `Unused choice in %l ${forOption}: ${choiceKey}`);
+		for(const key in choiceTrs)
+			if(!requestedChoiceKeys.includes(key))
+				warnMissing(locale, `Unused choice in %l ${forOption}: ${key}`);
 	}
 
 	for(const choice of optChoices)
 	{
 		const { value } = choice;
-		const { [value]: name } = choices;
+		const { [value]: name } = choiceTrs;
 		if(!name) warnMissing(locale, `Missing ${value} choice in %l ${forOption}`);
 		else if(choice.nameLocalizations) choice.nameLocalizations[locale] = name;
 		else choice.nameLocalizations = { [locale]: name };

@@ -31,11 +31,11 @@
 						"what": {
 							"name": "qué",
 							"description": "Elige que reiniciar",
-							"choices": {
-								"1": "Avatar",
-								"2": "Banner",
-								"3": "Ambos"
-							}
+							"choices": [
+								["1", "Avatar"],
+								["2", "Banner"],
+								["3", "Ambos"]
+							]
 						}
 					}
 				},
@@ -198,10 +198,10 @@
 						"type": {
 							"name": "tipo",
 							"description": "Elige si muestra noticias o cambios de precio",
-							"choices": {
-								"news": "Noticias",
-								"price": "Precio"
-							}
+							"choices": [
+								["news", "Noticias"],
+								["price", "Precio"]
+							]
 						},
 						"game": {
 							"name": "juego",

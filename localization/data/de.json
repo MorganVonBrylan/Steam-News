@@ -45,11 +45,11 @@
 						"what": {
 							"name": "was",
 							"description": "Wähle aus, was zurückgesetzt werden soll",
-							"choices": {
-								"1": "Profilbild",
-								"2": "Banner",
-								"3": "Beide"
-							}
+							"choices": [
+								["1", "Profilbild"],
+								["2", "Banner"],
+								["3", "Beide"]
+							]
 						}
 					}
 				},
@@ -198,10 +198,10 @@
 						"type": {
 							"name": "typ",
 							"description": "Sollen Nachrichten oder Preise beobachtet werden?",
-							"choices": {
-								"news": "Nachrichten",
-								"price": "Preis"
-							}
+							"choices": [
+								["news", "Nachrichten"],
+								["price", "Preis"]
+							]
 						},
 						"game": {
 							"name": "spiel",
