@@ -3,6 +3,12 @@ export {}
 
 declare global {
 
+  interface FunctionConstructor {
+    noop: () => void;
+  }
+  interface ObjectConstructor {
+    null: Readonly<{}>;
+  }
   interface Set {
     join(separator:string): string;
   }
