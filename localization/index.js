@@ -48,7 +48,9 @@ for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 	if(filter && dbl_url) for(const string in filter)
 	{
 		if(string === "help")
-			filter.help.description = filter.help.description.replace("${dbl_link}", dbl_link);
+			filter.help.description = filter.help.description
+				.replace("${dbl_link}", dbl_link)
+				.replace("%s", FILTER_VOTE_BONUS);
 		else if(string.includes("vote"))
 			filter[string] = filter[string]
 				.replace("${dbl_link}", dbl_link)
