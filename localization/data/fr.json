@@ -46,9 +46,18 @@
 							"name": "quoi",
 							"description": "Que réinitialiser ?",
 							"choices": [
-								["1", "Avatar"],
-								["2", "Bannière"],
-								["3", "Les deux"]
+								[
+									"1",
+									"Avatar"
+								],
+								[
+									"2",
+									"Bannière"
+								],
+								[
+									"3",
+									"Les deux"
+								]
 							]
 						}
 					}
@@ -199,8 +208,14 @@
 							"name": "type",
 							"description": "S’il faut suivre les actus ou les évolutions du prix",
 							"choices": [
-								["news", "Actus"],
-								["price", "Prix"]
+								[
+									"news",
+									"Actus"
+								],
+								[
+									"price",
+									"Prix"
+								]
 							]
 						},
 						"game": {
@@ -292,10 +307,63 @@
 					"description": "Le nom ou l'adresse du groupe."
 				}
 			}
+		},
+		"filter": {
+			"name": "filtre",
+			"description": "(admins seulement) Commandes de filtres",
+			"options": {
+				"help": {
+					"name": "aide",
+					"description": "Recevoir de l'aide pour les filtres"
+				},
+				"set": {
+					"name": "mettre",
+					"description": "Mettre un filtre",
+					"options": {
+						"type": {
+							"name": "type",
+							"description": "S'il faut exiger ou exclure les mots-clés",
+							"choices": [
+								[
+									"+",
+									"Exiger"
+								],
+								[
+									"-",
+									"Exclure"
+								]
+							]
+						},
+						"game-or-group": {
+							"name": "jeu-ou-groupe",
+							"description": "Le jeu/groupe auquel mettre un filtre"
+						},
+						"filter": {
+							"name": "filtre",
+							"description": "Les mots-clés à filtrer, séparés par des virgules."
+						}
+					}
+				},
+				"remove": {
+					"name": "retirer",
+					"description": "Retirer un filtre",
+					"options": {
+						"game-or-group": {
+							"name": "jeu-ou-groupe",
+							"description": "Le jeu/groupe auquel retirer le filtre"
+						}
+					}
+				},
+				"list": {
+					"name": "lister",
+					"description": "Voir tous vos filtres"
+				}
+			}
 		}
 	},
 	"voting": {
-		"thanks": "Merci d’avoir voté ! Vous pouvez désormais suivre les actus et changements de prix de %s jeux de plus dans chacun de vos serveurs."
+		"thanks": "Merci d’avoir voté ! Vous pouvez désormais suivre les actus et changements de prix de %s jeux de plus dans chacun de vos serveurs.",
+		"thanks-dbl": "Merci d'avoir voté ! Vous pouvez maintenant avoir %s filtres de plus dans vos serveurs."
 	},
 	"help": {
 		"title": "Aide Steam News",
@@ -553,6 +621,54 @@
 		"confirm-news-role": "Les actus de ${name} seront désormais envoyées dans ${channel} et notifieront ${role}.",
 		"confirm-posts-role": "Les annonces de ${name} seront envoyées dans ${channel} et notifieront ${role}."
 	},
+	"filter": {
+		"help": {
+			"title": "Aide des filtres",
+			"description": "Les filtres vous permettent de limiter quelles actu vous verrez d'un jeu/groupe. Par exemple vous pourriez pas vouloir voir les annonces de patch, ou au contraire ne voir que les annonces de patch et ignorer le reste. Pour cela, pour pouvez créer un filtre soit exigeant soit excluant pour un jeu/groupe donné.\nLes filtres sont insensibles à la casse (donc “patch” reconnaîtra aussi “Patch”, “PATCH”, etc), séparés par des virgules, et filtrent le titre ainsi que le contenu.\nSans abonnement, vous ne pouvez avoir qu'un filtre par serveur, mais l'abonnement “more watchers“ vous octroiera des filtres à l'infini. Vous pouvez aussi voter pour le bot sur ${dbl_link} pour avoir %s filtres gratuits de plus.",
+			"fields": [
+				{
+					"name": "Filtre excluant",
+					"value": "Exclut les actus qui contiennent un des mots du filtre. Par exemple, `patch,hotfix` excluera toutes les actus qui contiennent “patch“ ou “hotfix”."
+				},
+				{
+					"name": "Filtre exigeant",
+					"value": "C'est l'inverse : il exclut toutes les actus qui ne contienent *aucun* des mots-clés. Pour reprendre l'exemple, `patch,hotfix` ne laissera passer que les actus qui contiennent “patch” ou “hotfix” (ou les deux)."
+				}
+			]
+		},
+		"exclude": "Exclure %s",
+		"require": "Exiger %s",
+		"require-one-of": "Exiger au moins un parmi %s",
+		"added": "Filtre mis pour %s :",
+		"conflict": "",
+		"conflict-action": "Que voulez-vous faire ?",
+		"conflict-replace": "Remplacer le fitlre existant",
+		"conflict-merge": "Le fusionner avec le nouveau",
+		"conflict-cancel": "Annuler",
+		"add-failed": "Je n'ai rien trouvé à quoi mettre un filtre. Vous n'auriez pas envoyé la commande un peu vite ? Merci de bien prendre une option parmi celles qui s'affichent.",
+		"vote-required": "Ce filtre a été ajouté grâce à un vote DircordBotList. Vous devez voter de nouveau pour le modifier : <${dbl_url}>",
+		"premium-required": "Ce filtre a été ajouté grâce à un abonnement premium. Il est actuellement désactivé, l'abonnement de ce serveur ayant expiré. Vous devrez vous abonner à nouveau pour le réactiver.",
+		"at-maximum-plzvote": "Il y a déjà un filtre dans ce serveur. Pour en débloquer d'autres, votez pour moi sur ${dbl_link} ou prenez un abonnement.",
+		"at-maximum-plzbuy": "Il y a déjà un filtre sur ce serveur. Pour en débloquer d'autres, prenez un abonnement.",
+		"reached-maximum-plzvote": "Ce sera votre seul filtre gratuit pour ce serveur. Pour en débloquer d'autres, votez pour moi sur ${dbl_link} ou prenez un abonnement.",
+		"at-maximum": "Ce serveur a atteint le maximum de %s filtres gratuits. Pour des filtres illimités, prenez un abonnement.",
+		"removed": "Filtre pour %s retiré.",
+		"remove-failed": "Je n'ai rien trouvé à quoi retirer un filtre. Vous n'auriez pas envoyé la commande un peu vite ? Merci de bien prendre une option parmi celles qui s'affichent.",
+		"free-filter": "Filtre gratuit",
+		"for-game": "Pour **%s** :",
+		"vote-filters": "Filtres de votes (${number}/${max})",
+		"vote-filters-desc": "Les modifier requiert d'avoir voté sur ${dbl_link}.",
+		"vote-filters-none": "Aucun ! Mais vous avez voté sur DiscordBotList récemment, alors vous pourriez en ajouter.",
+		"premium-filters": "Filtres premium",
+		"premium-filters-page": "Filtres premium (page ${page}/${nPages})",
+		"premium-filters-desc": "Ils seront désactivés si l'abonnement de ce serveur prend fin.",
+		"premium-filters-disabled": "L'abonnement de ce serveur a pris fin ; ces filtres sont désactivés.",
+		"premium-filters-plzBuy": "Prenez un abonnement pour réactiver vos filtres premium.",
+		"suggest-premium": "Vous avez tous les filtres que vous pouvez avoir gratuitement. Débloquez des filtres illimités avec un abonnement premium.",
+		"more-filters-to-show": "... et %s de plus.",
+		"conflict-game": "Vous avez déjà le filtre suivant pour ce jeu :",
+		"conflict-group": "Vous avez déjà le filtre suivant pour ce groupe :"
+	},
 	"watched": {
 		"steam-watched": "Actus à propos de **Steam** envoyées dans %s",
 		"games": {
@@ -575,7 +691,8 @@
 		"groups": {
 			"1": "1 groupe suivi",
 			"default": "%n groupes suivis"
-		}
+		},
+		"filter": "Filtre :"
 	},
 	"unwatch": {
 		"news-unwatched": "%s n’est plus suivi dans ce serveur.",
