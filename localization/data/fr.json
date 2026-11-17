@@ -624,7 +624,7 @@
 	"filter": {
 		"help": {
 			"title": "Aide des filtres",
-			"description": "Les filtres vous permettent de limiter quelles actu vous verrez d'un jeu/groupe. Par exemple vous pourriez pas vouloir voir les annonces de patch, ou au contraire ne voir que les annonces de patch et ignorer le reste. Pour cela, pour pouvez créer un filtre soit exigeant soit excluant pour un jeu/groupe donné.\nLes filtres sont insensibles à la casse (donc “patch” reconnaîtra aussi “Patch”, “PATCH”, etc), séparés par des virgules, et filtrent le titre ainsi que le contenu.\nSans abonnement, vous ne pouvez avoir qu'un filtre par serveur, mais l'abonnement “more watchers“ vous octroiera des filtres à l'infini. Vous pouvez aussi voter pour le bot sur ${dbl_link} pour avoir %s filtres gratuits de plus.",
+			"description": "Les filtres vous permettent de limiter quelles actu vous verrez d'un jeu/groupe. Par exemple vous pourriez pas vouloir voir les annonces de patch, ou au contraire ne voir que les annonces de patch et ignorer le reste. Pour cela, pour pouvez créer un filtre soit exigeant soit excluant pour un jeu/groupe donné.\nLes filtres sont insensibles à la casse (donc “patch” reconnaîtra aussi “Patch”, “PATCH”, etc), séparés par des virgules, et filtrent le titre ainsi que le contenu.\nSans abonnement, vous ne pouvez avoir qu'un filtre par serveur, mais l'abonnement “more watchers“ vous octroiera des filtres illimités. Vous pouvez aussi voter pour le bot sur ${dbl_link} pour avoir %s filtres gratuits de plus.",
 			"fields": [
 				{
 					"name": "Filtre excluant",
