@@ -1,7 +1,6 @@
 
 import { dictionary, deepFreeze } from "../utils/dictionaries.js";
-import importJSON from "../utils/importJSON.function.js";
-const localesFile = importJSON("localization/locales.json");
+import localesFile from "./locales.json" with { type: "json" };
 export default localesFile;
 
 const countryToLang = localesFile.countryToLang = dictionary();

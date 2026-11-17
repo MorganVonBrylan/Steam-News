@@ -1,12 +1,12 @@
 
-import importJSON from "../utils/importJSON.function.js";
 import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "../steam_news/limits.js";
 import { auth, myself, master } from "../bot.js";
 const {
 	donate: DONATE_LINK,
 	supportServer: SUPPORT_SERVER = "*(no support server invite set)*",
 } = auth;
-const { repository: { url: repository }, version, author } = importJSON("package.json");
+import packageFile from "../package.json" with { type: "json" };
+const { repository: { url: repository }, version, author } = packageFile;
 import { voteURL } from "../botLists.js";
 import { trReplace } from "../localization/index.js";
 

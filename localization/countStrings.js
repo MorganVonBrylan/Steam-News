@@ -1,7 +1,7 @@
 
-import importJSON from "../utils/importJSON.function.js";
+import strings from "./data/en.json" with { type: "json" };
 
-console.log(count(importJSON(import.meta.dirname+"/en.json")), "strings");
+console.log(count(strings, "strings"));
 
 function count(group)
 {

@@ -1,8 +1,7 @@
 
 import { getStats } from "../steam_news/db_api.js";
-import importJSON from "../utils/importJSON.function.js";
-
-const { version } = importJSON("package.json");
+import packageFile from "../package.json" with { type: "json" };
+const { version } = packageFile;
 const msToDays = 3600_000 * 24;
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;

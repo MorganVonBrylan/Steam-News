@@ -32,7 +32,8 @@ const locales = dictionary();
 
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 {
-	const locale = importJSON(`${dataFolder}/${file}`);
+	/** @type {Locale} */
+	const locale = await import(`./data/${file}`, {with:{type:"json"}});
 	const localeName = file.substring(0, file.length - 5);
 	locales[localeName] = locale;
 

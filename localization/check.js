@@ -25,7 +25,7 @@ const locales = new Map();
 
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 {
-	const localizationData = importJSON(`${dataFolder}/${file}`);
+	const {default: localizationData} = await import(`./data/${file}`, {with:{type:"json"}});
 	const locale = file.slice(0, -5);
 	if(locale === fallbackLocale)
 		Object.assign(mainLocale, localizationData);
