@@ -14,7 +14,20 @@ import { dictionary, deepFreeze } from "../utils/dictionaries.js";
 
 import { dbl_link, dbl_url } from "../commands/filter/~data.js";
 
-/** @type {{[locale:string]: object}} */
+/**
+ * @typedef {{name:string, description:string}} BaseData
+ * @typedef {BaseData & {choices?:{[value:string]:string}}} CmdOption
+ * @typedef {{name:string, description:string, options?:{[name:string]: CmdOption}}} Subcmd
+ * @typedef {{name:string, description:string, options?:{[name:string]: SubcmdData}}} SubcmdGroup
+ * @typedef {{name:string, description:string, options?:{[name:string]: CmdOption}|{[name:string]: Subcmd|SubcmdGroup}}} Command
+ * @typedef {"ar"|"br"|"zh-CN"|"zh-TW"|"cs"|"da"|"nl"|"en"|"fi"|"fr"|"de"|"el"|"hu"|"it"|"ja"|"ko"|"no"|"pl"|"pt"|"pt-BR"|"ro"|"ru"|"es-ES"|"es-419"|"sv"|"th"|"tr"|"uk"|"vn"} LocaleName
+ * @typedef {{[key:string]: string|string[]|LocaleEntry}} LocaleEntry
+ * @typedef {LocaleEntry & {
+ *   commands: { [cmdName:string]:Command },
+ *   locale: LocaleEntry & { languages: {[lang:LocaleName]: string} },
+ * }} Locale
+ */
+/** @type {{[locale:string]: Locale}} */
 const locales = dictionary();
 
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
@@ -186,6 +199,7 @@ export const tr = Object.freeze({
 	},
 
 	/**
+	 * @this {typeof tr.t}
 	 * Get a translation with a proper plural. This must be called from a translation function.
 	 * @param {string|{default:string,[n:number]:string}} keyOrPlurals The plurals data, or the key of the string
 	 * @param {number} n The number
@@ -201,6 +215,7 @@ export const tr = Object.freeze({
 	},
 
 	/**
+	 * @this {{lang:keyof locales, locale:Locale, fallback:Locale}}
 	 * Translate a string. This function must be bound to a language. @see {tr.set}
 	 * @param {string} key 
 	 * @param  {...string|object} replacements 
@@ -268,7 +283,7 @@ export function applyTranslations(cmdName, cmd)
 		return;
 
 	const { commands, locale: {languages} } = locales[FALLBACK];
-
+	// fallback check
 	if(!commands)
 		console.warn("Missing fallback command translations");
 	else if(!(cmdName in commands))
@@ -316,7 +331,7 @@ export function applyTranslations(cmdName, cmd)
 				}
 			}
 		}
-	}
+	} // end of fallback check
 
 	for(const [locale, {commands, locale: {languages}}] of Object.entries(locales))
 	{
@@ -364,11 +379,17 @@ export function applyTranslations(cmdName, cmd)
 	} // for(const [locale, {commands}] of Object.entries(locales))
 }
 
-function applyOptionTranslation(tr, opt)
+/**
+ * @this {{locale:string, languages:{[locale:string]:object}, cmdName:string}}
+ * Apply the translation on a command object. This is meant to be used as middleware for djs-commands.
+ * @param {Exclude<Command['options'], undefined>} translations The option translations
+ * @param {import("discord.js").ApplicationCommandOptionData} opt The option getting translation applied to
+ */
+function applyOptionTranslation(translations, opt)
 {
 	const { locale } = this;
 	const forOption = `translation for option ${opt.name} of command ${this.cmdName}`;
-	tr = tr[opt.name];
+	const tr = translations[opt.name];
 	if(!tr)
 	{
 		// /watch's subcommands share these options, which are not repeated for the sake of brevity
