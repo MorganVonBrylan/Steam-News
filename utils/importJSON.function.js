@@ -4,9 +4,11 @@ import { resolve } from "node:path";
 
 const cache = new Map();
 
+/** @typedef {Partial<import("./error.js").Settings>} ErrorSettings */
 /**
  * @overload
  * @param {"auth.json"} path
+  * @param {ErrorSettings} defaultValue
  * @return {{
   *  token: string, master:string, adminServer:string,
   *  steamGridDB?: string,
@@ -21,11 +23,15 @@ const cache = new Map();
   *  donate?: string,
   * }}
   * 
-  * @typedef {Partial<import("./error.js").Settings>} ErrorSettings
   * @overload
   * @param {"errors.json"} path
   * @param {ErrorSettings} defaultValue
   * @return {ErrorSettings}
+  * 
+  * @overload
+  * @param {string} path
+  * @param {*} defaultValue
+  * @return {*}
  * 
  * Import a JSON file like require, except relative paths are relative to the working directory instead of the current file.
  * @param {string} path The .json file's path
