@@ -27,7 +27,7 @@ import { dbl_link, dbl_url } from "../commands/filter/~data.js";
  *   locale: LocaleEntry & { languages: {[lang:LocaleName]: string} },
  * }} Locale
  */
-/** @type {{[locale:string]: Locale}} */
+/** @type {{[locale:LocaleName]: Locale}} */
 const locales = dictionary();
 
 for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
@@ -380,10 +380,10 @@ export function applyTranslations(cmdName, cmd)
 }
 
 /**
- * @this {{locale:string, languages:{[locale:string]:object}, cmdName:string}}
+ * @this {{locale:LocaleName, languages:Locale['locale']['languages'], cmdName:string}}
  * Apply the translation on a command object. This is meant to be used as middleware for djs-commands.
  * @param {Exclude<Command['options'], undefined>} translations The option translations
- * @param {import("discord.js").ApplicationCommandOptionData} opt The option getting translation applied to
+ * @param {import("discord.js").ChatInputApplicationCommandData} opt The option getting translation applied to
  */
 function applyOptionTranslation(translations, opt)
 {
