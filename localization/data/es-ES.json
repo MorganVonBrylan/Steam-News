@@ -9,39 +9,10 @@
 		"premium": {
 			"name": "premium",
 			"description": "Comandos Premium",
-			"rebrand": {
-				"name": "rebrand",
-				"description": "Cambia la foto de perfil y/o banner del bot en este servidor.",
-				"options": {
-					"avatar": {
-						"name": "avatar",
-						"description": "La nueva foto de perfil del bot"
-					},
-					"banner": {
-						"name": "banner",
-						"description": "El nuevo banner del bot (tamaño ideal: 680×240)"
-					}
-				}
-			},
-			"rebrand-reset": {
-				"name": "rebrand-reset",
-				"description": "Volver a la apariencia predeterminada del bot (gratis).",
-				"options": {
-					"what": {
-						"name": "que",
-						"description": "Elija qué restablecer",
-						"choices": [
-							"Avatar",
-							"Banner",
-							"Ambos"
-						]
-					}
-				}
-			},
 			"options": {
 				"rebrand": {
 					"name": "aspecto",
-					"description": "Cambia la foto de perfil o el cartel del bot en este servidor",
+					"description": "Cambia la foto de perfil y/o el cartel del bot en este servidor",
 					"options": {
 						"avatar": {
 							"name": "avatar",
@@ -49,7 +20,7 @@
 						},
 						"banner": {
 							"name": "cartel",
-							"description": "El nuevo cartel del bot (Tamaño ideal: 680×240)"
+							"description": "El nuevo cartel del bot (tamaño ideal: 680×240)"
 						}
 					}
 				},
