@@ -335,7 +335,7 @@
 
 	"voting": {
 		"thanks": "Thank you for voting! You can now add %s more watchers of each type in your servers.",
-		"thanks-dbl": "Thank you for voting! No reward for DiscordBotList yet, sorry."
+		"thanks-dbl": "Thank you for voting! You can now have %s more filters in your servers."
 	},
 
 	"help": {

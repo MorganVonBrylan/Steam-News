@@ -7,6 +7,7 @@ export { FALLBACK as fallbackLocale };
 
 import importJSON from "../utils/importJSON.function.js";
 import { WATCH_LIMIT, WATCH_VOTE_BONUS } from "../steam_news/limits.js";
+import { VOTE_BONUS as FILTER_VOTE_BONUS } from "../commands/filter/~data.js";
 import localesFile from "./locales.js";
 
 import { readdirSync } from "node:fs";
@@ -39,6 +40,7 @@ for(const file of readdirSync(dataFolder).filter(f => f.endsWith(".json")))
 
 	const { commands: { watch, latest, premium }, voting, filter } = locale;
 	voting.thanks = voting.thanks.replace("%s", WATCH_VOTE_BONUS);
+	voting["thanks-dbl"] = voting["thanks-dbl"]?.replace("%s", FILTER_VOTE_BONUS);
 	const { options: { game, steam } } = watch;
 	game.description = game.description.replace("%s", WATCH_LIMIT);
 	Object.assign(game.options, steam.options);
