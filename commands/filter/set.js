@@ -135,6 +135,7 @@ const { Primary: PRIMARY, Success: SUCCESS, Secondary: SECONDARY } = ButtonStyle
 function handleConflict(inter, existingFilter, newFilter, { hasPremium, hasVoted, nFilters })
 {
 	const t = tr.set(inter.locale, "filter");
+	const conflictStr = existingFilter.appid ? "conflict-game" : "conflict-group";
 	const hasFiltersLeft = hasPremium || hasVoted && nFilters < MAX_WITH_VOTE;
 	const nonce = inter.id;
 	const REPLACE = `replace-filter-${nonce}`;
@@ -142,7 +143,7 @@ function handleConflict(inter, existingFilter, newFilter, { hasPremium, hasVoted
 	const CANCEL = `cancel-filter-${nonce}`;
 	inter.reply({
 		flags: "Ephemeral",
-		embeds: [{ description: `${t("conflict")}\n${translateFilter(t, existingFilter)}\n${t("conflict-action")}` }],
+		embeds: [{ description: `${t(conflictStr)}\n${translateFilter(t, existingFilter)}\n${t("conflict-action")}` }],
 		components: [buttonRow(
 			{ customId: REPLACE, label: t("conflict-replace"), style: PRIMARY },
 			{ customId: MERGE, label: t("conflict-merge"), style: SUCCESS },
