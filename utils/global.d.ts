@@ -13,7 +13,7 @@ declare global {
     join(separator:string): string;
   }
 
-  const error: typeof import("./utils/error.js").default;
-  const tr: typeof import("./localization/index.js").default;
-  type TranslatorFunction = import("./localization/index.js").TranslatorFunction;
+  const error: typeof import("./error.js").default;
+  const tr: typeof import("../localization/index.js").default;
+  type TranslatorFunction = import("../localization/index.js").TranslatorFunction;
 }
