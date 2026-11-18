@@ -229,7 +229,8 @@ function getSender(data, baseEmbeds, query)
 		return Promise.allSettled(newsToSend.map(embed => {
 			return channel.send(roleId
 				? { content: `<@&${roleId}>`, embeds: [embed] }
-				: { embeds: [embed] }
+				: { embeds: [embed] },
+				true,
 			).then(embed.yt ? () => channel.send(embed.yt) : Function.noop)
 			.then(() => data.successes++)
 			.catch(err => {

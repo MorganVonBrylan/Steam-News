@@ -160,7 +160,7 @@ export async function run(inter)
 					await webhook.send({embeds: [
 						{ description: tr.get(guildLocale, "used-command", { user: inter.user, command }) },
 						news,
-					]});
+					]}, true);
 					if(news.yt)
 						webhook.send(news.yt);
 					inter.deleteReply();
