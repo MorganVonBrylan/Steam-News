@@ -42,7 +42,11 @@ export async function run(inter)
 
 	if(target === ALL_WEBHOOKS)
 	{
-		const { successes, errors, miscErrors } = await webhooks.bulkSetup(getNonWebhooks(guildId));
+		const nonWebhooks = getNonWebhooks(guildId);
+		for(const watcher of nonWebhooks)
+			if(watcher.type === "group")
+				watcher.details = await getBasicGroupDetails(watcher.clanid);
+		const { successes, errors, miscErrors } = await webhooks.bulkSetup(nonWebhooks);
 		const fieldList = new FieldList();
 
 		if(successes.size)
