@@ -220,3 +220,7 @@ Various improvements and bug fixes.
 
 2.21 (17/11/2026)
 Add news filters.
+
+	2.21.1 (18/11/2026)
+	/watched and /premium chameleon auto now use pagination instead of spamming embeds when there are many watchers.
+	Misc codebase improvements.
