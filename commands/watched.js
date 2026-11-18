@@ -5,6 +5,8 @@ import { GAME_COLOR, PRICE_COLOR, STEAM_COLOR, GROUP_COLOR } from "./watch/~comm
 import { MAX_FIELDS_PER_EMBED, sendEmbeds } from "../utils/embeds.js";
 import { translateFilter } from "./filter/~cmdUtils.js";
 
+/** @import {NewsWatcher, PriceWatcher, GroupWatcher} from "../steam_news/db.js" */
+
 /** @param {import("discord.js").ChatInputCommandInteraction} inter */
 export function run(inter) {
 	const t = tr.set(inter.locale, "watched");
@@ -41,7 +43,7 @@ export function run(inter) {
 
 /**
  * Groups watcher data into embeds.
- * @param {(import("../steam_news/db.js").NewsWatcher|import("../steam_news/db.js").PriceWatcher)[]} watched Watcher data
+ * @param {NewsWatcher[]|PriceWatcher[]|GroupWatcher[]} watched Watcher data
  * @param {function} t A translator function.
  * @param {"games"|"prices"|"groups"} type The embed type.
  * @returns One or more embeds
@@ -67,7 +69,7 @@ function toEmbeds(watched, t, type)
 /**
  * Turn a watcher's data info an embed field.
  * @param {TranslatorFunction} t A translator function.
- * @param {import("../steam_news/db.js").NewsWatcher|import("../steam_news/db.js").PriceWatcher|import("../steam_news/db.js").GroupWatcher} watcher The watcher data 
+ * @param {NewsWatcher|PriceWatcher|GroupWatcher} watcher The watcher data 
  * @returns {{name:string, value:string, inline:true}} Field data
  */
 function watcherToField(t, {nsfw, name, channelId, roleId, webhook, filter})
@@ -83,10 +85,9 @@ function watcherToField(t, {nsfw, name, channelId, roleId, webhook, filter})
 
 
 /**
- * 
- * @param {ReturnType<tr.set>} t 
- * @param {*} filter 
- * @returns 
+ * Write the line for a filter
+ * @param {TranslatorFunction} t
+ * @param {import("./filter/~data.js").Filter} filter
  */
 function filterLine(t, filter)
 {
