@@ -2,8 +2,11 @@
 import { getWatchedApps, getWatchedPrices, getWatchedGroups } from "../steam_news/watchers.js";
 import { STEAM_APPID } from "../steam_news/api.js";
 import { GAME_COLOR, PRICE_COLOR, STEAM_COLOR, GROUP_COLOR } from "./watch/~commons.js";
-import { MAX_FIELDS_PER_EMBED, sendEmbeds } from "../utils/embeds.js";
+import { countFields, MAX_FIELDS_PER_EMBED_NICE_INLINES } from "../utils/embeds.js";
 import { translateFilter } from "./filter/~cmdUtils.js";
+import paginate from "../utils/paginate.js";
+
+const MAX_FIELDS_PER_EMBED = ~~(MAX_FIELDS_PER_EMBED_NICE_INLINES / 2);
 
 /** @import {NewsWatcher, PriceWatcher, GroupWatcher} from "../steam_news/db.js" */
 
@@ -16,30 +19,36 @@ export function run(inter) {
 	const watchedPrices = getWatchedPrices(guildId);
 	const watchedGroups = getWatchedGroups(guildId);
 
-	const embeds = [
-		...toEmbeds(watched, t, "games"),
-		...toEmbeds(watchedPrices, t, "prices"),
-	];
-
-	if(steamWatch)
-	{
-		const { webhook, channelId, roleId, filter } = steamWatch;
-		const string = webhook ? "steam-watched-webhook" : "steam-watched";
-		const lines = [t(string, `<#${channelId}>`)];
-		if(roleId) lines.push(`${t("ping")} <@&${roleId}>`);
-		if(filter) lines.push(filterLine(t, filter));
-		embeds.push({ color: STEAM_COLOR, description: lines.join("\n") });
-	}
-
-	if(watchedGroups.length)
-		embeds.push(...toEmbeds(watchedGroups, t, "groups"));
+	const embeds = toSteamEmbed(steamWatch, t).concat(
+		toEmbeds(watched, t, "games"),
+		toEmbeds(watchedPrices, t, "prices"),
+		toEmbeds(watchedGroups, t, "groups"),
+	);
 
 	if(!embeds.length)
 		inter.reply({ flags: "Ephemeral", content: t("none") });
+	else if(countFields(embeds, 1) < 20)
+		inter.reply({ flags: "Ephemeral", embeds });
 	else
-		sendEmbeds(embeds, inter, "Ephemeral");
+		paginate(inter, { items: embeds, pageLength: 2 }, "Ephemeral");
 }
 
+/**
+ * Get an array with the Steam watcher embed (or empty if Steam isn't watched)
+ * @param {?NewsWatcher} watcher 
+ * @param {TransferFunction} t 
+ * @returns {[]|[Embed]}
+ */
+function toSteamEmbed(watcher, t)
+{
+	if(!watcher) return [];
+	const { webhook, channelId, roleId, filter } = watcher;
+	const string = webhook ? "steam-watched-webhook" : "steam-watched";
+	const lines = [t(string, `<#${channelId}>`)];
+	if(roleId) lines.push(`${t("ping")} <@&${roleId}>`);
+	if(filter) lines.push(filterLine(t, filter));
+	return [{ color: STEAM_COLOR, description: lines.join("\n") }];
+}
 
 /**
  * Groups watcher data into embeds.
