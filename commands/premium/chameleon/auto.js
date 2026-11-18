@@ -213,8 +213,8 @@ export class WebhookAutoSetter
 		else
 		{
 			const { appid = STEAM_APPID } = watcher;
-			const name = getAppName(appid);
-			const avatar = await icon(appid, { officialFirst: false });
+			name = getAppName(appid);
+			avatar = await icon(appid, { officialFirst: false });
 		}
 		watcher.webhook = formatWebhookInfo(webhook, isThread, name, avatar);
 		if(!setWebhook(watcher.type, watcher))
