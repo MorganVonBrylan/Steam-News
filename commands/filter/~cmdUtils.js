@@ -25,3 +25,32 @@ function translateFilterLine(t, filter)
 	const terms = filter.substring(1).split(",");
 	return t(typeKey, `\`${terms.join("`, `")}\``);
 }
+
+
+/**
+ * @extends Set<string>
+ * Wrapper for a set of filter terms (or keywords) that retains its type, with a useful toString method.
+ */
+export class Terms extends Set {
+	/** @param {string[]|`${"+"|"-"}${string}`} terms @param {"+"|"-"} type */
+	constructor(terms, type = terms[0]) {
+		super(Array.isArray(terms) ? terms : terms.substring(1).split(","));
+		this.type = type;
+	}
+	#assignPropsTo(set) {
+		set.type = this.type;
+		set.toString = this.toString;
+		return set;
+	}
+	/** @param {Set<string>} other @returns {typeof this} @see Set.prototype.union */
+	union(other) {
+		return this.#assignPropsTo(super.union(other));
+	}
+	/** @param {Set<string>} other @returns {typeof this} @see Set.prototype.difference */
+	difference(other) {
+		return this.#assignPropsTo(super.difference(other));
+	}
+	toString() {
+		return `${this.type}${Array.from(this)}`;
+	}
+}

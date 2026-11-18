@@ -1,7 +1,7 @@
 
 import { getAppName, getGroupName, getFilters, setFilter } from "../../steam_news/db_api.js";
 import { dbl_url, MAX_FREE, VOTE_BONUS, MAX_WITH_VOTE } from "./~data.js";
-import { storeButtons, translateFilter } from "./~cmdUtils.js";
+import { Terms, storeButtons, translateFilter } from "./~cmdUtils.js";
 import { votedDBL, premiumGuilds } from "../../steam_news/VIPs.js";
 import { makeAutocomplete } from "../../autocomplete/watched.js";
 
@@ -10,31 +10,6 @@ import { ButtonStyle } from "discord.js";
 const registerOptions = { singleUse: true, timeout: 900 };
 
 /** @import {Filter,FilterWithSlot} from "./~data.js" */
-
-/** @extends Set<string> */
-class Terms extends Set {
-	/** @param {string[]|`${"+"|"-"}${string}`} terms @param {"+"|"-"} type */
-	constructor(terms, type = terms[0]) {
-		super(Array.isArray(terms) ? terms : terms.substring(1).split(","));
-		this.type = type;
-	}
-	#assignPropsTo(set) {
-		set.type = this.type;
-		set.toString = this.toString;
-		return set;
-	}
-	/** @param {Set<string>} other @returns {typeof this} @see Set.prototype.union */
-	union(other) {
-		return this.#assignPropsTo(super.union(other));
-	}
-	/** @param {Set<string>} other @returns {typeof this} @see Set.prototype.difference */
-	difference(other) {
-		return this.#assignPropsTo(super.difference(other));
-	}
-	toString() {
-		return `${this.type}${Array.from(this)}`;
-	}
-}
 
 /**
  * @type {(t: TranslatorFunction, hardMaxReached:boolean)=>string}
