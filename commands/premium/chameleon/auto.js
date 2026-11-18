@@ -81,7 +81,7 @@ export async function run(inter)
 			if(miscErrors.size)
 				fields.push({ name: t("webhook-auto-errors"), value: miscErrors.join("\n") });
 
-			fieldList.addGroup(fields, { color: ERROR, title: t("webhook-auto-failures") });
+			fieldList.addGroup(fields, { color: ERROR, title: t("webhook-auto-failures") }, true);
 		}
 
 		if(fieldList.length)
