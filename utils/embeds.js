@@ -7,7 +7,7 @@ import {
 export const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
 export const REQUIRED_THREAD_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessagesInThreads | PERMISSIONS.EmbedLinks;
 
-/** @import {Embed} form "discord.js" */
+/** @import {Embed} from "discord.js" */
 
 const { Flags: { Ephemeral } } = MessageFlagsBitField;
 
@@ -16,6 +16,16 @@ export const MAX_FIELDS_PER_EMBED = 25;
 export const MAX_FIELDS_PER_EMBED_NICE_INLINES = 24;
 export const FIELD_LENGTH_LIMIT = 1024;
 export const EMBEDS_PER_MESSAGE = 10;
+
+/**
+ * Count the total number of fields in an embed list
+ * @param {Embed[]} embeds The embeds
+ * @param {number} countNoneAs How many fields should field-less embeds count as. Defaults to 0.
+ */
+export function countFields(embeds, countNoneAs = 0)
+{
+	return embeds.reduce((count, embed) => count + (embed.fields?.length || countNoneAs), 0);
+}
 
 /**
  * Send embeds to a channel or interaction while respecting the embed limit per message.
