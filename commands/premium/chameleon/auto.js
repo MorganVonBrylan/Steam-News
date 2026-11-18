@@ -13,7 +13,8 @@ import { ALL_WEBHOOKS, parseOption } from "./~autocomplete.js";
 import fetchImage from "../../../utils/fetchImage.function.js";
 import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
 const MANAGE_WEBHOOKS = PERMISSIONS.ManageWebhooks;
-import { FieldList, sendEmbeds } from "../../../utils/embeds.js";
+import { FieldList } from "../../../utils/embeds.js";
+import paginate from "../../../utils/paginate.js";
 
 import { client } from "../../../bot.js";
 import { mention as mentionCommand } from "../../../utils/commands.js";
@@ -85,7 +86,7 @@ export async function run(inter)
 		}
 
 		if(fieldList.length)
-			sendEmbeds(fieldList, inter);
+			paginate(inter, { items: fieldList, pageLength: 1 });
 		else
 			inter.editReply(t("webhook-auto-nothing", `</premium chameleon unset:${inter.commandId}>`));
 	}
