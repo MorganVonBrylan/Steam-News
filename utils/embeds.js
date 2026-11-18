@@ -1,15 +1,9 @@
 
-import {
-	ChatInputCommandInteraction,
-	PermissionFlagsBits as PERMISSIONS,
-	MessageFlagsBitField,
-} from "discord.js";
+import { PermissionFlagsBits as PERMISSIONS } from "discord.js";
 export const REQUIRED_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessages | PERMISSIONS.EmbedLinks;
 export const REQUIRED_THREAD_PERMS = PERMISSIONS.ViewChannel | PERMISSIONS.SendMessagesInThreads | PERMISSIONS.EmbedLinks;
 
 /** @import {Embed} from "discord.js" */
-
-const { Flags: { Ephemeral } } = MessageFlagsBitField;
 
 export const MAX_FIELDS_PER_EMBED = 25;
 /** Divisible by 3; avoids having one lonely entry at the bottom when all fields are inline */
@@ -25,43 +19,6 @@ export const EMBEDS_PER_MESSAGE = 10;
 export function countFields(embeds, countNoneAs = 0)
 {
 	return embeds.reduce((count, embed) => count + (embed.fields?.length || countNoneAs), 0);
-}
-
-/**
- * Send embeds to a channel or interaction while respecting the embed limit per message.
- * @param {Embed[]|FieldList} embeds The embeds
- * @param {ChatInputCommandInteraction|import("./channels.js").GuildTextChannel} sender 
- * @param {import("discord.js").BitFieldResolvable} [flags]
- */
-export async function sendEmbeds(embeds, sender, flags)
-{
-	function slice(start) {
-		return { flags, embeds: embeds.slice(start, start + EMBEDS_PER_MESSAGE) };
-	}
-
-	if(sender instanceof ChatInputCommandInteraction)
-	{
-		if(sender.deferred || sender.replied)
-			await sender.editReply(slice(0));
-		else
-			await sender.reply(slice(0));
-
-		if(embeds.length > EMBEDS_PER_MESSAGE)
-		{
-			flags = MessageFlagsBitField.resolve(flags);
-			const { channel } = sender;
-			const canSend = !(flags & Ephemeral) && channel && (
-				!channel.guild
-				|| channel.permissionsFor(channel.guild.members.me)
-					.has(channel.isThread() ? REQUIRED_THREAD_PERMS : REQUIRED_PERMS)
-			);
-			const send = canSend ? channel.send.bind(channel) : sender.followUp.bind(sender);
-			for(let i = EMBEDS_PER_MESSAGE ; i < embeds.length ; i += EMBEDS_PER_MESSAGE)
-				send(slice(i));
-		}
-	}
-	else for(let i = 0 ; i < embeds.length ; i += EMBEDS_PER_MESSAGE)
-		await sender.send(slice(i));
 }
 
 
@@ -86,16 +43,21 @@ export class FieldList extends Array
 		if(!fields?.length)
 			return;
 
+		let MAX_FIELDS = MAX_FIELDS_PER_EMBED_NICE_INLINES;
 		for(const field of fields)
+		{
+			if(!field.inline)
+				MAX_FIELDS = MAX_FIELDS_PER_EMBED;
 			if(field.value.length > FIELD_LENGTH_LIMIT)
 				field.value = `${field.value.slice(0, FIELD_LENGTH_LIMIT-3)}…`;
+		}
 
 		const group = [{
 			title, description, color,
-			fields: fields.slice(0, MAX_FIELDS_PER_EMBED),
+			fields: fields.slice(0, MAX_FIELDS),
 		}];
-		for(let i = MAX_FIELDS_PER_EMBED ; i < fields.length ; i += MAX_FIELDS_PER_EMBED)
-			group.push({fields: fields.slice(i, i + MAX_FIELDS_PER_EMBED), color});
+		for(let i = MAX_FIELDS ; i < fields.length ; i += MAX_FIELDS)
+			group.push({fields: fields.slice(i, i + MAX_FIELDS), color});
 
 		if(atBeginning) this.unshift(...group);
 		else this.push(...group);
