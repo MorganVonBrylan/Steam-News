@@ -84,7 +84,7 @@ To start the bot, run `node bot.js`
 
 Both `topGG` and `dbl` are optional.
 
-To update the bot's stats on Top.gg, set its API token. Same with Discord Bot List (DBL). For Top.gg, you need to use a v2 token, and do include the `Bearer` prefix. Make sure the token has write permissions.
+To update the bot's stats on Top.gg, set its API token. Same with Discord Bot List (DBL). For Top.gg, you need to use a v2 token. Do **not** include the `Bearer` prefix. Make sure the token has write permissions.
 
 Both `voteWatcherBonus` and `voteFilterBonus` are optional. The values shown here are the defaults.
 
