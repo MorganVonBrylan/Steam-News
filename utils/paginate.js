@@ -5,6 +5,9 @@ const { Secondary: style } = ButtonStyle;
 const registerOpts = { singleUse: true, timeout: 3600 };
 
 /** @import {Embed, InteractionReplyOptions, ChatInputCommandInteraction, MessageComponentInteraction} from "discord.js" */
+
+const identity = thing => thing;
+
 /**
  * @template T
  * Show data in a paginated embed.
@@ -14,7 +17,7 @@ const registerOpts = { singleUse: true, timeout: 3600 };
  * @param {string} [data.customId] A custom id to use for the buttons (default to interaction id) (max 90 characters)
  * @param {number} data.pageLength How many items will be shown at a time
  * @param {number} [data.page] The page number at which to start, indexed at 0. Defaults to 0.
- * @param {(slice: T[], range:{start:number,end:number,total:number,page:number,totalPages:number})=>(Embed|Embed[])} data.renderer A function that takes a slice of the data and the range of items shown (indexed at 1 for convenient user display) and returns the embed(s) used to display that slice.
+ * @param {(slice: T[], range:{start:number,end:number,total:number,page:number,totalPages:number})=>(Embed|Embed[])} [data.renderer] A function that takes a slice of the data and the range of items shown (indexed at 1 for convenient user display) and returns the embed(s) used to display that slice. If not provided, the slice will be used as-is.
  * @param {InteractionReplyOptions['flags']} [flags] Flags for the reply
  * @returns {Promise<InteractionResponse>} The interaction reponse promise
  */
@@ -22,7 +25,7 @@ export default function paginate(interaction, data, flags)
 {
 	data.customId ??= interaction.id;
 	data.page ??= 0;
-	const { items, customId, pageLength, page, renderer } = data;
+	const { items, customId, pageLength, page, renderer = identity } = data;
 	if(!items?.length)
 		throw new TypeError("The data is empty.");
 	if(!Number.isInteger(pageLength) || pageLength <= 0)
