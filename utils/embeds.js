@@ -79,9 +79,10 @@ export class FieldList extends Array
 	   * @param {string} [props.title] Title to give to this group of fields
 	   * @param {string} [props.description] Description to give to this group of fields
 	   * @param {number} [props.color] Color for the embeds
+	 * @param {boolean} atBeginning Whether to prepend that group to the field list rather than appending it
 	 * @returns The new length of the field list
 	 */
-	addGroup(fields, { title, description, color } = {}) {
+	addGroup(fields, { title, description, color } = {}, atBeginning = false) {
 		if(!fields?.length)
 			return;
 
@@ -89,11 +90,16 @@ export class FieldList extends Array
 			if(field.value.length > FIELD_LENGTH_LIMIT)
 				field.value = `${field.value.slice(0, FIELD_LENGTH_LIMIT-3)}…`;
 
-		const firstOfGroup = this.length;
-		for(let i = 0 ; i < fields.length ; i += MAX_FIELDS_PER_EMBED)
-			this.push({fields: fields.slice(i, i + MAX_FIELDS_PER_EMBED), color});
-		this[firstOfGroup].title = title;
-		this[firstOfGroup].description = description;
+		const group = [{
+			title, description, color,
+			fields: fields.slice(0, MAX_FIELDS_PER_EMBED),
+		}];
+		for(let i = MAX_FIELDS_PER_EMBED ; i < fields.length ; i += MAX_FIELDS_PER_EMBED)
+			group.push({fields: fields.slice(i, i + MAX_FIELDS_PER_EMBED), color});
+
+		if(atBeginning) this.unshift(...group);
+		else this.push(...group);
+
 		return this.length;
 	}
 }
