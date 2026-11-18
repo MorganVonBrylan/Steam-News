@@ -11,7 +11,7 @@ export { options } from "./~commons.js";
 export async function run(inter)
 {
 	const channel = inter.options.getChannel("channel") || inter.channel;
-	const cannotSend = await checkPerms(channel);
+	const cannotSend = checkPerms(channel.appPermissions || inter.appPermissions);
 	if(cannotSend)
 		return inter.reply({flags: "Ephemeral", content: tr.get(inter.locale, `watch.${cannotSend}`, channel.toString())});
 

@@ -174,7 +174,7 @@ export async function run(inter)
 
 		const reply = inter.editReply({ embeds: [news] });
 		try {
-		if(news.yt && await canSendMessage(channel))
+		if(news.yt && await canSendMessage(channel, inter.appPermissions))
 			reply.then(() => channel.send(news.yt));
 		}
 		catch(err) {
@@ -185,10 +185,10 @@ export async function run(inter)
 
 }
 
-async function canSendMessage(channel)
+async function canSendMessage(channel, permissions)
 {
 	return "send" in channel &&
 		(!channel.guild
 		|| !channel.locked
-		&& channel.permissionsFor(await channel.guild.members.fetchMe())?.has(REQUIRED_PERMS));
+			&& permissions.has(REQUIRED_PERMS));
 }

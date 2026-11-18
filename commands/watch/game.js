@@ -41,10 +41,9 @@ export async function run(inter)
 {
 	const { locale, options, guild } = inter;
 	const t = tr.set(locale, "watch");
-	const channel = options.getChannel("channel")
-		|| await guild.channels.fetch(inter.channelId);
+	const channel = options.getChannel("channel") || inter.channel;
 
-	const cannotSend = await checkPerms(channel);
+	const cannotSend = checkPerms(channel.appPermissions || inter.appPermissions);
 	if(cannotSend)
 		return inter.reply({flags: "Ephemeral", content: t(cannotSend, channel.toString())});
 
