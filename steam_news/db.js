@@ -175,7 +175,8 @@ if(currentVersion < DB_VERSION)
  * @param {boolean} pluck Whether to pluck the stmts
  * @returns Something that looks, swims and quacks like a prepared statement.
  */
-function makeProxy(sql, run, pluck = false) {
+function makeProxy(sql, run, pluck = false)
+{
 	let readonly;
 	if(sql instanceof Array)
 	{
@@ -204,10 +205,7 @@ const watchTables = ["Watchers", "PriceWatchers", "SteamWatchers", "GroupWatcher
  * @returns {function} The callback
  */
 function setType(type) {
-	return watcher => {
-		watcher.type = type;
-		return watcher;
-	};
+	return watcher => { watcher.type = type; return watcher; };
 }
 
 /** @type {{[sqlStatementName:string]: function}} */

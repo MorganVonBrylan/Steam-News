@@ -53,7 +53,8 @@ function logQueryError(message, httpStatus)
  * @param {Error} error The Error received when trying to send news/prices.
  * @returns {boolean} true if the error was handled, false if it wasn't a 404
  */
-function handleDeletedChannel({status, url}) {
+function handleDeletedChannel({status, url})
+{
     if(status !== 404)
         return;
     const channelId = url.substring(url.lastIndexOf("/")+1);
@@ -69,7 +70,8 @@ function handleDeletedChannel({status, url}) {
  * @param {(watcher:Watcher)=>*} sendNews The sendNews function, to try again with the channel
  * @returns true if the error was handled, false if it wasn't a 4xx
  */
-function handleDeletedWebhook(err, {webhookPurged}, watcher, sendNews) {
+function handleDeletedWebhook(err, {webhookPurged}, watcher, sendNews)
+{
 	if(webhookPurged)
 	{
 		watcher.webhook = null;
@@ -171,7 +173,8 @@ function filterEmbeds(filter, news)
  * @param {Embed[]} baseEmbeds The news embeds in the default language
  * @param {(lang:string)=>ReturnType<query>} query The query function bound to an appid
  */
-function getSender(data, baseEmbeds, query) {
+function getSender(data, baseEmbeds, query)
+{
 	const { serverToLang, toEmbeds } = data;
 	const nNews = baseEmbeds.length;
 	const { footer: { iconURL } } = baseEmbeds[0];

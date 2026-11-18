@@ -33,7 +33,8 @@ settings.downgrade ??= Object.null;
 Object.freeze(settings);
 
 const IGNORE = 1, SIMPLIFY = 1<<1, DOWNGRADE = 1<<2;
-function testRule(value, rule) {
+function testRule(value, rule)
+{
 	switch(rule[0])
 	{
 		case "^": return value.startsWith(rule.substring(1));

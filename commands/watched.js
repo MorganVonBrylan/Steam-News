@@ -70,7 +70,8 @@ function toEmbeds(watched, t, type)
  * @param {import("../steam_news/db.js").NewsWatcher|import("../steam_news/db.js").PriceWatcher|import("../steam_news/db.js").GroupWatcher} watcher The watcher data 
  * @returns {{name:string, value:string, inline:true}} Field data
  */
-function watcherToField(t, {nsfw, name, channelId, roleId, webhook, filter}) {
+function watcherToField(t, {nsfw, name, channelId, roleId, webhook, filter})
+{
 	const lines = [];
 	if(nsfw) lines.push(t("NSFW-yes"));
 	lines.push(t("channel", `<#${channelId}> ${webhook ? "*" : ""}`));
