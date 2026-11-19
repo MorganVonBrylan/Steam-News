@@ -37,7 +37,7 @@ export async function run(inter)
 	const t = tr.set(locale, "watch");
 	const channel = options.getChannel("channel") || inter.channel;
 
-	const cannotSend = checkPerms(channel, channel.appPermissions || inter.appPermissions);
+	const cannotSend = checkPerms(channel, inter.appPermissions);
 	if(cannotSend)
 		return inter.reply({flags: "Ephemeral", content: t(cannotSend, channel.toString())});
 

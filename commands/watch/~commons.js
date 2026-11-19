@@ -28,11 +28,12 @@ export const options = [{
 /**
  * Checks whether the bot has the required permissions for sending news.
  * @param {import("discord.js").GuildBasedChannel} channel 
- * @param {import("discord.js").PermissionsBitField} perms 
+ * @param {import("discord.js").PermissionsBitField} fallbackPerms 
  * @returns {string|undefined} The error preventing the bot from sending news, if any
  */
-export function checkPerms(channel, perms)
+export function checkPerms(channel, fallbackPerms)
 {
+	const perms = channel.appPermissions || fallbackPerms;
 	if(!perms.has(VIEW_CHANNEL))
 		return "cannot-see";
 	else if(!perms?.has(channel.isThread() ? SEND_MESSAGES_IN_THREADS : SEND_MESSAGES))
