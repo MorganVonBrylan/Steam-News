@@ -27,10 +27,11 @@ export const options = [{
 
 /**
  * Checks whether the bot has the required permissions for sending news.
+ * @param {import("discord.js").GuildBasedChannel} channel 
  * @param {import("discord.js").PermissionsBitField} perms 
  * @returns {string|undefined} The error preventing the bot from sending news, if any
  */
-export function checkPerms(perms)
+export function checkPerms(channel, perms)
 {
 	if(!perms.has(VIEW_CHANNEL))
 		return "cannot-see";
