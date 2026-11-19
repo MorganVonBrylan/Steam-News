@@ -23,7 +23,7 @@ export const STEAM_ICON = "https://steamcdn-a.akamaihd.net/steamcommunity/public
  * @typedef {`https://shared.akamai.steamstatic.com/${string}`} SteamImage
  * @typedef {{minimum:string, recommended?:string}} Requirements
  * @typedef {{header_image:SteamImage, capsule_image:SteamImage, capsule_imagev5:SteamImage}} AppImages
- * @typedef {AppImages & {type:"game"|"dlc"|"hardware", name:string, steam_appid:number, requires_age:number, is_free:boolean, controller_support?:"full", dlc?:number[], fullgame?:{appid:`${number}`,name:string}, detailed_description:string, about_the_game:string, short_description:string, supported_languages:string, website?:string, pc_requirements:Requirements, mac_requirements:Requirements, linux_requirements:Requirements, legal_notice?:string}} BasicDetails
+ * @typedef {AppImages & {type:"game"|"dlc"|"hardware", name:string, steam_appid:number, required_age:number, is_free:boolean, controller_support?:"full", dlc?:number[], fullgame?:{appid:`${number}`,name:string}, detailed_description:string, about_the_game:string, short_description:string, supported_languages:string, website?:string, pc_requirements:Requirements, mac_requirements:Requirements, linux_requirements:Requirements, legal_notice?:string}} BasicDetails
  * @typedef {{currency:string, initial:number, final:number}} Price
  * @typedef {Price & {initial_formatted:string, discount_percent:number, final_formatted:string}} PriceOverview
  * @typedef {{windows:boolean,linux:boolean,mac:boolean}} Platforms
@@ -216,13 +216,16 @@ export async function getDetails(appid, lang = "en", cc = "US")
 }
 
 
+/** @typedef {Exclude<keyof AppDetails, keyof BasicDetails>} Filter */
+// Credits to Retro https://retrouser955.is-a.dev/ for these
+/** @template {Filter} F @typedef {Pick<AppDetails, F>} FilterResult<F> */
+/** @template {string} T @typedef {T extends `${infer Head},${infer Tail}` ? Head | Split<Tail> : T} Split<T> Turns a string of comma-separated keywords into a union type */
 /**
- * @typedef {"basic" | Exclude<keyof AppDetails, keyof BasicDetails>} Filter
- * 
+ * @template {string} Parts
  * Compared to {@link getDetails}, things like the price, genre/categories, publisher/developer, release date and ratings will be missing.
  * @param {number} appid The app's id.
- * @param {Filter[]|ReturnType<Filter[]['join']>} additionalParts Part of the respons to add on top of the basic ones, either separated by commas or as an array.
- * @returns {Promise<?BasicDetails & Partial<AppDetails>} The app's basic details, or null if it doesn't exist.
+ * @param {Parts} additionalParts Part of the respons to add on top of the basic ones, either separated by commas or as an array.
+ * @returns {Promise<FilterResult<Split<Parts>> & BasicDetails>} The app's basic details, or null if it doesn't exist.
  */
 export async function getBasicDetails(appid, additionalParts = "")
 {
