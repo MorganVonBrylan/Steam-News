@@ -3,6 +3,9 @@ import { getStats } from "../steam_news/db_api.js";
 import packageFile from "../package.json" with { type: "json" };
 const { version } = packageFile;
 const msToDays = 3600_000 * 24;
+const inline = true;
+
+let stats = null;
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
 export const contexts = ALL_CONTEXTS;
@@ -11,8 +14,11 @@ export async function run(inter)
 {
 	const t = tr.set(inter.locale, "stats");
 	const { user: bot, uptime, ws: { ping } } = inter.client;
-	const stats = getStats();
-	const inline = true;
+	if(!stats)
+	{
+		stats = getStats();
+		setTimeout(() => stats = null, 3600_000);
+	}
 
 	inter.reply({embeds: [{
 		title: t("title"),
