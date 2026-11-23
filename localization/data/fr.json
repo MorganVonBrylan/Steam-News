@@ -654,6 +654,7 @@
 		"at-maximum": "Ce serveur a atteint le maximum de %s filtres gratuits. Pour des filtres illimités, prenez un abonnement.",
 		"removed": "Filtre pour %s retiré.",
 		"remove-failed": "Je n'ai rien trouvé à quoi retirer un filtre. Vous n'auriez pas envoyé la commande un peu vite ? Merci de bien prendre une option parmi celles qui s'affichent.",
+		"no-filters": "Ce serveur n'a aucun filtre.",
 		"free-filter": "Filtre gratuit",
 		"for-game": "Pour **%s** :",
 		"vote-filters": "Filtres de votes (${number}/${max})",

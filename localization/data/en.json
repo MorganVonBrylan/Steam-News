@@ -619,6 +619,7 @@
 		"removed": "Removed the filter for %s.",
 		"remove-failed": "Couldn't find anything to remove the filter of. Didn't you send the command a bit too fast? Please make sure to select an option from the autocomplete.",
 
+		"no-filters": "This server has no filters.",
 		"free-filter": "Free filter",
 		"for-game": "For **%s**:",
 		"vote-filters": "Vote filters (${number}/${max})",
