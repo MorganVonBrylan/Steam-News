@@ -224,3 +224,6 @@ Add news filters.
 	2.21.1 (18/11/2026)
 	/watched and /premium chameleon auto now use pagination instead of spamming embeds when there are many watchers.
 	Misc codebase improvements.
+
+	2.21.2 (23/11/2026)
+	/filters list: fixed a missing reply for when there is no filter
