@@ -425,7 +425,13 @@ export const purgeGroup = clanid => !!db.run("DELETE FROM Groups WHERE clanid = 
 
 
 /**
- * @type {()=>{watchers:number, watchedApps:number, priceWatchers:number, watchedPrices:number, steamWatchers:number, mostWatchedName:string, mostWatchedTotal:number, mostWatchedGroup:string, mostWatchedGroupTotal:number}}
+ * @type {()=>{
+ * 	watchers:number, watchedApps:number,
+ * 	priceWatchers:number, watchedPrices:number,
+ * 	steamWatchers:number,
+ * 	groupWatchers: number, watchedGroups: number,
+ * 	mostWatchedName:string, mostWatchedTotal:number, mostWatchedGroup:string, mostWatchedGroupTotal:number,
+ * 	appFilters:number, steamFilters:number, groupFilters:number}}
  * Get the bot's watcher statistics.
  */
 export const getStats = stmts.getStats;

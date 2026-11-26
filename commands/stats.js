@@ -5,6 +5,7 @@ const { version } = packageFile;
 const msToDays = 3600_000 * 24;
 const inline = true;
 
+/** @type {ReturnType<getStats>} */
 let stats = null;
 
 export const integrationTypes = ALL_INTEGRATION_TYPES;
@@ -34,6 +35,10 @@ export async function run(inter)
 			{ name: t("group-watchers"), value: ""+stats.groupWatchers, inline },
 			{ name: t("group-watched"), value: ""+stats.watchedGroups, inline },
 			{ name: t("most-watched-group"), value: `${stats.mostWatchedGroup} \n-# *(${t("n-watchers", stats.mostWatchedGroupTotal || 0)})*`, inline },
+
+			{ name: t("app-filters"), value: ""+stats.appFilters, inline },
+			{ name: t("steam-filters"), value: ""+stats.steamFilters, inline },
+			{ name: t("group-filter"), value: ""+stats.groupFilters, inline },
 
 			{ name: t("uptime"), value: t("n-days", Math.round(uptime / msToDays)), inline },
 			{ name: t("ping"), value: t("ping-ms", Math.round(ping)), inline },

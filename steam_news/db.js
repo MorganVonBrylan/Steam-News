@@ -218,6 +218,9 @@ export const stmts = dictionary({
 		(SELECT COUNT('*') FROM SteamWatchers) AS "steamWatchers",
 		(SELECT COUNT('*') FROM GroupWatchers) AS "groupWatchers",
 		(SELECT COUNT(DISTINCT clanid) FROM GroupWatchers) AS "watchedGroups",
+		(SELECT COUNT('*') FROM Watchers WHERE filter <> '') as "appFilters",
+		(SELECT COUNT('*') FROM SteamWatchers WHERE filter <> '') as "steamFilters",
+		(SELECT COUNT('*') FROM GroupWatchers WHERE filter <> '') as "groupFilters",
 		MaxApp.*, MaxGroup.*
 		FROM (SELECT name as "mostWatchedName", MAX((SELECT COUNT(channelId) FROM Watchers w WHERE a.appid = w.appid)) AS "mostWatchedTotal" FROM Apps a) as MaxApp,
 			(SELECT name as "mostWatchedGroup", MAX((SELECT COUNT(channelId) FROM GroupWatchers w WHERE g.clanid = w.clanid)) AS "mostWatchedGroupTotal" FROM Groups g) as MaxGroup;
