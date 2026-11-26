@@ -36,7 +36,7 @@ export async function run(inter)
 			{ name: t("most-watched-group"), value: `${stats.mostWatchedGroup} \n-# *(${t("n-watchers", stats.mostWatchedGroupTotal || 0)})*`, inline },
 
 			{ name: t("uptime"), value: t("n-days", Math.round(uptime / msToDays)), inline },
-			{ name: t("ping"), value: t("ping-ms", ping), inline },
+			{ name: t("ping"), value: t("ping-ms", Math.round(ping)), inline },
 		],
 		footer:{
 			iconURL: bot.avatarURL(),
