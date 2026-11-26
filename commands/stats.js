@@ -38,7 +38,7 @@ export async function run(inter)
 
 			{ name: t("app-filters"), value: ""+stats.appFilters, inline },
 			{ name: t("steam-filters"), value: ""+stats.steamFilters, inline },
-			{ name: t("group-filter"), value: ""+stats.groupFilters, inline },
+			{ name: t("group-filters"), value: ""+stats.groupFilters, inline },
 
 			{ name: t("uptime"), value: t("n-days", Math.round(uptime / msToDays)), inline },
 			{ name: t("ping"), value: t("ping-ms", Math.round(ping)), inline },
