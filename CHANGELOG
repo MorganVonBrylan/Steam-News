@@ -226,4 +226,7 @@ Add news filters.
 	Misc codebase improvements.
 
 	2.21.2 (23/11/2026)
-	/filters list: fixed a missing reply for when there is no filter
+	/filters list: fixed a missing reply for when there is no filter.
+
+	2.22.3 (26/11/2026)
+	/filters list: fix premium filters not being shown if they fit in one embed.
