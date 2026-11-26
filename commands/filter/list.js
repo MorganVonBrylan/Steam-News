@@ -61,6 +61,7 @@ export function run(inter)
 	const components = showStoreButtons ? storeButtons : undefined;
 	if(premiumEmbeds.length <= 1)
 	{
+		embeds.push(...premiumEmbeds);
 		inter.reply(embeds.length
 			? { flags: "Ephemeral", embeds, components }
 			: { flags: "Ephemeral", embeds: [{description: t("no-filters")}] }
